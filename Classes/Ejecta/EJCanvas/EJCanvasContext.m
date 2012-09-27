@@ -10,6 +10,7 @@ EJVertex CanvasVertexBuffer[EJ_CANVAS_VERTEX_BUFFER_SIZE];
 - (id)initWithWidth:(short)widthp height:(short)heightp {
 	if( self = [super init] ) {
 	
+		memset(stateStack, 0, sizeof(stateStack));
 		stateIndex = 0;
 		state = &stateStack[stateIndex];
 		state->globalAlpha = 1;
@@ -19,6 +20,9 @@ EJVertex CanvasVertexBuffer[EJ_CANVAS_VERTEX_BUFFER_SIZE];
 		state->lineCap = kEJLineCapButt;
 		state->lineJoin = kEJLineJoinMiter;
 		state->miterLimit = 10;
+		state->textBaseline = kEJTextBaselineAlphabetic;
+		state->textAlign = kEJTextAlignStart;
+		state->font = [[UIFont fontWithName:@"Helvetica" size:10] retain];
 		
 		viewportWidth = width = widthp;
 		viewportHeight = height = heightp;
@@ -29,6 +33,11 @@ EJVertex CanvasVertexBuffer[EJ_CANVAS_VERTEX_BUFFER_SIZE];
 }
 
 - (void)dealloc {
+	// Release all fonts from the stack
+	for( int i = 0; i < stateIndex + 1; i++ ) {
+		[stateStack[i].font release];
+	}
+	
 	if( stencilBuffer ) {
 		glDeleteRenderbuffers(1, &stencilBuffer);
 	}
@@ -140,7 +149,7 @@ EJVertex CanvasVertexBuffer[EJ_CANVAS_VERTEX_BUFFER_SIZE];
 		
 	vb[3] = (EJVertex) { d21, {tx+tw, ty}, color };	// top right
 	vb[4] = (EJVertex) { d12, {tx, ty+th}, color };	// bottom left
-	vb[5] = (EJVertex) { d22, {tx+tw, ty+th},	color };// bottom right
+	vb[5] = (EJVertex) { d22, {tx+tw, ty+th}, color };// bottom right
 	
 	vertexBufferIndex += 6;
 }
@@ -350,6 +359,49 @@ EJVertex CanvasVertexBuffer[EJ_CANVAS_VERTEX_BUFFER_SIZE];
 	[path arcX:x y:y radius:radius startAngle:startAngle endAngle:endAngle antiClockwise:antiClockwise];
 }
 
+- (void)drawText:(NSString *)text x:(float)x y:(float)y fill:(BOOL)fill {
+	// TODO: cache the textures somewhere?
+	EJTexture * texture = [[[EJTexture alloc] initWithString:text font:state->font fill:fill lineWidth:state->lineWidth] autorelease];
+	float tw = texture.realWidth;
+	float th = texture.realHeight;
+	
+	// Figure out the x position with the current textAlign.
+	if( state->textAlign == kEJTextAlignRight || state->textAlign == kEJTextAlignEnd ) {
+		x -= texture.width;
+	}
+	else if( state->textAlign == kEJTextAlignCenter ) {
+		x -= texture.width/2;
+	}
+	
+	// Figure out the y position with the current textBaseline
+	switch( state->textBaseline ) {
+		case kEJTextBaselineAlphabetic:
+		case kEJTextBaselineIdeographic:
+			y -= state->font.ascender; break;
+			
+		case kEJTextBaselineTop:
+		case kEJTextBaselineHanging:
+			y -= (state->font.ascender - state->font.capHeight); break;
+				
+		case kEJTextBaselineMiddle:
+			y -= (state->font.ascender - state->font.xHeight/2); break;
+		
+		case kEJTextBaselineBottom:
+			y -= (state->font.ascender - state->font.descender); break;
+	}
+	
+	EJColorRGBA color = fill ? state->fillColor : state->strokeColor;
+	color.rgba.a = (float)color.rgba.a * state->globalAlpha;
+	[self setTexture:texture];
+	[self pushRectX:x y:y w:tw h:th tx:0 ty:0 tw:1 th:1 color:color withTransform:state->transform];
+}
 
+- (void)fillText:(NSString *)text x:(float)x y:(float)y {
+	[self drawText:text x:x y:y fill:YES];
+}
+
+- (void)strokeText:(NSString *)text x:(float)x y:(float)y {
+	[self drawText:text x:x y:y fill:NO];
+}
 
 @end

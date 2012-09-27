@@ -93,8 +93,25 @@ EJ_BIND_SET(miterLimit, ctx, value) {
 	renderingContext.state->miterLimit = JSValueToNumberFast(ctx, value);
 }
 
+EJ_BIND_GET(font, ctx) {
+	UIFont * font = renderingContext.state->font;
+	NSString * name = [NSString stringWithFormat:@"%dpt %@", (int)font.pointSize, font.fontName];
+	return NSStringToJSValue(ctx, name);
 }
 
+EJ_BIND_SET(font, ctx, value) {
+	char string[32];
+	JSStringRef jsString = JSValueToStringCopy( ctx, value, NULL );
+	JSStringGetUTF8CString(jsString, string, 32);
+	
+	// Yeah, oldschool!
+	float size = 0;
+	char name[32];
+	sscanf( string, "%fp%*[tx] %31s", &size, name); // matches: 10.5p[tx] helvetica
+	UIFont * newFont = [UIFont fontWithName:[NSString stringWithUTF8String:name] size:size];
+	
+	if( newFont ) {
+		renderingContext.font = newFont;
 	}
 }
 
@@ -146,34 +163,7 @@ EJ_BIND_GET(imageSmoothingEnabled, ctx) {
 	return JSValueMakeBoolean(ctx, [EJTexture smoothScaling]);
 }
 
-EJ_BIND_SET(scalingMode, ctx, value) {
-	NSString * mode = JSValueToNSString(ctx, value);
-	if( [mode isEqualToString:@"fit-width"] ) { 
-		scalingMode = kEJScalingModeFitWidth;
-	}
-	else if( [mode isEqualToString:@"fit-height"] ) { 
-		scalingMode = kEJScalingModeFitHeight;
-	}
-	else if( [mode isEqualToString:@"none"] ) { 
-		scalingMode = kEJScalingModeNone;
-	}
-}
 
-EJ_BIND_GET(scalingMode, ctx) {
-	JSStringRef scalingModeName;
-	if( scalingMode == kEJScalingModeFitWidth ) {
-		scalingModeName = JSStringCreateWithUTF8CString( "fit-width" );
-	}
-	else if( scalingMode == kEJScalingModeFitHeight ) {
-		scalingModeName = JSStringCreateWithUTF8CString( "fit-height" );
-	}
-	else {
-		scalingModeName = JSStringCreateWithUTF8CString( "none" );
-	}
-	JSValueRef ret = JSValueMakeString(ctx, scalingModeName);
-	JSStringRelease(scalingModeName);
-	return ret;
-}
 
 EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 	if( argc < 1 || ![JSValueToNSString(ctx, argv[0]) isEqualToString:@"2d"] ) { 
@@ -374,7 +364,7 @@ EJ_BIND_FUNCTION(getImageData, ctx, argc, argv) {
 }
 
 EJ_BIND_FUNCTION(createImageData, ctx, argc, argv) {
-	if( argc < 4 ) { return NULL; }
+	if( argc < 2 ) { return NULL; }
 	
 	float
 		sw = JSValueToNumberFast(ctx, argv[0]),
@@ -514,7 +504,30 @@ EJ_BIND_FUNCTION( arc, ctx, argc, argv ) {
 	return NULL;
 }
 
-EJ_BIND_FUNCTION_NOT_IMPLEMENTED( fillText );
+EJ_BIND_FUNCTION( fillText, ctx, argc, argv ) {
+	if( argc < 3 ) { return NULL; }
+	
+	NSString * string = JSValueToNSString(ctx, argv[0]);
+	float
+		x = JSValueToNumberFast(ctx, argv[1]),
+		y = JSValueToNumberFast(ctx, argv[2]);
+		
+	[renderingContext fillText:string x:x y:y];
+	return NULL;
+}
+
+EJ_BIND_FUNCTION( strokeText, ctx, argc, argv ) {
+	if( argc < 3 ) { return NULL; }
+	
+	NSString * string = JSValueToNSString(ctx, argv[0]);
+	float
+		x = JSValueToNumberFast(ctx, argv[1]),
+		y = JSValueToNumberFast(ctx, argv[2]);
+		
+	[renderingContext strokeText:string x:x y:y];
+	return NULL;
+}
+
 EJ_BIND_FUNCTION_NOT_IMPLEMENTED( createRadialGradient );
 EJ_BIND_FUNCTION_NOT_IMPLEMENTED( createLinearGradient );
 EJ_BIND_FUNCTION_NOT_IMPLEMENTED( createPattern );

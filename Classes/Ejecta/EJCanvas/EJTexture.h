@@ -11,14 +11,17 @@
 }
 - (id)initWithPath:(NSString *)path;
 - (id)initWithPath:(NSString *)path context:(EAGLContext*)context;
+- (id)initWithWidth:(int)widthp height:(int)heightp;
+- (id)initWithWidth:(int)widthp height:(int)heightp pixels:(GLubyte *)pixels;
+- (id)initWithString:(NSString *)string font:(UIFont *)font fill:(BOOL)fill lineWidth:(float)lineWidth;
+
+- (void)setWidth:(int)width height:(int)height;
+- (void)createTextureWithPixels:(GLubyte *)pixels format:(GLenum) format;
+
 - (GLubyte *)loadPixelsFromPath:(NSString *)path;
 - (GLubyte *)loadPixelsWithCGImageFromPath:(NSString *)path;
 - (GLubyte *)loadPixelsWithLodePNGFromPath:(NSString *)path;
 
-- (id)initWithWidth:(int)widthp height:(int)heightp;
-- (id)initWithWidth:(int)widthp height:(int)heightp pixels:(GLubyte *)pixels;
-- (void)createTextureWithPixels:(GLubyte *)pixels;
-- (void)setWidth:(int)width height:(int)height;
 - (void)bind;
 
 + (BOOL)smoothScaling;

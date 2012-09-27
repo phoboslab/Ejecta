@@ -26,7 +26,7 @@ static GLint textureFilter = GL_LINEAR;
 	if( self = [super init] ) {
 		fullPath = [path retain];
 		GLubyte * pixels = [self loadPixelsFromPath:path];
-		[self createTextureWithPixels:pixels];
+		[self createTextureWithPixels:pixels format:GL_RGBA];
 		free(pixels);
 	}
 
@@ -45,7 +45,7 @@ static GLint textureFilter = GL_LINEAR;
 									 sharegroup:context.sharegroup];
 			[EAGLContext setCurrentContext: contextTextureThread];
 			
-			[self createTextureWithPixels:pixels];
+			[self createTextureWithPixels:pixels format:GL_RGBA];
 			glFlush();
 			
 			[EAGLContext setCurrentContext: nil];
@@ -64,7 +64,7 @@ static GLint textureFilter = GL_LINEAR;
 	if( self = [super init] ) {
 		fullPath = [@"[Empty]" retain];
 		[self setWidth:widthp height:heightp];
-		[self createTextureWithPixels:NULL];
+		[self createTextureWithPixels:NULL format:GL_RGBA];
 	}
 	return self;
 }
@@ -82,12 +82,51 @@ static GLint textureFilter = GL_LINEAR;
 			for( int y = 0; y < height; y++ ) {
 				memcpy( &pixelsPow2[y*realWidth*4], &pixels[y*width*4], width * 4 );
 			}
-			[self createTextureWithPixels:pixelsPow2];
+			[self createTextureWithPixels:pixelsPow2 format:GL_RGBA];
 			free(pixelsPow2);
 		}
 		else {
-			[self createTextureWithPixels:pixels];
+			[self createTextureWithPixels:pixels format:GL_RGBA];
 		}
+	}
+	return self;
+}
+
+- (id)initWithString:(NSString *)string font:(UIFont *)font fill:(BOOL)fill lineWidth:(float)lineWidth {
+	if( self = [super init] ) {		
+		CGSize boundingBox = [string sizeWithFont:font];		
+		[self setWidth:boundingBox.width height:boundingBox.height];
+		
+		CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceGray();
+		GLubyte * pixels = (GLubyte *) malloc( realWidth * realHeight);
+		memset( pixels, 0, realWidth * realHeight);
+		CGContextRef context = CGBitmapContextCreate(pixels, realWidth, realHeight, 8, realWidth, colorSpace, kCGImageAlphaNone);
+		CGColorSpaceRelease(colorSpace);
+			
+		// Fill or stroke?
+		if( fill ) {
+			CGContextSetTextDrawingMode(context, kCGTextFill);
+			CGContextSetGrayFillColor(context, 1.0, 1.0);
+		}
+		else {
+			CGContextSetTextDrawingMode(context, kCGTextStroke);
+			CGContextSetGrayStrokeColor(context, 1.0, 1.0);
+			CGContextSetLineWidth(context, lineWidth);
+		}
+
+		UIGraphicsPushContext(context);
+		CGContextTranslateCTM(context, 0.0, realHeight);
+		CGContextScaleCTM(context, 1.0, -1.0);
+		
+		[string drawInRect:CGRectMake(0, 0, width, height)
+			  withFont:font lineBreakMode:UILineBreakModeClip alignment:UIBaselineAdjustmentNone];
+		
+		UIGraphicsPopContext();
+		
+		[self createTextureWithPixels:pixels format:GL_ALPHA];
+		
+		CGContextRelease(context);
+		free(pixels);
 	}
 	return self;
 }
@@ -107,7 +146,7 @@ static GLint textureFilter = GL_LINEAR;
 	realHeight = pow(2, ceil(log2( height )));
 }
 
-- (void)createTextureWithPixels:(GLubyte *)pixels {	
+- (void)createTextureWithPixels:(GLubyte *)pixels format:(GLenum) format {
 	GLint maxTextureSize;
 	glGetIntegerv( GL_MAX_TEXTURE_SIZE, &maxTextureSize );
 	
@@ -122,7 +161,7 @@ static GLint textureFilter = GL_LINEAR;
 	glEnable(GL_TEXTURE_2D);
 	glGenTextures(1, &textureId);
 	glBindTexture(GL_TEXTURE_2D, textureId);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, realWidth, realHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+	glTexImage2D(GL_TEXTURE_2D, 0, format, realWidth, realHeight, 0, format, GL_UNSIGNED_BYTE, pixels);
 	
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, textureFilter);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, textureFilter);

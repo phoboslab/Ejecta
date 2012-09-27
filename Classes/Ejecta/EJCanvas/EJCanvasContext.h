@@ -22,6 +22,22 @@ typedef enum {
 	kEJLineJoinRound
 } EJLineJoin;
 
+typedef enum {
+	kEJTextBaselineAlphabetic,
+	kEJTextBaselineMiddle,
+	kEJTextBaselineTop,
+	kEJTextBaselineHanging,
+	kEJTextBaselineBottom,
+	kEJTextBaselineIdeographic
+} EJTextBaseline;
+
+typedef enum {
+	kEJTextAlignStart,
+	kEJTextAlignEnd,
+	kEJTextAlignLeft,
+	kEJTextAlignCenter,
+	kEJTextAlignRight
+} EJTextAlign;
 
 typedef enum {
 	kEJCompositeOperationSourceOver,
@@ -42,10 +58,15 @@ typedef struct {
 	EJColorRGBA fillColor;
 	EJColorRGBA strokeColor;
 	float globalAlpha;
+	
 	float lineWidth;
 	EJLineCap lineCap;
 	EJLineJoin lineJoin;
 	float miterLimit;
+	
+	EJTextAlign textAlign;
+	EJTextBaseline textBaseline;
+	UIFont * font;
 } EJCanvasState;
 
 
@@ -108,9 +129,14 @@ typedef struct {
 - (void)arcToX1:(float)x1 y1:(float)y1 x2:(float)x2 y2:(float)y2 radius:(float)radius;
 - (void)arcX:(float)x y:(float)y radius:(float)radius startAngle:(float)startAngle endAngle:(float)endAngle antiClockwise:(BOOL)antiClockwise;
 
+- (void)drawText:(NSString *)text x:(float)x y:(float)y fill:(BOOL)fill;
+- (void)fillText:(NSString *)text x:(float)x y:(float)y;
+- (void)strokeText:(NSString *)text x:(float)x y:(float)y;
+
 
 @property (nonatomic) EJCanvasState * state;
 @property (nonatomic) EJCompositeOperation globalCompositeOperation;
+@property (nonatomic, retain) UIFont * font;
 
 /* TODO: not yet implemented:
 	createLinearGradient(x0, y0, x1, y1)
