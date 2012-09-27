@@ -13,18 +13,6 @@ static int firstCanvasInstance = YES;
 		scalingMode = kEJScalingModeFitWidth;
 		useRetinaResolution = true;
 		
-		jsValueSourceOver = NSStringToJSValueProtect( ctx, @"source-over" );
-		jsValueDarker = NSStringToJSValueProtect( ctx, @"darker" );
-		jsValueLighter = NSStringToJSValueProtect( ctx, @"lighter" );
-		
-		jsValueLineCapButt = NSStringToJSValue( ctx, @"butt" );
-		jsValueLineCapRound = NSStringToJSValue( ctx, @"round" );
-		jsValueLineCapSquare = NSStringToJSValue( ctx, @"square" );
-		
-		jsValueLineJoinMiter = NSStringToJSValue( ctx, @"miter" );
-		jsValueLineJoinRound = NSStringToJSValue( ctx, @"round" );
-		jsValueLineJoinBevel = NSStringToJSValue( ctx, @"bevel" );
-		
 		// If this is the first canvas instance we created, make it the screen canvas
 		if( firstCanvasInstance ) {
 			isScreenCanvas = YES;
@@ -44,19 +32,7 @@ static int firstCanvasInstance = YES;
 	return self;
 }
 
-- (void)dealloc {
-	JSValueUnprotect( ejectaInstance.jsGlobalContext, jsValueSourceOver );
-	JSValueUnprotect( ejectaInstance.jsGlobalContext, jsValueDarker );
-	JSValueUnprotect( ejectaInstance.jsGlobalContext, jsValueLighter );
-	
-	JSValueUnprotect( ejectaInstance.jsGlobalContext, jsValueLineCapButt );
-	JSValueUnprotect( ejectaInstance.jsGlobalContext, jsValueLineCapRound );
-	JSValueUnprotect( ejectaInstance.jsGlobalContext, jsValueLineCapSquare );
-	
-	JSValueUnprotect( ejectaInstance.jsGlobalContext, jsValueLineJoinMiter );
-	JSValueUnprotect( ejectaInstance.jsGlobalContext, jsValueLineJoinRound );
-	JSValueUnprotect( ejectaInstance.jsGlobalContext, jsValueLineJoinBevel );
-	
+- (void)dealloc {	
 	[renderingContext release];
 	[super dealloc];
 }
@@ -70,6 +46,12 @@ static int firstCanvasInstance = YES;
 	}
 }
 
+EJ_BIND_ENUM(globalCompositeOperation, EJCompositeOperationNames, renderingContext.globalCompositeOperation);
+EJ_BIND_ENUM(lineCap, EJLineCapNames, renderingContext.state->lineCap);
+EJ_BIND_ENUM(lineJoin, EJLineJoinNames, renderingContext.state->lineJoin);
+EJ_BIND_ENUM(textAlign, EJTextAlignNames, renderingContext.state->textAlign);
+EJ_BIND_ENUM(textBaseline, EJTextBaselineNames, renderingContext.state->textBaseline);
+EJ_BIND_ENUM(scalingMode, EJScalingModeNames, scalingMode);
 
 EJ_BIND_GET(fillStyle, ctx ) {
 	return ColorRGBAToJSValue(ctx, renderingContext.state->fillColor);
@@ -95,25 +77,6 @@ EJ_BIND_SET(globalAlpha, ctx, value) {
 	renderingContext.state->globalAlpha = MIN(1,MAX(JSValueToNumberFast(ctx, value),0));
 }
 
-EJ_BIND_GET(globalCompositeOperation, ctx) {
-	JSStringRef src = JSStringCreateWithUTF8CString( renderingContext.state->globalCompositeOperation->name );
-	JSValueRef ret = JSValueMakeString(ctx, src);
-	JSStringRelease(src);
-	return ret;
-}
-
-EJ_BIND_SET(globalCompositeOperation, ctx, value) {
-	if( JSValueIsStrictEqual(ctx, value, jsValueSourceOver) ) {
-		renderingContext.globalCompositeOperation = &kEJCompositeOperationSourceOver;
-	}
-	if( JSValueIsStrictEqual(ctx, value, jsValueLighter) ) {
-		renderingContext.globalCompositeOperation = &kEJCompositeOperationLighter;
-	}
-	if( JSValueIsStrictEqual(ctx, value, jsValueDarker) ) {
-		renderingContext.globalCompositeOperation = &kEJCompositeOperationDarker;
-	}
-}
-
 EJ_BIND_GET(lineWidth, ctx) {
 	return JSValueMakeNumber(ctx, renderingContext.state->lineWidth);
 }
@@ -130,45 +93,8 @@ EJ_BIND_SET(miterLimit, ctx, value) {
 	renderingContext.state->miterLimit = JSValueToNumberFast(ctx, value);
 }
 
-EJ_BIND_GET(lineCap, ctx) {
-	switch( renderingContext.state->lineCap ) {
-		case kEJLineCapButt: return jsValueLineCapButt;
-		case kEJLineCapSquare: return jsValueLineCapSquare;
-		case kEJLineCapRound: return jsValueLineCapRound;
-	}
-	return NULL;
 }
 
-EJ_BIND_SET(lineCap, ctx, value) {
-	if( JSValueIsStrictEqual(ctx, value, jsValueLineCapButt) ) {
-		renderingContext.state->lineCap = kEJLineCapButt;
-	}
-	if( JSValueIsStrictEqual(ctx, value, jsValueLineCapRound) ) {
-		renderingContext.state->lineCap = kEJLineCapRound;
-	}
-	if( JSValueIsStrictEqual(ctx, value, jsValueLineCapSquare) ) {
-		renderingContext.state->lineCap = kEJLineCapSquare;
-	}
-}
-
-EJ_BIND_GET(lineJoin, ctx) {
-	switch( renderingContext.state->lineJoin ) {
-		case kEJLineJoinMiter: return jsValueLineJoinMiter;
-		case kEJLineJoinBevel: return jsValueLineJoinBevel;
-		case kEJLineJoinRound: return jsValueLineJoinRound;
-	}
-	return NULL;
-}
-
-EJ_BIND_SET(lineJoin, ctx, value) {
-	if( JSValueIsStrictEqual(ctx, value, jsValueLineJoinMiter) ) {
-		renderingContext.state->lineJoin = kEJLineJoinMiter;
-	}
-	if( JSValueIsStrictEqual(ctx, value, jsValueLineJoinBevel) ) {
-		renderingContext.state->lineJoin = kEJLineJoinBevel;
-	}
-	if( JSValueIsStrictEqual(ctx, value, jsValueLineJoinRound) ) {
-		renderingContext.state->lineJoin = kEJLineJoinRound;
 	}
 }
 

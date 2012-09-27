@@ -22,20 +22,23 @@ typedef enum {
 	kEJLineJoinRound
 } EJLineJoin;
 
-typedef struct {
-	char * name;
-	GLenum source;
-	GLenum destination;
-} EJCompositeOperation;
-typedef const EJCompositeOperation * EJCompositeOperationRef;
 
-static const EJCompositeOperation kEJCompositeOperationLighter = {(char*)"lighter", GL_SRC_ALPHA, GL_ONE};
-static const EJCompositeOperation kEJCompositeOperationDarker = {(char*)"darker", GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA};
-static const EJCompositeOperation kEJCompositeOperationSourceOver = {(char*)"source-over", GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA};
+typedef enum {
+	kEJCompositeOperationSourceOver,
+	kEJCompositeOperationLighter,
+	kEJCompositeOperationDarker
+} EJCompositeOperation;
+
+static const struct { GLenum source; GLenum destination; } EJCompositeOperationFuncs[] = {
+	[kEJCompositeOperationSourceOver] = {GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA},
+	[kEJCompositeOperationLighter] = {GL_SRC_ALPHA, GL_ONE},
+	[kEJCompositeOperationDarker] = {GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA}
+};
 
 typedef struct {
 	CGAffineTransform transform;
-	EJCompositeOperationRef globalCompositeOperation;
+	
+	EJCompositeOperation globalCompositeOperation;
 	EJColorRGBA fillColor;
 	EJColorRGBA strokeColor;
 	float globalAlpha;
@@ -107,7 +110,7 @@ typedef struct {
 
 
 @property (nonatomic) EJCanvasState * state;
-@property (nonatomic) EJCompositeOperationRef globalCompositeOperation;
+@property (nonatomic) EJCompositeOperation globalCompositeOperation;
 
 /* TODO: not yet implemented:
 	createLinearGradient(x0, y0, x1, y1)

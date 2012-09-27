@@ -13,7 +13,7 @@ EJVertex CanvasVertexBuffer[EJ_CANVAS_VERTEX_BUFFER_SIZE];
 		stateIndex = 0;
 		state = &stateStack[stateIndex];
 		state->globalAlpha = 1;
-		state->globalCompositeOperation = &kEJCompositeOperationSourceOver;
+		state->globalCompositeOperation = kEJCompositeOperationSourceOver;
 		state->transform = CGAffineTransformIdentity;
 		state->lineWidth = 1;
 		state->lineCap = kEJLineCapButt;
@@ -80,7 +80,8 @@ EJVertex CanvasVertexBuffer[EJ_CANVAS_VERTEX_BUFFER_SIZE];
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	
-	glBlendFunc(state->globalCompositeOperation->source, state->globalCompositeOperation->destination);
+	EJCompositeOperation op = state->globalCompositeOperation;
+	glBlendFunc( EJCompositeOperationFuncs[op].source, EJCompositeOperationFuncs[op].destination );
 	glDisable(GL_TEXTURE_2D);
 	currentTexture = nil;
 	
@@ -151,14 +152,23 @@ EJVertex CanvasVertexBuffer[EJ_CANVAS_VERTEX_BUFFER_SIZE];
 	vertexBufferIndex = 0;
 }
 
-- (void)setGlobalCompositeOperation:(EJCompositeOperationRef)op {
+- (void)setGlobalCompositeOperation:(EJCompositeOperation)op {
 	[self flushBuffers];
-	glBlendFunc(op->source, op->destination);
+	glBlendFunc( EJCompositeOperationFuncs[op].source, EJCompositeOperationFuncs[op].destination );
 	state->globalCompositeOperation = op;
 }
 
-- (EJCompositeOperationRef)globalCompositeOperation {
+- (EJCompositeOperation)globalCompositeOperation {
 	return state->globalCompositeOperation;
+}
+
+- (void)setFont:(UIFont *)font {
+	[state->font release];
+	state->font = [font retain];
+}
+
+- (UIFont *)font {
+	return state->font;
 }
 
 
@@ -170,6 +180,7 @@ EJVertex CanvasVertexBuffer[EJ_CANVAS_VERTEX_BUFFER_SIZE];
 	stateStack[stateIndex+1] = stateStack[stateIndex];
 	stateIndex++;
 	state = &stateStack[stateIndex];
+	[state->font retain];
 }
 
 - (void)restore {
@@ -177,9 +188,16 @@ EJVertex CanvasVertexBuffer[EJ_CANVAS_VERTEX_BUFFER_SIZE];
 		NSLog(@"Warning: Can't pop stack at index 0");
 		return;
 	}
+	EJCompositeOperation oldCompositeOp = state->globalCompositeOperation;
+	
 	[path reset];
 	stateIndex--;
 	state = &stateStack[stateIndex];
+	[state->font release];
+	
+	if( state->globalCompositeOperation != oldCompositeOp ) {
+		self.globalCompositeOperation = state->globalCompositeOperation;
+	}
 }
 
 - (void)rotate:(float)angle {
