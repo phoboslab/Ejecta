@@ -314,7 +314,6 @@ EJVertex CanvasVertexBuffer[EJ_CANVAS_VERTEX_BUFFER_SIZE];
 }
 
 - (void)rectX:(float)x y:(float)y w:(float)w h:(float)h {
-	[path reset];
 	[path moveToX:x y:y];
 	[path lineToX:x+w y:y];
 	[path lineToX:x+w y:y+h];
