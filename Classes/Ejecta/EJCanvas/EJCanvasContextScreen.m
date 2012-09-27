@@ -28,6 +28,8 @@
 	float internalScaling = frame.size.width / (float)width;
 	[EJApp instance].internalScaling = internalScaling;
 	
+	backingStoreRatio = internalScaling * contentScale;
+	
 	viewportWidth = frame.size.width * contentScale;
 	viewportHeight = frame.size.height * contentScale;
 	
@@ -94,24 +96,40 @@
 }
 
 - (EJImageData*)getImageDataSx:(float)sx sy:(float)sy sw:(float)sw sh:(float)sh {
-	// FIXME: This should take care of the flipped pixel layout and the
-	// internal scaling - not sure how to do the latter - it will get mushed :/
+	// FIXME: This takes care of the flipped pixel layout and the internal scaling
+	// the latter will mush pixel; not sure how to fix it - print warning instead.
+	
+	if( backingStoreRatio != 1 && [EJTexture smoothScaling] ) {
+		NSLog(
+			@"Warning: The screen canvas has been scaled; getImageData() may not work as expected. "
+			@"Set imageSmoothingEnabled=false or use an off-screen Canvas for more accurate results."
+		);
+	}
 	
 	[self flushBuffers];
 	
-	int count = sw * sh * 4;
-	GLubyte * pixels = malloc( count * sizeof(GLubyte));
-	glReadPixels(sx, height-sy-sh, sw, sh, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+	// Read pixels; take care of the upside down screen layout and the backingStoreRatio
+	int internalWidth = sw * backingStoreRatio;
+	int internalHeight = sh * backingStoreRatio;
+	int internalX = sx * backingStoreRatio;
+	int internalY = (height-sy-sh) * backingStoreRatio;
 	
-	// Flip pixels
-	GLubyte * flippedPixels = malloc( count * sizeof(GLubyte));
-	int rowWidth = sw * 4;
-	for( int rowStart = 0; rowStart < count; rowStart += rowWidth ) {
-		memcpy(&flippedPixels[rowStart], &pixels[count-rowStart-rowWidth-1], rowWidth);
+	EJColorRGBA * internalPixels = malloc( internalWidth * internalHeight * sizeof(EJColorRGBA));
+	glReadPixels( internalX, internalY, internalWidth, internalHeight, GL_RGBA, GL_UNSIGNED_BYTE, internalPixels );
+	
+	// Flip and scale pixels to requested size
+	EJColorRGBA * pixels = malloc( sw * sh * sizeof(EJColorRGBA));
+	int index = 0;
+	for( int y = 0; y < sh; y++ ) {
+		for( int x = 0; x < sw; x++ ) {
+			int internalIndex = (int)((sh-y-1) * backingStoreRatio) * internalWidth + (int)(x * backingStoreRatio);
+			pixels[ index ] = internalPixels[ internalIndex ];
+			index++;
+		}
 	}
-	free(pixels);
+	free(internalPixels);
 	
-	return [[[EJImageData alloc] initWithWidth:sw height:sh pixels:flippedPixels] autorelease];
+	return [[[EJImageData alloc] initWithWidth:sw height:sh pixels:(GLubyte *)pixels] autorelease];
 }
 
 - (void)resetGLContext {
