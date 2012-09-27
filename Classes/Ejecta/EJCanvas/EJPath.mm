@@ -378,7 +378,7 @@ typedef std::vector<subpath_t> path_t;
 		
 		// If back and front are equal, this subpath is closed.
 		BOOL subPathIsClosed = (sp->size() > 2 && front.x == back.x && front.y == back.y);
-		BOOL ignoreFirstSegment = subPathIsClosed;
+		BOOL ignoreFirstSegment = addMiter && subPathIsClosed;
 		BOOL firstInSubPath = true;
 		
 		// If this subpath is closed, initialize the first vertex for the loop ("next")
