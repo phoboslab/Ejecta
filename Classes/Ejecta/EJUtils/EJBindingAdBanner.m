@@ -14,7 +14,7 @@
 		banner.hidden = YES;
 		
 		banner.requiredContentSizeIdentifiers = [NSSet setWithObjects:
-			([EJApp landscapeMode]
+			([[EJApp instance] landscapeMode]
 				? ADBannerContentSizeIdentifierLandscape
 				: ADBannerContentSizeIdentifierPortrait),
 			nil];

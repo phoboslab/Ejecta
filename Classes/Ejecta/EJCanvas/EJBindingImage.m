@@ -21,7 +21,7 @@
 	NSAutoreleasePool *autoreleasepool = [[NSAutoreleasePool alloc] init];
 	
 	NSLog(@"Loading Image: %@", path );
-	EJTexture * tempTex = [[[EJTexture alloc] initWithPath:[EJApp pathForResource:path] context:context] autorelease];
+	EJTexture * tempTex = [[[EJTexture alloc] initWithPath:[[EJApp instance] pathForResource:path] context:context] autorelease];
 	[self performSelectorOnMainThread:@selector(endLoad:) withObject:tempTex waitUntilDone:NO];
 	
 	[autoreleasepool release];

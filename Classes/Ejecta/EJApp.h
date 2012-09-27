@@ -21,6 +21,7 @@
 
 @interface EJApp : UIViewController {
 	BOOL paused;
+	BOOL landscapeMode;
 	JSGlobalContextRef jsGlobalContext;
 	UIWindow * window;
 	NSMutableDictionary * jsClasses;
@@ -45,6 +46,7 @@
 - (void)run:(CADisplayLink *)sender;
 - (void)pause;
 - (void)resume;
+- (NSString *)pathForResource:(NSString *)resourcePath;
 - (JSValueRef)createTimer:(JSContextRef)ctx argc:(size_t)argc argv:(const JSValueRef [])argv repeat:(BOOL)repeat;
 - (JSValueRef)deleteTimer:(JSContextRef)ctx argc:(size_t)argc argv:(const JSValueRef [])argv;
 
@@ -56,10 +58,9 @@
 
 
 + (EJApp *)instance;
-+ (NSString *)pathForResource:(NSString *)resourcePath;
-+ (BOOL)landscapeMode;
-+ (BOOL)statusBarHidden;
 
+
+@property (nonatomic, readonly) BOOL landscapeMode;
 @property (nonatomic, readonly) JSGlobalContextRef jsGlobalContext;
 @property (nonatomic, readonly) UIWindow * window;
 @property (nonatomic, retain) NSObject<TouchDelegate> * touchDelegate;

@@ -46,6 +46,7 @@ JSObjectRef ej_callAsConstructor(JSContextRef ctx, JSObjectRef constructor, size
 // the initial JavaScript source files
 
 @implementation EJApp
+@synthesize landscapeMode;
 @synthesize jsGlobalContext;
 @synthesize window;
 @synthesize touchDelegate;
@@ -63,6 +64,10 @@ static EJApp * ejectaInstance = NULL;
 
 - (id)initWithWindow:(UIWindow *)windowp {
 	if( self = [super init] ) {
+		
+		landscapeMode = [[[[NSBundle mainBundle] infoDictionary]
+			objectForKey:@"UIInterfaceOrientation"] hasPrefix:@"UIInterfaceOrientationLandscape"];
+		
 	
 		ejectaInstance = self;
 		window = windowp;
@@ -135,17 +140,28 @@ static EJApp * ejectaInstance = NULL;
 
 
 -(NSUInteger)supportedInterfaceOrientations {
-	return [EJApp landscapeMode] ? UIInterfaceOrientationMaskLandscape : UIInterfaceOrientationMaskPortrait;
+	if( landscapeMode ) {
+		// Allow Landscape Left and Right
+		return UIInterfaceOrientationMaskLandscape;
+	}
+	else {
+		if( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ) {
+			// Allow Portrait UpsideDown on iPad
+			return UIInterfaceOrientationMaskPortrait | UIInterfaceOrientationMaskPortraitUpsideDown;
+		}
+		else {
+			// Only Allow Portrait
+			return UIInterfaceOrientationMaskPortrait;
+		}
+	}
 }
 
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)orientation {
 	// Deprecated in iOS6 - supportedInterfaceOrientations is the new way to do this
-	BOOL landscape = [EJApp landscapeMode];
-    return (
-		(landscape && UIInterfaceOrientationIsLandscape(orientation)) ||
-		(!landscape && UIInterfaceOrientationIsPortrait(orientation))
-	);
+	// We just use the mask returned by supportedInterfaceOrientations here to check if
+	// this particular orientation is allowed.
+	return (self.supportedInterfaceOrientations & orientation);
 }
 
 
@@ -191,12 +207,15 @@ static EJApp * ejectaInstance = NULL;
 	//loadingScreen = nil;
 }
 
+- (NSString *)pathForResource:(NSString *)path {
+	return [NSString stringWithFormat:@"%@/" EJECTA_APP_FOLDER "%@", [[NSBundle mainBundle] resourcePath], path];
+}
 
 // ---------------------------------------------------------------------------------
 // Script loading and execution
 
 - (void)loadScriptAtPath:(NSString *)path {
-	NSString * script = [NSString stringWithContentsOfFile:[EJApp pathForResource:path] encoding:NSUTF8StringEncoding error:NULL];	
+	NSString * script = [NSString stringWithContentsOfFile:[self pathForResource:path] encoding:NSUTF8StringEncoding error:NULL];
 	
 	if( !script ) {
 		NSLog(@"Error: Can't Find Script %@", path );
@@ -311,23 +330,6 @@ static EJApp * ejectaInstance = NULL;
 		[renderingContext prepare];
 		currentRenderingContext = renderingContext;
 	}
-}
-
-
-// ---------------------------------------------------------------------------------
-// Utilities
-
-+ (NSString *)pathForResource:(NSString *)path {
-	return [NSString stringWithFormat:@"%@/" EJECTA_APP_FOLDER "%@", [[NSBundle mainBundle] resourcePath], path];
-}
-
-+ (BOOL)landscapeMode {
-	return [[[[NSBundle mainBundle] infoDictionary] 
-		objectForKey:@"UIInterfaceOrientation"] hasPrefix:@"UIInterfaceOrientationLandscape"];
-}
-
-+ (BOOL)statusBarHidden {
-	return [[[[NSBundle mainBundle] infoDictionary] objectForKey:@"UIStatusBarHidden"] boolValue];
 }
 
 @end

@@ -75,7 +75,7 @@ EJ_BIND_GET(screenHeight, ctx ) {
 }
 
 EJ_BIND_GET(landscapeMode, ctx ) {
-	return JSValueMakeBoolean( ctx, [EJApp landscapeMode] );
+	return JSValueMakeBoolean( ctx, [EJApp instance].landscapeMode );
 }
 
 EJ_BIND_GET(userAgent, ctx ) {
@@ -83,7 +83,7 @@ EJ_BIND_GET(userAgent, ctx ) {
 	// Only iPad is different
 	
 	return NSStringToJSValue(ctx,
-		[[[UIDevice currentDevice] model] hasPrefix:@"iPad"]
+		(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
 			? @"iPad"
 			: @"iPhone"
 	);

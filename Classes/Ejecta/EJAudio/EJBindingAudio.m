@@ -52,7 +52,7 @@
 	if( source || !path ) { return; }
 	
 	// Decide whether to load the sound as OpenAL or AVAudioPlayer source
-	NSString * fullPath = [EJApp pathForResource:path];
+	NSString * fullPath = [[EJApp instance] pathForResource:path];
 	unsigned long long size = [[[NSFileManager defaultManager] 
 		attributesOfItemAtPath:fullPath error:nil] fileSize];
 		
