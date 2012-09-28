@@ -88,6 +88,8 @@ typedef struct {
 	int stateIndex;
 	EJCanvasState stateStack[EJ_CANVAS_STATE_STACK_SIZE];
 	EJCanvasState * state;
+    
+    float contentScale;
 }
 
 - (id)initWithWidth:(short)width height:(short)height;
@@ -137,6 +139,7 @@ typedef struct {
 @property (nonatomic) EJCanvasState * state;
 @property (nonatomic) EJCompositeOperation globalCompositeOperation;
 @property (nonatomic, retain) UIFont * font;
+@property (nonatomic, assign) float contentScale;
 
 /* TODO: not yet implemented:
 	createLinearGradient(x0, y0, x1, y1)

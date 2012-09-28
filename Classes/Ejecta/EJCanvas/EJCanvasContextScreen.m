@@ -14,7 +14,7 @@
 	
 	CGRect frame = CGRectMake(0, 0, width, height);
 	CGSize screen = [EJApp instance].view.bounds.size;
-	float contentScale = (useRetinaResolution && [UIScreen mainScreen].scale == 2) ? 2 : 1;
+    contentScale = (useRetinaResolution && [UIScreen mainScreen].scale == 2) ? 2 : 1;
 	float aspect = frame.size.width / frame.size.height;
 	
 	if( scalingMode == kEJScalingModeFitWidth ) {
@@ -28,7 +28,7 @@
 	float internalScaling = frame.size.width / (float)width;
 	[EJApp instance].internalScaling = internalScaling;
 	
-	backingStoreRatio = internalScaling * contentScale;
+    backingStoreRatio = internalScaling * contentScale;
 	
 	viewportWidth = frame.size.width * contentScale;
 	viewportHeight = frame.size.height * contentScale;
