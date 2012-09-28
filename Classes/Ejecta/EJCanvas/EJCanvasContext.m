@@ -120,10 +120,6 @@ EJVertex CanvasVertexBuffer[EJ_CANVAS_VERTEX_BUFFER_SIZE];
 		[self flushBuffers];
 	}
 	
-	tris.v1.pos = EJVector2ApplyTransform(tris.v1.pos, state->transform);
-	tris.v2.pos = EJVector2ApplyTransform(tris.v2.pos, state->transform);
-	tris.v3.pos = EJVector2ApplyTransform(tris.v3.pos, state->transform);
-	
 	*(EJTris *)&CanvasVertexBuffer[vertexBufferIndex] = tris;
 	vertexBufferIndex += 3;
 }
@@ -199,11 +195,12 @@ EJVertex CanvasVertexBuffer[EJ_CANVAS_VERTEX_BUFFER_SIZE];
 	}
 	EJCompositeOperation oldCompositeOp = state->globalCompositeOperation;
 	
-	[path reset];
 	stateIndex--;
 	state = &stateStack[stateIndex];
 	[state->font release];
 	
+    path.transform = state->transform;
+    
 	if( state->globalCompositeOperation != oldCompositeOp ) {
 		self.globalCompositeOperation = state->globalCompositeOperation;
 	}
@@ -211,23 +208,28 @@ EJVertex CanvasVertexBuffer[EJ_CANVAS_VERTEX_BUFFER_SIZE];
 
 - (void)rotate:(float)angle {
 	state->transform = CGAffineTransformRotate( state->transform, angle );
+    path.transform = state->transform;
 }
 
 - (void)translateX:(float)x y:(float)y {
 	state->transform = CGAffineTransformTranslate( state->transform, x, y );
+    path.transform = state->transform;
 }
 
 - (void)scaleX:(float)x y:(float)y {
 	state->transform = CGAffineTransformScale( state->transform, x, y );
+    path.transform = state->transform;
 }
 
 - (void)transformM11:(float)m11 m12:(float)m12 m21:(float)m21 m22:(float)m22 dx:(float)dx dy:(float)dy {
 	CGAffineTransform t = CGAffineTransformMake( m11, m12, m21, m22, dx, dy );
 	state->transform = CGAffineTransformConcat( state->transform, t );
+    path.transform = state->transform;
 }
 
 - (void)setTransformM11:(float)m11 m12:(float)m12 m21:(float)m21 m22:(float)m22 dx:(float)dx dy:(float)dy {
 	state->transform = CGAffineTransformMake( m11, m12, m21, m22, dx, dy );
+    path.transform = state->transform;
 }
 
 - (void)drawImage:(EJTexture *)texture sx:(float)sx sy:(float)sy sw:(float)sw sh:(float)sh dx:(float)dx dy:(float)dy dw:(float)dw dh:(float)dh {

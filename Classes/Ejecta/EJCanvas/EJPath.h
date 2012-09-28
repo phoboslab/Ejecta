@@ -16,7 +16,12 @@
 	int vertexBufferLength;
 	
 	float distanceTolerance;
+    
+    CGAffineTransform transform;
 }
+
+@property (nonatomic,assign) CGAffineTransform transform;;
+
 - (void)reset;
 - (void)close;
 - (void)endSubPath;

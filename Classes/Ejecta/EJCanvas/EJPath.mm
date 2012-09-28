@@ -17,6 +17,8 @@ typedef std::vector<subpath_t> path_t;
 
 @implementation EJPath
 
+@synthesize transform;
+
 - (void)dealloc {
 	if( vertexBuffer ) {
 		free(vertexBuffer);
@@ -53,12 +55,12 @@ typedef std::vector<subpath_t> path_t;
 
 - (void)moveToX:(float)x y:(float)y {
 	[self endSubPath];
-	currentPos = startPos = EJVector2Make( x, y );
+	currentPos = startPos = EJVector2ApplyTransform( EJVector2Make( x, y ), transform);
 	currentPath.push_back(currentPos);
 }
 
 - (void)lineToX:(float)x y:(float)y {
-	currentPos = EJVector2Make(x, y);
+	currentPos = EJVector2ApplyTransform( EJVector2Make(x, y), transform);
 	currentPath.push_back(currentPos);
 }
 
@@ -67,7 +69,7 @@ typedef std::vector<subpath_t> path_t;
 	distanceTolerance *= distanceTolerance;
 	
 	[self recursiveBezierX1:currentPos.x y1:currentPos.y x2:cpx1 y2:cpy1 x3:cpx2 y3:cpy2 x4:x y4:y level:0];
-	currentPos = EJVector2Make(x, y);
+	currentPos = EJVector2ApplyTransform( EJVector2Make(x, y), transform);
 	currentPath.push_back(currentPos);
 }
 
@@ -107,7 +109,7 @@ typedef std::vector<subpath_t> path_t;
 			if((d2 + d3)*(d2 + d3) <= distanceTolerance * (dx*dx + dy*dy)) {
 				// If the curvature doesn't exceed the distance_tolerance value
 				// we tend to finish subdivisions.
-				currentPath.push_back(EJVector2Make(x1234, y1234));
+				currentPath.push_back(EJVector2ApplyTransform( EJVector2Make(x1234, y1234), transform));
 				return;
 			}
 		}
@@ -115,14 +117,14 @@ typedef std::vector<subpath_t> path_t;
 			if( d2 > EJ_PATH_COLLINEARITY_EPSILON ) {
 				// p1,p3,p4 are collinear, p2 is considerable
 				if( d2 * d2 <= distanceTolerance * (dx*dx + dy*dy) ) {
-					currentPath.push_back(EJVector2Make(x1234, y1234));
+					currentPath.push_back(EJVector2ApplyTransform( EJVector2Make(x1234, y1234), transform));
 					return;
 				}
 			}
 			else if( d3 > EJ_PATH_COLLINEARITY_EPSILON ) {
 				// p1,p2,p4 are collinear, p3 is considerable
 				if( d3 * d3 <= distanceTolerance * (dx*dx + dy*dy) ) {
-					currentPath.push_back(EJVector2Make(x1234, y1234));
+					currentPath.push_back(EJVector2ApplyTransform( EJVector2Make(x1234, y1234), transform));
 					return;
 				}
 			}
@@ -131,7 +133,7 @@ typedef std::vector<subpath_t> path_t;
 				dx = x1234 - (x1 + x4) / 2;
 				dy = y1234 - (y1 + y4) / 2;
 				if( dx*dx + dy*dy <= distanceTolerance ) {
-					currentPath.push_back(EJVector2Make(x1234, y1234));
+					currentPath.push_back(EJVector2ApplyTransform( EJVector2Make(x1234, y1234), transform));
 					return;
 				}
 			}
@@ -150,7 +152,7 @@ typedef std::vector<subpath_t> path_t;
 	distanceTolerance *= distanceTolerance;
 	
 	[self recursiveQuadraticX1:currentPos.x y1:currentPos.y x2:cpx y2:cpy x3:x y3:y level:0];
-	currentPos = EJVector2Make(x, y);
+	currentPos = EJVector2ApplyTransform( EJVector2Make(x, y), transform);
 	currentPath.push_back(currentPos);
 }
 
@@ -176,7 +178,7 @@ typedef std::vector<subpath_t> path_t;
 	if( d > EJ_PATH_COLLINEARITY_EPSILON ) { 
 		// Regular care
 		if( d * d <= distanceTolerance * (dx*dx + dy*dy) ) {
-			currentPath.push_back(EJVector2Make(x123, y123));
+			currentPath.push_back(EJVector2ApplyTransform( EJVector2Make(x123, y123), transform));
 			return;
 		}
 	}
@@ -185,7 +187,7 @@ typedef std::vector<subpath_t> path_t;
 		dx = x123 - (x1 + x3) / 2;
 		dy = y123 - (y1 + y3) / 2;
 		if( dx*dx + dy*dy <= distanceTolerance ) {
-			currentPath.push_back(EJVector2Make(x123, y123));
+			currentPath.push_back(EJVector2ApplyTransform( EJVector2Make(x123, y123), transform));
 			return;
 		}
 	}
@@ -256,7 +258,7 @@ typedef std::vector<subpath_t> path_t;
 	
 	float angle = startAngle;
 	for( int i = 0; i <= steps; i++, angle += stepSize ) {
-		currentPos = EJVector2Make( x + cosf(angle) * radius, y + sinf(angle) * radius );
+		currentPos = EJVector2ApplyTransform( EJVector2Make( x + cosf(angle) * radius, y + sinf(angle) * radius ), transform);
 		currentPath.push_back( currentPos );
 	}
 }
@@ -300,8 +302,6 @@ typedef std::vector<subpath_t> path_t;
 	glStencilFunc(GL_ALWAYS, 0, ~0);
 	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
 	
-	CGAffineTransform transform = state->transform;
-	
 	float minX = INFINITY, minY = INFINITY, maxX = -INFINITY, maxY = -INFINITY;
 	for( path_t::iterator sp = paths.begin(); sp != paths.end(); ++sp ) {
 		int vertexIndex = 0;
@@ -311,7 +311,7 @@ typedef std::vector<subpath_t> path_t;
 			maxX = MAX( maxX, vertex->x );
 			maxY = MAX( maxY, vertex->y );
 			
-			vertexBuffer[vertexIndex] = EJVector2ApplyTransform(*vertex, transform);
+			vertexBuffer[vertexIndex] = *vertex;
 		}
 		glVertexPointer(2, GL_FLOAT, sizeof(EJVector2), vertexBuffer);
 		glDrawArrays(GL_TRIANGLE_FAN, 0, vertexIndex);
@@ -326,7 +326,7 @@ typedef std::vector<subpath_t> path_t;
     glEnable(GL_BLEND);
 	glStencilFunc(GL_EQUAL, 0x01, 0x01);
     glStencilOp(GL_ZERO, GL_ZERO, GL_ZERO);
-	[context pushRectX:minX y:minY w:maxX-minX h:maxY-minY tx:0 ty:0 tw:0 th:0 color:color withTransform:transform];
+	[context pushRectX:minX y:minY w:maxX-minX h:maxY-minY tx:0 ty:0 tw:0 th:0 color:color withTransform:CGAffineTransformIdentity];
 	[context flushBuffers];
 	glDisable(GL_STENCIL_TEST);
 }
