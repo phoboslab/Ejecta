@@ -19,6 +19,14 @@ typedef std::vector<subpath_t> path_t;
 
 @synthesize transform;
 
+- (id)init {
+	self = [super init];
+	if(self) {
+		transform = CGAffineTransformIdentity;
+	}
+	return self;
+}
+
 - (void)dealloc {
 	if( vertexBuffer ) {
 		free(vertexBuffer);
@@ -68,16 +76,20 @@ typedef std::vector<subpath_t> path_t;
 	distanceTolerance = EJ_PATH_DISTANCE_EPSILON / scale;
 	distanceTolerance *= distanceTolerance;
 	
-	[self recursiveBezierX1:currentPos.x y1:currentPos.y x2:cpx1 y2:cpy1 x3:cpx2 y3:cpy2 x4:x y4:y level:0];
-	currentPos = EJVector2ApplyTransform( EJVector2Make(x, y), transform);
+	EJVector2 cp1 = EJVector2ApplyTransform(EJVector2Make(cpx1, cpy2), transform);
+	EJVector2 cp2 = EJVector2ApplyTransform(EJVector2Make(cpx2, cpy2), transform);
+	EJVector2 p = EJVector2ApplyTransform(EJVector2Make(x, y), transform);
+	
+	[self recursiveBezierX1:currentPos.x y1:currentPos.y x2:cp1.x y2:cp1.y x3:cp2.x y3:cp2.y x4:p.x y4:p.y level:0];
+	currentPos = p;
 	currentPath.push_back(currentPos);
 }
 
 - (void)recursiveBezierX1:(float)x1 y1:(float)y1
-	x2:(float)x2 y2:(float)y2
-	x3:(float)x3 y3:(float)y3
-	x4:(float)x4 y4:(float)y4
-	level:(int)level
+					   x2:(float)x2 y2:(float)y2
+					   x3:(float)x3 y3:(float)y3
+					   x4:(float)x4 y4:(float)y4
+					level:(int)level
 {
 	// Based on http://www.antigrain.com/research/adaptive_bezier/index.html
 	
@@ -94,22 +106,22 @@ typedef std::vector<subpath_t> path_t;
 	float y234  = (y23 + y34) / 2;
 	float x1234 = (x123 + x234) / 2;
 	float y1234 = (y123 + y234) / 2;
-
+	
 	if( level > 0 ) {
 		// Enforce subdivision first time
 		// Try to approximate the full cubic curve by a single straight line
 		float dx = x4-x1;
 		float dy = y4-y1;
-
+		
 		float d2 = fabsf(((x2 - x4) * dy - (y2 - y4) * dx));
 		float d3 = fabsf(((x3 - x4) * dy - (y3 - y4) * dx));
-
+		
 		if( d2 > EJ_PATH_COLLINEARITY_EPSILON && d3 > EJ_PATH_COLLINEARITY_EPSILON ) {
 			// Regular care
 			if((d2 + d3)*(d2 + d3) <= distanceTolerance * (dx*dx + dy*dy)) {
 				// If the curvature doesn't exceed the distance_tolerance value
 				// we tend to finish subdivisions.
-				currentPath.push_back(EJVector2ApplyTransform( EJVector2Make(x1234, y1234), transform));
+				currentPath.push_back(EJVector2Make(x1234, y1234));
 				return;
 			}
 		}
@@ -117,14 +129,14 @@ typedef std::vector<subpath_t> path_t;
 			if( d2 > EJ_PATH_COLLINEARITY_EPSILON ) {
 				// p1,p3,p4 are collinear, p2 is considerable
 				if( d2 * d2 <= distanceTolerance * (dx*dx + dy*dy) ) {
-					currentPath.push_back(EJVector2ApplyTransform( EJVector2Make(x1234, y1234), transform));
+					currentPath.push_back(EJVector2Make(x1234, y1234));
 					return;
 				}
 			}
 			else if( d3 > EJ_PATH_COLLINEARITY_EPSILON ) {
 				// p1,p2,p4 are collinear, p3 is considerable
 				if( d3 * d3 <= distanceTolerance * (dx*dx + dy*dy) ) {
-					currentPath.push_back(EJVector2ApplyTransform( EJVector2Make(x1234, y1234), transform));
+					currentPath.push_back(EJVector2Make(x1234, y1234));
 					return;
 				}
 			}
@@ -133,13 +145,13 @@ typedef std::vector<subpath_t> path_t;
 				dx = x1234 - (x1 + x4) / 2;
 				dy = y1234 - (y1 + y4) / 2;
 				if( dx*dx + dy*dy <= distanceTolerance ) {
-					currentPath.push_back(EJVector2ApplyTransform( EJVector2Make(x1234, y1234), transform));
+					currentPath.push_back(EJVector2Make(x1234, y1234));
 					return;
 				}
 			}
 		}
 	}
-
+	
 	if( level <= EJ_PATH_RECURSION_LIMIT ) {
 		// Continue subdivision
 		[self recursiveBezierX1:x1 y1:y1 x2:x12 y2:y12 x3:x123 y3:y123 x4:x1234 y4:y1234 level:level + 1];
@@ -151,15 +163,18 @@ typedef std::vector<subpath_t> path_t;
 	distanceTolerance = EJ_PATH_DISTANCE_EPSILON / scale;
 	distanceTolerance *= distanceTolerance;
 	
-	[self recursiveQuadraticX1:currentPos.x y1:currentPos.y x2:cpx y2:cpy x3:x y3:y level:0];
-	currentPos = EJVector2ApplyTransform( EJVector2Make(x, y), transform);
+	EJVector2 cp = EJVector2ApplyTransform(EJVector2Make(cpx, cpy), transform);
+	EJVector2 p = EJVector2ApplyTransform(EJVector2Make(x, y), transform);
+	
+	[self recursiveQuadraticX1:currentPos.x y1:currentPos.y x2:cp.x y2:cp.y x3:p.x y3:p.y level:0];
+	currentPos = p;
 	currentPath.push_back(currentPos);
 }
 
 - (void)recursiveQuadraticX1:(float)x1 y1:(float)y1
-	x2:(float)x2 y2:(float)y2
-	x3:(float)x3 y3:(float)y3
-	level:(int)level
+						  x2:(float)x2 y2:(float)y2
+						  x3:(float)x3 y3:(float)y3
+					   level:(int)level
 {
 	// Based on http://www.antigrain.com/research/adaptive_bezier/index.html
 	
@@ -170,15 +185,15 @@ typedef std::vector<subpath_t> path_t;
 	float y23   = (y2 + y3) / 2;
 	float x123  = (x12 + x23) / 2;
 	float y123  = (y12 + y23) / 2;
-
+	
 	float dx = x3-x1;
 	float dy = y3-y1;
 	float d = fabsf(((x2 - x3) * dy - (y2 - y3) * dx));
-
-	if( d > EJ_PATH_COLLINEARITY_EPSILON ) { 
+	
+	if( d > EJ_PATH_COLLINEARITY_EPSILON ) {
 		// Regular care
 		if( d * d <= distanceTolerance * (dx*dx + dy*dy) ) {
-			currentPath.push_back(EJVector2ApplyTransform( EJVector2Make(x123, y123), transform));
+			currentPath.push_back(EJVector2Make(x123, y123));
 			return;
 		}
 	}
@@ -187,11 +202,11 @@ typedef std::vector<subpath_t> path_t;
 		dx = x123 - (x1 + x3) / 2;
 		dy = y123 - (y1 + y3) / 2;
 		if( dx*dx + dy*dy <= distanceTolerance ) {
-			currentPath.push_back(EJVector2ApplyTransform( EJVector2Make(x123, y123), transform));
+			currentPath.push_back(EJVector2Make(x123, y123));
 			return;
 		}
 	}
-
+	
 	if( level <= EJ_PATH_RECURSION_LIMIT ) {
 		// Continue subdivision
 		[self recursiveQuadraticX1:x1 y1:y1 x2:x12 y2:y12 x3:x123 y3:y123 level:level + 1];
@@ -204,8 +219,11 @@ typedef std::vector<subpath_t> path_t;
 	// Lifted from http://code.google.com/p/fxcanvas/
 	// I have no idea what this code is doing, but it seems to work.
 	
-	float a1 = currentPos.y - y1;
-	float b1 = currentPos.x - x1;
+	// get untransformed currentPos
+	EJVector2 cp = EJVector2ApplyTransform(EJVector2Make(x1, y1), CGAffineTransformInvert(transform));
+	
+	float a1 = cp.y - y1;
+	float b1 = cp.x - x1;
 	float a2 = y2   - y1;
 	float b2 = x2   - x1;
 	float mm = fabsf(a1 * b2 - b1 * a2);
