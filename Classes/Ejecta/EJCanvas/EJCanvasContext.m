@@ -5,7 +5,7 @@
 EJVertex CanvasVertexBuffer[EJ_CANVAS_VERTEX_BUFFER_SIZE];
 
 
-@synthesize state;
+@synthesize state,contentScale;
 
 - (id)initWithWidth:(short)widthp height:(short)heightp {
 	if( self = [super init] ) {
@@ -361,16 +361,16 @@ EJVertex CanvasVertexBuffer[EJ_CANVAS_VERTEX_BUFFER_SIZE];
 
 - (void)drawText:(NSString *)text x:(float)x y:(float)y fill:(BOOL)fill {
 	// TODO: cache the textures somewhere?
-	EJTexture * texture = [[[EJTexture alloc] initWithString:text font:state->font fill:fill lineWidth:state->lineWidth] autorelease];
-	float tw = texture.realWidth;
-	float th = texture.realHeight;
+	EJTexture * texture = [[[EJTexture alloc] initWithString:text font:state->font fill:fill lineWidth:state->lineWidth contentScale: contentScale] autorelease];
+	float tw = texture.realWidth/contentScale;
+	float th = texture.realHeight/contentScale;
 	
 	// Figure out the x position with the current textAlign.
 	if( state->textAlign == kEJTextAlignRight || state->textAlign == kEJTextAlignEnd ) {
-		x -= texture.width;
+		x -= texture.width/contentScale;
 	}
 	else if( state->textAlign == kEJTextAlignCenter ) {
-		x -= texture.width/2;
+		x -= texture.width/(2*contentScale);
 	}
 	
 	// Figure out the y position with the current textBaseline

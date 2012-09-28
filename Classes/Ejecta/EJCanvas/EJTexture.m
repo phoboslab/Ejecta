@@ -92,10 +92,10 @@ static GLint textureFilter = GL_LINEAR;
 	return self;
 }
 
-- (id)initWithString:(NSString *)string font:(UIFont *)font fill:(BOOL)fill lineWidth:(float)lineWidth {
+- (id)initWithString:(NSString *)string font:(UIFont *)font fill:(BOOL)fill lineWidth:(float)lineWidth contentScale:(float)contentScale {
 	if( self = [super init] ) {		
 		CGSize boundingBox = [string sizeWithFont:font];		
-		[self setWidth:boundingBox.width height:boundingBox.height];
+		[self setWidth:boundingBox.width*contentScale height:boundingBox.height*contentScale];
 		
 		CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceGray();
 		GLubyte * pixels = (GLubyte *) malloc( realWidth * realHeight);
@@ -116,10 +116,10 @@ static GLint textureFilter = GL_LINEAR;
 
 		UIGraphicsPushContext(context);
 		CGContextTranslateCTM(context, 0.0, realHeight);
-		CGContextScaleCTM(context, 1.0, -1.0);
+		CGContextScaleCTM(context, contentScale, -1.0*contentScale);
 		
 		[string drawInRect:CGRectMake(0, 0, width, height)
-			  withFont:font lineBreakMode:UILineBreakModeClip alignment:UIBaselineAdjustmentNone];
+			  withFont:font lineBreakMode:UILineBreakModeClip alignment:UITextAlignmentLeft];
 		
 		UIGraphicsPopContext();
 		
