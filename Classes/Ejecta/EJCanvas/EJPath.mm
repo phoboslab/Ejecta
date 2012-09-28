@@ -283,7 +283,7 @@ typedef std::vector<subpath_t> path_t;
 
 - (void)drawPolygonsToContext:(EJCanvasContext *)context {
 	[self endSubPath];
-	if( longestSubpath < 4 ) { return; }
+	if( longestSubpath < 3 ) { return; }
 	
 	[context setTexture:NULL];
 	
