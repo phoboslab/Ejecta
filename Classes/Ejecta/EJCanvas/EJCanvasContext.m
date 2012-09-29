@@ -396,6 +396,10 @@ EJVertex CanvasVertexBuffer[EJ_CANVAS_VERTEX_BUFFER_SIZE];
 	color.rgba.a = (float)color.rgba.a * state->globalAlpha;
 	[self setTexture:texture];
 	[self pushRectX:x y:y w:tw h:th tx:0 ty:0 tw:1 th:1 color:color withTransform:state->transform];
+	
+	// We need to flush buffers now, otherwise the texture may already be autoreleased
+	[self flushBuffers];
+	[self setTexture:NULL];
 }
 
 - (void)fillText:(NSString *)text x:(float)x y:(float)y {
