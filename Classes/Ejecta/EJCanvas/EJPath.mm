@@ -17,6 +17,16 @@ typedef std::vector<subpath_t> path_t;
 
 @implementation EJPath
 
+@synthesize transform;
+
+- (id)init {
+	self = [super init];
+	if(self) {
+		transform = CGAffineTransformIdentity;
+	}
+	return self;
+}
+
 - (void)dealloc {
 	if( vertexBuffer ) {
 		free(vertexBuffer);
@@ -53,12 +63,12 @@ typedef std::vector<subpath_t> path_t;
 
 - (void)moveToX:(float)x y:(float)y {
 	[self endSubPath];
-	currentPos = startPos = EJVector2Make( x, y );
+	currentPos = startPos = EJVector2ApplyTransform( EJVector2Make( x, y ), transform);
 	currentPath.push_back(currentPos);
 }
 
 - (void)lineToX:(float)x y:(float)y {
-	currentPos = EJVector2Make(x, y);
+	currentPos = EJVector2ApplyTransform( EJVector2Make(x, y), transform);
 	currentPath.push_back(currentPos);
 }
 
@@ -66,16 +76,20 @@ typedef std::vector<subpath_t> path_t;
 	distanceTolerance = EJ_PATH_DISTANCE_EPSILON / scale;
 	distanceTolerance *= distanceTolerance;
 	
-	[self recursiveBezierX1:currentPos.x y1:currentPos.y x2:cpx1 y2:cpy1 x3:cpx2 y3:cpy2 x4:x y4:y level:0];
-	currentPos = EJVector2Make(x, y);
+	EJVector2 cp1 = EJVector2ApplyTransform(EJVector2Make(cpx1, cpy2), transform);
+	EJVector2 cp2 = EJVector2ApplyTransform(EJVector2Make(cpx2, cpy2), transform);
+	EJVector2 p = EJVector2ApplyTransform(EJVector2Make(x, y), transform);
+	
+	[self recursiveBezierX1:currentPos.x y1:currentPos.y x2:cp1.x y2:cp1.y x3:cp2.x y3:cp2.y x4:p.x y4:p.y level:0];
+	currentPos = p;
 	currentPath.push_back(currentPos);
 }
 
 - (void)recursiveBezierX1:(float)x1 y1:(float)y1
-	x2:(float)x2 y2:(float)y2
-	x3:(float)x3 y3:(float)y3
-	x4:(float)x4 y4:(float)y4
-	level:(int)level
+					   x2:(float)x2 y2:(float)y2
+					   x3:(float)x3 y3:(float)y3
+					   x4:(float)x4 y4:(float)y4
+					level:(int)level
 {
 	// Based on http://www.antigrain.com/research/adaptive_bezier/index.html
 	
@@ -92,16 +106,16 @@ typedef std::vector<subpath_t> path_t;
 	float y234  = (y23 + y34) / 2;
 	float x1234 = (x123 + x234) / 2;
 	float y1234 = (y123 + y234) / 2;
-
+	
 	if( level > 0 ) {
 		// Enforce subdivision first time
 		// Try to approximate the full cubic curve by a single straight line
 		float dx = x4-x1;
 		float dy = y4-y1;
-
+		
 		float d2 = fabsf(((x2 - x4) * dy - (y2 - y4) * dx));
 		float d3 = fabsf(((x3 - x4) * dy - (y3 - y4) * dx));
-
+		
 		if( d2 > EJ_PATH_COLLINEARITY_EPSILON && d3 > EJ_PATH_COLLINEARITY_EPSILON ) {
 			// Regular care
 			if((d2 + d3)*(d2 + d3) <= distanceTolerance * (dx*dx + dy*dy)) {
@@ -137,7 +151,7 @@ typedef std::vector<subpath_t> path_t;
 			}
 		}
 	}
-
+	
 	if( level <= EJ_PATH_RECURSION_LIMIT ) {
 		// Continue subdivision
 		[self recursiveBezierX1:x1 y1:y1 x2:x12 y2:y12 x3:x123 y3:y123 x4:x1234 y4:y1234 level:level + 1];
@@ -149,15 +163,18 @@ typedef std::vector<subpath_t> path_t;
 	distanceTolerance = EJ_PATH_DISTANCE_EPSILON / scale;
 	distanceTolerance *= distanceTolerance;
 	
-	[self recursiveQuadraticX1:currentPos.x y1:currentPos.y x2:cpx y2:cpy x3:x y3:y level:0];
-	currentPos = EJVector2Make(x, y);
+	EJVector2 cp = EJVector2ApplyTransform(EJVector2Make(cpx, cpy), transform);
+	EJVector2 p = EJVector2ApplyTransform(EJVector2Make(x, y), transform);
+	
+	[self recursiveQuadraticX1:currentPos.x y1:currentPos.y x2:cp.x y2:cp.y x3:p.x y3:p.y level:0];
+	currentPos = p;
 	currentPath.push_back(currentPos);
 }
 
 - (void)recursiveQuadraticX1:(float)x1 y1:(float)y1
-	x2:(float)x2 y2:(float)y2
-	x3:(float)x3 y3:(float)y3
-	level:(int)level
+						  x2:(float)x2 y2:(float)y2
+						  x3:(float)x3 y3:(float)y3
+					   level:(int)level
 {
 	// Based on http://www.antigrain.com/research/adaptive_bezier/index.html
 	
@@ -168,12 +185,12 @@ typedef std::vector<subpath_t> path_t;
 	float y23   = (y2 + y3) / 2;
 	float x123  = (x12 + x23) / 2;
 	float y123  = (y12 + y23) / 2;
-
+	
 	float dx = x3-x1;
 	float dy = y3-y1;
 	float d = fabsf(((x2 - x3) * dy - (y2 - y3) * dx));
-
-	if( d > EJ_PATH_COLLINEARITY_EPSILON ) { 
+	
+	if( d > EJ_PATH_COLLINEARITY_EPSILON ) {
 		// Regular care
 		if( d * d <= distanceTolerance * (dx*dx + dy*dy) ) {
 			currentPath.push_back(EJVector2Make(x123, y123));
@@ -189,7 +206,7 @@ typedef std::vector<subpath_t> path_t;
 			return;
 		}
 	}
-
+	
 	if( level <= EJ_PATH_RECURSION_LIMIT ) {
 		// Continue subdivision
 		[self recursiveQuadraticX1:x1 y1:y1 x2:x12 y2:y12 x3:x123 y3:y123 level:level + 1];
@@ -202,8 +219,11 @@ typedef std::vector<subpath_t> path_t;
 	// Lifted from http://code.google.com/p/fxcanvas/
 	// I have no idea what this code is doing, but it seems to work.
 	
-	float a1 = currentPos.y - y1;
-	float b1 = currentPos.x - x1;
+	// get untransformed currentPos
+	EJVector2 cp = EJVector2ApplyTransform(EJVector2Make(x1, y1), CGAffineTransformInvert(transform));
+	
+	float a1 = cp.y - y1;
+	float b1 = cp.x - x1;
 	float a2 = y2   - y1;
 	float b2 = x2   - x1;
 	float mm = fabsf(a1 * b2 - b1 * a2);
@@ -256,14 +276,14 @@ typedef std::vector<subpath_t> path_t;
 	
 	float angle = startAngle;
 	for( int i = 0; i <= steps; i++, angle += stepSize ) {
-		currentPos = EJVector2Make( x + cosf(angle) * radius, y + sinf(angle) * radius );
+		currentPos = EJVector2ApplyTransform( EJVector2Make( x + cosf(angle) * radius, y + sinf(angle) * radius ), transform);
 		currentPath.push_back( currentPos );
 	}
 }
 
 - (void)drawPolygonsToContext:(EJCanvasContext *)context {
 	[self endSubPath];
-	if( longestSubpath < 4 ) { return; }
+	if( longestSubpath < 3 ) { return; }
 	
 	[context setTexture:NULL];
 	
@@ -300,8 +320,6 @@ typedef std::vector<subpath_t> path_t;
 	glStencilFunc(GL_ALWAYS, 0, ~0);
 	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
 	
-	CGAffineTransform transform = state->transform;
-	
 	float minX = INFINITY, minY = INFINITY, maxX = -INFINITY, maxY = -INFINITY;
 	for( path_t::iterator sp = paths.begin(); sp != paths.end(); ++sp ) {
 		int vertexIndex = 0;
@@ -311,7 +329,7 @@ typedef std::vector<subpath_t> path_t;
 			maxX = MAX( maxX, vertex->x );
 			maxY = MAX( maxY, vertex->y );
 			
-			vertexBuffer[vertexIndex] = EJVector2ApplyTransform(*vertex, transform);
+			vertexBuffer[vertexIndex] = *vertex;
 		}
 		glVertexPointer(2, GL_FLOAT, sizeof(EJVector2), vertexBuffer);
 		glDrawArrays(GL_TRIANGLE_FAN, 0, vertexIndex);
@@ -326,7 +344,7 @@ typedef std::vector<subpath_t> path_t;
     glEnable(GL_BLEND);
 	glStencilFunc(GL_EQUAL, 0x01, 0x01);
     glStencilOp(GL_ZERO, GL_ZERO, GL_ZERO);
-	[context pushRectX:minX y:minY w:maxX-minX h:maxY-minY tx:0 ty:0 tw:0 th:0 color:color withTransform:transform];
+	[context pushRectX:minX y:minY w:maxX-minX h:maxY-minY tx:0 ty:0 tw:0 th:0 color:color withTransform:CGAffineTransformIdentity];
 	[context flushBuffers];
 	glDisable(GL_STENCIL_TEST);
 }
