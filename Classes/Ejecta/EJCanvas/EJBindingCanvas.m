@@ -163,6 +163,10 @@ EJ_BIND_GET(imageSmoothingEnabled, ctx) {
 	return JSValueMakeBoolean(ctx, [EJTexture smoothScaling]);
 }
 
+EJ_BIND_GET(backingStorePixelRatio, ctx) {
+	return JSValueMakeNumber(ctx, renderingContext.backingStoreRatio);
+}
+
 
 
 EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {

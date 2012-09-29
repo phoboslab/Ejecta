@@ -14,7 +14,6 @@ typedef enum {
 	BOOL useRetinaResolution;
 	UIDeviceOrientation orientation;
 	EJScalingMode scalingMode;
-	float backingStoreRatio;
 }
 
 - (void)present;

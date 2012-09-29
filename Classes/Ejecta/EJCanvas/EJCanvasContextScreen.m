@@ -14,7 +14,7 @@
 	
 	CGRect frame = CGRectMake(0, 0, width, height);
 	CGSize screen = [EJApp instance].view.bounds.size;
-    contentScale = (useRetinaResolution && [UIScreen mainScreen].scale == 2) ? 2 : 1;
+    float contentScale = (useRetinaResolution && [UIScreen mainScreen].scale == 2) ? 2 : 1;
 	float aspect = frame.size.width / frame.size.height;
 	
 	if( scalingMode == kEJScalingModeFitWidth ) {
