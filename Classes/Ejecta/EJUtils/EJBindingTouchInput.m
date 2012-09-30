@@ -6,20 +6,35 @@
 - (id)initWithContext:(JSContextRef)ctx object:(JSObjectRef)obj argc:(size_t)argc argv:(const JSValueRef [])argv {
 	if( self = [super initWithContext:ctx object:obj argc:argc argv:argv] ) {
 		[EJApp instance].touchDelegate = self;
+		activeTouches = [[NSMutableSet alloc] initWithCapacity:8];
 	}
 	return self;
 }
 
+- (void)dealloc {
+	[activeTouches release];
+	[super dealloc];
+}
+
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+	[activeTouches unionSet:touches];
 	[self triggerEvent:@"touchstart" withTouches:touches];
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+	[activeTouches minusSet:touches];
 	[self triggerEvent:@"touchend" withTouches:touches];
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
 	[self triggerEvent:@"touchmove" withTouches:touches];
+}
+
+- (void)endActiveTouches {
+	if( activeTouches.count ) {
+		[self triggerEvent:@"touchend" withTouches:activeTouches];
+		[activeTouches removeAllObjects];
+	}
 }
 
 - (void)triggerEvent:(NSString *)name withTouches:(NSSet *)touches {
