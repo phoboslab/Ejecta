@@ -161,7 +161,7 @@ static EJApp * ejectaInstance = NULL;
 	// Deprecated in iOS6 - supportedInterfaceOrientations is the new way to do this
 	// We just use the mask returned by supportedInterfaceOrientations here to check if
 	// this particular orientation is allowed.
-	return (self.supportedInterfaceOrientations & orientation);
+	return (self.supportedInterfaceOrientations & (1 << orientation) );
 }
 
 
