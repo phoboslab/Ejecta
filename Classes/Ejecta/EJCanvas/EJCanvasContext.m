@@ -196,9 +196,10 @@ EJVertex CanvasVertexBuffer[EJ_CANVAS_VERTEX_BUFFER_SIZE];
 	}
 	EJCompositeOperation oldCompositeOp = state->globalCompositeOperation;
 	
+	[state->font release];
+	
 	stateIndex--;
 	state = &stateStack[stateIndex];
-	[state->font release];
 	
     path.transform = state->transform;
     
