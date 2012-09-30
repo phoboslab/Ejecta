@@ -2,6 +2,28 @@
 
 @implementation EJBindingGameCenter
 
+- (id)initWithContext:(JSContextRef)ctx object:(JSObjectRef)obj argc:(size_t)argc argv:(const JSValueRef [])argv {
+	if( self = [super initWithContext:ctx object:obj argc:argc argv:argv] ) {
+		achievements = [[NSMutableDictionary alloc] init];
+	}
+	return self;
+}
+
+- (void)dealloc {
+	[achievements release];
+	[super dealloc];
+}
+
+- (void)loadAchievements {
+	[GKAchievement loadAchievementsWithCompletionHandler:^(NSArray *loadedAchievements, NSError *error) {
+		if( !error ) {
+			for (GKAchievement* achievement in loadedAchievements) {
+				[achievements setObject:achievement forKey:achievement.identifier];
+			}
+		}
+	}];
+}
+
 - (void)leaderboardViewControllerDidFinish:(GKLeaderboardViewController *)viewController {
 	[[EJApp instance] dismissModalViewControllerAnimated:YES];
 }
@@ -19,7 +41,19 @@ EJ_BIND_FUNCTION( authenticate, ctx, argc, argv ) {
 	}
 	
 	[[GKLocalPlayer localPlayer] authenticateWithCompletionHandler:^(NSError *error) {
-		authed = true;
+		authed = !error;
+
+		if( authed ) {
+			NSLog(@"GameKit: Authed.");
+			[self loadAchievements];
+		}
+		else {
+			NSLog(@"GameKit: Auth failed: %@", error );
+		}
+		
+		[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:authed] forKey:kEJBindingGameCenterAutoAuth];
+		[[NSUserDefaults standardUserDefaults] synchronize];
+		
 		if( callback ) {
 			JSContextRef gctx = [EJApp instance].jsGlobalContext;
 			JSValueRef params[] = { JSValueMakeBoolean(gctx, error) };
@@ -27,6 +61,18 @@ EJ_BIND_FUNCTION( authenticate, ctx, argc, argv ) {
 			JSValueUnprotect(gctx, callback);
 		}
 	}];
+	return NULL;
+}
+
+EJ_BIND_FUNCTION( softAuthenticate, ctx, argc, argv ) {
+	// Check if the last auth was successful and if so, auto auth this time
+	NSNumber * autoAuth = [[NSUserDefaults standardUserDefaults] objectForKey:kEJBindingGameCenterAutoAuth];
+	if( autoAuth && [autoAuth boolValue] ) {
+		[self _func_authenticate:ctx argc:argc argv:argv];
+	}
+	else if( argc > 0 ) {
+		NSLog(@"GameKit: Skipping soft auth.");
+	}
 	return NULL;
 }
 
@@ -81,36 +127,45 @@ EJ_BIND_FUNCTION( reportAchievement, ctx, argc, argv ) {
 	NSString *identifier = JSValueToNSString(ctx, argv[0]);
 	float percent = JSValueToNumberFast(ctx, argv[1]);
 	
+	// Already reported with same percentage? Early out.
+	GKAchievement * oldAchievement = [achievements objectForKey:identifier];
+	if( oldAchievement && oldAchievement.percentComplete == percent ) {
+		return NULL;
+	}
+	
+	
 	JSObjectRef callback = NULL;
 	if( argc > 2 ) {
 		callback = JSValueToObject(ctx, argv[2], NULL);
 		JSValueProtect(ctx, callback);
 	}
 	
-    GKAchievement *achievement = [[[GKAchievement alloc] initWithIdentifier: identifier] autorelease];
-    if( achievement ) {
-		achievement.showsCompletionBanner = YES;
-		achievement.percentComplete = percent;
+	GKAchievement * achievement = [[[GKAchievement alloc] initWithIdentifier:identifier] autorelease];
+	
+	achievement.showsCompletionBanner = YES;
+	achievement.percentComplete = percent;
+	
+	[achievement reportAchievementWithCompletionHandler:^(NSError *error) {
+		[achievements setObject:achievement forKey:identifier];
 		
-		[achievement reportAchievementWithCompletionHandler:^(NSError *error) {
-			if( callback ) {
-				JSContextRef gctx = [EJApp instance].jsGlobalContext;
-				JSValueRef params[] = { JSValueMakeBoolean(gctx, error) };
-				[[EJApp instance] invokeCallback:callback thisObject:NULL argc:1 argv:params];
-				JSValueUnprotect(gctx, callback);
-			}
-		}];
-    }
+		if( callback ) {
+			JSContextRef gctx = [EJApp instance].jsGlobalContext;
+			JSValueRef params[] = { JSValueMakeBoolean(gctx, error) };
+			[[EJApp instance] invokeCallback:callback thisObject:NULL argc:1 argv:params];
+			JSValueUnprotect(gctx, callback);
+		}
+	}];
+	
 	return NULL;
 }
 
 EJ_BIND_FUNCTION( showAchievements, ctx, argc, argv ) {
 	if( !authed ) { NSLog(@"GameKit Error: Not authed. Can't show achievements."); return NULL; }
 	
-	GKAchievementViewController *achievements = [[[GKAchievementViewController alloc] init] autorelease];
-    if( achievements ) {
-		achievements.achievementDelegate = self;
-		[[EJApp instance] presentModalViewController:achievements animated:YES];
+	GKAchievementViewController *achievementView = [[[GKAchievementViewController alloc] init] autorelease];
+    if( achievementView ) {
+		achievementView.achievementDelegate = self;
+		[[EJApp instance] presentModalViewController:achievementView animated:YES];
     }
 	return NULL;
 }
