@@ -100,14 +100,14 @@ EJ_BIND_GET(font, ctx) {
 }
 
 EJ_BIND_SET(font, ctx, value) {
-	char string[32];
+	char string[64]; // Long font names are long
 	JSStringRef jsString = JSValueToStringCopy( ctx, value, NULL );
 	JSStringGetUTF8CString(jsString, string, 32);
 	
 	// Yeah, oldschool!
 	float size = 0;
-	char name[32];
-	sscanf( string, "%fp%*[tx] %31s", &size, name); // matches: 10.5p[tx] helvetica
+	char name[64];
+	sscanf( string, "%fp%*[tx] %63s", &size, name); // matches: 10.5p[tx] helvetica
 	UIFont * newFont = [UIFont fontWithName:[NSString stringWithUTF8String:name] size:size];
 	
 	if( newFont ) {
