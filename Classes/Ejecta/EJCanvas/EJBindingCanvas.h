@@ -37,7 +37,11 @@ static const char * EJTextAlignNames[] = {
 static const char * EJCompositeOperationNames[] = {
 	[kEJCompositeOperationSourceOver] = "source-over",
 	[kEJCompositeOperationLighter] = "lighter",
-	[kEJCompositeOperationDarker] = "darker"
+	[kEJCompositeOperationDarker] = "darker",
+	[kEJCompositeOperationDestinationOut] = "destination-out",
+	[kEJCompositeOperationDestinationOver] = "destination-over",
+	[kEJCompositeOperationSourceAtop] = "source-atop",
+	[kEJCompositeOperationXOR] = "xor"
 };
 
 static const char * EJScalingModeNames[] = {
