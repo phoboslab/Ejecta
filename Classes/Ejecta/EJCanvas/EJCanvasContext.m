@@ -260,8 +260,13 @@ EJVertex CanvasVertexBuffer[EJ_CANVAS_VERTEX_BUFFER_SIZE];
 - (void)clearRectX:(float)x y:(float)y w:(float)w h:(float)h {
 	[self setTexture:NULL];
 	
-	static EJColorRGBA black = {.hex = 0x000000ff};
-	[self pushRectX:x y:y w:w h:h tx:0 ty:0 tw:0 th:0 color:black withTransform:state->transform];
+	EJCompositeOperation oldOp = state->globalCompositeOperation;
+	self.globalCompositeOperation = kEJCompositeOperationDestinationOut;
+	
+	static EJColorRGBA white = {.hex = 0xffffffff};
+	[self pushRectX:x y:y w:w h:h tx:0 ty:0 tw:0 th:0 color:white withTransform:state->transform];
+	
+	self.globalCompositeOperation = oldOp;
 }
 
 - (EJImageData*)getImageDataSx:(float)sx sy:(float)sy sw:(float)sw sh:(float)sh {
