@@ -127,9 +127,9 @@ EJ_BIND_FUNCTION( reportAchievement, ctx, argc, argv ) {
 	NSString *identifier = JSValueToNSString(ctx, argv[0]);
 	float percent = JSValueToNumberFast(ctx, argv[1]);
 	
-	// Already reported with same percentage? Early out.
+	// Already reported with same or higher percentage? Early out.
 	GKAchievement * oldAchievement = [achievements objectForKey:identifier];
-	if( oldAchievement && oldAchievement.percentComplete == percent ) {
+	if( oldAchievement && oldAchievement.percentComplete >= percent ) {
 		return NULL;
 	}
 	
