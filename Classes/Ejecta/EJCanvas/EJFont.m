@@ -70,7 +70,6 @@ typedef struct _tagGlypInfo {
 			
 			glyphInfo = (GlyphInfo*)malloc(sizeof(GlyphInfo)*255);
 			
-			CGContextSetRGBFillColor(context, 1, 0, 0, 1);
 			for(unichar i=0;i<255;i++) {
 				CTFontGetGlyphsForCharacters(ctFont, &i, &glyph, 1);
 				CTFontGetBoundingRectsForGlyphs(ctFont, kCTFontDefaultOrientation, &glyph, &bbRect, 1);
