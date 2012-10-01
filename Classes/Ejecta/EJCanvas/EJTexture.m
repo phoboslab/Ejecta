@@ -92,45 +92,6 @@ static GLint textureFilter = GL_LINEAR;
 	return self;
 }
 
-- (id)initWithString:(NSString *)string font:(UIFont *)font fill:(BOOL)fill lineWidth:(float)lineWidth contentScale:(float)contentScale {
-	if( self = [super init] ) {		
-		CGSize boundingBox = [string sizeWithFont:font];		
-		[self setWidth:boundingBox.width*contentScale height:boundingBox.height*contentScale];
-		
-		CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceGray();
-		GLubyte * pixels = (GLubyte *) malloc( realWidth * realHeight);
-		memset( pixels, 0, realWidth * realHeight);
-		CGContextRef context = CGBitmapContextCreate(pixels, realWidth, realHeight, 8, realWidth, colorSpace, kCGImageAlphaNone);
-		CGColorSpaceRelease(colorSpace);
-			
-		// Fill or stroke?
-		if( fill ) {
-			CGContextSetTextDrawingMode(context, kCGTextFill);
-			CGContextSetGrayFillColor(context, 1.0, 1.0);
-		}
-		else {
-			CGContextSetTextDrawingMode(context, kCGTextStroke);
-			CGContextSetGrayStrokeColor(context, 1.0, 1.0);
-			CGContextSetLineWidth(context, lineWidth);
-		}
-
-		UIGraphicsPushContext(context);
-		CGContextTranslateCTM(context, 0.0, realHeight);
-		CGContextScaleCTM(context, contentScale, -1.0*contentScale);
-		
-		[string drawInRect:CGRectMake(0, 0, width, height)
-			  withFont:font lineBreakMode:UILineBreakModeClip alignment:UITextAlignmentLeft];
-		
-		UIGraphicsPopContext();
-		
-		[self createTextureWithPixels:pixels format:GL_ALPHA];
-		
-		CGContextRelease(context);
-		free(pixels);
-	}
-	return self;
-}
-
 - (void)dealloc {
 	[fullPath release];
 	glDeleteTextures( 1, &textureId );

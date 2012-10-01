@@ -1,4 +1,5 @@
 #import "EJCanvasContext.h"
+#import "EJFont.h"
 
 @implementation EJCanvasContext
 
@@ -29,11 +30,15 @@ EJVertex CanvasVertexBuffer[EJ_CANVAS_VERTEX_BUFFER_SIZE];
 		
 		path = [[EJPath alloc] init];
 		backingStoreRatio = 1;
+		
+		fontCache = [[NSMutableDictionary alloc] init];
 	}
 	return self;
 }
 
 - (void)dealloc {
+	[fontCache release];
+	
 	// Release all fonts from the stack
 	for( int i = 0; i < stateIndex + 1; i++ ) {
 		[stateStack[i].font release];
@@ -369,44 +374,15 @@ EJVertex CanvasVertexBuffer[EJ_CANVAS_VERTEX_BUFFER_SIZE];
 }
 
 - (void)drawText:(NSString *)text x:(float)x y:(float)y fill:(BOOL)fill {
-	// TODO: cache the textures somewhere?
-	EJTexture * texture = [[[EJTexture alloc] initWithString:text font:state->font fill:fill lineWidth:state->lineWidth contentScale: backingStoreRatio] autorelease];
-	float tw = texture.realWidth/backingStoreRatio;
-	float th = texture.realHeight/backingStoreRatio;
-	
-	// Figure out the x position with the current textAlign.
-	if( state->textAlign == kEJTextAlignRight || state->textAlign == kEJTextAlignEnd ) {
-		x -= texture.width/backingStoreRatio;
-	}
-	else if( state->textAlign == kEJTextAlignCenter ) {
-		x -= texture.width/(2*backingStoreRatio);
+	NSString *cacheKey = [NSString stringWithFormat:@"%@_%.2f_%d",state->font.fontName,state->font.pointSize,fill];
+	EJFont *font = [fontCache objectForKey:cacheKey];
+	if(!font) {
+		font = [[EJFont alloc] initWithFont:state->font.fontName size:state->font.pointSize fill:fill contentScale:backingStoreRatio];
+		[fontCache setValue:font forKey:cacheKey];
+		[font release];
 	}
 	
-	// Figure out the y position with the current textBaseline
-	switch( state->textBaseline ) {
-		case kEJTextBaselineAlphabetic:
-		case kEJTextBaselineIdeographic:
-			y -= state->font.ascender; break;
-			
-		case kEJTextBaselineTop:
-		case kEJTextBaselineHanging:
-			y -= (state->font.ascender - state->font.capHeight); break;
-				
-		case kEJTextBaselineMiddle:
-			y -= (state->font.ascender - state->font.xHeight/2); break;
-		
-		case kEJTextBaselineBottom:
-			y -= (state->font.ascender - state->font.descender); break;
-	}
-	
-	EJColorRGBA color = fill ? state->fillColor : state->strokeColor;
-	color.rgba.a = (float)color.rgba.a * state->globalAlpha;
-	[self setTexture:texture];
-	[self pushRectX:x y:y w:tw h:th tx:0 ty:0 tw:1 th:1 color:color withTransform:state->transform];
-	
-	// We need to flush buffers now, otherwise the texture may already be autoreleased
-	[self flushBuffers];
-	[self setTexture:NULL];
+	[font drawString:text toContext:self x:x y:y];
 }
 
 - (void)fillText:(NSString *)text x:(float)x y:(float)y {

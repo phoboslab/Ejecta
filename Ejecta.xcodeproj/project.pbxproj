@@ -13,6 +13,8 @@
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765FC0DF74451002DB57D /* CoreGraphics.framework */; };
 		28AD733F0D9D9553002E5188 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28AD733E0D9D9553002E5188 /* MainWindow.xib */; };
+		5B7B76711619A71000691910 /* EJFont.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B7B76701619A71000691910 /* EJFont.m */; };
+		5B7B76761619DB9700691910 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B7B76751619DB9700691910 /* CoreText.framework */; };
 		B6074FED15F7720500D987F9 /* EJBindingEventedBase.m in Sources */ = {isa = PBXBuildFile; fileRef = B6074FEC15F7720500D987F9 /* EJBindingEventedBase.m */; };
 		B6074FF115F77AD700D987F9 /* EJBindingGameCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = B6074FF015F77AD600D987F9 /* EJBindingGameCenter.m */; };
 		B6074FF315F8E41700D987F9 /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6074FF215F8E41600D987F9 /* GameKit.framework */; };
@@ -74,6 +76,9 @@
 		28AD733E0D9D9553002E5188 /* MainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		32CA4F630368D1EE00C91783 /* Ejecta_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Ejecta_Prefix.pch; sourceTree = "<group>"; };
+		5B7B766F1619A71000691910 /* EJFont.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJFont.h; sourceTree = "<group>"; };
+		5B7B76701619A71000691910 /* EJFont.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJFont.m; sourceTree = "<group>"; };
+		5B7B76751619DB9700691910 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
 		8D1107310486CEB800E47090 /* Ejecta-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Ejecta-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 		B6074FEB15F7720500D987F9 /* EJBindingEventedBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingEventedBase.h; sourceTree = "<group>"; };
 		B6074FEC15F7720500D987F9 /* EJBindingEventedBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingEventedBase.m; sourceTree = "<group>"; };
@@ -169,6 +174,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5B7B76761619DB9700691910 /* CoreText.framework in Frameworks */,
 				B6074FF315F8E41700D987F9 /* GameKit.framework in Frameworks */,
 				B625CD2415AFA3AB00351585 /* libJavaScriptCore.a in Frameworks */,
 				B66F1E811476B6B90090D208 /* libicucore.dylib in Frameworks */,
@@ -209,6 +215,7 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				5B7B76751619DB9700691910 /* CoreText.framework */,
 				B68C5AEF132E6CD60015092E /* App */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
@@ -334,6 +341,8 @@
 				B615E8C515E2D3F70087729A /* EJCanvasTypes.h */,
 				B615E8C315E2D3F70087729A /* EAGLView.h */,
 				B615E8C415E2D3F70087729A /* EAGLView.m */,
+				5B7B766F1619A71000691910 /* EJFont.h */,
+				5B7B76701619A71000691910 /* EJFont.m */,
 			);
 			path = EJCanvas;
 			sourceTree = "<group>";
@@ -484,6 +493,7 @@
 				B6074FF115F77AD700D987F9 /* EJBindingGameCenter.m in Sources */,
 				B6843C65160F636A00D731FF /* EJBindingAccelerometer.m in Sources */,
 				B6843C68160F637F00D731FF /* EJBindingTouchInput.m in Sources */,
+				5B7B76711619A71000691910 /* EJFont.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
