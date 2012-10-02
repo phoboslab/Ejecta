@@ -76,7 +76,7 @@ typedef std::vector<subpath_t> path_t;
 	distanceTolerance = EJ_PATH_DISTANCE_EPSILON / scale;
 	distanceTolerance *= distanceTolerance;
 	
-	EJVector2 cp1 = EJVector2ApplyTransform(EJVector2Make(cpx1, cpy2), transform);
+	EJVector2 cp1 = EJVector2ApplyTransform(EJVector2Make(cpx1, cpy1), transform);
 	EJVector2 cp2 = EJVector2ApplyTransform(EJVector2Make(cpx2, cpy2), transform);
 	EJVector2 p = EJVector2ApplyTransform(EJVector2Make(x, y), transform);
 	
