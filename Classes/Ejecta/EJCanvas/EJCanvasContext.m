@@ -116,13 +116,31 @@ EJVertex CanvasVertexBuffer[EJ_CANVAS_VERTEX_BUFFER_SIZE];
 	[currentTexture bind];
 }
 
-- (void)pushTris:(EJTris)tris {
-	if( vertexBufferIndex >= EJ_CANVAS_VERTEX_BUFFER_SIZE - 3) {
+- (void)pushQuadV1:(EJVector2)v1 v2:(EJVector2)v2 v3:(EJVector2)v3 v4:(EJVector2)v4
+	t1:(EJVector2)t1 t2:(EJVector2)t2 t3:(EJVector2)t3 t4:(EJVector2)t4
+	color:(EJColorRGBA)color
+	withTransform:(CGAffineTransform)transform
+{
+	if( vertexBufferIndex >= EJ_CANVAS_VERTEX_BUFFER_SIZE - 6 ) {
 		[self flushBuffers];
 	}
 	
-	*(EJTris *)&CanvasVertexBuffer[vertexBufferIndex] = tris;
-	vertexBufferIndex += 3;
+	if( !CGAffineTransformIsIdentity(transform) ) {
+		v1 = EJVector2ApplyTransform( v1, transform );
+		v2 = EJVector2ApplyTransform( v2, transform );
+		v3 = EJVector2ApplyTransform( v3, transform );
+		v4 = EJVector2ApplyTransform( v4, transform );
+	}
+	
+	EJVertex * vb = &CanvasVertexBuffer[vertexBufferIndex];
+	vb[0] = (EJVertex) { v1, t1, color };
+	vb[1] = (EJVertex) { v2, t2, color };
+	vb[2] = (EJVertex) { v3, t3, color };
+	vb[3] = (EJVertex) { v2, t2, color };
+	vb[4] = (EJVertex) { v3, t3, color };
+	vb[5] = (EJVertex) { v4, t4, color };
+	
+	vertexBufferIndex += 6;
 }
 
 - (void)pushRectX:(float)x y:(float)y w:(float)w h:(float)h
@@ -134,10 +152,17 @@ EJVertex CanvasVertexBuffer[EJ_CANVAS_VERTEX_BUFFER_SIZE];
 		[self flushBuffers];
 	}
 	
-	EJVector2 d11 = EJVector2ApplyTransform( EJVector2Make(x, y), transform );
-	EJVector2 d21 = EJVector2ApplyTransform( EJVector2Make(x+w, y), transform );
-	EJVector2 d12 = EJVector2ApplyTransform( EJVector2Make(x, y+h), transform );
-	EJVector2 d22 = EJVector2ApplyTransform( EJVector2Make(x+w, y+h), transform );
+	EJVector2 d11 = { x, y };
+	EJVector2 d21 = { x+w, y };
+	EJVector2 d12 = { x, y+h };
+	EJVector2 d22 = { x+w, y+h };
+	
+	if( !CGAffineTransformIsIdentity(transform) ) {
+		d11 = EJVector2ApplyTransform( d11, transform );
+		d21 = EJVector2ApplyTransform( d21, transform );
+		d12 = EJVector2ApplyTransform( d12, transform );
+		d22 = EJVector2ApplyTransform( d22, transform );
+	}
 	
 	EJVertex * vb = &CanvasVertexBuffer[vertexBufferIndex];
 	vb[0] = (EJVertex) { d11, {tx, ty}, color };	// top left
@@ -220,18 +245,18 @@ EJVertex CanvasVertexBuffer[EJ_CANVAS_VERTEX_BUFFER_SIZE];
 
 - (void)scaleX:(float)x y:(float)y {
 	state->transform = CGAffineTransformScale( state->transform, x, y );
-    path.transform = state->transform;
+	path.transform = state->transform;
 }
 
 - (void)transformM11:(float)m11 m12:(float)m12 m21:(float)m21 m22:(float)m22 dx:(float)dx dy:(float)dy {
 	CGAffineTransform t = CGAffineTransformMake( m11, m12, m21, m22, dx, dy );
 	state->transform = CGAffineTransformConcat( state->transform, t );
-    path.transform = state->transform;
+	path.transform = state->transform;
 }
 
 - (void)setTransformM11:(float)m11 m12:(float)m12 m21:(float)m21 m22:(float)m22 dx:(float)dx dy:(float)dy {
 	state->transform = CGAffineTransformMake( m11, m12, m21, m22, dx, dy );
-    path.transform = state->transform;
+	path.transform = state->transform;
 }
 
 - (void)drawImage:(EJTexture *)texture sx:(float)sx sy:(float)sy sw:(float)sw sh:(float)sh dx:(float)dx dy:(float)dy dw:(float)dw dh:(float)dh {
@@ -250,12 +275,22 @@ EJVertex CanvasVertexBuffer[EJ_CANVAS_VERTEX_BUFFER_SIZE];
 	EJColorRGBA color = state->fillColor;
 	color.rgba.a = (float)color.rgba.a * state->globalAlpha;
 	[self pushRectX:x y:y w:w h:h tx:0 ty:0 tw:0 th:0 color:color withTransform:state->transform];
-	[self flushBuffers];
 }
 
 - (void)strokeRectX:(float)x y:(float)y w:(float)w h:(float)h {
-	[self rectX:x y:y w:w h:h];
-	[self stroke];
+	// strokeRect should not affect the current path, so we create
+	// a new, tempPath instead.
+	EJPath * tempPath = [[EJPath alloc] init];
+	tempPath.transform = state->transform;
+	
+	[tempPath moveToX:x y:y];
+	[tempPath lineToX:x+w y:y];
+	[tempPath lineToX:x+w y:y+h];
+	[tempPath lineToX:x y:y+h];
+	[tempPath close];
+	
+	[tempPath drawLinesToContext:self];
+	[tempPath release];
 }
 
 - (void)clearRectX:(float)x y:(float)y w:(float)w h:(float)h {

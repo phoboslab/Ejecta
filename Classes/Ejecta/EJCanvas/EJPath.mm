@@ -363,7 +363,13 @@ typedef std::vector<subpath_t> path_t;
 	// For thin lines we disable texturing and line caps.
 	float width2 = state->lineWidth/2;
 	BOOL addCaps = (projectedLineWidth > 2 && (state->lineCap == kEJLineCapRound || state->lineCap == kEJLineCapSquare));
-	float capTex = (state->lineCap == kEJLineCapRound) ? 0.0f : 0.5f;
+	
+	float capTexXCoord = (state->lineCap == kEJLineCapRound) ? 0.0f : 0.5f;
+	EJVector2 capTex1 = { capTexXCoord, 0 };
+	EJVector2 capTex2 = { capTexXCoord, 1 };
+	
+	EJVector2 midTex1 = { 0.5, 0 };
+	EJVector2 midTex2 = { 0.5, 1 };
 	
 	
 	// The actual miter limit is the product of the miterLimit and lineWidth properties.
@@ -375,6 +381,13 @@ typedef std::vector<subpath_t> path_t;
 	color.rgba.a = (float)color.rgba.a * state->globalAlpha;
 	
 	
+	// To draw the line correctly with transformations, we need to construct the line
+	// vertices from the untransformed points and only apply the transformation in
+	// the last step (pushQuad) again.	
+	CGAffineTransform inverseTransform = CGAffineTransformIsIdentity(transform)
+		? transform
+		: CGAffineTransformInvert(transform);
+	
 	
 	// Oh god, I'm so sorry... This code sucks quite a bit. I'd be surprised if I
 	// will understand what I've written in 3 days :/
@@ -382,7 +395,8 @@ typedef std::vector<subpath_t> path_t;
 	// And it doesn't even handle all the edge cases.
 			
 	EJVector2
-		*current, *next,			// Pointers to current and next vertices on the line
+		*transCurrent, *transNext,	// Pointers to current and next vertices on the line
+		current, next,				// Untransformed current and next points
 		firstMiter1, firstMiter2,	// First miter vertices (left, right) needed for closed paths
 		miter11, miter12,			// Current miter vertices (left, right)
 		miter21, miter22,			// Next miter vertices (left, right)
@@ -403,23 +417,27 @@ typedef std::vector<subpath_t> path_t;
 		// to the last vertex in the subpath. This way, the miter between the last and
 		// the first segment will be computed and used to draw the first segment's first
 		// miter, as well as the last segment's last miter outside the loop.
-		next = subPathIsClosed ? &sp->at(sp->size()-2) : NULL;
-		current = NULL;
+		transNext = subPathIsClosed ? &sp->at(sp->size()-2) : NULL;
+		transCurrent = NULL;
 
 		for( subpath_t::iterator vertex = sp->begin(); vertex != sp->end(); ++vertex) {
-			current = next;
-			next = &(*vertex);
+			transCurrent = transNext;
+			transNext = &(*vertex);
 			
-			if( !current ) { continue; }
+			current = next;
+			next = EJVector2ApplyTransform( *transNext, inverseTransform );
+			
+			if( !transCurrent ) { continue; }
+			
 			
 			currentEdge	= nextEdge;
 			currentExt = nextExt;
-			nextEdge = EJVector2Normalize(EJVector2Make(next->x - current->x, next->y - current->y));
+			nextEdge = EJVector2Normalize(EJVector2Sub(next, current));
 			nextExt = EJVector2Make( -nextEdge.y * width2, nextEdge.x * width2 );
 			
 			if( firstInSubPath ) {
-				firstMiter1 = miter21 = EJVector2Add( *current, nextExt );
-				firstMiter2 = miter22 = EJVector2Sub( *current, nextExt );
+				firstMiter1 = miter21 = EJVector2Add( current, nextExt );
+				firstMiter2 = miter22 = EJVector2Sub( current, nextExt );
 				firstInSubPath = false;
 				
 				// Start cap
@@ -428,8 +446,10 @@ typedef std::vector<subpath_t> path_t;
 					EJVector2 cap11 = EJVector2Add( miter21, capExt );
 					EJVector2 cap12 = EJVector2Add( miter22, capExt );
 					
-					[context pushTris:(EJTris){{ cap11, {capTex, 0}, color }, { cap12, {capTex, 1}, color }, { miter21, {0.5, 0}, color }}];
-					[context pushTris:(EJTris){{ cap12, {capTex, 1}, color }, { miter21, {0.5, 0}, color }, { miter22, {0.5, 1}, color }}];
+					[context
+						pushQuadV1:cap11 v2:cap12 v3:miter21 v4:miter22
+						t1:capTex1 t2:capTex2 t3:midTex1 t4:midTex2
+						color:color withTransform:transform];
 				}
 				
 				continue;
@@ -447,8 +467,8 @@ typedef std::vector<subpath_t> path_t;
 				if( miterExt < miterLimit ) {
 					miterEdge.x *= miterExt;
 					miterEdge.y *= miterExt;
-					miter21 = EJVector2Make( current->x - miterEdge.y, current->y + miterEdge.x );
-					miter22 = EJVector2Make( current->x + miterEdge.y, current->y - miterEdge.x );
+					miter21 = EJVector2Make( current.x - miterEdge.y, current.y + miterEdge.x );
+					miter22 = EJVector2Make( current.x + miterEdge.y, current.y - miterEdge.x );
 					
 					miterAdded = true;
 				}
@@ -456,8 +476,8 @@ typedef std::vector<subpath_t> path_t;
 			
 			// No miter added? Calculate the butt for the current segment
 			if( !miterAdded ) {
-				miter21 = EJVector2Add(*current, currentExt);
-				miter22 = EJVector2Sub(*current, currentExt);
+				miter21 = EJVector2Add(current, currentExt);
+				miter22 = EJVector2Sub(current, currentExt);
 			}
 			
 			if( ignoreFirstSegment ) {
@@ -469,14 +489,16 @@ typedef std::vector<subpath_t> path_t;
 				continue;
 			}
 			
-			[context pushTris:(EJTris){{ miter11, {0.5, 0}, color }, { miter12, {0.5, 1}, color }, { miter21, {0.5, 0}, color }}];
-			[context pushTris:(EJTris){{ miter21, {0.5, 0}, color }, { miter22, {0.5, 1}, color }, { miter12, {0.5, 1}, color }}];
+			[context
+				pushQuadV1:miter11 v2:miter12 v3:miter21 v4:miter22
+				t1:midTex1 t2:midTex2 t3:midTex1 t4:midTex2
+				color:color withTransform:transform];
 			
 			// No miter added? The "miter" for the next segment needs to be the butt for the next segment,
 			// not the butt for the current one.
 			if( !miterAdded ) {
-				miter21 = EJVector2Add(*current, nextExt);
-				miter22 = EJVector2Sub(*current, nextExt);
+				miter21 = EJVector2Add(current, nextExt);
+				miter22 = EJVector2Sub(current, nextExt);
 			}
 		} // for each subpath
 		
@@ -487,13 +509,15 @@ typedef std::vector<subpath_t> path_t;
 			miter12 = firstMiter2;
 		}
 		else {
-			miter11 = EJVector2Add(back, nextExt);
-			miter12 = EJVector2Sub(back, nextExt);
+			EJVector2 untransformedBack = EJVector2ApplyTransform(back, inverseTransform);
+			miter11 = EJVector2Add(untransformedBack, nextExt);
+			miter12 = EJVector2Sub(untransformedBack, nextExt);
 		}
 		
-		[context pushTris:(EJTris){{ miter21, {0.5, 0}, color }, { miter22, {0.5, 1}, color }, { miter11, {0.5, 0}, color }}];
-		[context pushTris:(EJTris){{ miter11, {0.5, 0}, color }, { miter12, {0.5, 1}, color }, { miter22, {0.5, 1}, color }}];
-		
+		[context
+			pushQuadV1:miter11 v2:miter12 v3:miter21 v4:miter22
+			t1:midTex1 t2:midTex2 t3:midTex1 t4:midTex2
+			color:color withTransform:transform];		
 		
 		// End cap
 		if( addCaps && !subPathIsClosed ) {
@@ -501,8 +525,10 @@ typedef std::vector<subpath_t> path_t;
 			EJVector2 cap11 = EJVector2Add( miter11, capExt );
 			EJVector2 cap12 = EJVector2Add( miter12, capExt );
 			
-			[context pushTris:(EJTris){{ cap11, {capTex, 0}, color }, { cap12, {capTex, 1}, color }, { miter11, {0.5, 0}, color }}];
-			[context pushTris:(EJTris){{ cap12, {capTex, 1}, color }, { miter11, {0.5, 0}, color }, { miter12, {0.5, 1}, color }}];
+			[context
+				pushQuadV1:cap11 v2:cap12 v3:miter11 v4:miter12
+				t1:capTex1 t2:capTex2 t3:midTex1 t4:midTex2
+				color:color withTransform:transform];
 		}
 	} // for each path
 }
