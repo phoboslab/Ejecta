@@ -5,6 +5,9 @@
 
 #define ASSERT_ASCII(i) assert(i>=0&&i<=255);
 
+#define PT_TO_PX(pt) ceilf((pt)*(1.0f+(1.0f/3.0f)))
+#define PT_TO_PX_ROUND(pt) roundf((pt)*(1.0f+(1.0f/3.0f)))
+
 typedef struct _tagGlypInfo {
 	float x,y,w,h,a;
 } GlyphInfo;
@@ -12,6 +15,8 @@ typedef struct _tagGlypInfo {
 @interface EJFont () {
 	GlyphInfo *glyphInfo;
 	float contentScale;
+	
+	float pointSize,ascent,ascentDelta,descent,leading,lineHeight;
 }
 @end
 
@@ -30,16 +35,26 @@ typedef struct _tagGlypInfo {
 		contentScale = cs;
 				
 		CTFontRef ctFont = CTFontCreateWithName((CFStringRef)font, ptSize, NULL);
-		float ptToPx = (1.0f/72.0f)*160.0f;
 		
 		CGFontRef cgFont = CTFontCopyGraphicsFont(ctFont, NULL);
 		
 		if(ctFont) {
-			float xHeight = CTFontGetXHeight(ctFont);
+			pointSize	= ptSize;
+			leading		= CTFontGetLeading(ctFont);
+			ascent		= CTFontGetAscent(ctFont);
+			descent		= CTFontGetDescent(ctFont);
+			lineHeight	= leading + ascent + descent;
+			if (leading == 0) {
+				ascentDelta = floor (0.2 * lineHeight + 0.5);
+				lineHeight += ascentDelta;
+			} else {
+				ascentDelta = 0.0f;
+			}
+			
 			CGRect bbRect;
 			CGSize size;
 			
-			CGRect boundingBox = CGRectMake(0, 0, xHeight*ptToPx*16, xHeight*ptToPx*16);
+			CGRect boundingBox = CGRectMake(0, 0, PT_TO_PX(ptSize)*16, PT_TO_PX(ptSize)*16);
 			[self setWidth:boundingBox.size.width*contentScale height:boundingBox.size.height*contentScale];
 			
 			CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceGray();
@@ -49,7 +64,7 @@ typedef struct _tagGlypInfo {
 			CGColorSpaceRelease(colorSpace);
 			
 			CGContextSetFont(context, cgFont);
-			CGContextSetFontSize(context, ptSize);
+			CGContextSetFontSize(context, PT_TO_PX(ptSize));
 			
 			UIGraphicsPushContext(context);
 			CGContextTranslateCTM(context, 0.0, realHeight);
@@ -74,13 +89,12 @@ typedef struct _tagGlypInfo {
 				CTFontGetGlyphsForCharacters(ctFont, &i, &glyph, 1);
 				CTFontGetBoundingRectsForGlyphs(ctFont, kCTFontDefaultOrientation, &glyph, &bbRect, 1);
 				CGContextShowGlyphsAtPoint(context,(i%16)*gridW,(i/16)*gridH, &glyph, 1);
-				
-				glyphInfo[i].y = floorf(bbRect.origin.y * (ptToPx/contentScale));
-				glyphInfo[i].x = floorf(bbRect.origin.x * (ptToPx/contentScale));
-				glyphInfo[i].w = ceilf(bbRect.size.width * (ptToPx/contentScale));
-				glyphInfo[i].h = ceilf(bbRect.size.height * (ptToPx/contentScale));
+				glyphInfo[i].y = PT_TO_PX(bbRect.origin.y) - 1;
+				glyphInfo[i].x = PT_TO_PX(bbRect.origin.x) - 1;
+				glyphInfo[i].w = PT_TO_PX(bbRect.size.width) + 1;
+				glyphInfo[i].h = PT_TO_PX(bbRect.size.height) + 1;
 				CTFontGetAdvancesForGlyphs(ctFont, kCTFontDefaultOrientation, &glyph, &size, 1);
-				glyphInfo[i].a = floorf(size.width * (ptToPx/contentScale));
+				glyphInfo[i].a = PT_TO_PX(size.width);
 			}
 			
 			[self createTextureWithPixels:pixels format:GL_ALPHA];
@@ -95,9 +109,11 @@ typedef struct _tagGlypInfo {
 }
 
 - (void)drawString:(NSString*)string toContext:(EJCanvasContext*)context x:(float)x y:(float)y {
-	float ptToPx = (1.0f/72.0f)*160.0f/contentScale;
 	unichar glyphIndex;
 	GlyphInfo info;
+	
+	x = roundf(x);
+	y = roundf(y);
 	
 	// Figure out the x position with the current textAlign.
 	if(context.state->textAlign != kEJTextAlignLeft) {
@@ -113,25 +129,22 @@ typedef struct _tagGlypInfo {
 			x -= w/2;
 		}
 	}
-	
-	x = floorf(x);
-	y = floorf(y);
-	
+
 	// Figure out the y position with the current textBaseline
 	switch( context.state->textBaseline ) {
 		case kEJTextBaselineAlphabetic:
 		case kEJTextBaselineIdeographic:
-			//y -= context.state->font.ascender; break;
 			break;
 		case kEJTextBaselineTop:
 		case kEJTextBaselineHanging:
-			y += (context.state->font.pointSize*ptToPx); break;
-			
+			y += PT_TO_PX(ascent+ascentDelta);
+			break;
 		case kEJTextBaselineMiddle:
-			y += context.state->font.xHeight/2; break;
-			
+			y += PT_TO_PX(ascent-0.5*pointSize);
+			break;
 		case kEJTextBaselineBottom:
-			y += context.state->font.descender; break;
+			y -= PT_TO_PX(descent);
+			break;
 	}
 	
 	// draw glyphs
@@ -143,10 +156,10 @@ typedef struct _tagGlypInfo {
 		
 		info = glyphInfo[glyphIndex];
 
-		float	tx = (glyphIndex%16) * (1.0f/16.0f)+(info.x/realWidth)*contentScale,
-				ty = (glyphIndex/16) * (1.0f/16.0f)+(info.y/realHeight)*contentScale,
-				tw = (info.w / realWidth)*contentScale,
-				th = (info.h / realHeight)*contentScale;
+		float	tx = (glyphIndex%16) * (1.0f/16.0f) + (info.x/realWidth) * contentScale,
+				ty = (glyphIndex/16) * (1.0f/16.0f) + (info.y/realHeight) * contentScale,
+				tw = (info.w / realWidth) * contentScale,
+				th = (info.h / realHeight) * contentScale;
 		
 		[context pushRectX:x+info.x y:y-info.h-info.y w:info.w h:info.h tx:tx ty:ty+th tw:tw th:-th color:context.state->fillColor withTransform:context.state->transform];
 		
