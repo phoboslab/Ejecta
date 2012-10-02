@@ -9,5 +9,8 @@ static NSString * kEJBindingGameCenterAutoAuth = @"EJBindingGameCenter.AutoAuth"
 }
 
 - (void)loadAchievements;
+- (void)reportAchievementWithIdentifier:(NSString *)identifier
+	percentage:(float)percentage isIncrement:(BOOL)isIncrement
+	ctx:(JSContextRef)ctx callback:(JSObjectRef)callback;
 
 @end

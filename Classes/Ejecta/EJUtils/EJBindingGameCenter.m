@@ -35,7 +35,7 @@
 
 EJ_BIND_FUNCTION( authenticate, ctx, argc, argv ) {
 	JSObjectRef callback = NULL;
-	if( argc > 0 ) {
+	if( argc > 0 && JSValueIsObject(ctx, argv[0]) ) {
 		callback = JSValueToObject(ctx, argv[0], NULL);
 		JSValueProtect(ctx, callback);
 	}
@@ -84,7 +84,7 @@ EJ_BIND_FUNCTION( reportScore, ctx, argc, argv ) {
 	int64_t score = JSValueToNumberFast(ctx, argv[1]);
 	
 	JSObjectRef callback = NULL;
-	if( argc > 2 ) {
+	if( argc > 2 && JSValueIsObject(ctx, argv[2]) ) {
 		callback = JSValueToObject(ctx, argv[2], NULL);
 		JSValueProtect(ctx, callback);
 	}
@@ -120,30 +120,36 @@ EJ_BIND_FUNCTION( showLeaderboard, ctx, argc, argv ) {
 	return NULL;
 }
 
-EJ_BIND_FUNCTION( reportAchievement, ctx, argc, argv ) {
-	if( argc < 2 ) { return NULL; }
-	if( !authed ) { NSLog(@"GameKit Error: Not authed. Can't report achievment."); return NULL; }
+- (void)reportAchievementWithIdentifier:(NSString *)identifier
+	percentage:(float)percentage isIncrement:(BOOL)isIncrement
+	ctx:(JSContextRef)ctx callback:(JSObjectRef)callback
+{
+	if( !authed ) { NSLog(@"GameKit Error: Not authed. Can't report achievment."); return; }
 	
-	NSString *identifier = JSValueToNSString(ctx, argv[0]);
-	float percent = JSValueToNumberFast(ctx, argv[1]);
-	
-	// Already reported with same or higher percentage? Early out.
-	GKAchievement * oldAchievement = [achievements objectForKey:identifier];
-	if( oldAchievement && oldAchievement.percentComplete >= percent ) {
-		return NULL;
+	GKAchievement * achievement = [achievements objectForKey:identifier];
+	if( achievement ) {		
+		// Already reported with same or higher percentage or already at 100%?
+		if(
+			achievement.percentComplete == 100.0f ||
+			(!isIncrement && achievement.percentComplete >= percentage)
+		) {
+			return;
+		}
+		
+		if( isIncrement ) {
+			percentage = MIN( achievement.percentComplete + percentage, 100.0f );
+		}
 	}
-	
-	
-	JSObjectRef callback = NULL;
-	if( argc > 2 ) {
-		callback = JSValueToObject(ctx, argv[2], NULL);
-		JSValueProtect(ctx, callback);
+	else {
+		achievement = [[[GKAchievement alloc] initWithIdentifier:identifier] autorelease];
 	}
-	
-	GKAchievement * achievement = [[[GKAchievement alloc] initWithIdentifier:identifier] autorelease];
 	
 	achievement.showsCompletionBanner = YES;
-	achievement.percentComplete = percent;
+	achievement.percentComplete = percentage;
+	
+	if( callback ) {
+		JSValueProtect(ctx, callback);
+	}
 	
 	[achievement reportAchievementWithCompletionHandler:^(NSError *error) {
 		[achievements setObject:achievement forKey:identifier];
@@ -155,7 +161,35 @@ EJ_BIND_FUNCTION( reportAchievement, ctx, argc, argv ) {
 			JSValueUnprotect(gctx, callback);
 		}
 	}];
+}
+
+EJ_BIND_FUNCTION( reportAchievement, ctx, argc, argv ) {
+	if( argc < 2 ) { return NULL; }
 	
+	NSString *identifier = JSValueToNSString(ctx, argv[0]);
+	float percent = JSValueToNumberFast(ctx, argv[1]);
+	
+	JSObjectRef callback = NULL;
+	if( argc > 2 && JSValueIsObject(ctx, argv[2]) ) {
+		callback = JSValueToObject(ctx, argv[2], NULL);
+	}
+	
+	[self reportAchievementWithIdentifier:identifier percentage:percent isIncrement:NO ctx:ctx callback:callback];
+	return NULL;
+}
+
+EJ_BIND_FUNCTION( reportAchievementAdd, ctx, argc, argv ) {
+	if( argc < 2 ) { return NULL; }
+	
+	NSString *identifier = JSValueToNSString(ctx, argv[0]);
+	float percent = JSValueToNumberFast(ctx, argv[1]);
+	
+	JSObjectRef callback = NULL;
+	if( argc > 2 && JSValueIsObject(ctx, argv[2]) ) {
+		callback = JSValueToObject(ctx, argv[2], NULL);
+	}
+	
+	[self reportAchievementWithIdentifier:identifier percentage:percent isIncrement:YES ctx:ctx callback:callback];
 	return NULL;
 }
 
