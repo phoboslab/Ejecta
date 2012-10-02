@@ -126,7 +126,7 @@ typedef struct _tagGlypInfo {
 		if( context.state->textAlign == kEJTextAlignRight || context.state->textAlign == kEJTextAlignEnd ) {
 			x -= w;
 		} else if( context.state->textAlign == kEJTextAlignCenter ) {
-			x -= w/2;
+			x -= roundf(w/2.0f);
 		}
 	}
 
@@ -169,6 +169,18 @@ typedef struct _tagGlypInfo {
 	// We need to flush buffers now, otherwise the texture may already be autoreleased
 	[context flushBuffers];
 	[context setTexture:NULL];
+}
+
+- (float)measureString:(NSString*)string
+{
+	unichar glyphIndex;
+	float w = 0;
+	for(int i=0;i<[string length];i++) {
+		glyphIndex = [string characterAtIndex:i];
+		ASSERT_ASCII(glyphIndex);
+		w += glyphInfo[glyphIndex].a;
+	}
+	return w;
 }
 
 @end

@@ -143,7 +143,7 @@ typedef struct {
 - (void)drawText:(NSString *)text x:(float)x y:(float)y fill:(BOOL)fill;
 - (void)fillText:(NSString *)text x:(float)x y:(float)y;
 - (void)strokeText:(NSString *)text x:(float)x y:(float)y;
-
+- (float)measureText:(NSString *)text;
 
 @property (nonatomic) EJCanvasState * state;
 @property (nonatomic) EJCompositeOperation globalCompositeOperation;

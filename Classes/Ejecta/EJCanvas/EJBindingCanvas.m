@@ -508,6 +508,20 @@ EJ_BIND_FUNCTION( arc, ctx, argc, argv ) {
 	return NULL;
 }
 
+EJ_BIND_FUNCTION( measureText, ctx, argc, argv ) {
+	if( argc < 1 ) { return NULL; }
+	
+	NSString * string = JSValueToNSString(ctx, argv[0]);
+	float stringWidth = [renderingContext measureText:string];
+	
+	JSObjectRef objRef = JSObjectMake(ctx, NULL, NULL);
+	JSStringRef stringRef = JSStringCreateWithUTF8CString("width");
+	JSObjectSetProperty(ctx, objRef, stringRef, JSValueMakeNumber(ctx, stringWidth), kJSPropertyAttributeNone, nil);
+	JSStringRelease(stringRef);
+	
+	return objRef;
+}
+
 EJ_BIND_FUNCTION( fillText, ctx, argc, argv ) {
 	if( argc < 3 ) { return NULL; }
 	

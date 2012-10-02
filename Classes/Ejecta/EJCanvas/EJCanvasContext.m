@@ -373,15 +373,20 @@ EJVertex CanvasVertexBuffer[EJ_CANVAS_VERTEX_BUFFER_SIZE];
 	[path arcX:x y:y radius:radius startAngle:startAngle endAngle:endAngle antiClockwise:antiClockwise];
 }
 
-- (void)drawText:(NSString *)text x:(float)x y:(float)y fill:(BOOL)fill {
-	NSString *cacheKey = [NSString stringWithFormat:@"%@_%.2f_%d",state->font.fontName,state->font.pointSize,fill];
+- (EJFont*)acquireFont:(NSString*)fontName size:(float)pointSize fill:(BOOL)fill contentScale:(float)contentScale
+{
+	NSString *cacheKey = [NSString stringWithFormat:@"%@_%.2f_%d_%.2f",fontName,pointSize,fill,contentScale];
 	EJFont *font = [fontCache objectForKey:cacheKey];
 	if(!font) {
-		font = [[EJFont alloc] initWithFont:state->font.fontName size:state->font.pointSize fill:fill contentScale:backingStoreRatio];
+		font = [[EJFont alloc] initWithFont:fontName size:pointSize fill:fill contentScale:contentScale];
 		[fontCache setValue:font forKey:cacheKey];
 		[font release];
 	}
-	
+	return font;
+}
+
+- (void)drawText:(NSString *)text x:(float)x y:(float)y fill:(BOOL)fill {
+	EJFont *font = [self acquireFont:state->font.fontName size:state->font.pointSize fill:fill contentScale:backingStoreRatio];
 	[font drawString:text toContext:self x:x y:y];
 }
 
@@ -391,6 +396,11 @@ EJVertex CanvasVertexBuffer[EJ_CANVAS_VERTEX_BUFFER_SIZE];
 
 - (void)strokeText:(NSString *)text x:(float)x y:(float)y {
 	[self drawText:text x:x y:y fill:NO];
+}
+
+- (float)measureText:(NSString *)text {
+	EJFont *font = [self acquireFont:state->font.fontName size:state->font.pointSize fill:YES contentScale:backingStoreRatio];
+	return [font measureString:text];
 }
 
 @end
