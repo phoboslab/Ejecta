@@ -101,7 +101,7 @@ int TextureToGlyphSort(const void * a, const void * b) {
 	[super dealloc];
 }
 
-- (StringLayout)layoutString:(NSString*)string {
+- (StringLayout)layoutForString:(NSString*)string {
 	StringLayout layout;
 	
 	CFStringRef keys[] = { kCTFontAttributeName };
@@ -131,9 +131,9 @@ int TextureToGlyphSort(const void * a, const void * b) {
 	
 	// fetch glyph index buffer
 	const CGGlyph *glyphs = CTRunGetGlyphsPtr(run);
-	if (glyphs == NULL) {
+	if( glyphs == NULL ) {
 		size_t glyphsBufferSize = sizeof(CGGlyph) * glyphCount;
-		if (malloc_size(_glyphsBuffer) < glyphsBufferSize) {
+		if( malloc_size(_glyphsBuffer) < glyphsBufferSize ) {
 			_glyphsBuffer = realloc(_glyphsBuffer, glyphsBufferSize);
 		}
 		CTRunGetGlyphs(run, CFRangeMake(0, 0), (CGGlyph*)glyphs);
@@ -259,7 +259,7 @@ int TextureToGlyphSort(const void * a, const void * b) {
 
 - (void)drawString:(NSString*)string toContext:(EJCanvasContext*)context x:(float)x y:(float)y {
 
-	StringLayout layout = [self layoutString:string];
+	StringLayout layout = [self layoutForString:string];
 	
 	x = roundf(x);
 	y = roundf(y);
@@ -344,7 +344,7 @@ int TextureToGlyphSort(const void * a, const void * b) {
 - (float)measureString:(NSString*)string {
 	float width;
 	
-	[self layoutString:string];
+	[self layoutForString:string];
 	width = [self widthForLayout];
 	[self releaseLayout];
 	
