@@ -99,7 +99,7 @@ typedef struct {
     
 	float backingStoreRatio;
 	
-	NSMutableDictionary *fontCache;
+	NSCache * fontCache;
 }
 
 - (id)initWithWidth:(short)width height:(short)height;
@@ -144,7 +144,6 @@ typedef struct {
 - (void)arcToX1:(float)x1 y1:(float)y1 x2:(float)x2 y2:(float)y2 radius:(float)radius;
 - (void)arcX:(float)x y:(float)y radius:(float)radius startAngle:(float)startAngle endAngle:(float)endAngle antiClockwise:(BOOL)antiClockwise;
 
-- (void)drawText:(NSString *)text x:(float)x y:(float)y fill:(BOOL)fill;
 - (void)fillText:(NSString *)text x:(float)x y:(float)y;
 - (void)strokeText:(NSString *)text x:(float)x y:(float)y;
 - (float)measureText:(NSString *)text;

@@ -31,7 +31,8 @@ EJVertex CanvasVertexBuffer[EJ_CANVAS_VERTEX_BUFFER_SIZE];
 		path = [[EJPath alloc] init];
 		backingStoreRatio = 1;
 		
-		fontCache = [[NSMutableDictionary alloc] init];
+		fontCache = [[NSCache alloc] init];
+		fontCache.countLimit = 8;
 	}
 	return self;
 }
@@ -407,29 +408,25 @@ EJVertex CanvasVertexBuffer[EJ_CANVAS_VERTEX_BUFFER_SIZE];
 	[path arcX:x y:y radius:radius startAngle:startAngle endAngle:endAngle antiClockwise:antiClockwise];
 }
 
-- (EJFont*)acquireFont:(NSString*)fontName size:(float)pointSize fill:(BOOL)fill contentScale:(float)contentScale
-{
-	NSString *cacheKey = [NSString stringWithFormat:@"%@_%.2f_%d_%.2f",fontName,pointSize,fill,contentScale];
-	EJFont *font = [fontCache objectForKey:cacheKey];
-	if(!font) {
+- (EJFont*)acquireFont:(NSString*)fontName size:(float)pointSize fill:(BOOL)fill contentScale:(float)contentScale {
+	NSString * cacheKey = [NSString stringWithFormat:@"%@_%.2f_%d_%.2f", fontName, pointSize, fill, contentScale];
+	EJFont * font = [fontCache objectForKey:cacheKey];
+	if( !font ) {
 		font = [[EJFont alloc] initWithFont:fontName size:pointSize fill:fill contentScale:contentScale];
-		[fontCache setValue:font forKey:cacheKey];
-		[font release];
+		[fontCache setObject:font forKey:cacheKey];
+		[font autorelease];
 	}
 	return font;
 }
 
-- (void)drawText:(NSString *)text x:(float)x y:(float)y fill:(BOOL)fill {
-	EJFont *font = [self acquireFont:state->font.fontName size:state->font.pointSize fill:fill contentScale:backingStoreRatio];
+- (void)fillText:(NSString *)text x:(float)x y:(float)y {
+	EJFont *font = [self acquireFont:state->font.fontName size:state->font.pointSize fill:YES contentScale:backingStoreRatio];
 	[font drawString:text toContext:self x:x y:y];
 }
 
-- (void)fillText:(NSString *)text x:(float)x y:(float)y {
-	[self drawText:text x:x y:y fill:YES];
-}
-
 - (void)strokeText:(NSString *)text x:(float)x y:(float)y {
-	[self drawText:text x:x y:y fill:NO];
+	EJFont *font = [self acquireFont:state->font.fontName size:state->font.pointSize fill:NO contentScale:backingStoreRatio];
+	[font drawString:text toContext:self x:x y:y];
 }
 
 - (float)measureText:(NSString *)text {
