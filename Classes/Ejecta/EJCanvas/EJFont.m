@@ -170,7 +170,7 @@ typedef struct _tagStringLayout {
 		[textures addObject:texture];
 		[texture release];	
 	} else {
-		texture = [textures objectAtIndex:0];
+		texture = [textures lastObject];
 	}
 	
 	info->ti = [textures count]; // 0 is reserved, index starts at 1
@@ -257,7 +257,7 @@ typedef struct _tagStringLayout {
 - (void)drawString:(NSString*)string toContext:(EJCanvasContext*)context x:(float)x y:(float)y {
 	StringLayout layout = [self layoutString:string];
 	
-	GlyphInfo info;
+	GlyphInfo *info;
 	
 	x = roundf(x);
 	y = roundf(y);
@@ -294,19 +294,17 @@ typedef struct _tagStringLayout {
 	CFIndex textureIndices[numTextures];
 	memset(textureIndices, 0, sizeof(CFIndex)*numTextures);
 	
-	CFIndex textureIndex;
-	
 	// layout glyphs that are not yet loaded, and flag their textures
 	for(int i=0;i<layout.glyphCount;i++) {
-		textureIndex = glyphInfo[layout.glyphs[i]].ti;
-		if(textureIndex==0) {
+		info = &glyphInfo[layout.glyphs[i]];
+		if(!info->ti) {
 			[self layoutGlyph:layout.glyphs[i]];
 		}
-		textureIndices[textureIndex-1] = 1;
+		textureIndices[info->ti-1] = 1;
 	}
 	
 	// draw glyphs
-	for(textureIndex=0;textureIndex<numTextures;textureIndex++) {
+	for(CFIndex textureIndex=0;textureIndex<numTextures;textureIndex++) {
 		if(!textureIndices[textureIndex]){
 			continue;
 		}
@@ -316,16 +314,16 @@ typedef struct _tagStringLayout {
 		
 		float gx,gy;
 		for(int i=0;i<layout.glyphCount;i++) {
-			info = glyphInfo[layout.glyphs[i]];
+			info = &glyphInfo[layout.glyphs[i]];
 			
-			if(info.ti-1 != textureIndex) {
+			if(info->ti-1 != textureIndex) {
 				continue;
 			}
 			
-			gx = x + PT_TO_PX(layout.positions[i].x) + info.x;
-			gy = y - (info.h + info.y);
+			gx = x + PT_TO_PX(layout.positions[i].x) + info->x;
+			gy = y - (info->h + info->y);
 			
-			[context pushRectX:gx y:gy w:info.w h:info.h tx:info.tx ty:info.ty+info.th tw:info.tw th:-info.th color:context.state->fillColor withTransform:context.state->transform];
+			[context pushRectX:gx y:gy w:info->w h:info->h tx:info->tx ty:info->ty+info->th tw:info->tw th:-info->th color:context.state->fillColor withTransform:context.state->transform];
 		}
 		
 		[context flushBuffers];
