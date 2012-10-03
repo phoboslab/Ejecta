@@ -2,7 +2,7 @@
 #import "EJApp.h"
 
 @interface EjectaAppDelegate : NSObject <UIApplicationDelegate> {
-	EJApp * engine;
+	EJApp * app;
 }
 
 @property (nonatomic, retain) IBOutlet UIWindow *window;

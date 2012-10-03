@@ -9,7 +9,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 	[application setIdleTimerDisabled:YES];
-	engine = [[EJApp alloc] initWithWindow:window];
+	app = [[EJApp alloc] initWithWindow:window];
 	
     [self.window makeKeyAndVisible];
     return YES;
@@ -17,27 +17,27 @@
 
 
 - (void)applicationWillResignActive:(UIApplication *)application {
-	[engine pause];
+	[app pause];
 }
 
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
-	[engine pause];
+	[app pause];
 }
 
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
-	[engine resume];
+	[app resume];
 }
 
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
-	[engine resume];
+	[app resume];
 }
 
 
 - (void)applicationWillTerminate:(UIApplication *)application {
-	[engine pause];
+	[app pause];
 }
 
 
@@ -45,14 +45,14 @@
 #pragma mark Memory management
 
 - (void)applicationDidReceiveMemoryWarning:(UIApplication *)application {
-    /*
+	/*
      Free up as much memory as possible by purging cached data objects that can be recreated (or reloaded from disk) later.
      */
 }
 
 
 - (void)dealloc {
-	[engine release];
+	[app release];
     [super dealloc];
 }
 
