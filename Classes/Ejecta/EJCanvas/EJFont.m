@@ -131,8 +131,7 @@ typedef struct _tagStringLayout {
 	GlyphInfo *info;
 	
 	CGRect bbRect;
-	CGContextRef context;
-	
+	CGContextRef context = NULL;
 	EJTexture *texture = NULL;
 	
 	for(CFIndex index=0;index<amount;index++) {
@@ -152,7 +151,7 @@ typedef struct _tagStringLayout {
 		info->h = PT_TO_PX(bbRect.size.height) + 4;
 		
 		// check if current texture is full
-		BOOL isFull = NO, switchedTexture = (index==0);
+		BOOL isFull = NO;
 		
 		// texture coordinates
 		if(txLineX+((info->w+2)*contentScale)>TEXTURE_SIZE) {
@@ -165,7 +164,7 @@ typedef struct _tagStringLayout {
 		}
 		
 		// create rendering context
-		if(index==0) {
+		if(!context) {
 			// create and clear pixel buffer
 			if(!txPixels) {
 				txPixels = (GLubyte *) malloc( TEXTURE_SIZE * TEXTURE_SIZE);
@@ -211,9 +210,6 @@ typedef struct _tagStringLayout {
 			
 			[textures addObject:texture];
 			[texture release];
-			
-			switchedTexture = YES;
-		
 		// just use existing texture
 		} else if(!texture) {
 			texture = [textures lastObject];
@@ -234,7 +230,6 @@ typedef struct _tagStringLayout {
 		if(info->h*contentScale + 2 > txLineH) {
 			txLineH = info->h*contentScale + 2;
 		}
-
 	}
 	
 	// if any texture was modified, send the updated content to opengl
