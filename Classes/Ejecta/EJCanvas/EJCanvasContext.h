@@ -2,7 +2,6 @@
 #import "EJTexture.h"
 #import "EJImageData.h"
 #import "EJPath.h"
-
 #import "EJCanvasTypes.h"
 
 #define EJ_CANVAS_STATE_STACK_SIZE 16
@@ -79,7 +78,6 @@ typedef struct {
 } EJCanvasState;
 
 
-
 @interface EJCanvasContext : NSObject {
 	GLuint frameBuffer, stencilBuffer;
 	
@@ -100,6 +98,8 @@ typedef struct {
 	EJCanvasState * state;
     
 	float backingStoreRatio;
+	
+	NSMutableDictionary *fontCache;
 }
 
 - (id)initWithWidth:(short)width height:(short)height;
@@ -147,7 +147,7 @@ typedef struct {
 - (void)drawText:(NSString *)text x:(float)x y:(float)y fill:(BOOL)fill;
 - (void)fillText:(NSString *)text x:(float)x y:(float)y;
 - (void)strokeText:(NSString *)text x:(float)x y:(float)y;
-
+- (float)measureText:(NSString *)text;
 
 @property (nonatomic) EJCanvasState * state;
 @property (nonatomic) EJCompositeOperation globalCompositeOperation;

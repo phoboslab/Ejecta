@@ -13,7 +13,6 @@
 - (id)initWithPath:(NSString *)path context:(EAGLContext*)context;
 - (id)initWithWidth:(int)widthp height:(int)heightp;
 - (id)initWithWidth:(int)widthp height:(int)heightp pixels:(GLubyte *)pixels;
-- (id)initWithString:(NSString *)string font:(UIFont *)font fill:(BOOL)fill lineWidth:(float)lineWidth contentScale:(float)contentScale;
 
 - (void)setWidth:(int)width height:(int)height;
 - (void)createTextureWithPixels:(GLubyte *)pixels format:(GLenum) format;
