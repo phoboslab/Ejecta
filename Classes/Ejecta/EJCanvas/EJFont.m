@@ -119,7 +119,7 @@ typedef struct _tagStringLayout {
 }
 
 - (double)widthForLayout {
-	return CTLineGetTypographicBounds(_ctLine, NULL, NULL, NULL);
+	return PT_TO_PX(CTLineGetTypographicBounds(_ctLine, NULL, NULL, NULL));
 }
 
 - (void)releaseLayout
