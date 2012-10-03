@@ -1,5 +1,7 @@
 #import "EJTexture.h"
 
+#define EJ_FONT_TEXTURE_SIZE 1024
+
 @class EJCanvasContext;
 
 @interface EJFont : NSObject

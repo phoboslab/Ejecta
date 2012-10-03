@@ -41,7 +41,7 @@ static GLint textureFilter = GL_LINEAR;
 		GLubyte * pixels = [self loadPixelsFromPath:path];
 		
 		if( pixels ) {
-			EAGLContext * contextTextureThread = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES1 
+			EAGLContext * contextTextureThread = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES1
 									 sharegroup:context.sharegroup];
 			[EAGLContext setCurrentContext: contextTextureThread];
 			
@@ -58,15 +58,20 @@ static GLint textureFilter = GL_LINEAR;
 	return self;
 }
 
-- (id)initWithWidth:(int)widthp height:(int)heightp {
+- (id)initWithWidth:(int)widthp height:(int)heightp format:(GLenum)formatp {
 	// Create an empty texture
 	
 	if( self = [super init] ) {
 		fullPath = [@"[Empty]" retain];
 		[self setWidth:widthp height:heightp];
-		[self createTextureWithPixels:NULL format:GL_RGBA];
+		[self createTextureWithPixels:NULL format:formatp];
 	}
 	return self;
+}
+
+- (id)initWithWidth:(int)widthp height:(int)heightp {
+	// Create an empty RGBA texture
+	return [self initWithWidth:widthp height:heightp format:GL_RGBA];
 }
 
 - (id)initWithWidth:(int)widthp height:(int)heightp pixels:(GLubyte *)pixels {
@@ -107,13 +112,20 @@ static GLint textureFilter = GL_LINEAR;
 	realHeight = pow(2, ceil(log2( height )));
 }
 
-- (void)createTextureWithPixels:(GLubyte *)pixels format:(GLenum) format {
+- (void)createTextureWithPixels:(GLubyte *)pixels format:(GLenum)formatp {
+	// Release previous texture if we had one
+	if( textureId ) {
+		glDeleteTextures( 1, &textureId );
+		textureId = 0;
+	}
+
 	GLint maxTextureSize;
 	glGetIntegerv( GL_MAX_TEXTURE_SIZE, &maxTextureSize );
 	
 	if( realWidth > maxTextureSize || realHeight > maxTextureSize ) {
 		NSLog(@"Warning: Image %@ larger than MAX_TEXTURE_SIZE (%d)", fullPath, maxTextureSize);
 	}
+	format = formatp;
 		
 	bool wasEnabled = glIsEnabled(GL_TEXTURE_2D);
 	int boundTexture = 0;
@@ -128,6 +140,20 @@ static GLint textureFilter = GL_LINEAR;
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, textureFilter);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	
+	glBindTexture(GL_TEXTURE_2D, boundTexture);
+	if( !wasEnabled ) {	glDisable(GL_TEXTURE_2D); }
+}
+
+- (void)updateTextureWithPixels:(GLubyte *)pixels atX:(int)x y:(int)y width:(int)subWidth height:(int)subHeight {
+	if( !textureId ) { NSLog(@"No texture to update. Call createTexture... first");	return; }
+	
+	bool wasEnabled = glIsEnabled(GL_TEXTURE_2D);
+	int boundTexture = 0;
+	glGetIntegerv(GL_TEXTURE_BINDING_2D, &boundTexture);
+	
+	glBindTexture(GL_TEXTURE_2D, textureId);
+	glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, subWidth, subHeight, format, GL_UNSIGNED_BYTE, pixels);
 	
 	glBindTexture(GL_TEXTURE_2D, boundTexture);
 	if( !wasEnabled ) {	glDisable(GL_TEXTURE_2D); }
