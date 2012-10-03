@@ -170,7 +170,7 @@ typedef struct _tagStringLayout {
 		[textures addObject:texture];
 		[texture release];	
 	} else {
-		texture = [textures objectAtIndex:0];
+		texture = [textures objectAtIndex:textures.count-1];
 	}
 	
 	info->ti = [textures count]; // 0 is reserved, index starts at 1
