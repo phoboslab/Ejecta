@@ -85,6 +85,7 @@ typedef struct {
 	
 	short width, height;
 	short viewportWidth, viewportHeight;
+	short bufferWidth, bufferHeight;
 	
 	EJTexture * currentTexture;
 	EJTexture * lineTexture16;

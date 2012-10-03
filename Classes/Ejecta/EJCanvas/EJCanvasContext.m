@@ -24,8 +24,8 @@ EJVertex CanvasVertexBuffer[EJ_CANVAS_VERTEX_BUFFER_SIZE];
 		state->textAlign = kEJTextAlignStart;
 		state->font = [[UIFont fontWithName:@"Helvetica" size:10] retain];
 		
-		viewportWidth = width = widthp;
-		viewportHeight = height = heightp;
+		bufferWidth = viewportWidth = width = widthp;
+		bufferHeight = viewportHeight = height = heightp;
 		
 		path = [[EJPath alloc] init];
 		backingStoreRatio = 1;
@@ -61,7 +61,7 @@ EJVertex CanvasVertexBuffer[EJ_CANVAS_VERTEX_BUFFER_SIZE];
 	
 	glGenRenderbuffers(1, &stencilBuffer);
 	glBindRenderbuffer(GL_RENDERBUFFER, stencilBuffer);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_STENCIL_INDEX8_OES, viewportWidth, viewportHeight);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_STENCIL_INDEX8_OES, bufferWidth, bufferHeight);
 	
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, stencilBuffer);
 }

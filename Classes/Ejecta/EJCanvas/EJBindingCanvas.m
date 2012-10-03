@@ -190,7 +190,6 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 	}
 	
 	[renderingContext create];
-	ejectaInstance.currentRenderingContext = renderingContext;
 
 	// Context and canvas are one and the same object, so getContext just
 	// returns itself
@@ -413,11 +412,13 @@ EJ_BIND_FUNCTION( closePath, ctx, argc, argv ) {
 }
 
 EJ_BIND_FUNCTION( fill, ctx, argc, argv ) {
+	ejectaInstance.currentRenderingContext = renderingContext;
 	[renderingContext fill];
 	return NULL;
 }
 
 EJ_BIND_FUNCTION( stroke, ctx, argc, argv ) {
+	ejectaInstance.currentRenderingContext = renderingContext;
 	[renderingContext stroke];
 	return NULL;
 }
@@ -515,7 +516,8 @@ EJ_BIND_FUNCTION( fillText, ctx, argc, argv ) {
 	float
 		x = JSValueToNumberFast(ctx, argv[1]),
 		y = JSValueToNumberFast(ctx, argv[2]);
-		
+	
+	ejectaInstance.currentRenderingContext = renderingContext;
 	[renderingContext fillText:string x:x y:y];
 	return NULL;
 }
@@ -527,7 +529,8 @@ EJ_BIND_FUNCTION( strokeText, ctx, argc, argv ) {
 	float
 		x = JSValueToNumberFast(ctx, argv[1]),
 		y = JSValueToNumberFast(ctx, argv[2]);
-		
+	
+	ejectaInstance.currentRenderingContext = renderingContext;
 	[renderingContext strokeText:string x:x y:y];
 	return NULL;
 }
