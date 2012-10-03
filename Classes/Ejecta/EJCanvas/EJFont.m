@@ -234,6 +234,7 @@ typedef struct _tagStringLayout {
 		if(info->h*contentScale + 2 > txLineH) {
 			txLineH = info->h*contentScale + 2;
 		}
+
 	}
 	
 	// if any texture was modified, send the updated content to opengl

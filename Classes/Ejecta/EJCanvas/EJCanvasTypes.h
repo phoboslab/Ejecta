@@ -52,7 +52,7 @@ static inline float EJVector2Dot( const EJVector2 v1, const EJVector2 v2 ) {
 static inline EJVector2 EJVector2ApplyTransform(EJVector2 p, CGAffineTransform t) {
 	EJVector2 pt = {
 		t.a * p.x + t.c * p.y + t.tx,
-		pt.y = t.b * p.x + t.d * p.y + t.ty
+		t.b * p.x + t.d * p.y + t.ty
 	};
 	return pt;
 }
@@ -66,8 +66,4 @@ typedef struct {
 	EJVector2 uv;
 	EJColorRGBA color;
 } EJVertex;
-
-typedef struct {
-	EJVertex v1, v2, v3;
-} EJTris;
 

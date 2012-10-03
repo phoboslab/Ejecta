@@ -30,8 +30,8 @@
 	
     backingStoreRatio = internalScaling * contentScale;
 	
-	viewportWidth = frame.size.width * contentScale;
-	viewportHeight = frame.size.height * contentScale;
+	bufferWidth = viewportWidth = frame.size.width * contentScale;
+	bufferHeight = viewportHeight = frame.size.height * contentScale;
 	
 	NSLog(
 		@"Creating ScreenCanvas: "
@@ -89,6 +89,7 @@
 
 - (void)prepare {
 	[super prepare];
+	glBindRenderbuffer(GL_RENDERBUFFER, colorRenderbuffer);
 	
 	// Flip the screen - OpenGL has the origin in the bottom left corner. We want the top left.
 	glTranslatef(0, height, 0);
