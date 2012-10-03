@@ -5,6 +5,7 @@
 #include <malloc/malloc.h>
 
 #define PT_TO_PX(pt) ceilf((pt)*(1.0f+(1.0f/3.0f)))
+#define TEXTURE_SIZE 1024
 
 typedef struct _tagGlypInfo {
 	float x,y,w,h;
@@ -126,92 +127,120 @@ typedef struct _tagStringLayout {
 	CFRelease(_ctLine);
 }
 
-- (void)layoutGlyph:(CGGlyph)glyph {
-	// get glyph information
-	GlyphInfo *info = &glyphInfo[glyph];
+- (void)layoutGlyphs:(const CGGlyph*)glyphs amount:(CFIndex)amount {
+	GlyphInfo *info;
 	
-	// get bounding box
 	CGRect bbRect;
-	CTFontGetBoundingRectsForGlyphs(ctFont, kCTFontDefaultOrientation, &glyph, &bbRect, 1);
+	CGContextRef context;
 	
-	// add some padding around the glyphs because PT_TO_PX is just an approximization
-	info->y = PT_TO_PX(bbRect.origin.y) - 2;
-	info->x = PT_TO_PX(bbRect.origin.x) - 2;
-	info->w = PT_TO_PX(bbRect.size.width) + 4;
-	info->h = PT_TO_PX(bbRect.size.height) + 4;
+	EJTexture *texture = NULL;
 	
-	// get texture
-	NSInteger textureSize = 1024;
-	EJTexture *texture;
-	
-	// check if current texture is full
-	BOOL isFull = NO;
-	
-	// texture coordinates
-	if(txLineX+((info->w+2)*contentScale)>textureSize) {
-		txLineX = 0.0f;
-		txLineY += txLineH;
-		txLineH = 0.0f;
-		if(txLineY+((info->h+2)*contentScale)>textureSize) {
-			isFull = YES;
+	for(CFIndex index=0;index<amount;index++) {
+		// get glyph information
+		info = &glyphInfo[glyphs[index]];
+		if(info->ti) {
+			continue;
+		}
+		
+		// get bounding box
+		CTFontGetBoundingRectsForGlyphs(ctFont, kCTFontDefaultOrientation, &glyphs[index], &bbRect, 1);
+		
+		// add some padding around the glyphs because PT_TO_PX is just an approximization
+		info->y = PT_TO_PX(bbRect.origin.y) - 2;
+		info->x = PT_TO_PX(bbRect.origin.x) - 2;
+		info->w = PT_TO_PX(bbRect.size.width) + 4;
+		info->h = PT_TO_PX(bbRect.size.height) + 4;
+		
+		// check if current texture is full
+		BOOL isFull = NO, switchedTexture = (index==0);
+		
+		// texture coordinates
+		if(txLineX+((info->w+2)*contentScale)>TEXTURE_SIZE) {
+			txLineX = 0.0f;
+			txLineY += txLineH;
+			txLineH = 0.0f;
+			if(txLineY+((info->h+2)*contentScale)>TEXTURE_SIZE) {
+				isFull = YES;
+			}
+		}
+		
+		// create rendering context
+		if(index==0) {
+			// create and clear pixel buffer
+			if(!txPixels) {
+				txPixels = (GLubyte *) malloc( TEXTURE_SIZE * TEXTURE_SIZE);
+			}
+			
+			// create context
+			CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceGray();
+			context = CGBitmapContextCreate(txPixels, TEXTURE_SIZE, TEXTURE_SIZE, 8, TEXTURE_SIZE, colorSpace, kCGImageAlphaNone);
+			CGColorSpaceRelease(colorSpace);
+			
+			CGContextSetFont(context, cgFont);
+			CGContextSetFontSize(context, PT_TO_PX(pointSize));
+			
+			CGContextTranslateCTM(context, 0.0, TEXTURE_SIZE);
+			CGContextScaleCTM(context, contentScale, -1.0*contentScale);
+			
+			// select text rendering mode
+			if( fill ) {
+				CGContextSetTextDrawingMode(context, kCGTextFill);
+				CGContextSetGrayFillColor(context, 1.0, 1.0);
+			} else {
+				CGContextSetTextDrawingMode(context, kCGTextStroke);
+				CGContextSetGrayStrokeColor(context, 1.0, 1.0);
+				CGContextSetLineWidth(context, 1);
+			}
+		}
+		
+		// create a new texture if neccessary
+		if([textures count] == 0 || isFull) {
+			// if there was a previous texture, send updated content to opengl
+			if(texture) {
+				[texture createTextureWithPixels:txPixels format:GL_ALPHA];
+			}
+			
+			// clear pixel buffer
+			memset( txPixels, 0, TEXTURE_SIZE*TEXTURE_SIZE);
+			
+			// now start new texture
+			txLineX = txLineY = txLineH = 0;
+			
+			texture = [[EJTexture alloc] init];
+			[texture setWidth:TEXTURE_SIZE height:TEXTURE_SIZE];
+			
+			[textures addObject:texture];
+			[texture release];
+			
+			switchedTexture = YES;
+		
+		// just use existing texture
+		} else if(!texture) {
+			texture = [textures lastObject];
+		}
+		
+		// calculate texture coordinates
+		info->ti = [textures count]; // 0 is reserved, index starts at 1
+		info->tx = ((txLineX+1) / TEXTURE_SIZE);
+		info->ty = ((txLineY+1) / TEXTURE_SIZE);
+		info->tw = (info->w / TEXTURE_SIZE) * contentScale,
+		info->th = (info->h / TEXTURE_SIZE) * contentScale;
+		
+		// render glyph
+		CGContextShowGlyphsAtPoint(context,((txLineX+1)/contentScale) - info->x,((txLineY+1)/contentScale) - info->y, glyphs+index, 1);
+		
+		// update texture coordinates
+		txLineX += info->w*contentScale + 2;
+		if(info->h*contentScale + 2 > txLineH) {
+			txLineH = info->h*contentScale + 2;
 		}
 	}
 	
-	if([textures count] == 0 || isFull) {
-		txLineX = txLineY = txLineH = 0;
-		if(!txPixels) {
-			txPixels = (GLubyte *) malloc( textureSize * textureSize);
-		}
-		memset( txPixels, 0, textureSize*textureSize);
-		
-		texture = [[EJTexture alloc] init];
-		[texture setWidth:textureSize height:textureSize];
-		
-		[textures addObject:texture];
-		[texture release];	
-	} else {
-		texture = [textures lastObject];
+	// if any texture was modified, send the updated content to opengl
+	if(texture) {
+		[texture createTextureWithPixels:txPixels format:GL_ALPHA];
+		CGContextRelease(context);
 	}
-	
-	info->ti = [textures count]; // 0 is reserved, index starts at 1
-	info->tx = ((txLineX+1) / textureSize);
-	info->ty = ((txLineY+1) / textureSize);
-	info->tw = (info->w / textureSize) * contentScale,
-	info->th = (info->h / textureSize) * contentScale;
-	
-	CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceGray();
-	CGContextRef context = CGBitmapContextCreate(txPixels, texture.realWidth, texture.realHeight, 8, texture.realWidth, colorSpace, kCGImageAlphaNone);
-	CGColorSpaceRelease(colorSpace);
-	
-	CGContextSetFont(context, cgFont);
-	CGContextSetFontSize(context, PT_TO_PX(pointSize));
-	
-	UIGraphicsPushContext(context);
-	CGContextTranslateCTM(context, 0.0, texture.realHeight);
-	CGContextScaleCTM(context, contentScale, -1.0*contentScale);
-	
-	// Fill or stroke?
-	if( fill ) {
-		CGContextSetTextDrawingMode(context, kCGTextFill);
-		CGContextSetGrayFillColor(context, 1.0, 1.0);
-	} else {
-		CGContextSetTextDrawingMode(context, kCGTextStroke);
-		CGContextSetGrayStrokeColor(context, 1.0, 1.0);
-		CGContextSetLineWidth(context, 1);
-	}
-	
-	// render glyp
-	CGContextShowGlyphsAtPoint(context,((txLineX+1)/contentScale) - info->x,((txLineY+1)/contentScale) - info->y, &glyph, 1);
-	
-	// update texture coordinates
-	txLineX += info->w*contentScale + 2;
-	if(info->h*contentScale + 2 > txLineH) {
-		txLineH = info->h*contentScale + 2;
-	}
-	
-	[texture createTextureWithPixels:txPixels format:GL_ALPHA];
-	
-	CGContextRelease(context);
 }
 
 - (id)initWithFont:(NSString *)font size:(NSInteger)ptSize fill:(BOOL)useFill contentScale:(float)cs
@@ -227,7 +256,6 @@ typedef struct _tagStringLayout {
 		fill = useFill;
 		
 		ctFont = CTFontCreateWithName((CFStringRef)font, ptSize, NULL);
-		
 		cgFont = CTFontCopyGraphicsFont(ctFont, NULL);
 		
 		if(ctFont) {
@@ -289,34 +317,32 @@ typedef struct _tagStringLayout {
 			break;
 	}
 	
-	// we don't know yet how many textures we might need
-	CFIndex numTextures = [string length];
-	CFIndex textureIndices[numTextures];
-	memset(textureIndices, 0, sizeof(CFIndex)*numTextures);
+	// layout missing glyphs
+	[self layoutGlyphs:layout.glyphs amount:layout.glyphCount];
 	
-	// layout glyphs that are not yet loaded, and flag their textures
-	for(int i=0;i<layout.glyphCount;i++) {
-		info = &glyphInfo[layout.glyphs[i]];
-		if(!info->ti) {
-			[self layoutGlyph:layout.glyphs[i]];
-		}
-		textureIndices[info->ti-1] = 1;
+	// flag required textures
+	CFIndex index, numTextures = textures.count;
+	BOOL textureSet[[textures count]];
+	memset(textureSet,0,numTextures*sizeof(BOOL));
+	
+	for(index=0;index<layout.glyphCount;index++) {
+		textureSet[glyphInfo[layout.glyphs[index]].ti-1] = 1;
 	}
-	
+		
 	// draw glyphs
-	for(CFIndex textureIndex=0;textureIndex<numTextures;textureIndex++) {
-		if(!textureIndices[textureIndex]){
+	for(index=0;index<numTextures;index++) {
+		if(!textureSet[index]){
 			continue;
 		}
 	
-		EJTexture *texture = [textures objectAtIndex:textureIndex];
+		EJTexture *texture = [textures objectAtIndex:index];
 		[context setTexture:texture];
 		
 		float gx,gy;
 		for(int i=0;i<layout.glyphCount;i++) {
 			info = &glyphInfo[layout.glyphs[i]];
 			
-			if(info->ti-1 != textureIndex) {
+			if(info->ti-1 != index) {
 				continue;
 			}
 			
@@ -325,8 +351,6 @@ typedef struct _tagStringLayout {
 			
 			[context pushRectX:gx y:gy w:info->w h:info->h tx:info->tx ty:info->ty+info->th tw:info->tw th:-info->th color:context.state->fillColor withTransform:context.state->transform];
 		}
-		
-		[context flushBuffers];
 	}
 	
 	// unbind texture
