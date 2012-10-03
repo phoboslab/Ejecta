@@ -215,7 +215,6 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
-				5B7B76751619DB9700691910 /* CoreText.framework */,
 				B68C5AEF132E6CD60015092E /* App */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
@@ -264,6 +263,7 @@
 				B625CD2315AFA3AA00351585 /* libJavaScriptCore.a */,
 				B66F1E7F1476B6A40090D208 /* libstdc++.dylib */,
 				B66F1E771476B3AC0090D208 /* libicucore.dylib */,
+				5B7B76751619DB9700691910 /* CoreText.framework */,
 				B6074FF215F8E41600D987F9 /* GameKit.framework */,
 				B607AD0F132EB52400D7C3EA /* QuartzCore.framework */,
 				1DF5F4DF0D08C38300B7A737 /* UIKit.framework */,
