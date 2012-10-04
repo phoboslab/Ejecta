@@ -180,9 +180,9 @@ int TextureToGlyphSort(const void * a, const void * b) {
 	glyphInfo->w = PT_TO_PX(bbRect.size.width) + 6;
 	glyphInfo->h = PT_TO_PX(bbRect.size.height) + 6;
 	
-	// Size needed for this glyph in pixels
-	int pxWidth = (int)((glyphInfo->w * contentScale) / 8 + 1) * 8;
-	int pxHeight = (int)((glyphInfo->h * contentScale) / 8 + 1) * 8;
+	// Size needed for this glyph in pixels; must be a multiple of 8 for CG
+	int pxWidth = floorf((glyphInfo->w * contentScale) / 8 + 1) * 8;
+	int pxHeight = floorf((glyphInfo->h * contentScale) / 8 + 1) * 8;
 		
 	// Do we need to create a new texture to hold this glyph?
 	BOOL createNewTexture = (textures.count == 0);
