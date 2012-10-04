@@ -227,7 +227,6 @@ int TextureToGlyphSort(const void * a, const void * b) {
 	CGContextSetFont(context, cgFont);
 	CGContextSetFontSize(context, PT_TO_PX(pointSize));
 	
-	UIGraphicsPushContext(context);
 	CGContextTranslateCTM(context, 0.0, pxHeight);
 	CGContextScaleCTM(context, contentScale, -1.0*contentScale);
 	
@@ -251,7 +250,6 @@ int TextureToGlyphSort(const void * a, const void * b) {
 	txLineH = MAX( txLineH, pxHeight );
 	
 	free(pixels);
-	UIGraphicsPopContext();
 	CGContextRelease(context);
 	
 	return glyphInfo->textureIndex;
