@@ -49,6 +49,23 @@ static inline float EJVector2Dot( const EJVector2 v1, const EJVector2 v2 ) {
 	return v1.x * v2.x + v1.y * v2.y;
 }
 
+static inline float EJVector2Distance( const EJVector2 v1, const EJVector2 v2 ) {
+	return (v1.x - v2.x)*(v1.x - v2.x) + (v1.y - v2.y)*(v1.y - v2.y);
+}
+
+static inline float EJDistanceToLineSegmentSquared(const EJVector2 p, const EJVector2 v, const EJVector2 w) {
+	float l2 = EJVector2Distance(v, w);
+	if (l2 == 0) return EJVector2Distance(p, v);
+	float t = ((p.x - v.x) * (w.x - v.x) + (p.y - v.y) * (w.y - v.y)) / l2;
+	if (t < 0) return EJVector2Distance(p, v);
+	if (t > 1) return EJVector2Distance(p, w);
+	return EJVector2Distance(p, EJVector2Make(v.x + t * (w.x - v.x), v.y + t * (w.y - v.y) ));
+}
+
+static inline float EJDistanceToLineSegment(const EJVector2 p, const EJVector2 v, const EJVector2 w) {
+	return sqrtf(EJDistanceToLineSegmentSquared(p,v,w));
+}
+
 static inline EJVector2 EJVector2ApplyTransform(EJVector2 p, CGAffineTransform t) {
 	EJVector2 pt = {
 		t.a * p.x + t.c * p.y + t.tx,

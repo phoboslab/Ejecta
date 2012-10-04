@@ -371,7 +371,6 @@ typedef std::vector<subpath_t> path_t;
 	EJVector2 midTex1 = { 0.5, 0 };
 	EJVector2 midTex2 = { 0.5, 1 };
 	
-	
 	// The actual miter limit is the product of the miterLimit and lineWidth properties.
 	// For thin lines we skip computing the miter completely.
 	BOOL addMiter = (projectedLineWidth >= 1 && state->lineJoin == kEJLineJoinMiter);
@@ -409,8 +408,8 @@ typedef std::vector<subpath_t> path_t;
 			back = sp->back();
 		
 		// If back and front are equal, this subpath is closed.
-		BOOL subPathIsClosed = addMiter && (sp->size() > 2 && front.x == back.x && front.y == back.y);
-		BOOL ignoreFirstSegment = subPathIsClosed;
+		BOOL subPathIsClosed = (sp->size() > 2 && front.x == back.x && front.y == back.y);
+		BOOL ignoreFirstSegment = addMiter && subPathIsClosed;
 		BOOL firstInSubPath = true;
 		
 		transCurrent = transNext = NULL;
@@ -419,7 +418,7 @@ typedef std::vector<subpath_t> path_t;
 		// to the last vertex in the subpath. This way, the miter between the last and
 		// the first segment will be computed and used to draw the first segment's first
 		// miter, as well as the last segment's last miter outside the loop.
-		if( subPathIsClosed ) {
+		if(addMiter && subPathIsClosed ) {
 			transNext = &sp->at(sp->size()-2);
 			next = EJVector2ApplyTransform( *transNext, inverseTransform );
 		}
@@ -493,11 +492,36 @@ typedef std::vector<subpath_t> path_t;
 				continue;
 			}
 			
+			if(!addMiter) {
+				float d1,d2;
+				EJVector2 p1,p2,
+					prev	= EJVector2Sub(current, currentEdge), // previous point can be approximated, good enough for distance comparison
+					normal	= EJVector2Make(nextEdge.y*state->lineWidth*0.5, -nextEdge.x*state->lineWidth*0.5); // line normal for next edge
+				
+				// calculate points to use for bevel
+				// two points are possible for each edge - the one farthest away from the other line has to be used
+				
+				// calculate point for current edge
+				d1 = EJDistanceToLineSegmentSquared(miter21, current, next);
+				d2 = EJDistanceToLineSegmentSquared(miter22, current, next);
+				p1 = (d1>d2)?miter21:miter22;
+				
+				// calculate point for next edge
+				d1 = EJDistanceToLineSegmentSquared(EJVector2Add(current,normal), current, prev);
+				d2 = EJDistanceToLineSegmentSquared(EJVector2Sub(current,normal), current, prev);
+				p2 = (d1>d2)?EJVector2Add(current,normal):EJVector2Sub(current,normal);
+				
+				// draw triangle
+				[context
+					pushTriX1:p1.x	y1:p1.y x2:current.x y2:current.y x3:p2.x y3:p2.y
+					color:color withTransform:transform];
+			}
+			
 			[context
 				pushQuadV1:miter11 v2:miter12 v3:miter21 v4:miter22
 				t1:midTex1 t2:midTex2 t3:midTex1 t4:midTex2
 				color:color withTransform:transform];
-			
+
 			// No miter added? The "miter" for the next segment needs to be the butt for the next segment,
 			// not the butt for the current one.
 			if( !miterAdded ) {
@@ -508,7 +532,7 @@ typedef std::vector<subpath_t> path_t;
 		
 		
 		// The last segment, not handled in the loop
-		if( subPathIsClosed ) {
+		if( addMiter && subPathIsClosed ) {
 			miter11 = firstMiter1;
 			miter12 = firstMiter2;
 		}
@@ -518,11 +542,37 @@ typedef std::vector<subpath_t> path_t;
 			miter12 = EJVector2Sub(untransformedBack, nextExt);
 		}
 		
+		if(!addMiter && subPathIsClosed) {
+			float d1,d2;
+			EJVector2 p1,p2,
+			normal		= EJVector2Make(nextEdge.y*state->lineWidth*0.5, -nextEdge.x*state->lineWidth*0.5), // line normal for next edge
+			firstNormal = EJVector2Sub(firstMiter1,firstMiter2),							// unnormalized line normal for first edge
+			second		= EJVector2Add(next,EJVector2Make(firstNormal.y,-firstNormal.x));	// approximated second point
+			
+			// calculate points to use for bevel
+			// two points are possible for each edge - the one farthest away from the other line has to be used
+			
+			// calculate point for current edge
+			d1 = EJDistanceToLineSegmentSquared(EJVector2Add(next,normal), next, second);
+			d2 = EJDistanceToLineSegmentSquared(EJVector2Sub(next,normal), next, second);
+			p2 = (d1>d2)?EJVector2Add(next,normal):EJVector2Sub(next,normal);
+			
+			// calculate point for next edge
+			d1 = EJDistanceToLineSegmentSquared(firstMiter1, current, next);
+			d2 = EJDistanceToLineSegmentSquared(firstMiter2, current, next);
+			p1 = (d1>d2)?firstMiter1:firstMiter2;
+			
+			// draw triangle
+			[context
+			 pushTriX1:p1.x	y1:p1.y x2:next.x y2:next.y x3:p2.x y3:p2.y
+			 color:color withTransform:transform];
+		}
+		
 		[context
 			pushQuadV1:miter11 v2:miter12 v3:miter21 v4:miter22
 			t1:midTex1 t2:midTex2 t3:midTex1 t4:midTex2
 			color:color withTransform:transform];		
-		
+
 		// End cap
 		if( addCaps && !subPathIsClosed ) {
 			EJVector2 capExt = { nextExt.y, -nextExt.x };

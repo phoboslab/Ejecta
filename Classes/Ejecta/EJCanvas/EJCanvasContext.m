@@ -121,6 +121,33 @@ EJVertex CanvasVertexBuffer[EJ_CANVAS_VERTEX_BUFFER_SIZE];
 	[currentTexture bind];
 }
 
+- (void)pushTriX1:(float)x1 y1:(float)y1 x2:(float)x2 y2:(float)y2
+			   x3:(float)x3 y3:(float)y3
+			color:(EJColorRGBA)color
+	withTransform:(CGAffineTransform)transform
+{
+	if( vertexBufferIndex >= EJ_CANVAS_VERTEX_BUFFER_SIZE - 3 ) {
+		[self flushBuffers];
+	}
+	
+	EJVector2 d1 = { x1, y1 };
+	EJVector2 d2 = { x2, y2 };
+	EJVector2 d3 = { x3, y3 };
+	
+	if( !CGAffineTransformIsIdentity(transform) ) {
+		d1 = EJVector2ApplyTransform( d1, transform );
+		d2 = EJVector2ApplyTransform( d2, transform );
+		d3 = EJVector2ApplyTransform( d3, transform );
+	}
+	
+	EJVertex * vb = &CanvasVertexBuffer[vertexBufferIndex];
+	vb[0] = (EJVertex) { d1, {0.5, 1}, color };
+	vb[1] = (EJVertex) { d2, {0.5, 0.5}, color };
+	vb[2] = (EJVertex) { d3, {0.5, 1}, color };
+	
+	vertexBufferIndex += 3;
+}
+
 - (void)pushQuadV1:(EJVector2)v1 v2:(EJVector2)v2 v3:(EJVector2)v3 v4:(EJVector2)v4
 	t1:(EJVector2)t1 t2:(EJVector2)t2 t3:(EJVector2)t3 t4:(EJVector2)t4
 	color:(EJColorRGBA)color
