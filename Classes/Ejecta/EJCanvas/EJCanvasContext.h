@@ -108,6 +108,10 @@ typedef struct {
 - (void)bindVertexBuffer;
 - (void)prepare;
 - (void)setTexture:(EJTexture *)newTexture;
+- (void)pushTriX1:(float)x1 y1:(float)y1 x2:(float)x2 y2:(float)y2
+			   x3:(float)x3 y3:(float)y3
+			 color:(EJColorRGBA)color
+	 withTransform:(CGAffineTransform)transform;
 - (void)pushQuadV1:(EJVector2)v1 v2:(EJVector2)v2 v3:(EJVector2)v3 v4:(EJVector2)v4
 	t1:(EJVector2)t1 t2:(EJVector2)t2 t3:(EJVector2)t3 t4:(EJVector2)t4
 	color:(EJColorRGBA)color
