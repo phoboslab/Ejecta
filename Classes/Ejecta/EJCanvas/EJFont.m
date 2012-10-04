@@ -175,10 +175,10 @@ int TextureToGlyphSort(const void * a, const void * b) {
 	CTFontGetBoundingRectsForGlyphs(ctFont, kCTFontDefaultOrientation, &glyph, &bbRect, 1);
 	
 	// Add some padding around the glyphs because PT_TO_PX is just an approximization
-	glyphInfo->y = PT_TO_PX(bbRect.origin.y) - 2;
-	glyphInfo->x = PT_TO_PX(bbRect.origin.x) - 2;
-	glyphInfo->w = PT_TO_PX(bbRect.size.width) + 4;
-	glyphInfo->h = PT_TO_PX(bbRect.size.height) + 4;
+	glyphInfo->y = PT_TO_PX(bbRect.origin.y) - 3;
+	glyphInfo->x = PT_TO_PX(bbRect.origin.x) - 3;
+	glyphInfo->w = PT_TO_PX(bbRect.size.width) + 6;
+	glyphInfo->h = PT_TO_PX(bbRect.size.height) + 6;
 	
 	// Size needed for this glyph in pixels
 	int pxWidth = (int)((glyphInfo->w * contentScale) / 8 + 1) * 8;
