@@ -368,8 +368,8 @@ typedef std::vector<subpath_t> path_t;
 		angle2 = acosf(v1.x*v2.x+v1.y*v2.y);
 	}
 	
-	// 1 step per 6 pixel
-	int numSteps = MAX(1,(angle2 * context.state->lineWidth*0.5 * CGAffineTransformGetScale(context.state->transform)*context.backingStoreRatio)/6.0f);
+	// 1 step per 5 pixel
+	int numSteps = MAX(1,(angle2 * context.state->lineWidth*0.5 * CGAffineTransformGetScale(context.state->transform)*context.backingStoreRatio)/5.0f);
 	
 	if(numSteps==1) {
 		[context
@@ -380,12 +380,6 @@ typedef std::vector<subpath_t> path_t;
 	
 	// calculate direction
 	direction = ((v2.x*v1.y - v2.y*v1.x)<0?-1:1);
-	
-	// add 1px overdraw to avoid seams.
-	// Seams might appear because the points used in the bevel generation are different from those used to draw the line segments
-	float overdraw = (1.0f/(context.state->lineWidth*0.5))*M_2_PI;
-	angle1 -= overdraw*direction;
-	angle2 += 2*overdraw;
 	
 	// calculate angle step
 	step = (angle2/numSteps) * direction;
@@ -558,10 +552,10 @@ typedef std::vector<subpath_t> path_t;
 			
 			if(!addMiter || miterLimitExceeded) {
 				float d1,d2;
-				EJVector2 p1,p2,
-					prev	= EJVector2Sub(current, currentEdge), // previous point can be approximated, good enough for distance comparison
-					normal	= EJVector2Make(nextEdge.y*state->lineWidth*0.5, -nextEdge.x*state->lineWidth*0.5); // line normal for next edge
-				
+				EJVector2
+					p1,p2,
+					prev	= EJVector2Sub(current, currentEdge); // previous point can be approximated, good enough for distance comparison
+					
 				// calculate points to use for bevel
 				// two points are possible for each edge - the one farthest away from the other line has to be used
 				
@@ -571,9 +565,9 @@ typedef std::vector<subpath_t> path_t;
 				p1 = (d1>d2)?miter21:miter22;
 				
 				// calculate point for next edge
-				d1 = EJDistanceToLineSegmentSquared(EJVector2Add(current,normal), current, prev);
-				d2 = EJDistanceToLineSegmentSquared(EJVector2Sub(current,normal), current, prev);
-				p2 = (d1>d2)?EJVector2Add(current,normal):EJVector2Sub(current,normal);
+				d1 = EJDistanceToLineSegmentSquared(EJVector2Add(current,nextExt), current, prev);
+				d2 = EJDistanceToLineSegmentSquared(EJVector2Sub(current,nextExt), current, prev);
+				p2 = (d1>d2)?EJVector2Add(current,nextExt):EJVector2Sub(current,nextExt);
 				
 				if(context.state->lineJoin==kEJLineJoinRound) {
 					[self drawArcToContext:context atPoint:current v1:p1 v2:p2 color:color];
@@ -599,7 +593,7 @@ typedef std::vector<subpath_t> path_t;
 		
 		
 		// The last segment, not handled in the loop
-		if( addMiter && subPathIsClosed ) {
+		if( !firstMiterLimitExceeded && addMiter && subPathIsClosed ) {
 			miter11 = firstMiter1;
 			miter12 = firstMiter2;
 		}
@@ -612,7 +606,6 @@ typedef std::vector<subpath_t> path_t;
 		if((!addMiter || firstMiterLimitExceeded) && subPathIsClosed) {
 			float d1,d2;
 			EJVector2 p1,p2,
-			normal		= EJVector2Make(nextEdge.y*state->lineWidth*0.5, -nextEdge.x*state->lineWidth*0.5), // line normal for next edge
 			firstNormal = EJVector2Sub(firstMiter1,firstMiter2),							// unnormalized line normal for first edge
 			second		= EJVector2Add(next,EJVector2Make(firstNormal.y,-firstNormal.x));	// approximated second point
 			
@@ -620,9 +613,9 @@ typedef std::vector<subpath_t> path_t;
 			// two points are possible for each edge - the one farthest away from the other line has to be used
 			
 			// calculate point for current edge
-			d1 = EJDistanceToLineSegmentSquared(EJVector2Add(next,normal), next, second);
-			d2 = EJDistanceToLineSegmentSquared(EJVector2Sub(next,normal), next, second);
-			p2 = (d1>d2)?EJVector2Add(next,normal):EJVector2Sub(next,normal);
+			d1 = EJDistanceToLineSegmentSquared(miter12, next, second);
+			d2 = EJDistanceToLineSegmentSquared(miter11, next, second);
+			p2 = (d1>d2)?miter12:miter11;
 			
 			// calculate point for next edge
 			d1 = EJDistanceToLineSegmentSquared(firstMiter1, current, next);
