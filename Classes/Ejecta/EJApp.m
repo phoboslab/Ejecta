@@ -202,6 +202,11 @@ static EJApp * ejectaInstance = NULL;
 }
 
 
+- (void)clearCaches {
+	JSGarbageCollect(jsGlobalContext);
+}
+
+
 - (void)hideLoadingScreen {
 	//[loadingScreen removeFromSuperview];
 	//[loadingScreen release];

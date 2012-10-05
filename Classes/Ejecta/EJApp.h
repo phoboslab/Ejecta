@@ -47,6 +47,7 @@
 - (void)run:(CADisplayLink *)sender;
 - (void)pause;
 - (void)resume;
+- (void)clearCaches;
 - (NSString *)pathForResource:(NSString *)resourcePath;
 - (JSValueRef)createTimer:(JSContextRef)ctx argc:(size_t)argc argv:(const JSValueRef [])argv repeat:(BOOL)repeat;
 - (JSValueRef)deleteTimer:(JSContextRef)ctx argc:(size_t)argc argv:(const JSValueRef [])argv;
