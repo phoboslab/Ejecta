@@ -92,6 +92,9 @@ static inline bool JSStrIsEqualToStr( const JSChar * s1, const char * s2, int le
 	BOOL isScreenCanvas;
 	BOOL useRetinaResolution;
 	EJScalingMode scalingMode;
+	
+	BOOL msaaEnabled;
+	int msaaSamples;
 }
 	
 @property (readonly, nonatomic) EJTexture * texture;

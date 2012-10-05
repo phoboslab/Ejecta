@@ -12,6 +12,8 @@ static int firstCanvasInstance = YES;
 		ejectaInstance = [EJApp instance]; // Keep a local copy - may be faster?
 		scalingMode = kEJScalingModeFitWidth;
 		useRetinaResolution = true;
+		msaaEnabled = false;
+		msaaSamples = 2;
 		
 		// If this is the first canvas instance we created, make it the screen canvas
 		if( firstCanvasInstance ) {
@@ -167,6 +169,25 @@ EJ_BIND_GET(backingStorePixelRatio, ctx) {
 	return JSValueMakeNumber(ctx, renderingContext.backingStoreRatio);
 }
 
+EJ_BIND_SET(MSAAEnabled, ctx, value) {
+	msaaEnabled = JSValueToBoolean(ctx, value);
+}
+
+EJ_BIND_GET(MSAAEnabled, ctx) {
+	return JSValueMakeBoolean(ctx, msaaEnabled);
+}
+
+EJ_BIND_SET(MSAASamples, ctx, value) {
+	int samples = JSValueToNumberFast(ctx, value);
+	if( samples == 2 || samples == 4 ) {
+		msaaSamples	= samples;
+	}
+}
+
+EJ_BIND_GET(MSAASamples, ctx) {
+	return JSValueMakeNumber(ctx, msaaSamples);
+}
+
 
 
 EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
@@ -189,7 +210,11 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 		renderingContext = [[EJCanvasContextTexture alloc] initWithWidth:width height:height];
 	}
 	
+	renderingContext.msaaEnabled = msaaEnabled;
+	renderingContext.msaaSamples = msaaSamples;
+	
 	[renderingContext create];
+	ejectaInstance.currentRenderingContext = renderingContext;
 
 	// Context and canvas are one and the same object, so getContext just
 	// returns itself

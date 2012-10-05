@@ -37,26 +37,24 @@
 		@"Creating ScreenCanvas: "
 			@"size: %dx%d, aspect ratio: %.3f, "
 			@"scaled: %.3f = %.0fx%.0f, "
-			@"using retina: %@ = %.0fx%.0f", 
+			@"retina: %@ = %.0fx%.0f, "
+			@"msaa: %@",
 		width, height, aspect, 
 		internalScaling, frame.size.width, frame.size.height,
 		(useRetinaResolution ? @"yes" : @"no"),
-		frame.size.width * contentScale, frame.size.height * contentScale
+		frame.size.width * contentScale, frame.size.height * contentScale,
+		(msaaEnabled ? [NSString stringWithFormat:@"yes (%d samples)", msaaSamples] : @"no")
 	);
 	
 	// Create the OpenGL UIView with final screen size and content scaling (retina)
 	glview = [[EAGLView alloc] initWithFrame:frame contentScale:contentScale];
 	
-	
-	// This creates the framebuffer and our internal vertex buffer
+	// This creates the frame- and renderbuffers
 	[super create];
 	
-	
 	// Set up the renderbuffer and some initial OpenGL properties
-	glGenRenderbuffers(1, &colorRenderbuffer);
-	glBindRenderbuffer(GL_RENDERBUFFER, colorRenderbuffer);
 	[glview.context renderbufferStorage:GL_RENDERBUFFER fromDrawable:(CAEAGLLayer *)glview.layer];
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, colorRenderbuffer);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, viewRenderBuffer);
 	
 	glDisable(GL_CULL_FACE);
 	glDisable(GL_DEPTH_TEST);
@@ -77,19 +75,11 @@
 
 - (void)dealloc {
 	[glview release];
-	glDeleteRenderbuffers(1, &colorRenderbuffer);
 	[super dealloc];
-}
-
-- (void)createStencilBufferOnce {
-	if( stencilBuffer ) { return; }
-	[super createStencilBufferOnce];
-	glBindRenderbuffer(GL_RENDERBUFFER, colorRenderbuffer);
 }
 
 - (void)prepare {
 	[super prepare];
-	glBindRenderbuffer(GL_RENDERBUFFER, colorRenderbuffer);
 	
 	// Flip the screen - OpenGL has the origin in the bottom left corner. We want the top left.
 	glTranslatef(0, height, 0);
@@ -97,8 +87,8 @@
 }
 
 - (EJImageData*)getImageDataSx:(float)sx sy:(float)sy sw:(float)sw sh:(float)sh {
-	// FIXME: This takes care of the flipped pixel layout and the internal scaling
-	// the latter will mush pixel; not sure how to fix it - print warning instead.
+	// FIXME: This takes care of the flipped pixel layout and the internal scaling.
+	// The latter will mush pixel; not sure how to fix it - print warning instead.
 	
 	if( backingStoreRatio != 1 && [EJTexture smoothScaling] ) {
 		NSLog(
@@ -139,7 +129,23 @@
 
 - (void)present {
 	[self flushBuffers];
-	[glview.context presentRenderbuffer:GL_RENDERBUFFER];
+	
+	const GLenum discards[] = {GL_STENCIL_ATTACHMENT};
+	glDiscardFramebufferEXT(GL_FRAMEBUFFER, 1, discards);
+	
+	if( msaaEnabled ) {
+		//Bind the MSAA and View frameBuffers and resolve
+		glBindFramebuffer(GL_READ_FRAMEBUFFER_APPLE, msaaFrameBuffer);
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER_APPLE, viewFrameBuffer);
+		glResolveMultisampleFramebufferAPPLE();
+		
+		glBindRenderbuffer(GL_RENDERBUFFER, viewRenderBuffer);
+		[glview.context presentRenderbuffer:GL_RENDERBUFFER];
+		glBindFramebuffer(GL_FRAMEBUFFER, msaaFrameBuffer);
+	}
+	else {
+		[glview.context presentRenderbuffer:GL_RENDERBUFFER];
+	}	
 }
 
 @end

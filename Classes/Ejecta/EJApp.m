@@ -184,6 +184,7 @@ static EJApp * ejectaInstance = NULL;
 	}
 	
 	// Redraw the canvas
+	self.currentRenderingContext = screenRenderingContext;
 	[screenRenderingContext present];
 }
 

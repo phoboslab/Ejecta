@@ -79,11 +79,16 @@ typedef struct {
 
 
 @interface EJCanvasContext : NSObject {
-	GLuint frameBuffer, stencilBuffer;
+	GLuint viewFrameBuffer, viewRenderBuffer;
+	GLuint msaaFrameBuffer, msaaRenderBuffer;
+	GLuint stencilBuffer;
 	
 	short width, height;
 	short viewportWidth, viewportHeight;
 	short bufferWidth, bufferHeight;
+	
+	BOOL msaaEnabled;
+	int msaaSamples;
 	
 	EJTexture * currentTexture;
 	
@@ -153,6 +158,8 @@ typedef struct {
 @property (nonatomic) EJCompositeOperation globalCompositeOperation;
 @property (nonatomic, retain) UIFont * font;
 @property (nonatomic, assign) float backingStoreRatio;
+@property (nonatomic) BOOL msaaEnabled;
+@property (nonatomic) int msaaSamples;
 
 /* TODO: not yet implemented:
 	createLinearGradient(x0, y0, x1, y1)

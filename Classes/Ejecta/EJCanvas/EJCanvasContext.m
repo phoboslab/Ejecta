@@ -6,7 +6,9 @@
 EJVertex CanvasVertexBuffer[EJ_CANVAS_VERTEX_BUFFER_SIZE];
 
 
-@synthesize state, backingStoreRatio;
+@synthesize state;
+@synthesize backingStoreRatio;
+@synthesize msaaEnabled, msaaSamples;
 
 - (id)initWithWidth:(short)widthp height:(short)heightp {
 	if( self = [super init] ) {
@@ -33,6 +35,9 @@ EJVertex CanvasVertexBuffer[EJ_CANVAS_VERTEX_BUFFER_SIZE];
 		
 		fontCache = [[NSCache alloc] init];
 		fontCache.countLimit = 8;
+		
+		msaaEnabled = NO;
+		msaaSamples = 2;
 	}
 	return self;
 }
@@ -45,19 +50,33 @@ EJVertex CanvasVertexBuffer[EJ_CANVAS_VERTEX_BUFFER_SIZE];
 		[stateStack[i].font release];
 	}
 	
-	if( stencilBuffer ) {
-		glDeleteRenderbuffers(1, &stencilBuffer);
-	}
-	if( frameBuffer ) {
-		glDeleteFramebuffers( 1, &frameBuffer);
-	}
+	if( viewFrameBuffer ) { glDeleteFramebuffers( 1, &viewFrameBuffer); }
+	if( viewRenderBuffer ) { glDeleteRenderbuffers(1, &viewRenderBuffer); }
+	if( msaaFrameBuffer ) {	glDeleteFramebuffers( 1, &msaaFrameBuffer); }
+	if( msaaRenderBuffer ) { glDeleteRenderbuffers(1, &msaaRenderBuffer); }
+	if( stencilBuffer ) { glDeleteRenderbuffers(1, &stencilBuffer); }
+	
 	[path release];
 	[super dealloc];
 }
 
 - (void)create {
-	glGenFramebuffersOES(1, &frameBuffer);
-	glBindFramebufferOES(GL_FRAMEBUFFER_OES, frameBuffer);
+	if( msaaEnabled ) {
+		glGenFramebuffers(1, &msaaFrameBuffer);
+		glBindFramebuffer(GL_FRAMEBUFFER, msaaFrameBuffer);
+		
+		glGenRenderbuffers(1, &msaaRenderBuffer);
+		glBindRenderbuffer(GL_RENDERBUFFER, msaaRenderBuffer);
+		
+		glRenderbufferStorageMultisampleAPPLE(GL_RENDERBUFFER, msaaSamples, GL_RGBA8_OES, bufferWidth, bufferHeight);
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, msaaRenderBuffer);
+	}
+	
+	glGenFramebuffers(1, &viewFrameBuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, viewFrameBuffer);
+	
+	glGenRenderbuffers(1, &viewRenderBuffer);
+	glBindRenderbuffer(GL_RENDERBUFFER, viewRenderBuffer);
 }
 
 - (void)createStencilBufferOnce {
@@ -65,9 +84,15 @@ EJVertex CanvasVertexBuffer[EJ_CANVAS_VERTEX_BUFFER_SIZE];
 	
 	glGenRenderbuffers(1, &stencilBuffer);
 	glBindRenderbuffer(GL_RENDERBUFFER, stencilBuffer);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_STENCIL_INDEX8_OES, bufferWidth, bufferHeight);
-	
+	if( msaaEnabled ) {
+		glRenderbufferStorageMultisampleAPPLE(GL_RENDERBUFFER, msaaSamples, GL_DEPTH24_STENCIL8_OES, bufferWidth, bufferHeight);
+	}
+	else {
+		glRenderbufferStorageOES(GL_RENDERBUFFER, GL_STENCIL_INDEX8_OES, bufferWidth, bufferHeight);
+	}
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, stencilBuffer);
+	
+	glBindRenderbuffer(GL_RENDERBUFFER, msaaEnabled ? msaaRenderBuffer : viewRenderBuffer );
 }
 
 - (void)bindVertexBuffer {
@@ -82,7 +107,8 @@ EJVertex CanvasVertexBuffer[EJ_CANVAS_VERTEX_BUFFER_SIZE];
 
 - (void)prepare {
 	// Bind the frameBuffer and vertexBuffer array
-	glBindFramebufferOES(GL_FRAMEBUFFER_OES, frameBuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, msaaEnabled ? msaaFrameBuffer : viewFrameBuffer );
+	glBindRenderbuffer(GL_RENDERBUFFER, msaaEnabled ? msaaRenderBuffer : viewRenderBuffer );
 	
 	glViewport(0, 0, viewportWidth, viewportHeight);
 	
