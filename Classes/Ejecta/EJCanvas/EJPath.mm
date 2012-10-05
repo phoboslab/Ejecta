@@ -354,10 +354,13 @@ typedef std::vector<subpath_t> path_t;
 	
 	EJVector2 v1= EJVector2Normalize(EJVector2Sub(p1, point)),v2 = EJVector2Normalize(EJVector2Sub(p2, point));
 	
-	float angle1,angle2,angle,step;
+	float angle1,angle2,angle,step,direction;
+	
+	// calculate direction
+	direction = ((v2.x*v1.y - v2.y*v1.x)<0?-1:1);
 	
 	// calculate starting angle for arc
-	angle1 = angle = atan2(1,0) - atan2(v1.x,-v1.y);
+	angle1 = atan2(1,0) - atan2(v1.x,-v1.y);
 	
 	// calculate smalles angle between both vectors
 	// colinear vectors (for caps) need to be handled seperately
@@ -367,24 +370,24 @@ typedef std::vector<subpath_t> path_t;
 		angle2 = acosf(v1.x*v2.x+v1.y*v2.y);
 	}
 	
-	// 4 steps per quarter circle
-	int numSteps = (angle2/(M_PI_2/4));
+	// add 1px overdraw to avoid seams. Unfortunately, just using p1 and p2 as start and endpoint does not work.
+	float overdraw = (1.0f/(context.state->lineWidth*0.5))*M_2_PI;
+	angle1 -= overdraw*direction;
+	angle2 += 2*overdraw;
 	
-	// calculate angle step with direction
-	step = (angle2/numSteps) * ((v2.x*v1.y - v2.y*v1.x)<0?-1:1);
+	// 1 step per 6 pixel
+	int numSteps = MAX(1,(angle2 * context.state->lineWidth*0.5 * CGAffineTransformGetScale(context.state->transform)*context.backingStoreRatio)/6.0f);
+	
+	// calculate angle step
+	step = (angle2/numSteps) * direction;
 	
 	// starting point
-	arcP1 = p1;
+	angle = angle1;
+	arcP1 = EJVector2Make( point.x + cosf(angle) * context.state->lineWidth*0.5, point.y - sinf(angle) * context.state->lineWidth*0.5 );
 	
 	for(int i=0;i<numSteps;i++) {
 		angle+=step;
-		// don't calculate the last point, to avoid precision issues
-		if(i==numSteps-1) {
-			arcP2 = p2;
-		// calculate point on arc
-		} else {
-			arcP2 = EJVector2Make( point.x + cosf(angle) * context.state->lineWidth*0.5, point.y - sinf(angle) * context.state->lineWidth*0.5 );
-		}
+		arcP2 = EJVector2Make( point.x + cosf(angle) * context.state->lineWidth*0.5, point.y - sinf(angle) * context.state->lineWidth*0.5 );
 		[context
 		 pushTriX1:arcP1.x	y1:arcP1.y x2:point.x y2:point.y x3:arcP2.x y3:arcP2.y
 		 color:context.state->strokeColor withTransform:transform];
@@ -620,7 +623,7 @@ typedef std::vector<subpath_t> path_t;
 				[self drawArcToContext:context atPoint:next v1:p1 v2:p2];
 			}
 		}
-		
+
 		[context
 			pushQuadV1:miter11 v2:miter12 v3:miter21 v4:miter22
 			t1:midTex1 t2:midTex2 t3:midTex1 t4:midTex2
