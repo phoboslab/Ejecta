@@ -410,22 +410,16 @@ typedef std::vector<subpath_t> path_t;
 	[self endSubPath];
 	
 	EJCanvasState * state = context.state;
+	EJVector2 vecZero = { 0.0f, 0.0f };
 	
 	// Find the width of the line as it is projected onto the screen.
 	float projectedLineWidth = CGAffineTransformGetScale( state->transform ) * state->lineWidth;
-	[context setLineTextureForWidth:projectedLineWidth];
+	[context setTexture:NULL];
 	
 	// Figure out if we need to add line caps and set the cap texture coord for square or round caps.
 	// For thin lines we disable texturing and line caps.
 	float width2 = state->lineWidth/2;
 	BOOL addCaps = (projectedLineWidth > 2 && (state->lineCap == kEJLineCapRound || state->lineCap == kEJLineCapSquare));
-	
-	float capTexXCoord = (state->lineCap == kEJLineCapRound) ? 0.0f : 0.5f;
-	EJVector2 capTex1 = { capTexXCoord, 0 };
-	EJVector2 capTex2 = { capTexXCoord, 1 };
-	
-	EJVector2 midTex1 = { 0.5, 0 };
-	EJVector2 midTex2 = { 0.5, 1 };
 	
 	// The miter limit is the maximum allowed ratio of the miter length to half the line width.
 	// For thin lines we skip computing the miter completely.
@@ -435,6 +429,17 @@ typedef std::vector<subpath_t> path_t;
 	EJColorRGBA color = state->strokeColor;
 	color.rgba.a = (float)color.rgba.a * state->globalAlpha;
 	
+	// enable stencil test when drawing transparent lines
+	if(color.rgba.a < 0xff) {
+		[context createStencilBufferOnce];
+		
+		glEnable(GL_STENCIL_TEST);
+		
+		glStencilMask(0x01);
+		
+		glStencilOp(GL_KEEP, GL_KEEP, GL_INCR);
+		glStencilFunc(GL_NOTEQUAL, 0x1, 0x1);
+	}
 	
 	// To draw the line correctly with transformations, we need to construct the line
 	// vertices from the untransformed points and only apply the transformation in
@@ -509,7 +514,7 @@ typedef std::vector<subpath_t> path_t;
 						
 						[context
 							 pushQuadV1:cap11 v2:cap12 v3:miter21 v4:miter22
-							 t1:capTex1 t2:capTex2 t3:midTex1 t4:midTex2
+							 t1:vecZero t2:vecZero t3:vecZero t4:vecZero
 							 color:color withTransform:transform];
 					}
 					else {
@@ -590,7 +595,7 @@ typedef std::vector<subpath_t> path_t;
 
 			[context
 				pushQuadV1:miter11 v2:miter12 v3:miter21 v4:miter22
-				t1:midTex1 t2:midTex2 t3:midTex1 t4:midTex2
+				t1:vecZero t2:vecZero t3:vecZero t4:vecZero
 				color:color withTransform:transform];
 
 			// No miter added? The "miter" for the next segment needs to be the butt for the next segment,
@@ -644,7 +649,7 @@ typedef std::vector<subpath_t> path_t;
 
 		[context
 			pushQuadV1:miter11 v2:miter12 v3:miter21 v4:miter22
-			t1:midTex1 t2:midTex2 t3:midTex1 t4:midTex2
+			t1:vecZero t2:vecZero t3:vecZero t4:vecZero
 			color:color withTransform:transform];		
 
 		// End cap
@@ -656,7 +661,7 @@ typedef std::vector<subpath_t> path_t;
 				
 				[context
 					pushQuadV1:cap11 v2:cap12 v3:miter11 v4:miter12
-					t1:capTex1 t2:capTex2 t3:midTex1 t4:midTex2
+					t1:vecZero t2:vecZero t3:vecZero t4:vecZero
 					color:color withTransform:transform];
 			}
 			else {
@@ -664,6 +669,15 @@ typedef std::vector<subpath_t> path_t;
 			}
 		}
 	} // for each path
+	
+	// disable stencil test when drawing transparent lines
+	if(color.rgba.a<0xff) {
+		[context flushBuffers];
+		glDisable(GL_STENCIL_TEST);
+		
+		glClearStencil(0);
+		glClear(GL_STENCIL_BUFFER_BIT);
+	}
 }
 
 
