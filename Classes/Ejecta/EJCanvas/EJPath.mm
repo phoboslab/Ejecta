@@ -349,6 +349,49 @@ typedef std::vector<subpath_t> path_t;
 	glDisable(GL_STENCIL_TEST);
 }
 
+- (void)drawArcToContext:(EJCanvasContext *)context atPoint:(EJVector2)point v1:(EJVector2)p1 v2:(EJVector2)p2 {
+	EJVector2 arcP1,arcP2;
+	
+	EJVector2 v1= EJVector2Normalize(EJVector2Sub(p1, point)),v2 = EJVector2Normalize(EJVector2Sub(p2, point));
+	
+	float angle1,angle2,angle,step;
+	
+	// calculate starting angle for arc
+	angle1 = angle = atan2(1,0) - atan2(v1.x,-v1.y);
+	
+	// calculate smalles angle between both vectors
+	// colinear vectors (for caps) need to be handled seperately
+	if(v1.x==-v2.x&&v1.y==-v2.y) {
+		angle2 = 3.14;
+	} else {
+		angle2 = acosf(v1.x*v2.x+v1.y*v2.y);
+	}
+	
+	// 4 steps per quarter circle
+	int numSteps = (angle2/(M_PI_2/4));
+	
+	// calculate angle step with direction
+	step = (angle2/numSteps) * ((v2.x*v1.y - v2.y*v1.x)<0?-1:1);
+	
+	// starting point
+	arcP1 = p1;
+	
+	for(int i=0;i<numSteps;i++) {
+		angle+=step;
+		// don't calculate the last point, to avoid precision issues
+		if(i==numSteps-1) {
+			arcP2 = p2;
+		// calculate point on arc
+		} else {
+			arcP2 = EJVector2Make( point.x + cosf(angle) * context.state->lineWidth*0.5, point.y - sinf(angle) * context.state->lineWidth*0.5 );
+		}
+		[context
+		 pushTriX1:arcP1.x	y1:arcP1.y x2:point.x y2:point.y x3:arcP2.x y3:arcP2.y
+		 color:context.state->strokeColor withTransform:transform];
+		
+		arcP1 = arcP2;
+	}
+}
 
 - (void)drawLinesToContext:(EJCanvasContext *)context {
 	[self endSubPath];
@@ -445,14 +488,18 @@ typedef std::vector<subpath_t> path_t;
 				
 				// Start cap
 				if( addCaps && !subPathIsClosed ) {
-					EJVector2 capExt = { -nextExt.y, nextExt.x };
-					EJVector2 cap11 = EJVector2Add( miter21, capExt );
-					EJVector2 cap12 = EJVector2Add( miter22, capExt );
-					
-					[context
-						pushQuadV1:cap11 v2:cap12 v3:miter21 v4:miter22
-						t1:capTex1 t2:capTex2 t3:midTex1 t4:midTex2
-						color:color withTransform:transform];
+					if(context.state->lineCap == kEJLineCapSquare) {
+						EJVector2 capExt = { -nextExt.y, nextExt.x };
+						EJVector2 cap11 = EJVector2Add( miter21, capExt );
+						EJVector2 cap12 = EJVector2Add( miter22, capExt );
+						
+						[context
+							 pushQuadV1:cap11 v2:cap12 v3:miter21 v4:miter22
+							 t1:capTex1 t2:capTex2 t3:midTex1 t4:midTex2
+							 color:color withTransform:transform];
+					} else {
+						[self drawArcToContext:context atPoint:current v1:miter22 v2:miter21];
+					}
 				}
 				
 				continue;
@@ -511,12 +558,15 @@ typedef std::vector<subpath_t> path_t;
 				d2 = EJDistanceToLineSegmentSquared(EJVector2Sub(current,normal), current, prev);
 				p2 = (d1>d2)?EJVector2Add(current,normal):EJVector2Sub(current,normal);
 				
-				// draw triangle
-				[context
-					pushTriX1:p1.x	y1:p1.y x2:current.x y2:current.y x3:p2.x y3:p2.y
-					color:color withTransform:transform];
+				if(context.state->lineJoin==kEJLineJoinBevel) {
+					[context
+						pushTriX1:p1.x	y1:p1.y x2:current.x y2:current.y x3:p2.x y3:p2.y
+						color:color withTransform:transform];
+				} else {
+					[self drawArcToContext:context atPoint:current v1:p1 v2:p2];
+				}
 			}
-			
+
 			[context
 				pushQuadV1:miter11 v2:miter12 v3:miter21 v4:miter22
 				t1:midTex1 t2:midTex2 t3:midTex1 t4:midTex2
@@ -562,10 +612,13 @@ typedef std::vector<subpath_t> path_t;
 			d2 = EJDistanceToLineSegmentSquared(firstMiter2, current, next);
 			p1 = (d1>d2)?firstMiter1:firstMiter2;
 			
-			// draw triangle
-			[context
-			 pushTriX1:p1.x	y1:p1.y x2:next.x y2:next.y x3:p2.x y3:p2.y
-			 color:color withTransform:transform];
+			if(context.state->lineJoin==kEJLineJoinBevel) {
+				[context
+					pushTriX1:p1.x	y1:p1.y x2:next.x y2:next.y x3:p2.x y3:p2.y
+					color:color withTransform:transform];
+			} else {
+				[self drawArcToContext:context atPoint:next v1:p1 v2:p2];
+			}
 		}
 		
 		[context
@@ -575,14 +628,18 @@ typedef std::vector<subpath_t> path_t;
 
 		// End cap
 		if( addCaps && !subPathIsClosed ) {
-			EJVector2 capExt = { nextExt.y, -nextExt.x };
-			EJVector2 cap11 = EJVector2Add( miter11, capExt );
-			EJVector2 cap12 = EJVector2Add( miter12, capExt );
-			
-			[context
-				pushQuadV1:cap11 v2:cap12 v3:miter11 v4:miter12
-				t1:capTex1 t2:capTex2 t3:midTex1 t4:midTex2
-				color:color withTransform:transform];
+			if(context.state->lineCap == kEJLineCapSquare) {
+				EJVector2 capExt = { nextExt.y, -nextExt.x };
+				EJVector2 cap11 = EJVector2Add( miter11, capExt );
+				EJVector2 cap12 = EJVector2Add( miter12, capExt );
+				
+				[context
+					pushQuadV1:cap11 v2:cap12 v3:miter11 v4:miter12
+					t1:capTex1 t2:capTex2 t3:midTex1 t4:midTex2
+					color:color withTransform:transform];
+			} else {
+				[self drawArcToContext:context atPoint:next v1:miter11 v2:miter12];
+			}
 		}
 	} // for each path
 }
