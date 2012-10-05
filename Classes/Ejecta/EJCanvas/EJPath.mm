@@ -349,7 +349,10 @@ typedef std::vector<subpath_t> path_t;
 	glDisable(GL_STENCIL_TEST);
 }
 
-- (void)drawArcToContext:(EJCanvasContext *)context atPoint:(EJVector2)point v1:(EJVector2)p1 v2:(EJVector2)p2 {
+- (void)drawArcToContext:(EJCanvasContext *)context atPoint:(EJVector2)point v1:(EJVector2)p1 v2:(EJVector2)p2 color:(EJColorRGBA)color {
+	static int callNum = 0;
+	callNum++;
+	
 	EJVector2 arcP1,arcP2;
 	
 	EJVector2 v1= EJVector2Normalize(EJVector2Sub(p1, point)),v2 = EJVector2Normalize(EJVector2Sub(p2, point));
@@ -370,11 +373,6 @@ typedef std::vector<subpath_t> path_t;
 		angle2 = acosf(v1.x*v2.x+v1.y*v2.y);
 	}
 	
-	// add 1px overdraw to avoid seams. Unfortunately, just using p1 and p2 as start and endpoint does not work.
-	float overdraw = (1.0f/(context.state->lineWidth*0.5))*M_2_PI;
-	angle1 -= overdraw*direction;
-	angle2 += 2*overdraw;
-	
 	// 1 step per 6 pixel
 	int numSteps = MAX(1,(angle2 * context.state->lineWidth*0.5 * CGAffineTransformGetScale(context.state->transform)*context.backingStoreRatio)/6.0f);
 	
@@ -389,8 +387,8 @@ typedef std::vector<subpath_t> path_t;
 		angle+=step;
 		arcP2 = EJVector2Make( point.x + cosf(angle) * context.state->lineWidth*0.5, point.y - sinf(angle) * context.state->lineWidth*0.5 );
 		[context
-		 pushTriX1:arcP1.x	y1:arcP1.y x2:point.x y2:point.y x3:arcP2.x y3:arcP2.y
-		 color:context.state->strokeColor withTransform:transform];
+			pushTriX1:arcP1.x	y1:arcP1.y x2:point.x y2:point.y x3:arcP2.x y3:arcP2.y
+			color:color withTransform:transform];
 		
 		arcP1 = arcP2;
 	}
@@ -501,7 +499,7 @@ typedef std::vector<subpath_t> path_t;
 							 t1:capTex1 t2:capTex2 t3:midTex1 t4:midTex2
 							 color:color withTransform:transform];
 					} else {
-						[self drawArcToContext:context atPoint:current v1:miter22 v2:miter21];
+						[self drawArcToContext:context atPoint:current v1:miter22 v2:miter21 color:color];
 					}
 				}
 				
@@ -566,7 +564,7 @@ typedef std::vector<subpath_t> path_t;
 						pushTriX1:p1.x	y1:p1.y x2:current.x y2:current.y x3:p2.x y3:p2.y
 						color:color withTransform:transform];
 				} else {
-					[self drawArcToContext:context atPoint:current v1:p1 v2:p2];
+					[self drawArcToContext:context atPoint:current v1:p1 v2:p2 color:color];
 				}
 			}
 
@@ -620,7 +618,7 @@ typedef std::vector<subpath_t> path_t;
 					pushTriX1:p1.x	y1:p1.y x2:next.x y2:next.y x3:p2.x y3:p2.y
 					color:color withTransform:transform];
 			} else {
-				[self drawArcToContext:context atPoint:next v1:p1 v2:p2];
+				[self drawArcToContext:context atPoint:next v1:p1 v2:p2 color:color];
 			}
 		}
 
@@ -641,7 +639,7 @@ typedef std::vector<subpath_t> path_t;
 					t1:capTex1 t2:capTex2 t3:midTex1 t4:midTex2
 					color:color withTransform:transform];
 			} else {
-				[self drawArcToContext:context atPoint:next v1:miter11 v2:miter12];
+				[self drawArcToContext:context atPoint:next v1:miter11 v2:miter12 color:color];
 			}
 		}
 	} // for each path
