@@ -350,9 +350,6 @@ typedef std::vector<subpath_t> path_t;
 }
 
 - (void)drawArcToContext:(EJCanvasContext *)context atPoint:(EJVector2)point v1:(EJVector2)p1 v2:(EJVector2)p2 color:(EJColorRGBA)color {
-	static int callNum = 0;
-	callNum++;
-	
 	EJVector2 arcP1,arcP2;
 	
 	EJVector2 v1= EJVector2Normalize(EJVector2Sub(p1, point)),v2 = EJVector2Normalize(EJVector2Sub(p2, point));
@@ -372,6 +369,12 @@ typedef std::vector<subpath_t> path_t;
 	} else {
 		angle2 = acosf(v1.x*v2.x+v1.y*v2.y);
 	}
+	
+	// add 1px overdraw to avoid seams.
+	// Seams might appear because the points used in the bevel generation are different from those used to draw the line segments
+	float overdraw = (1.0f/(context.state->lineWidth*0.5))*M_2_PI;
+	angle1 -= overdraw*direction;
+	angle2 += 2*overdraw;
 	
 	// 1 step per 6 pixel
 	int numSteps = MAX(1,(angle2 * context.state->lineWidth*0.5 * CGAffineTransformGetScale(context.state->transform)*context.backingStoreRatio)/6.0f);
@@ -415,10 +418,10 @@ typedef std::vector<subpath_t> path_t;
 	EJVector2 midTex1 = { 0.5, 0 };
 	EJVector2 midTex2 = { 0.5, 1 };
 	
-	// The actual miter limit is the product of the miterLimit and lineWidth properties.
+	// The miter limit is the maximum allowed ratio of the miter length to half the line width.
 	// For thin lines we skip computing the miter completely.
 	BOOL addMiter = (projectedLineWidth >= 1 && state->lineJoin == kEJLineJoinMiter);
-	float miterLimit = (state->miterLimit * state->lineWidth);
+	float miterLimit = (state->miterLimit * state->lineWidth * 0.5f);
 	
 	EJColorRGBA color = state->strokeColor;
 	color.rgba.a = (float)color.rgba.a * state->globalAlpha;
@@ -455,6 +458,7 @@ typedef std::vector<subpath_t> path_t;
 		BOOL subPathIsClosed = (sp->size() > 2 && front.x == back.x && front.y == back.y);
 		BOOL ignoreFirstSegment = addMiter && subPathIsClosed;
 		BOOL firstInSubPath = true;
+		BOOL miterLimitExceeded = NO,firstMiterLimitExceeded = NO;
 		
 		transCurrent = transNext = NULL;
 		
@@ -522,6 +526,9 @@ typedef std::vector<subpath_t> path_t;
 					miter22 = EJVector2Make( current.x + miterEdge.y, current.y - miterEdge.x );
 					
 					miterAdded = true;
+					miterLimitExceeded = NO;
+				} else {
+					miterLimitExceeded = YES;
 				}
 			}
 			
@@ -536,11 +543,12 @@ typedef std::vector<subpath_t> path_t;
 				// to calculate the first miter.
 				firstMiter1 = miter21;
 				firstMiter2 = miter22;
+				firstMiterLimitExceeded = miterLimitExceeded;
 				ignoreFirstSegment = false;
 				continue;
 			}
 			
-			if(!addMiter) {
+			if(!addMiter || miterLimitExceeded) {
 				float d1,d2;
 				EJVector2 p1,p2,
 					prev	= EJVector2Sub(current, currentEdge), // previous point can be approximated, good enough for distance comparison
@@ -559,12 +567,12 @@ typedef std::vector<subpath_t> path_t;
 				d2 = EJDistanceToLineSegmentSquared(EJVector2Sub(current,normal), current, prev);
 				p2 = (d1>d2)?EJVector2Add(current,normal):EJVector2Sub(current,normal);
 				
-				if(context.state->lineJoin==kEJLineJoinBevel) {
-					[context
-						pushTriX1:p1.x	y1:p1.y x2:current.x y2:current.y x3:p2.x y3:p2.y
-						color:color withTransform:transform];
-				} else {
+				if(context.state->lineJoin==kEJLineJoinRound) {
 					[self drawArcToContext:context atPoint:current v1:p1 v2:p2 color:color];
+				} else {
+					[context
+					 pushTriX1:p1.x	y1:p1.y x2:current.x y2:current.y x3:p2.x y3:p2.y
+					 color:color withTransform:transform];
 				}
 			}
 
@@ -593,7 +601,7 @@ typedef std::vector<subpath_t> path_t;
 			miter12 = EJVector2Sub(untransformedBack, nextExt);
 		}
 		
-		if(!addMiter && subPathIsClosed) {
+		if((!addMiter || firstMiterLimitExceeded) && subPathIsClosed) {
 			float d1,d2;
 			EJVector2 p1,p2,
 			normal		= EJVector2Make(nextEdge.y*state->lineWidth*0.5, -nextEdge.x*state->lineWidth*0.5), // line normal for next edge
@@ -613,12 +621,12 @@ typedef std::vector<subpath_t> path_t;
 			d2 = EJDistanceToLineSegmentSquared(firstMiter2, current, next);
 			p1 = (d1>d2)?firstMiter1:firstMiter2;
 			
-			if(context.state->lineJoin==kEJLineJoinBevel) {
-				[context
-					pushTriX1:p1.x	y1:p1.y x2:next.x y2:next.y x3:p2.x y3:p2.y
-					color:color withTransform:transform];
-			} else {
+			if(context.state->lineJoin==kEJLineJoinRound) {
 				[self drawArcToContext:context atPoint:next v1:p1 v2:p2 color:color];
+			} else {
+				[context
+				 pushTriX1:p1.x	y1:p1.y x2:next.x y2:next.y x3:p2.x y3:p2.y
+				 color:color withTransform:transform];
 			}
 		}
 
