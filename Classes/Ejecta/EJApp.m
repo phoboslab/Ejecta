@@ -304,8 +304,8 @@ static EJApp * ejectaInstance = NULL;
 	JSObjectRef func = JSValueToObject(ctxp, argv[0], NULL);
 	float interval = JSValueToNumberFast(ctxp, argv[1])/1000;
 	
-	// Make sure short intervals (< 34ms) run each frame
-	if( interval < 0.034 ) {
+	// Make sure short intervals (< 18ms) run each frame
+	if( interval < 0.018 ) {
 		interval = 0;
 	}
 	
