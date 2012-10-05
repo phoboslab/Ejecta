@@ -350,14 +350,12 @@ typedef std::vector<subpath_t> path_t;
 }
 
 - (void)drawArcToContext:(EJCanvasContext *)context atPoint:(EJVector2)point v1:(EJVector2)p1 v2:(EJVector2)p2 color:(EJColorRGBA)color {
-	EJVector2 arcP1,arcP2;
-	
-	EJVector2 v1= EJVector2Normalize(EJVector2Sub(p1, point)),v2 = EJVector2Normalize(EJVector2Sub(p2, point));
+	EJVector2
+		arcP1,arcP2,
+		v1 = EJVector2Normalize(EJVector2Sub(p1, point)),
+		v2 = EJVector2Normalize(EJVector2Sub(p2, point));
 	
 	float angle1,angle2,angle,step,direction;
-	
-	// calculate direction
-	direction = ((v2.x*v1.y - v2.y*v1.x)<0?-1:1);
 	
 	// calculate starting angle for arc
 	angle1 = atan2(1,0) - atan2(v1.x,-v1.y);
@@ -370,14 +368,24 @@ typedef std::vector<subpath_t> path_t;
 		angle2 = acosf(v1.x*v2.x+v1.y*v2.y);
 	}
 	
+	// 1 step per 6 pixel
+	int numSteps = MAX(1,(angle2 * context.state->lineWidth*0.5 * CGAffineTransformGetScale(context.state->transform)*context.backingStoreRatio)/6.0f);
+	
+	if(numSteps==1) {
+		[context
+		 pushTriX1:p1.x	y1:p1.y x2:point.x y2:point.y x3:p2.x y3:p2.y
+		 color:color withTransform:transform];
+		return;
+	}
+	
+	// calculate direction
+	direction = ((v2.x*v1.y - v2.y*v1.x)<0?-1:1);
+	
 	// add 1px overdraw to avoid seams.
 	// Seams might appear because the points used in the bevel generation are different from those used to draw the line segments
 	float overdraw = (1.0f/(context.state->lineWidth*0.5))*M_2_PI;
 	angle1 -= overdraw*direction;
 	angle2 += 2*overdraw;
-	
-	// 1 step per 6 pixel
-	int numSteps = MAX(1,(angle2 * context.state->lineWidth*0.5 * CGAffineTransformGetScale(context.state->transform)*context.backingStoreRatio)/6.0f);
 	
 	// calculate angle step
 	step = (angle2/numSteps) * direction;
