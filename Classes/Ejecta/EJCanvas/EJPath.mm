@@ -350,49 +350,56 @@ typedef std::vector<subpath_t> path_t;
 }
 
 - (void)drawArcToContext:(EJCanvasContext *)context atPoint:(EJVector2)point v1:(EJVector2)p1 v2:(EJVector2)p2 color:(EJColorRGBA)color {
+
+	EJCanvasState * state = context.state;
+	float width2 = state->lineWidth/2;
+	
 	EJVector2
-		arcP1,arcP2,
 		v1 = EJVector2Normalize(EJVector2Sub(p1, point)),
 		v2 = EJVector2Normalize(EJVector2Sub(p2, point));
 	
-	float angle1,angle2,angle,step,direction;
-	
 	// calculate starting angle for arc
-	angle1 = atan2(1,0) - atan2(v1.x,-v1.y);
+	float angle1 = atan2(1,0) - atan2(v1.x,-v1.y);
 	
 	// calculate smalles angle between both vectors
 	// colinear vectors (for caps) need to be handled seperately
-	if(v1.x==-v2.x&&v1.y==-v2.y) {
+	float angle2;
+	if( v1.x == -v2.x && v1.y == -v2.y ) {
 		angle2 = 3.14;
-	} else {
-		angle2 = acosf(v1.x*v2.x+v1.y*v2.y);
+	}
+	else {
+		angle2 = acosf( v1.x * v2.x + v1.y * v2.y );
 	}
 	
 	// 1 step per 5 pixel
-	int numSteps = MAX(1,(angle2 * context.state->lineWidth*0.5 * CGAffineTransformGetScale(context.state->transform)*context.backingStoreRatio)/5.0f);
+	float pxScale = CGAffineTransformGetScale(state->transform) * context.backingStoreRatio;
+	int numSteps = MAX( 1, (angle2 * width2 * pxScale) / 5.0f );
 	
 	if(numSteps==1) {
 		[context
-		 pushTriX1:p1.x	y1:p1.y x2:point.x y2:point.y x3:p2.x y3:p2.y
-		 color:color withTransform:transform];
+			pushTriX1:p1.x	y1:p1.y x2:point.x y2:point.y x3:p2.x y3:p2.y
+			color:color withTransform:transform];
 		return;
 	}
 	
 	// calculate direction
-	direction = ((v2.x*v1.y - v2.y*v1.x)<0?-1:1);
+	float direction = (v2.x*v1.y - v2.y*v1.x < 0) ? -1 : 1;
 	
 	// calculate angle step
-	step = (angle2/numSteps) * direction;
+	float step = (angle2/numSteps) * direction;
 	
 	// starting point
-	angle = angle1;
-	arcP1 = EJVector2Make( point.x + cosf(angle) * context.state->lineWidth*0.5, point.y - sinf(angle) * context.state->lineWidth*0.5 );
+	float angle = angle1;
 	
-	for(int i=0;i<numSteps;i++) {
-		angle+=step;
-		arcP2 = EJVector2Make( point.x + cosf(angle) * context.state->lineWidth*0.5, point.y - sinf(angle) * context.state->lineWidth*0.5 );
+	EJVector2 arcP1 = {point.x + cosf(angle) * width2, point.y - sinf(angle) * width2 };
+	EJVector2 arcP2;
+	
+	for( int i = 0; i < numSteps; i++ ) {
+		angle += step;
+		arcP2 = EJVector2Make( point.x + cosf(angle) * width2, point.y - sinf(angle) * width2 );
+		
 		[context
-			pushTriX1:arcP1.x	y1:arcP1.y x2:point.x y2:point.y x3:arcP2.x y3:arcP2.y
+			pushTriX1:arcP1.x y1:arcP1.y x2:point.x y2:point.y x3:arcP2.x y3:arcP2.y
 			color:color withTransform:transform];
 		
 		arcP1 = arcP2;
@@ -423,7 +430,7 @@ typedef std::vector<subpath_t> path_t;
 	// The miter limit is the maximum allowed ratio of the miter length to half the line width.
 	// For thin lines we skip computing the miter completely.
 	BOOL addMiter = (projectedLineWidth >= 1 && state->lineJoin == kEJLineJoinMiter);
-	float miterLimit = (state->miterLimit * state->lineWidth * 0.5f);
+	float miterLimit = (state->miterLimit * width2);
 	
 	EJColorRGBA color = state->strokeColor;
 	color.rgba.a = (float)color.rgba.a * state->globalAlpha;
@@ -460,7 +467,7 @@ typedef std::vector<subpath_t> path_t;
 		BOOL subPathIsClosed = (sp->size() > 2 && front.x == back.x && front.y == back.y);
 		BOOL ignoreFirstSegment = addMiter && subPathIsClosed;
 		BOOL firstInSubPath = true;
-		BOOL miterLimitExceeded = NO,firstMiterLimitExceeded = NO;
+		BOOL miterLimitExceeded = NO, firstMiterLimitExceeded = NO;
 		
 		transCurrent = transNext = NULL;
 		
@@ -468,7 +475,7 @@ typedef std::vector<subpath_t> path_t;
 		// to the last vertex in the subpath. This way, the miter between the last and
 		// the first segment will be computed and used to draw the first segment's first
 		// miter, as well as the last segment's last miter outside the loop.
-		if(addMiter && subPathIsClosed ) {
+		if( addMiter && subPathIsClosed ) {
 			transNext = &sp->at(sp->size()-2);
 			next = EJVector2ApplyTransform( *transNext, inverseTransform );
 		}
@@ -495,7 +502,7 @@ typedef std::vector<subpath_t> path_t;
 				
 				// Start cap
 				if( addCaps && !subPathIsClosed ) {
-					if(context.state->lineCap == kEJLineCapSquare) {
+					if( state->lineCap == kEJLineCapSquare ) {
 						EJVector2 capExt = { -nextExt.y, nextExt.x };
 						EJVector2 cap11 = EJVector2Add( miter21, capExt );
 						EJVector2 cap12 = EJVector2Add( miter22, capExt );
@@ -504,7 +511,8 @@ typedef std::vector<subpath_t> path_t;
 							 pushQuadV1:cap11 v2:cap12 v3:miter21 v4:miter22
 							 t1:capTex1 t2:capTex2 t3:midTex1 t4:midTex2
 							 color:color withTransform:transform];
-					} else {
+					}
+					else {
 						[self drawArcToContext:context atPoint:current v1:miter22 v2:miter21 color:color];
 					}
 				}
@@ -529,7 +537,8 @@ typedef std::vector<subpath_t> path_t;
 					
 					miterAdded = true;
 					miterLimitExceeded = NO;
-				} else {
+				}
+				else {
 					miterLimitExceeded = YES;
 				}
 			}
@@ -550,11 +559,11 @@ typedef std::vector<subpath_t> path_t;
 				continue;
 			}
 			
-			if(!addMiter || miterLimitExceeded) {
-				float d1,d2;
-				EJVector2
-					p1,p2,
-					prev	= EJVector2Sub(current, currentEdge); // previous point can be approximated, good enough for distance comparison
+			if( !addMiter || miterLimitExceeded ) {
+				// previous point can be approximated, good enough for distance comparison
+				EJVector2 prev = EJVector2Sub(current, currentEdge);
+				EJVector2 p1, p2;
+				float d1, d2;
 					
 				// calculate points to use for bevel
 				// two points are possible for each edge - the one farthest away from the other line has to be used
@@ -562,16 +571,17 @@ typedef std::vector<subpath_t> path_t;
 				// calculate point for current edge
 				d1 = EJDistanceToLineSegmentSquared(miter21, current, next);
 				d2 = EJDistanceToLineSegmentSquared(miter22, current, next);
-				p1 = (d1>d2)?miter21:miter22;
+				p1 = ( d1 > d2 ) ? miter21 : miter22;
 				
 				// calculate point for next edge
-				d1 = EJDistanceToLineSegmentSquared(EJVector2Add(current,nextExt), current, prev);
-				d2 = EJDistanceToLineSegmentSquared(EJVector2Sub(current,nextExt), current, prev);
-				p2 = (d1>d2)?EJVector2Add(current,nextExt):EJVector2Sub(current,nextExt);
+				d1 = EJDistanceToLineSegmentSquared(EJVector2Add(current, nextExt), current, prev);
+				d2 = EJDistanceToLineSegmentSquared(EJVector2Sub(current, nextExt), current, prev);
+				p2 = ( d1 > d2 ) ? EJVector2Add(current, nextExt) : EJVector2Sub(current, nextExt);
 				
-				if(context.state->lineJoin==kEJLineJoinRound) {
+				if( state->lineJoin==kEJLineJoinRound ) {
 					[self drawArcToContext:context atPoint:current v1:p1 v2:p2 color:color];
-				} else {
+				}
+				else {
 					[context
 					 pushTriX1:p1.x	y1:p1.y x2:current.x y2:current.y x3:p2.x y3:p2.y
 					 color:color withTransform:transform];
@@ -603,7 +613,7 @@ typedef std::vector<subpath_t> path_t;
 			miter12 = EJVector2Sub(untransformedBack, nextExt);
 		}
 		
-		if((!addMiter || firstMiterLimitExceeded) && subPathIsClosed) {
+		if( (!addMiter || firstMiterLimitExceeded) && subPathIsClosed ) {
 			float d1,d2;
 			EJVector2 p1,p2,
 			firstNormal = EJVector2Sub(firstMiter1,firstMiter2),							// unnormalized line normal for first edge
@@ -622,9 +632,10 @@ typedef std::vector<subpath_t> path_t;
 			d2 = EJDistanceToLineSegmentSquared(firstMiter2, current, next);
 			p1 = (d1>d2)?firstMiter1:firstMiter2;
 			
-			if(context.state->lineJoin==kEJLineJoinRound) {
+			if( state->lineJoin==kEJLineJoinRound ) {
 				[self drawArcToContext:context atPoint:next v1:p1 v2:p2 color:color];
-			} else {
+			}
+			else {
 				[context
 				 pushTriX1:p1.x	y1:p1.y x2:next.x y2:next.y x3:p2.x y3:p2.y
 				 color:color withTransform:transform];
@@ -638,7 +649,7 @@ typedef std::vector<subpath_t> path_t;
 
 		// End cap
 		if( addCaps && !subPathIsClosed ) {
-			if(context.state->lineCap == kEJLineCapSquare) {
+			if( state->lineCap == kEJLineCapSquare ) {
 				EJVector2 capExt = { nextExt.y, -nextExt.x };
 				EJVector2 cap11 = EJVector2Add( miter11, capExt );
 				EJVector2 cap12 = EJVector2Add( miter12, capExt );
@@ -647,7 +658,8 @@ typedef std::vector<subpath_t> path_t;
 					pushQuadV1:cap11 v2:cap12 v3:miter11 v4:miter12
 					t1:capTex1 t2:capTex2 t3:midTex1 t4:midTex2
 					color:color withTransform:transform];
-			} else {
+			}
+			else {
 				[self drawArcToContext:context atPoint:next v1:miter11 v2:miter12 color:color];
 			}
 		}
