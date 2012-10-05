@@ -43,8 +43,6 @@
 		B615E8FF15E2D3F70087729A /* EJBindingEjectaCore.m in Sources */ = {isa = PBXBuildFile; fileRef = B615E8E415E2D3F70087729A /* EJBindingEjectaCore.m */; };
 		B625CD2415AFA3AB00351585 /* libJavaScriptCore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B625CD2315AFA3AA00351585 /* libJavaScriptCore.a */; };
 		B64238E715B9FF1500C8C9BF /* lodepng.c in Sources */ = {isa = PBXBuildFile; fileRef = B64238DC15B9FF1500C8C9BF /* lodepng.c */; };
-		B646E7DA15B464AD00C040EE /* line16px.png in Resources */ = {isa = PBXBuildFile; fileRef = B646E7D915B464AD00C040EE /* line16px.png */; };
-		B646E7DD15B47D3000C040EE /* line4px.png in Resources */ = {isa = PBXBuildFile; fileRef = B646E7DC15B47D3000C040EE /* line4px.png */; };
 		B667BE5615E2E9CF00D768F4 /* EJBindingAdBanner.m in Sources */ = {isa = PBXBuildFile; fileRef = B667BE5315E2E9CF00D768F4 /* EJBindingAdBanner.m */; };
 		B667BE5715E2E9CF00D768F4 /* EJBindingLocalStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = B667BE5515E2E9CF00D768F4 /* EJBindingLocalStorage.m */; };
 		B66F1E801476B6A40090D208 /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B66F1E7F1476B6A40090D208 /* libstdc++.dylib */; };
@@ -142,8 +140,6 @@
 		B625CD2315AFA3AA00351585 /* libJavaScriptCore.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libJavaScriptCore.a; sourceTree = "<group>"; };
 		B64238DC15B9FF1500C8C9BF /* lodepng.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lodepng.c; sourceTree = "<group>"; };
 		B64238DD15B9FF1500C8C9BF /* lodepng.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lodepng.h; sourceTree = "<group>"; };
-		B646E7D915B464AD00C040EE /* line16px.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = line16px.png; path = Resources/line16px.png; sourceTree = "<group>"; };
-		B646E7DC15B47D3000C040EE /* line4px.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = line4px.png; path = Resources/line4px.png; sourceTree = "<group>"; };
 		B667BE5215E2E9CF00D768F4 /* EJBindingAdBanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingAdBanner.h; sourceTree = "<group>"; };
 		B667BE5315E2E9CF00D768F4 /* EJBindingAdBanner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingAdBanner.m; sourceTree = "<group>"; };
 		B667BE5415E2E9CF00D768F4 /* EJBindingLocalStorage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingLocalStorage.h; sourceTree = "<group>"; };
@@ -249,8 +245,6 @@
 				B6EE1A4C160BC1D500F09450 /* Icon-72@2x.png */,
 				B6EE1A4D160BC1D500F09450 /* Icon.png */,
 				B6EE1A4E160BC1D500F09450 /* Icon@2x.png */,
-				B646E7DC15B47D3000C040EE /* line4px.png */,
-				B646E7D915B464AD00C040EE /* line16px.png */,
 				28AD733E0D9D9553002E5188 /* MainWindow.xib */,
 				8D1107310486CEB800E47090 /* Ejecta-Info.plist */,
 			);
@@ -444,8 +438,6 @@
 				B67D747915A4E246005D69BF /* ejecta.js in Resources */,
 				28AD733F0D9D9553002E5188 /* MainWindow.xib in Resources */,
 				B68C5B95132E6CD60015092E /* App in Resources */,
-				B646E7DA15B464AD00C040EE /* line16px.png in Resources */,
-				B646E7DD15B47D3000C040EE /* line4px.png in Resources */,
 				B6EE1A4F160BC1D500F09450 /* Default-568h@2x.png in Resources */,
 				B6EE1A51160BC1D500F09450 /* Default-Landscape.png in Resources */,
 				B6EE1A53160BC1D500F09450 /* Default-Portrait.png in Resources */,

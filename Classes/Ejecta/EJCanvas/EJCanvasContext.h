@@ -86,8 +86,6 @@ typedef struct {
 	short bufferWidth, bufferHeight;
 	
 	EJTexture * currentTexture;
-	EJTexture * lineTexture16;
-	EJTexture * lineTexture4;
 	
 	EJPath * path;
 	
@@ -135,7 +133,6 @@ typedef struct {
 - (void)clearRectX:(float)x y:(float)y w:(float)w h:(float)h;
 - (EJImageData*)getImageDataSx:(float)sx sy:(float)sy sw:(float)sw sh:(float)sh;
 - (void)putImageData:(EJImageData*)imageData dx:(float)dx dy:(float)dy;
-- (void)setLineTextureForWidth:(float)projectedWidth;
 - (void)beginPath;
 - (void)closePath;
 - (void)fill;

@@ -52,8 +52,6 @@ EJVertex CanvasVertexBuffer[EJ_CANVAS_VERTEX_BUFFER_SIZE];
 		glDeleteFramebuffers( 1, &frameBuffer);
 	}
 	[path release];
-	[lineTexture16 release];
-	[lineTexture4 release];
 	[super dealloc];
 }
 
@@ -356,30 +354,6 @@ EJVertex CanvasVertexBuffer[EJ_CANVAS_VERTEX_BUFFER_SIZE];
 	
 	[self pushRectX:dx y:dy w:tw h:th tx:0 ty:0 tw:1 th:1 color:white withTransform:CGAffineTransformIdentity];
 	[self flushBuffers];
-}
-
-
-- (void)setLineTextureForWidth:(float)projectedWidth {
-
-	// Load the line textures if we don't have them already
-	if( projectedWidth >= 1 && (!lineTexture16 || !lineTexture4) ) {
-		NSString * texturePath16 = [[NSBundle mainBundle] pathForResource:@"line16px" ofType:@"png"];
-		lineTexture16 = [[EJTexture alloc] initWithPath:texturePath16];
-		
-		NSString * texturePath4 = [[NSBundle mainBundle] pathForResource:@"line4px" ofType:@"png"];
-		lineTexture4 = [[EJTexture alloc] initWithPath:texturePath4];
-	}
-	
-	if( projectedWidth > 4 ) {
-		[self setTexture:lineTexture16];
-	}
-	else if( projectedWidth >= 1 ) {
-		[self setTexture:lineTexture4];
-	}
-	else {
-		// Nothing we can do to make < 1px lines look non-crappy; disable texturing
-		[self setTexture:NULL];
-	}
 }
 
 - (void)beginPath {
