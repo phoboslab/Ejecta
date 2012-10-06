@@ -22,7 +22,8 @@ typedef std::vector<subpath_t> path_t;
 - (id)init {
 	self = [super init];
 	if(self) {
-		transform = CGAffineTransformIdentity;
+		transform	= CGAffineTransformIdentity;
+		stencilMask = 0x1;
 	}
 	return self;
 }
@@ -430,15 +431,19 @@ typedef std::vector<subpath_t> path_t;
 	color.rgba.a = (float)color.rgba.a * state->globalAlpha;
 	
 	// enable stencil test when drawing transparent lines
+	// cycle through the highest 7 bits, so that the stencil buffer only has to be cleared after seven stroke operations
+	// the lowest bit is reserved for drawPolygonsToContext
 	if(color.rgba.a < 0xff) {
+		stencilMask <<= 1;
+		
 		[context createStencilBufferOnce];
 		
 		glEnable(GL_STENCIL_TEST);
 		
-		glStencilMask(0x01);
+		glStencilMask(stencilMask);
 		
-		glStencilOp(GL_KEEP, GL_KEEP, GL_INCR);
-		glStencilFunc(GL_NOTEQUAL, 0x1, 0x1);
+		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+		glStencilFunc(GL_NOTEQUAL, stencilMask, stencilMask);
 	}
 	
 	// To draw the line correctly with transformations, we need to construct the line
@@ -493,7 +498,6 @@ typedef std::vector<subpath_t> path_t;
 			next = EJVector2ApplyTransform( *transNext, inverseTransform );
 			
 			if( !transCurrent ) { continue; }
-			
 			
 			currentEdge	= nextEdge;
 			currentExt = nextExt;
@@ -675,8 +679,13 @@ typedef std::vector<subpath_t> path_t;
 		[context flushBuffers];
 		glDisable(GL_STENCIL_TEST);
 		
-		glClearStencil(0);
-		glClear(GL_STENCIL_BUFFER_BIT);
+		if(stencilMask == (1<<7)) {
+			stencilMask = (1<<0);
+			
+			glStencilMask(0xff);
+			glClearStencil(0x0);
+			glClear(GL_STENCIL_BUFFER_BIT);
+		}
 	}
 }
 
