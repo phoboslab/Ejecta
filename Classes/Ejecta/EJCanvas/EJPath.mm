@@ -430,15 +430,19 @@ typedef std::vector<subpath_t> path_t;
 	color.rgba.a = (float)color.rgba.a * state->globalAlpha;
 	
 	// enable stencil test when drawing transparent lines
+	static int stencilMask = (1 << 1);
+	
 	if(color.rgba.a < 0xff) {
+		stencilMask <<= 1;
+		
 		[context createStencilBufferOnce];
 		
 		glEnable(GL_STENCIL_TEST);
 		
 		glStencilMask(0x01);
 		
-		glStencilOp(GL_KEEP, GL_KEEP, GL_INCR);
-		glStencilFunc(GL_NOTEQUAL, 0x1, 0x1);
+		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+		glStencilFunc(GL_NOTEQUAL, stencilMask, stencilMask);
 	}
 	
 	// To draw the line correctly with transformations, we need to construct the line
@@ -675,8 +679,12 @@ typedef std::vector<subpath_t> path_t;
 		[context flushBuffers];
 		glDisable(GL_STENCIL_TEST);
 		
-		glClearStencil(0);
-		glClear(GL_STENCIL_BUFFER_BIT);
+		if(stencilMask == (1<<8)) {
+			stencilMask = (1<<1);
+			
+			glClearStencil(0x0);
+			glClear(GL_STENCIL_BUFFER_BIT);
+		}
 	}
 }
 
