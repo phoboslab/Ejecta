@@ -12,6 +12,8 @@
 	EJVector2 currentPos, startPos;
 	int longestSubpath;
 	
+	GLubyte stencilMask;
+	
 	EJVector2 * vertexBuffer;
 	int vertexBufferLength;
 	
