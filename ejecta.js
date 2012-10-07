@@ -194,10 +194,14 @@ var publishTouchEvent = function( type, args ) {
 	touches.length = args.length/3;
 	
 	for( var i = 0, j = 0; i < args.length; i+=3, j++ ) {
+		var x = args[i+1],
+			y = args[i+2];
 		touches[j] = {
 			identifier: args[i],
-			pageX: args[i+1], 
-			pageY: args[i+2]
+			pageX: x,
+			pageY: y,
+			clientX: x,
+			clientY: y
 		};
 	}
 	document._publishEvent( type, touchEvent );
