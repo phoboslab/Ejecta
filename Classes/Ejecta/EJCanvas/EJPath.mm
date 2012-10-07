@@ -436,6 +436,7 @@ typedef std::vector<subpath_t> path_t;
 	if(color.rgba.a < 0xff) {
 		stencilMask <<= 1;
 		
+		[context flushBuffers];
 		[context createStencilBufferOnce];
 		
 		glEnable(GL_STENCIL_TEST);
