@@ -90,6 +90,8 @@ static EJApp * ejectaInstance = NULL;
 		opQueue = [[NSOperationQueue alloc] init];
 		timers = [[NSMutableDictionary alloc] init];
 		
+		currentTime = [NSDate timeIntervalSinceReferenceDate];
+		
 		displayLink = [[CADisplayLink displayLinkWithTarget:self selector:@selector(run:)] retain];
 		[displayLink setFrameInterval:1];
 		[displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
