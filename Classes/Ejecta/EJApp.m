@@ -315,6 +315,10 @@ static EJApp * ejectaInstance = NULL;
 		interval = 0;
 	}
 	
+	// TODO : bug ? the currentTime is always == 0 .
+	// add : 
+	currentTime = [NSDate timeIntervalSinceReferenceDate]; 
+	
 	EJTimer * timer = [[EJTimer alloc] initWithCurrentTime:currentTime interval:interval callback:func repeat:repeat];
 	[timers setObject:timer forKey:[NSNumber numberWithInt:uniqueId]];
 	[timer release];
