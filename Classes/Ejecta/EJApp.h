@@ -16,7 +16,7 @@
 - (void)endActiveTouches;
 @end
 
-
+@class EJTimerCollection;
 @class EJCanvasContext;
 @class EJCanvasContextScreen;
 
@@ -29,8 +29,7 @@
 	UIImageView * loadingScreen;
 	NSObject<TouchDelegate> * touchDelegate;
 	
-	int uniqueId;
-	NSMutableDictionary * timers;
+	EJTimerCollection * timers;
 	NSTimeInterval currentTime;
 	
 	CADisplayLink * displayLink;

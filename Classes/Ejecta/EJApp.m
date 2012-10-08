@@ -88,9 +88,7 @@ static EJApp * ejectaInstance = NULL;
 		
 		
 		opQueue = [[NSOperationQueue alloc] init];
-		timers = [[NSMutableDictionary alloc] init];
-		
-		currentTime = [NSDate timeIntervalSinceReferenceDate];
+		timers = [[EJTimerCollection alloc] init];
 		
 		displayLink = [[CADisplayLink displayLinkWithTarget:self selector:@selector(run:)] retain];
 		[displayLink setFrameInterval:1];
@@ -174,16 +172,7 @@ static EJApp * ejectaInstance = NULL;
 	if( paused ) { return; }
 
 	// Check all timers
-	currentTime = [NSDate timeIntervalSinceReferenceDate];
-	for( NSNumber *timerId in [timers allKeys]) {
-	
-		EJTimer * timer = [timers objectForKey:timerId];
-		[timer check:currentTime];
-		
-		if( !timer.active ) {
-			[timers removeObjectForKey:timerId];
-		}		
-	}
+	[timers update];
 	
 	// Redraw the canvas
 	self.currentRenderingContext = screenRenderingContext;
@@ -308,7 +297,6 @@ static EJApp * ejectaInstance = NULL;
 		return NULL;
 	}
 	
-	uniqueId++;
 	JSObjectRef func = JSValueToObject(ctxp, argv[0], NULL);
 	float interval = JSValueToNumberFast(ctxp, argv[1])/1000;
 	
@@ -317,19 +305,14 @@ static EJApp * ejectaInstance = NULL;
 		interval = 0;
 	}
 	
-	EJTimer * timer = [[EJTimer alloc] initWithCurrentTime:currentTime interval:interval callback:func repeat:repeat];
-	[timers setObject:timer forKey:[NSNumber numberWithInt:uniqueId]];
-	[timer release];
-	
-	return JSValueMakeNumber( ctxp, uniqueId );
+	int timerId = [timers scheduleCallback:func interval:interval repeat:repeat];
+	return JSValueMakeNumber( ctxp, timerId );
 }
 
 - (JSValueRef)deleteTimer:(JSContextRef)ctxp argc:(size_t)argc argv:(const JSValueRef [])argv {
 	if( argc != 1 || !JSValueIsNumber(ctxp, argv[0]) ) return NULL;
 	
-	NSNumber * timerId = [NSNumber numberWithInt:(int)JSValueToNumberFast(ctxp, argv[0])];
-	[timers removeObjectForKey:timerId];
-	
+	[timers cancelId:JSValueToNumberFast(ctxp, argv[0])];
 	return NULL;
 }
 
