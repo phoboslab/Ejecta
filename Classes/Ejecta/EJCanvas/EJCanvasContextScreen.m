@@ -130,9 +130,6 @@
 - (void)present {
 	[self flushBuffers];
 	
-	const GLenum discards[] = {GL_STENCIL_ATTACHMENT};
-	glDiscardFramebufferEXT(GL_FRAMEBUFFER, 1, discards);
-	
 	if( msaaEnabled ) {
 		//Bind the MSAA and View frameBuffers and resolve
 		glBindFramebuffer(GL_READ_FRAMEBUFFER_APPLE, msaaFrameBuffer);

@@ -38,10 +38,7 @@
 
 	// If this texture Canvas uses MSAA, we need to resolve the MSAA first,
 	// before we can use the texture for drawing.
-	if( msaaNeedsResolving ) {
-		const GLenum discards[] = {GL_STENCIL_ATTACHMENT};
-		glDiscardFramebufferEXT(GL_FRAMEBUFFER, 1, discards);
-	
+	if( msaaNeedsResolving ) {	
 		GLint boundFrameBuffer;
 		glGetIntegerv( GL_FRAMEBUFFER_BINDING, &boundFrameBuffer );
 		
