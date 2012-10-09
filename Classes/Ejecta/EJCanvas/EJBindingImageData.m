@@ -8,11 +8,7 @@
 		JSValueProtect(ctx, jsObject);
 		imageData = [data retain];
 		
-		GLubyte * pixels = imageData.pixels;
-		int count = imageData.width * imageData.height * 4;
-		
-		dataArray = ByteArrayToJSObject(ctx, pixels, count);
-		JSValueProtect(ctx, dataArray);
+		dataArray = NULL;
 	}
 	return self;
 }
@@ -20,7 +16,10 @@
 - (void)dealloc {
 	JSContextRef ctx = [EJApp instance].jsGlobalContext;
 	JSValueUnprotect(ctx, jsObject);
-	JSValueUnprotect(ctx, dataArray);
+	if( dataArray ) {
+		JSValueUnprotect(ctx, dataArray);
+	}
+	
 	[imageData release];
 	[super dealloc];
 }
@@ -29,12 +28,21 @@
 	JSContextRef ctx = [EJApp instance].jsGlobalContext;
 	int count = imageData.width * imageData.height * 4;
 	
-	JSObjectToByteArray(ctx, dataArray, imageData.pixels, count );
+	if( dataArray ) {
+		JSObjectToByteArray(ctx, dataArray, imageData.pixels, count );
+	}
 	
 	return imageData;
 }
 
 EJ_BIND_GET(data, ctx ) {
+	if( !dataArray ) {
+		GLubyte * pixels = imageData.pixels;
+		int count = imageData.width * imageData.height * 4;
+		
+		dataArray = ByteArrayToJSObject(ctx, pixels, count);
+		JSValueProtect(ctx, dataArray);
+	}
 	return dataArray;
 }
 
