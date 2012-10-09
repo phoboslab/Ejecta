@@ -25,10 +25,11 @@
 }
 
 - (EJImageData *)imageData {
-	JSContextRef ctx = [EJApp instance].jsGlobalContext;
-	int count = imageData.width * imageData.height * 4;
-	
 	if( dataArray ) {
+		// Copy values from the JSArray back into the imageData
+		JSContextRef ctx = [EJApp instance].jsGlobalContext;
+		int count = imageData.width * imageData.height * 4;
+		
 		JSObjectToByteArray(ctx, dataArray, imageData.pixels, count );
 	}
 	
@@ -37,10 +38,8 @@
 
 EJ_BIND_GET(data, ctx ) {
 	if( !dataArray ) {
-		GLubyte * pixels = imageData.pixels;
 		int count = imageData.width * imageData.height * 4;
-		
-		dataArray = ByteArrayToJSObject(ctx, pixels, count);
+		dataArray = ByteArrayToJSObject(ctx, imageData.pixels, count);
 		JSValueProtect(ctx, dataArray);
 	}
 	return dataArray;
