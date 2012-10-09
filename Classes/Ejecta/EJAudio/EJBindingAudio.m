@@ -67,6 +67,9 @@
 	}
 	[source load];
 	
+	[source setLooping:loop];
+	[source setVolume:volume];
+	
 	[[EJOpenALManager instance].sources setObject:source forKey:path];
 	[self triggerEvent:@"canplaythrough" argc:0 argv:NULL];
 }
@@ -122,8 +125,8 @@ EJ_BIND_GET(volume, ctx) {
 }
 
 EJ_BIND_SET(volume, ctx, value) {
-	volume = JSValueToNumberFast(ctx, value);
-	[source setVolume:MIN(1,MAX(volume,0))];
+	volume = MIN(1,MAX(JSValueToNumberFast(ctx, value),0));
+	[source setVolume:volume];
 }
 
 EJ_BIND_GET(currentTime, ctx) {
