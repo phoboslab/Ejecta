@@ -123,6 +123,10 @@
 	return [[[EJImageData alloc] initWithWidth:sw height:sh pixels:(GLubyte *)pixels] autorelease];
 }
 
+- (void)finish {
+	glFinish();
+}
+
 - (void)resetGLContext {
 	[glview resetContext];
 }

@@ -184,6 +184,7 @@ static EJApp * ejectaInstance = NULL;
 - (void)pause {
 	[displayLink removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 	[touchDelegate endActiveTouches];
+	[screenRenderingContext finish];
 	paused = true;
 }
 

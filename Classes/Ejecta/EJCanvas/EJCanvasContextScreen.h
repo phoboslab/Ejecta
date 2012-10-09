@@ -17,6 +17,7 @@ typedef enum {
 }
 
 - (void)present;
+- (void)finish;
 - (void)resetGLContext;
 
 @property (nonatomic) BOOL useRetinaResolution;
