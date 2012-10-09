@@ -101,3 +101,50 @@ JSValueRef ColorRGBAToJSValue( JSContextRef ctx, EJColorRGBA c ) {
 	return ret;
 }
 
+JSObjectRef ByteArrayToJSObject( JSContextRef ctx, unsigned char * bytes, int count ) {
+	// This creates a JSON string from a byte array and then uses the JSC APIs
+	// JSValueMakeFromJSONString function to convert it into a JSObject that
+	// is an array. It's faster than repeatedly calling JSValueMakeNumber and
+	// JSValueMakeArray.
+
+	// This sucks. Where's the JSC API for ByteArrays?
+	
+	
+	if( count < 1 ) {
+		return JSObjectMakeArray(ctx, 0, NULL, NULL);
+	}
+	
+	// Build the JSON string from the byte array
+	int bufferLength = count * 4 + 3; // Max 4 chars per element + "[]\0"
+	char * jsonBuffer = (char *)malloc( bufferLength );
+		
+	jsonBuffer[0] = '[';
+	int pos = 0;
+	for( int i = 0; i < count; i++ ) {
+		unsigned char n = *(bytes + i);
+		if( n > 99 ) { jsonBuffer[++pos] = (n / 100) + '0'; }
+		if( n > 9 ) { jsonBuffer[++pos] = ((n % 100)/10) + '0'; }
+		jsonBuffer[++pos] = (n % 10) + '0';
+		jsonBuffer[++pos] = ',';
+	}
+	
+	jsonBuffer[pos] = ']'; // overwrite last comma
+	jsonBuffer[++pos] = '\0';
+	
+	// Convert the json string to an object
+	JSStringRef jss = JSStringCreateWithUTF8CString(jsonBuffer);
+	JSObjectRef array = (JSObjectRef)JSValueMakeFromJSONString(ctx, jss);
+	
+	free(jsonBuffer);
+	JSStringRelease(jss);
+	
+	return array;
+}
+
+void JSObjectToByteArray( JSContextRef ctx, JSObjectRef array, unsigned char * bytes, int count ) {
+	// Converting a JSArray to byte buffer seems to be faster without the JSON intermediate
+	for( int i = 0; i < count; i++ ) {
+		bytes[i] = JSValueToNumberFast(ctx, JSObjectGetPropertyAtIndex(ctx, array, i, NULL));
+	}
+}
+

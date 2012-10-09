@@ -10,20 +10,9 @@
 		
 		GLubyte * pixels = imageData.pixels;
 		int count = imageData.width * imageData.height * 4;
-		JSValueRef * values = (JSValueRef*)malloc(count * sizeof(JSValueRef));
 		
-		for( int i = 0; i < count; i++ ) {
-			values[i] = JSValueMakeNumber(ctx, pixels[i]);
-			JSValueProtect(ctx, values[i]);
-		}
-		
-		dataArray = JSObjectMakeArray(ctx, count, values, NULL);
+		dataArray = ByteArrayToJSObject(ctx, pixels, count);
 		JSValueProtect(ctx, dataArray);
-		
-		for( int i = 0; i < count; i++ ) {
-			JSValueUnprotect(ctx, values[i]);
-		}
-		free(values);
 	}
 	return self;
 }
@@ -38,16 +27,10 @@
 
 - (EJImageData *)imageData {
 	JSContextRef ctx = [EJApp instance].jsGlobalContext;
-	GLubyte * pixels = imageData.pixels;
 	int count = imageData.width * imageData.height * 4;
 	
-	// Well, this sucks. Where's the JSC API for ByteArrays?
-	for( int i = 0; i < count; i+=4 ) {
-		pixels[i] = JSValueToNumberFast(ctx, JSObjectGetPropertyAtIndex(ctx, dataArray, i, NULL));
-		pixels[i+1] = JSValueToNumberFast(ctx, JSObjectGetPropertyAtIndex(ctx, dataArray, i+1, NULL));
-		pixels[i+2] = JSValueToNumberFast(ctx, JSObjectGetPropertyAtIndex(ctx, dataArray, i+2, NULL));
-		pixels[i+3] = JSValueToNumberFast(ctx, JSObjectGetPropertyAtIndex(ctx, dataArray, i+3, NULL));
-	}
+	JSObjectToByteArray(ctx, dataArray, imageData.pixels, count );
+	
 	return imageData;
 }
 
