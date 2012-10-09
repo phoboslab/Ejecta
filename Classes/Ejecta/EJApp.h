@@ -10,10 +10,7 @@
 #define EJECTA_MAIN_JS @"index.js"
 
 @protocol TouchDelegate
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event;
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event;
-- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event;
-- (void)endActiveTouches;
+- (void)triggerEvent:(NSString *)name withTouches:(NSSet *)touches;
 @end
 
 @class EJTimerCollection;

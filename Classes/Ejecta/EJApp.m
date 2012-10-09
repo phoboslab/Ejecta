@@ -183,7 +183,6 @@ static EJApp * ejectaInstance = NULL;
 
 - (void)pause {
 	[displayLink removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-	[touchDelegate endActiveTouches];
 	[screenRenderingContext finish];
 	paused = true;
 }
@@ -278,17 +277,20 @@ static EJApp * ejectaInstance = NULL;
 // Touch handlers
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-	[touchDelegate touchesBegan:touches withEvent:event];
+	[touchDelegate triggerEvent:@"touchstart" withTouches:touches];
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-	[touchDelegate touchesEnded:touches withEvent:event];
+	[touchDelegate triggerEvent:@"touchend" withTouches:touches];
+}
+
+- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
+	[touchDelegate triggerEvent:@"touchend" withTouches:touches];
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-	[touchDelegate touchesMoved:touches withEvent:event];
+	[touchDelegate triggerEvent:@"touchmove" withTouches:touches];
 }
-
 
 
 // ---------------------------------------------------------------------------------
