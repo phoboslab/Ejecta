@@ -129,6 +129,7 @@ static EJApp * ejectaInstance = NULL;
 
 - (void)dealloc {
 	JSGlobalContextRelease(jsGlobalContext);
+	[currentRenderingContext release];
 	[touchDelegate release];
 	[jsClasses release];
 	[opQueue release];
