@@ -144,6 +144,9 @@ EJ_BIND_GET(src, ctx) {
 
 EJ_BIND_SET(src, ctx, value) {
 	[self setSourcePath:JSValueToNSString(ctx, value)];
+	if( [preload isEqualToString:@"auto"] ) {
+		[self load];
+	}
 }
 
 EJ_BIND_GET(preload, ctx) {
