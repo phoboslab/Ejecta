@@ -4,7 +4,6 @@
 @protocol EJAudioSource
 
 - (id)initWithPath:(NSString *)path;
-- (void)load;
 - (void)play;
 - (void)pause;
 - (void)setLooping:(BOOL)loop;
