@@ -17,10 +17,7 @@
 			[[EJOpenALManager instance].buffers setObject:buffer forKey:pathp];
 		}
 		
-		alGenSources(1, &sourceId);
-		if( !sourceId ) {
-			NSLog(@"gen sources failed!");
-		}
+		alGenSources(1, &sourceId); 
 		alSourcei(sourceId, AL_BUFFER, buffer.bufferId);
 		alSourcef(sourceId, AL_PITCH, 1.0f);
 		alSourcef(sourceId, AL_GAIN, 1.0f);
