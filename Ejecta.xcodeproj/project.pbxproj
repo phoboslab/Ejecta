@@ -16,6 +16,7 @@
 		5B7B76711619A71000691910 /* EJFont.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B7B76701619A71000691910 /* EJFont.m */; };
 		5B7B76761619DB9700691910 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B7B76751619DB9700691910 /* CoreText.framework */; };
 		B60094591625EFEB005B4F9C /* EJOpenALBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = B60094581625EFEA005B4F9C /* EJOpenALBuffer.m */; };
+		B600945D162763F1005B4F9C /* EJBindingHttpRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = B600945C162763F0005B4F9C /* EJBindingHttpRequest.m */; };
 		B6074FED15F7720500D987F9 /* EJBindingEventedBase.m in Sources */ = {isa = PBXBuildFile; fileRef = B6074FEC15F7720500D987F9 /* EJBindingEventedBase.m */; };
 		B6074FF115F77AD700D987F9 /* EJBindingGameCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = B6074FF015F77AD600D987F9 /* EJBindingGameCenter.m */; };
 		B6074FF315F8E41700D987F9 /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6074FF215F8E41600D987F9 /* GameKit.framework */; };
@@ -81,6 +82,8 @@
 		8D1107310486CEB800E47090 /* Ejecta-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Ejecta-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 		B60094571625EFEA005B4F9C /* EJOpenALBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJOpenALBuffer.h; sourceTree = "<group>"; };
 		B60094581625EFEA005B4F9C /* EJOpenALBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJOpenALBuffer.m; sourceTree = "<group>"; };
+		B600945B162763EF005B4F9C /* EJBindingHttpRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingHttpRequest.h; sourceTree = "<group>"; };
+		B600945C162763F0005B4F9C /* EJBindingHttpRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingHttpRequest.m; sourceTree = "<group>"; };
 		B6074FEB15F7720500D987F9 /* EJBindingEventedBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingEventedBase.h; sourceTree = "<group>"; };
 		B6074FEC15F7720500D987F9 /* EJBindingEventedBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingEventedBase.m; sourceTree = "<group>"; };
 		B6074FEF15F77AD600D987F9 /* EJBindingGameCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingGameCenter.h; sourceTree = "<group>"; };
@@ -384,6 +387,8 @@
 				B667BE5515E2E9CF00D768F4 /* EJBindingLocalStorage.m */,
 				B6074FEF15F77AD600D987F9 /* EJBindingGameCenter.h */,
 				B6074FF015F77AD600D987F9 /* EJBindingGameCenter.m */,
+				B600945B162763EF005B4F9C /* EJBindingHttpRequest.h */,
+				B600945C162763F0005B4F9C /* EJBindingHttpRequest.m */,
 			);
 			path = EJUtils;
 			sourceTree = "<group>";
@@ -492,6 +497,7 @@
 				B6843C68160F637F00D731FF /* EJBindingTouchInput.m in Sources */,
 				5B7B76711619A71000691910 /* EJFont.m in Sources */,
 				B60094591625EFEB005B4F9C /* EJOpenALBuffer.m in Sources */,
+				B600945D162763F1005B4F9C /* EJBindingHttpRequest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
