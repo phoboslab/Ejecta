@@ -34,7 +34,7 @@
 - (NSString *)getResponseText {
 	if( !response || !responseBody ) { return NULL; }
 	
-	NSStringEncoding encoding = NSUTF8StringEncoding;
+	NSStringEncoding encoding = NSASCIIStringEncoding;
 	CFStringEncoding cfEncoding = CFStringConvertIANACharSetNameToEncoding((CFStringRef) [response textEncodingName]);
 	if( cfEncoding != kCFStringEncodingInvalidId ) {
 		encoding = CFStringConvertEncodingToNSStringEncoding(cfEncoding);
