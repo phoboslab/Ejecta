@@ -26,7 +26,7 @@ static const char * EJAudioPreloadNames[] = {
 	EJAudioPreload preload;
 	NSObject<EJAudioSource> * source;
 	
-	BOOL loop, ended;
+	BOOL loop, ended, loading;
 	float volume;
 }
 

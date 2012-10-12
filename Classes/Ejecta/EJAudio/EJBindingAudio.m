@@ -39,27 +39,48 @@
 }
 
 - (void)load {
-	if( source || !path ) { return; }
+	if( source || !path || loading ) { return; }
+	
+	// This will begin loading the sound in a background thread
+	loading = YES;
+	
+	NSString * fullPath = [[EJApp instance] pathForResource:path];
+	NSInvocationOperation* loadOp = [[NSInvocationOperation alloc] initWithTarget:self
+				selector:@selector(loadOperation:) object:fullPath];
+	[loadOp setThreadPriority:0.0];
+	[[EJApp instance].opQueue addOperation:loadOp];
+	[loadOp release];
+}
+
+- (void)loadOperation:(NSString *)fullPath {
+	NSAutoreleasePool *autoreleasepool = [[NSAutoreleasePool alloc] init];
 	
 	// Decide whether to load the sound as OpenAL or AVAudioPlayer source
-	NSString * fullPath = [[EJApp instance] pathForResource:path];
-	unsigned long long size = [[[NSFileManager defaultManager] 
-		attributesOfItemAtPath:fullPath error:nil] fileSize];
-		
+	unsigned long long size = [[[NSFileManager defaultManager] attributesOfItemAtPath:fullPath error:nil] fileSize];
+	
+	NSObject<EJAudioSource> * src;
 	if( size <= EJ_AUDIO_OPENAL_MAX_SIZE ) {
 		NSLog(@"Loading Sound(OpenAL): %@", path);
-		source = [[EJAudioSourceOpenAL alloc] initWithPath:fullPath];
+		src = [[EJAudioSourceOpenAL alloc] initWithPath:fullPath];
 	}
 	else {
 		NSLog(@"Loading Sound(AVAudio): %@", path);
-		source = [[EJAudioSourceAVAudio alloc] initWithPath:fullPath];
+		src = [[EJAudioSourceAVAudio alloc] initWithPath:fullPath];
 		((EJAudioSourceAVAudio *)source).delegate = self;
 	}
+	[src autorelease];
 	
+	[self performSelectorOnMainThread:@selector(endLoad:) withObject:src waitUntilDone:NO];
+	[autoreleasepool release];
+}
+
+- (void)endLoad:(NSObject<EJAudioSource> *)src {
+	source = [src retain];
 	[source setLooping:loop];
 	[source setVolume:volume];
-	
 	[self triggerEvent:@"canplaythrough" argc:0 argv:NULL];
+	
+	loading = NO;
 }
 
 - (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag {
