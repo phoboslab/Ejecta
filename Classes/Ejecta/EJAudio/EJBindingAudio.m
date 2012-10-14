@@ -78,9 +78,13 @@
 	source = [src retain];
 	[source setLooping:loop];
 	[source setVolume:volume];
-	[self triggerEvent:@"canplaythrough" argc:0 argv:NULL];
 	
+	if( playAfterLoad ) {
+		[source play];
+	}
 	loading = NO;
+	
+	[self triggerEvent:@"canplaythrough" argc:0 argv:NULL];
 }
 
 - (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag {
@@ -97,14 +101,24 @@
 
 
 EJ_BIND_FUNCTION(play, ctx, argc, argv) {
-	[self load];
-	[source play];
-	ended = false;
+	if( !source ) {
+		playAfterLoad = YES;
+		[self load];
+	}
+	else {
+		[source play];
+		ended = false;
+	}
 	return NULL;
 }
 
 EJ_BIND_FUNCTION(pause, ctx, argc, argv) {
-	[source pause];
+	if( !source ) {
+		playAfterLoad = NO;
+	}
+	else {
+		[source pause];
+	}
 	return NULL;
 }
 
