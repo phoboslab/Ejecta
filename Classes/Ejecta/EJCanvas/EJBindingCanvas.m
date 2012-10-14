@@ -382,12 +382,14 @@ EJ_BIND_FUNCTION(getImageData, ctx, argc, argv) {
 	// Create the JS object
 	JSClassRef imageDataClass = [[EJApp instance] getJSClassForClass:[EJBindingImageData class]];
 	JSObjectRef obj = JSObjectMake( ctx, imageDataClass, NULL );
+	JSValueProtect(ctx, obj);
 	
 	// Create the native instance
 	EJBindingImageData * jsImageData = [[EJBindingImageData alloc] initWithContext:ctx object:obj imageData:imageData];
 	
 	// Attach the native instance to the js object
 	JSObjectSetPrivate( obj, (void *)jsImageData );
+	JSValueUnprotect(ctx, obj);
 	return obj; 
 }
 
@@ -404,12 +406,14 @@ EJ_BIND_FUNCTION(createImageData, ctx, argc, argv) {
 	// Create the JS object
 	JSClassRef imageDataClass = [[EJApp instance] getJSClassForClass:[EJBindingImageData class]];
 	JSObjectRef obj = JSObjectMake( ctx, imageDataClass, NULL );
+	JSValueProtect(ctx, obj);
 	
 	// Create the native instance
 	EJBindingImageData * jsImageData = [[EJBindingImageData alloc] initWithContext:ctx object:obj imageData:imageData];
 	
 	// Attach the native instance to the js object
 	JSObjectSetPrivate( obj, (void *)jsImageData );
+	JSValueUnprotect(ctx, obj);
 	return obj;
 }
 

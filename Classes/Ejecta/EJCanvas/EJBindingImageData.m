@@ -5,9 +5,7 @@
 
 - (id)initWithContext:(JSContextRef)ctx object:(JSObjectRef)obj imageData:(EJImageData *)data {
 	if( self = [super initWithContext:ctx object:obj argc:0 argv:NULL] ) {
-		JSValueProtect(ctx, jsObject);
 		imageData = [data retain];
-		
 		dataArray = NULL;
 	}
 	return self;
@@ -15,7 +13,6 @@
 
 - (void)dealloc {
 	JSContextRef ctx = [EJApp instance].jsGlobalContext;
-	JSValueUnprotect(ctx, jsObject);
 	if( dataArray ) {
 		JSValueUnprotect(ctx, dataArray);
 	}
