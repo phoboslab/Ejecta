@@ -86,8 +86,10 @@ static EJApp * ejectaInstance = NULL;
 		paused = false;
 		internalScaling = 1;
 		
-		
+		// Limit all background operations (image & sound loading) to one thread
 		opQueue = [[NSOperationQueue alloc] init];
+		opQueue.maxConcurrentOperationCount = 1;
+		
 		timers = [[EJTimerCollection alloc] init];
 		
 		displayLink = [[CADisplayLink displayLinkWithTarget:self selector:@selector(run:)] retain];
