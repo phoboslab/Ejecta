@@ -1,10 +1,16 @@
+/*
+
+	INSTRUCTIONS:
+	This file must be copied into ./App in order to work
+
+*/
 var w = window.innerWidth;
 var h = window.innerHeight;
 var w2 = w/2;
 var h2 = h/2;
 
 var canvas = document.getElementById('canvas');
-canvas.width = w
+canvas.width = w;
 canvas.height = h;
 
 var ctx = canvas.getContext('2d');
@@ -28,7 +34,7 @@ var animate = function() {
 
 	// Use the additive blend mode to draw the bezier curves
 	ctx.globalCompositeOperation = 'lighter';
-	
+
 	// Calculate curve positions and draw
 	for( var i = 0; i < maxCurves; i++ ) {
 		var curve = curves[i];
