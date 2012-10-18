@@ -16,6 +16,26 @@ EJ_BIND_FUNCTION(require, ctx, argc, argv ) {
 	return NULL;
 }
 
+EJ_BIND_FUNCTION(loadText, ctx, argc, argv) {
+	if( argc < 1 ) { return NULL; }
+	
+	NSString * path = [[EJApp instance] pathForResource:JSValueToNSString(ctx, argv[0])];
+	NSString * text = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:NULL];
+	return NSStringToJSValue(ctx, text);
+}
+
+EJ_BIND_FUNCTION(loadJSON, ctx, argc, argv) {
+	if( argc < 1 ) { return NULL; }
+	
+	NSString * path = [[EJApp instance] pathForResource:JSValueToNSString(ctx, argv[0])];
+	NSString * text = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:NULL];
+	
+	JSStringRef jsText = JSStringCreateWithCFString((CFStringRef)text);;
+	JSValueRef json = JSValueMakeFromJSONString(ctx, jsText);
+	JSStringRelease(jsText);
+	return json;
+}
+
 EJ_BIND_FUNCTION(openURL, ctx, argc, argv ) {
 	if( argc < 1 ) { return NULL; }
 	
