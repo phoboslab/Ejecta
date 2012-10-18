@@ -3,7 +3,7 @@
 #import "JavaScriptCore/JavaScriptCore.h"
 #import "EJConvert.h"
 
-#define EJECTA_VERSION @"1.0"
+#define EJECTA_VERSION @"1.1"
 #define EJECTA_APP_FOLDER @"App/"
 
 #define EJECTA_BOOT_JS @"../ejecta.js"
