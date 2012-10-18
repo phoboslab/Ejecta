@@ -66,7 +66,7 @@
 	else {
 		NSLog(@"Loading Sound(AVAudio): %@", path);
 		src = [[EJAudioSourceAVAudio alloc] initWithPath:fullPath];
-		((EJAudioSourceAVAudio *)source).delegate = self;
+		((EJAudioSourceAVAudio *)src).delegate = self;
 	}
 	[src autorelease];
 	

@@ -8,13 +8,13 @@
 	if( self = [super init] ) {
 		path = [pathp retain];
 		
-		buffer = [[EJOpenALManager instance].buffers objectForKey:pathp];
+		buffer = [[EJOpenALManager instance].buffers objectForKey:path];
 		if( buffer ) {
 			[buffer retain];
 		}
 		else {
-			buffer = [[EJOpenALBuffer alloc] initWithPath:pathp];
-			[[EJOpenALManager instance].buffers setObject:buffer forKey:pathp];
+			buffer = [[EJOpenALBuffer alloc] initWithPath:path];
+			[[EJOpenALManager instance].buffers setObject:buffer forKey:path];
 		}
 		
 		alGenSources(1, &sourceId); 
@@ -26,7 +26,7 @@
 }
 
 - (void)dealloc {
-	// If the retainCount is 2, only this instance and the .sources dictionary
+	// If the retainCount is 2, only this instance and the .buffers dictionary
 	// still retain the source - so remove it from the dict and delete it completely
 	if( [buffer retainCount] == 2 ) {
 		[[EJOpenALManager instance].buffers removeObjectForKey:path];

@@ -21,8 +21,11 @@
 }
 
 - (void)setDelegate:(NSObject<AVAudioPlayerDelegate> *)delegatep {
-	delegate = delegatep;
-	player.delegate = delegate;
+	player.delegate = delegatep;
+}
+
+- (NSObject<AVAudioPlayerDelegate> *)delegate {
+	return player.delegate;
 }
 
 - (void)play {
