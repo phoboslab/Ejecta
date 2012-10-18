@@ -9,9 +9,9 @@ Ejecta is published under the [MIT Open Source License](http://opensource.org/li
 
 ## How to use
 
-1. Create a folder call `App` within this XCode project
+1. Create a folder called `App` within this XCode project
 2. Copy your canvas application into the `App` folder
 3. Ensure you have at least 1 file named `index.js`
 4. Build the XCode project
 
-For an example implementation, copy `./index.js` into the `App` folder
+For an example application, copy `./index.js` into the `App` folder
