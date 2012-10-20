@@ -35,9 +35,11 @@
 	if( !response || !responseBody ) { return NULL; }
 	
 	NSStringEncoding encoding = NSASCIIStringEncoding;
-	CFStringEncoding cfEncoding = CFStringConvertIANACharSetNameToEncoding((CFStringRef) [response textEncodingName]);
-	if( cfEncoding != kCFStringEncodingInvalidId ) {
-		encoding = CFStringConvertEncodingToNSStringEncoding(cfEncoding);
+	if ( response.textEncodingName ) {
+		CFStringEncoding cfEncoding = CFStringConvertIANACharSetNameToEncoding((CFStringRef) [response textEncodingName]);
+		if( cfEncoding != kCFStringEncodingInvalidId ) {
+			encoding = CFStringConvertEncodingToNSStringEncoding(cfEncoding);
+		}
 	}
 
 	return [[[NSString alloc] initWithData:responseBody encoding:encoding] autorelease];
