@@ -24,7 +24,8 @@ window.screen = {
 
 window.navigator = {
 	userAgent: ej.userAgent,
-	appVersion: ej.appVersion
+	appVersion: ej.appVersion,
+	get onLine() { return ej.onLine; } // re-evaluate on each get
 };
 
 // Create the default screen canvas

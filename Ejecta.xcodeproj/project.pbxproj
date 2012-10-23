@@ -64,6 +64,7 @@
 		B6EE1A58160BC1D500F09450 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B6EE1A4E160BC1D500F09450 /* Icon@2x.png */; };
 		B6EE1A5A160BC36700F09450 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = B6EE1A59160BC36700F09450 /* Default.png */; };
 		B6EE1A5C160BC36F00F09450 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B6EE1A5B160BC36F00F09450 /* Default@2x.png */; };
+		B6F463A41636C3FB00FC89C1 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6F463A31636C3FA00FC89C1 /* SystemConfiguration.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -169,6 +170,7 @@
 		B6EE1A4E160BC1D500F09450 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
 		B6EE1A59160BC36700F09450 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		B6EE1A5B160BC36F00F09450 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
+		B6F463A31636C3FA00FC89C1 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -176,6 +178,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B6F463A41636C3FB00FC89C1 /* SystemConfiguration.framework in Frameworks */,
 				5B7B76761619DB9700691910 /* CoreText.framework in Frameworks */,
 				B6074FF315F8E41700D987F9 /* GameKit.framework in Frameworks */,
 				B625CD2415AFA3AB00351585 /* libJavaScriptCore.a in Frameworks */,
@@ -263,6 +266,7 @@
 				B625CD2315AFA3AA00351585 /* libJavaScriptCore.a */,
 				B66F1E7F1476B6A40090D208 /* libstdc++.dylib */,
 				B66F1E771476B3AC0090D208 /* libicucore.dylib */,
+				B6F463A31636C3FA00FC89C1 /* SystemConfiguration.framework */,
 				5B7B76751619DB9700691910 /* CoreText.framework */,
 				B6074FF215F8E41600D987F9 /* GameKit.framework */,
 				B607AD0F132EB52400D7C3EA /* QuartzCore.framework */,
