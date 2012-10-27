@@ -206,6 +206,7 @@ var publishTouchEvent = function( type, args ) {
 			clientY: y
 		};
 	}
+	touchEvent.type = type;
 	document._publishEvent( type, touchEvent );
 };
 window.document._eventInitializers.touchstart =
