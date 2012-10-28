@@ -124,7 +124,7 @@ int TextureToGlyphSort(const void * a, const void * b) {
 	CFArrayRef glyphRuns = CTLineGetGlyphRuns(_ctLine);
 	CFIndex runCount = CFArrayGetCount(glyphRuns);
 	
-	assert(runCount==1); // line should only require one run, because we use one font and no attributes
+	assert(runCount<=1); // line require at most one run, because we use one font and no attributes
 	
 	CTRunRef run = CFArrayGetValueAtIndex(glyphRuns, 0);
 	CFIndex glyphCount = CTRunGetGlyphCount(run);
