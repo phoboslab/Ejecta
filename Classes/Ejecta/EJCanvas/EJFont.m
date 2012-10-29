@@ -256,6 +256,7 @@ int TextureToGlyphSort(const void * a, const void * b) {
 }
 
 - (void)drawString:(NSString*)string toContext:(EJCanvasContext*)context x:(float)x y:(float)y {
+	if( string.length == 0 ) { return; }
 
 	StringLayout layout = [self layoutForString:string];
 	
@@ -340,6 +341,8 @@ int TextureToGlyphSort(const void * a, const void * b) {
 }
 
 - (float)measureString:(NSString*)string {
+	if( string.length == 0 ) { return 0; }
+	
 	float width;
 	
 	[self layoutForString:string];
