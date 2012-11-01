@@ -10,5 +10,6 @@
 }
 
 @property (readonly, nonatomic) EJTexture * texture;
+@property (readonly, nonatomic) NSString * path;
 
 @end
