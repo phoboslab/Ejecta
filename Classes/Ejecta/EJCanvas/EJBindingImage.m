@@ -3,6 +3,7 @@
 
 @implementation EJBindingImage
 @synthesize texture;
+@synthesize path;
 
 - (void)beginLoad {
 	// This will begin loading the texture in a background thread and will call the

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1A5C21A216420A9600A8A35F /* EJBindingCanvasPattern.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A5C21A116420A9600A8A35F /* EJBindingCanvasPattern.m */; };
 		1D3623260D0F684500981E51 /* EjectaAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* EjectaAppDelegate.m */; };
 		1D60589B0D05DD56006BFB54 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
@@ -68,6 +69,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1A5C21A016420A9600A8A35F /* EJBindingCanvasPattern.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingCanvasPattern.h; sourceTree = "<group>"; };
+		1A5C21A116420A9600A8A35F /* EJBindingCanvasPattern.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingCanvasPattern.m; sourceTree = "<group>"; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D3623240D0F684500981E51 /* EjectaAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = EjectaAppDelegate.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		1D3623250D0F684500981E51 /* EjectaAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EjectaAppDelegate.m; sourceTree = "<group>"; };
@@ -327,6 +330,8 @@
 			children = (
 				B615E8C915E2D3F70087729A /* EJBindingCanvas.h */,
 				B615E8CA15E2D3F70087729A /* EJBindingCanvas.m */,
+				1A5C21A016420A9600A8A35F /* EJBindingCanvasPattern.h */,
+				1A5C21A116420A9600A8A35F /* EJBindingCanvasPattern.m */,
 				B615E8CB15E2D3F70087729A /* EJBindingImage.h */,
 				B615E8CC15E2D3F70087729A /* EJBindingImage.m */,
 				B615E8CD15E2D3F70087729A /* EJBindingImageData.h */,
@@ -502,6 +507,7 @@
 				5B7B76711619A71000691910 /* EJFont.m in Sources */,
 				B60094591625EFEB005B4F9C /* EJOpenALBuffer.m in Sources */,
 				B600945D162763F1005B4F9C /* EJBindingHttpRequest.m in Sources */,
+				1A5C21A216420A9600A8A35F /* EJBindingCanvasPattern.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -514,6 +520,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COMPRESS_PNG_FILES = NO;
 				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -536,6 +543,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COMPRESS_PNG_FILES = NO;
 				COPY_PHASE_STRIP = YES;
+				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Ejecta_Prefix.pch;
 				INFOPLIST_FILE = "Ejecta-Info.plist";
@@ -557,6 +565,7 @@
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_PREPROCESSOR_DEFINITIONS = NS_BLOCK_ASSERTIONS;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -576,6 +585,7 @@
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;

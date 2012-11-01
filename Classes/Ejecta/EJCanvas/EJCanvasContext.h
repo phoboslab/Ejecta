@@ -4,6 +4,8 @@
 #import "EJPath.h"
 #import "EJCanvasTypes.h"
 
+@class EJBindingCanvasPattern;
+
 #define EJ_CANVAS_STATE_STACK_SIZE 16
 #define EJ_CANVAS_VERTEX_BUFFER_SIZE 2048
 
@@ -61,20 +63,23 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 
 typedef struct {
 	CGAffineTransform transform;
-	
+
 	EJCompositeOperation globalCompositeOperation;
 	EJColorRGBA fillColor;
+	EJBindingCanvasPattern *fillPattern;
+	BOOL fillWithPattern;
 	EJColorRGBA strokeColor;
 	float globalAlpha;
-	
+
 	float lineWidth;
 	EJLineCap lineCap;
 	EJLineJoin lineJoin;
 	float miterLimit;
-	
+
 	EJTextAlign textAlign;
 	EJTextBaseline textBaseline;
 	UIFont * font;
+
 } EJCanvasState;
 
 
@@ -82,26 +87,26 @@ typedef struct {
 	GLuint viewFrameBuffer, viewRenderBuffer;
 	GLuint msaaFrameBuffer, msaaRenderBuffer;
 	GLuint stencilBuffer;
-	
+
 	short width, height;
 	short viewportWidth, viewportHeight;
 	short bufferWidth, bufferHeight;
-	
+
 	BOOL msaaEnabled;
 	int msaaSamples;
-	
+
 	EJTexture * currentTexture;
-	
+
 	EJPath * path;
-	
+
 	int vertexBufferIndex;
-	
+
 	int stateIndex;
 	EJCanvasState stateStack[EJ_CANVAS_STATE_STACK_SIZE];
 	EJCanvasState * state;
-    
+
 	float backingStoreRatio;
-	
+
 	NSCache * fontCache;
 }
 
@@ -164,12 +169,11 @@ typedef struct {
 /* TODO: not yet implemented:
 	createLinearGradient(x0, y0, x1, y1)
 	createRadialGradient(x0, y0, r0, x1, y1, r1)
-	createPattern(image, repetition)
 	shadowOffsetX
 	shadowOffsetY
 	shadowBlur
 	shadowColor
-	clip()
+  clip()
 	isPointInPath(x, y)
 */
 @end
