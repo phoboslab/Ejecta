@@ -199,8 +199,6 @@ EJ_BIND_FUNCTION(send, ctx, argc, argv) {
 	if( async ) {
 		state = kEJHttpRequestStateLoading;
 		connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
-		[connection setDelegateQueue:[EJApp instance].opQueue];
-		[connection start];
 	}
 	else {	
 		NSData * data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:nil];
