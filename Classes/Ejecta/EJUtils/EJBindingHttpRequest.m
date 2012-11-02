@@ -53,11 +53,14 @@
 			persistence:NSURLCredentialPersistenceNone];
 		[[challenge sender] useCredential:credentials forAuthenticationChallenge:challenge];
     }
+	else if( [challenge previousFailureCount] == 0 ) {
+		[[challenge sender] continueWithoutCredentialForAuthenticationChallenge:challenge];
+	}
 	else {
 		[[challenge sender] cancelAuthenticationChallenge:challenge];
 		state = kEJHttpRequestStateDone;
 		[self triggerEvent:@"abort" argc:0 argv:NULL];
-		NSLog(@"XHR: Aborting Request %@ - wrong or no credentials", url);
+		NSLog(@"XHR: Aborting Request %@ - wrong credentials", url);
     }
 }
 
