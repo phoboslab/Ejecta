@@ -15,12 +15,10 @@ typedef enum {
 
 @interface EJPath : NSObject {
 	EJVector2 currentPos, startPos;
+	EJVector2 minPos, maxPos;
 	int longestSubpath;
 	
 	GLubyte stencilMask;
-	
-	EJVector2 * vertexBuffer;
-	int vertexBufferLength;
 	
 	float distanceTolerance;
     
@@ -29,6 +27,7 @@ typedef enum {
 
 @property (nonatomic,assign) CGAffineTransform transform;;
 
+- (void)push:(EJVector2)v;
 - (void)reset;
 - (void)close;
 - (void)endSubPath;
