@@ -35,6 +35,18 @@ typedef std::vector<subpath_t> path_t;
 	[super dealloc];
 }
 
+- (id)copyWithZone:(NSZone *)zone {
+	EJPath * copy = [[EJPath allocWithZone:zone] init];
+	copy->currentPos = currentPos;
+	copy->startPos = startPos;
+	copy->longestSubpath = longestSubpath;
+	copy->transform = transform;
+	
+	copy->currentPath = currentPath;
+	copy->paths = paths;
+	return copy;
+}
+
 - (void)reset {
 	longestSubpath = 0;
 	paths.clear();
@@ -282,7 +294,7 @@ typedef std::vector<subpath_t> path_t;
 	}
 }
 
-- (void)drawPolygonsToContext:(EJCanvasContext *)context {
+- (void)drawPolygonsToContext:(EJCanvasContext *)context target:(EJPathPolygonTarget)target {
 	[self endSubPath];
 	if( longestSubpath < 3 ) { return; }
 	
@@ -308,8 +320,8 @@ typedef std::vector<subpath_t> path_t;
 	[context createStencilBufferOnce];
 	
 	
-	// Enable drawing to the stencil buffer, disable drawing to the color buffer and
-	// draw the polygons to the stencil buffer as a triangle fan.
+	// Disable drawing to the color buffer and draw the polygons to the stencil buffer
+	// as a triangle fan.
 	
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_COLOR_ARRAY);
@@ -338,16 +350,31 @@ typedef std::vector<subpath_t> path_t;
 	[context bindVertexBuffer];
 	
 	
-	// Disable drawing to the stencil buffer, enable drawing to the color buffer and push a rect
-	// with the correct size and color to the context.
+	// Disable drawing to the stencil buffer, enable drawing to the color or depth buffer
+	// and push a rect with the correct size and color to the context.
 	
-	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-    glEnable(GL_BLEND);
+	if( target == kEJPathPolygonTargetDepth ) {
+		glDepthFunc(GL_ALWAYS);
+		glDepthMask(GL_TRUE);
+	}
+	else if( target == kEJPathPolygonTargetColor ) {
+		glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+		glEnable(GL_BLEND);
+	}
+	
 	glStencilFunc(GL_EQUAL, 0x01, 0x01);
     glStencilOp(GL_ZERO, GL_ZERO, GL_ZERO);
 	[context pushRectX:minX y:minY w:maxX-minX h:maxY-minY tx:0 ty:0 tw:0 th:0 color:color withTransform:CGAffineTransformIdentity];
 	[context flushBuffers];
 	glDisable(GL_STENCIL_TEST);
+	
+	if( target == kEJPathPolygonTargetDepth ) {
+		glDepthMask(GL_FALSE);
+		glDepthFunc(GL_EQUAL);
+		
+		glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+		glEnable(GL_BLEND);
+	}
 }
 
 - (void)drawArcToContext:(EJCanvasContext *)context atPoint:(EJVector2)point v1:(EJVector2)p1 v2:(EJVector2)p2 color:(EJColorRGBA)color {

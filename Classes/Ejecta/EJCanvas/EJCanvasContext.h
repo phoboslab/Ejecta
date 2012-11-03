@@ -75,6 +75,8 @@ typedef struct {
 	EJTextAlign textAlign;
 	EJTextBaseline textBaseline;
 	UIFont * font;
+	
+	EJPath * clipPath;
 } EJCanvasState;
 
 
@@ -154,6 +156,9 @@ typedef struct {
 - (void)strokeText:(NSString *)text x:(float)x y:(float)y;
 - (float)measureText:(NSString *)text;
 
+- (void)clip;
+- (void)resetClip;
+
 @property (nonatomic) EJCanvasState * state;
 @property (nonatomic) EJCompositeOperation globalCompositeOperation;
 @property (nonatomic, retain) UIFont * font;
@@ -169,7 +174,6 @@ typedef struct {
 	shadowOffsetY
 	shadowBlur
 	shadowColor
-	clip()
 	isPointInPath(x, y)
 */
 @end

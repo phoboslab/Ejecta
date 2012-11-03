@@ -6,6 +6,11 @@
 #define EJ_PATH_COLLINEARITY_EPSILON FLT_EPSILON
 #define EJ_PATH_STEPS_FOR_CIRCLE 48.0f
 
+typedef enum {
+	kEJPathPolygonTargetColor,
+	kEJPathPolygonTargetDepth
+} EJPathPolygonTarget;
+
 @class EJCanvasContext;
 
 @interface EJPath : NSObject {
@@ -36,7 +41,7 @@
 - (void)arcToX1:(float)x1 y1:(float)y1 x2:(float)x2 y2:(float)y2 radius:(float)radius;
 - (void)arcX:(float)x y:(float)y radius:(float)radius startAngle:(float)startAngle endAngle:(float)endAngle	antiClockwise:(BOOL)antiClockwise;
 
-- (void)drawPolygonsToContext:(EJCanvasContext *)context;
+- (void)drawPolygonsToContext:(EJCanvasContext *)context target:(EJPathPolygonTarget)target;
 - (void)drawLinesToContext:(EJCanvasContext *)context;
 
 @end

@@ -578,10 +578,21 @@ EJ_BIND_FUNCTION( strokeText, ctx, argc, argv ) {
 	return NULL;
 }
 
+EJ_BIND_FUNCTION( clip, ctx, argc, argv ) {
+	ejectaInstance.currentRenderingContext = renderingContext;
+	[renderingContext clip];
+	return NULL;
+}
+
+EJ_BIND_FUNCTION( resetClip, ctx, argc, argv ) {
+	ejectaInstance.currentRenderingContext = renderingContext;
+	[renderingContext resetClip];
+	return NULL;
+}
+
 EJ_BIND_FUNCTION_NOT_IMPLEMENTED( createRadialGradient );
 EJ_BIND_FUNCTION_NOT_IMPLEMENTED( createLinearGradient );
 EJ_BIND_FUNCTION_NOT_IMPLEMENTED( createPattern );
-EJ_BIND_FUNCTION_NOT_IMPLEMENTED( clip );
 EJ_BIND_FUNCTION_NOT_IMPLEMENTED( isPointInPath );
 
 @end
