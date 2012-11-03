@@ -86,6 +86,10 @@ EJ_BIND_GET(height, ctx ) {
 	return JSValueMakeNumber( ctx, texture ? texture.height : 0 );
 }
 
+EJ_BIND_GET(complete, ctx ) {
+	return JSValueMakeBoolean(ctx, (texture && texture.textureId) );
+}
+
 EJ_BIND_EVENT(load);
 EJ_BIND_EVENT(error);
 
