@@ -474,12 +474,9 @@ typedef std::vector<subpath_t> path_t;
 	EJColorRGBA color = state->strokeColor;
 	color.rgba.a = (float)color.rgba.a * state->globalAlpha;
 	
-	// enable stencil test when drawing transparent lines
-	// cycle through the highest 7 bits, so that the stencil buffer only has to be cleared after seven stroke operations
-	// the lowest bit is reserved for drawPolygonsToContext
-	if(color.rgba.a < 0xff) {
-		stencilMask <<= 1;
-		
+	// Enable stencil test when drawing transparent lines.
+	// Cycle through all bits, so that the stencil buffer only has to be cleared after eight stroke operations
+	if( color.rgba.a < 0xff ) {
 		[context flushBuffers];
 		[context createStencilBufferOnce];
 		
@@ -720,16 +717,19 @@ typedef std::vector<subpath_t> path_t;
 	} // for each path
 	
 	// disable stencil test when drawing transparent lines
-	if(color.rgba.a<0xff) {
+	if( color.rgba.a < 0xff ) {
 		[context flushBuffers];
 		glDisable(GL_STENCIL_TEST);
 		
-		if(stencilMask == (1<<7)) {
+		if( stencilMask == (1<<7) ) {
 			stencilMask = (1<<0);
 			
 			glStencilMask(0xff);
 			glClearStencil(0x0);
 			glClear(GL_STENCIL_BUFFER_BIT);
+		}
+		else {
+			stencilMask <<= 1;
 		}
 	}
 }
