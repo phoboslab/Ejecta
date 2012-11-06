@@ -30,6 +30,7 @@ window.navigator = {
 
 // Create the default screen canvas
 window.canvas = new Ejecta.Canvas();
+window.canvas.type = 'canvas';
 
 // The console object
 window.console = {
@@ -183,7 +184,7 @@ window.canvas.removeEventListener = window.removeEventListener = function( type,
 var touchInput = null;
 var touchEvent = {
 	type: 'touchstart', 
-	target: {type:'canvas'}, 
+	target: canvas,
 	touches: [],
 	preventDefault: function(){},
 	stopPropagation: function(){}
@@ -227,7 +228,7 @@ window.document._eventInitializers.touchstart =
 var accelerometer = null;
 var deviceMotionEvent = {
 	type: 'devicemotion', 
-	target: {type:'canvas'},
+	target: canvas,
 	acceleration: {x: 0, y: 0, z: 0},
 	accelerationIncludingGravity: {x: 0, y: 0, z: 0},
 	preventDefault: function(){},
