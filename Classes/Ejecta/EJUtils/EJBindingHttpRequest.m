@@ -91,7 +91,14 @@
 	state = kEJHttpRequestStateHeadersReceived;
 	
 	[response release];
-	response = (NSHTTPURLResponse *)[responsep retain];
+	if ([responsep respondsToSelector:@selector(statusCode)]) {
+		response = (NSHTTPURLResponse*)[responsep retain];
+	} else {
+		response = [[NSHTTPURLResponse alloc] initWithURL:responsep.URL
+											   statusCode:200
+											  HTTPVersion:@"1.1"
+											 headerFields:[NSDictionary dictionary]];
+	}
 	[self triggerEvent:@"progress" argc:0 argv:NULL];
 	[self triggerEvent:@"readystatechange" argc:0 argv:NULL];
 }
@@ -177,8 +184,11 @@ EJ_BIND_FUNCTION(send, ctx, argc, argv) {
 	if( !method || !url ) { return NULL; }
 	
 	[self clearConnection];
-	
-	NSMutableURLRequest * request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:url]];
+	NSURL *remoteUrl = [NSURL URLWithString:url];
+	if (![remoteUrl host]) { // No host => local file
+		remoteUrl = [NSURL fileURLWithPath:[[EJApp instance] pathForResource:url]];
+	}
+	NSMutableURLRequest * request = [[NSMutableURLRequest alloc] initWithURL:remoteUrl];
 	[request setHTTPMethod:method];
 	
 	for( NSString * header in requestHeaders ) {
@@ -201,7 +211,9 @@ EJ_BIND_FUNCTION(send, ctx, argc, argv) {
 	
 	if( async ) {
 		state = kEJHttpRequestStateLoading;
-		connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+		connection = [[NSURLConnection alloc] initWithRequest:request
+													 delegate:self
+											 startImmediately:YES];
 	}
 	else {	
 		NSData * data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:nil];
