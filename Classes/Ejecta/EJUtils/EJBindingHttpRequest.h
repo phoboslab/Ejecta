@@ -38,7 +38,7 @@ typedef enum {
 	
 	EJHttpRequestState state;	
 	NSURLConnection * connection;
-	NSHTTPURLResponse * response;
+	NSURLResponse * response;
 	NSMutableData * responseBody;
 }
 
