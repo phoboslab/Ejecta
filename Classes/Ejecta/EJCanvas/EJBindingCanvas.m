@@ -104,7 +104,7 @@ EJ_BIND_GET(font, ctx) {
 EJ_BIND_SET(font, ctx, value) {
 	char string[64]; // Long font names are long
 	JSStringRef jsString = JSValueToStringCopy( ctx, value, NULL );
-	JSStringGetUTF8CString(jsString, string, 32);
+	JSStringGetUTF8CString(jsString, string, 64);
 	
 	// Yeah, oldschool!
 	float size = 0;
