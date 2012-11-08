@@ -334,7 +334,7 @@ EJVertex CanvasVertexBuffer[EJ_CANVAS_VERTEX_BUFFER_SIZE];
 
 - (void)transformM11:(float)m11 m12:(float)m12 m21:(float)m21 m22:(float)m22 dx:(float)dx dy:(float)dy {
 	CGAffineTransform t = CGAffineTransformMake( m11, m12, m21, m22, dx, dy );
-	state->transform = CGAffineTransformConcat( state->transform, t );
+	state->transform = CGAffineTransformConcat( t, state->transform );
 	path.transform = state->transform;
 }
 
