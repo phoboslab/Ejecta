@@ -240,7 +240,7 @@ typedef std::vector<subpath_t> path_t;
 	// I have no idea what this code is doing, but it seems to work.
 	
 	// get untransformed currentPos
-	EJVector2 cp = EJVector2ApplyTransform(EJVector2Make(x1, y1), CGAffineTransformInvert(transform));
+	EJVector2 cp = EJVector2ApplyTransform(currentPos, CGAffineTransformInvert(transform));
 	
 	float a1 = cp.y - y1;
 	float b1 = cp.x - x1;
