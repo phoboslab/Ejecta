@@ -477,7 +477,6 @@ typedef std::vector<subpath_t> path_t;
 	BOOL addCaps = (projectedLineWidth > 2 && (state->lineCap == kEJLineCapRound || state->lineCap == kEJLineCapSquare));
 	
 	// The miter limit is the maximum allowed ratio of the miter length to half the line width.
-	// For thin lines we skip computing the miter completely.
 	BOOL addMiter = (state->lineJoin == kEJLineJoinMiter);
 	float miterLimit = (state->miterLimit * width2);
 	
@@ -544,9 +543,7 @@ typedef std::vector<subpath_t> path_t;
 			current = next;
 			next = EJVector2ApplyTransform( *transNext, inverseTransform );
 			
-			if( !transCurrent ) {
-				continue;
-			}
+			if( !transCurrent ) { continue;	}
 			
 			currentEdge	= nextEdge;
 			currentExt = nextExt;
