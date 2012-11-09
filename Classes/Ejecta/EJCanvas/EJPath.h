@@ -14,7 +14,7 @@ typedef enum {
 @class EJCanvasContext;
 
 @interface EJPath : NSObject {
-	EJVector2 currentPos, startPos;
+	EJVector2 currentPos, startPos, lastPushed;
 	EJVector2 minPos, maxPos;
 	int longestSubpath;
 	

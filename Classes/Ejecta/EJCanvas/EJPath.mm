@@ -5,7 +5,11 @@
 
 // We're using the C++ std::vector here to store our points. Boxing and unboxing
 // so many EJVectors to NSValue types seemed wasteful.
-typedef std::vector<EJVector2> subpath_t;
+typedef std::vector<EJVector2> points_t;
+typedef struct {
+	points_t points;
+	bool isClosed;
+} subpath_t;
 typedef std::vector<subpath_t> path_t;
 
 @interface EJPath() {
@@ -44,17 +48,24 @@ typedef std::vector<subpath_t> path_t;
 }
 
 - (void)push:(EJVector2)v {
+	// Ignore this point if it's identical to the last
+	if( v.x == lastPushed.x && v.y == lastPushed.y && currentPath.points.size() > 0 ) {
+		return;
+	}
+	lastPushed = v;
+	
 	minPos.x = MIN( minPos.x, v.x );
 	minPos.y = MIN( minPos.y, v.y );
 	maxPos.x = MAX( maxPos.x, v.x );
 	maxPos.y = MAX( maxPos.y, v.y );
-	currentPath.push_back(v);
+	currentPath.points.push_back(v);
 }
 
 - (void)reset {
 	longestSubpath = 0;
 	paths.clear();
-	currentPath.clear();
+	currentPath.isClosed = false;
+	currentPath.points.clear();
 	
 	currentPos = EJVector2Make( 0, 0 );
 	startPos = EJVector2Make( 0, 0 );
@@ -64,21 +75,20 @@ typedef std::vector<subpath_t> path_t;
 }
 
 - (void)close {
-	if( currentPos.x != startPos.x || currentPos.y != startPos.y ) {
-		[self push:startPos];
-		currentPos = startPos;
-	}
+	currentPath.isClosed = true;
+	[self push:startPos];
+	currentPos = startPos;
 	[self endSubPath];
 }
 
 - (void)endSubPath {
-	if( currentPath.size() > 1 ) {
+	if( currentPath.points.size() > 1 ) {
 		paths.push_back(currentPath);
-		longestSubpath = MAX( longestSubpath, currentPath.size() );
-		
-		currentPath.clear();
-		startPos = currentPos;
+		longestSubpath = MAX( longestSubpath, currentPath.points.size() );
 	}
+	currentPath.points.clear();
+	currentPath.isClosed = false;
+	startPos = currentPos;
 }
 
 - (void)moveToX:(float)x y:(float)y {
@@ -349,15 +359,15 @@ typedef std::vector<subpath_t> path_t;
 	
 	glEnable(GL_CULL_FACE);
 	for( path_t::iterator sp = paths.begin(); sp != paths.end(); ++sp ) {
-		glVertexPointer(2, GL_FLOAT, sizeof(EJVector2), &sp->front());
+		glVertexPointer(2, GL_FLOAT, sizeof(EJVector2), &(sp->points).front());
 		
 		glCullFace(GL_BACK);
 		glStencilOp(GL_INCR_WRAP, GL_INCR_WRAP, GL_INCR_WRAP);
-		glDrawArrays(GL_TRIANGLE_FAN, 0, sp->size());
+		glDrawArrays(GL_TRIANGLE_FAN, 0, sp->points.size());
 		
 		glCullFace(GL_FRONT);
 		glStencilOp(GL_DECR_WRAP, GL_DECR_WRAP, GL_DECR_WRAP);
-		glDrawArrays(GL_TRIANGLE_FAN, 0, sp->size());
+		glDrawArrays(GL_TRIANGLE_FAN, 0, sp->points.size());
 	}
 	glDisable(GL_CULL_FACE);
 	[context bindVertexBuffer];
@@ -468,7 +478,7 @@ typedef std::vector<subpath_t> path_t;
 	
 	// The miter limit is the maximum allowed ratio of the miter length to half the line width.
 	// For thin lines we skip computing the miter completely.
-	BOOL addMiter = (projectedLineWidth >= 1 && state->lineJoin == kEJLineJoinMiter);
+	BOOL addMiter = (state->lineJoin == kEJLineJoinMiter);
 	float miterLimit = (state->miterLimit * width2);
 	
 	EJColorRGBA color = state->strokeColor;
@@ -511,12 +521,7 @@ typedef std::vector<subpath_t> path_t;
 		nextEdge, nextExt;			// Next edge and its normal * width/2
 	
 	for( path_t::iterator sp = paths.begin(); sp != paths.end(); ++sp ) {
-		EJVector2
-			front = sp->front(),
-			back = sp->back();
-		
-		// If back and front are equal, this subpath is closed.
-		BOOL subPathIsClosed = (sp->size() > 2 && front.x == back.x && front.y == back.y);
+		BOOL subPathIsClosed = sp->isClosed;
 		BOOL ignoreFirstSegment = addMiter && subPathIsClosed;
 		BOOL firstInSubPath = true;
 		BOOL miterLimitExceeded = NO, firstMiterLimitExceeded = NO;
@@ -528,18 +533,20 @@ typedef std::vector<subpath_t> path_t;
 		// the first segment will be computed and used to draw the first segment's first
 		// miter, as well as the last segment's last miter outside the loop.
 		if( addMiter && subPathIsClosed ) {
-			transNext = &sp->at(sp->size()-2);
+			transNext = &sp->points.at(sp->points.size()-2);
 			next = EJVector2ApplyTransform( *transNext, inverseTransform );
 		}
 
-		for( subpath_t::iterator vertex = sp->begin(); vertex != sp->end(); ++vertex) {
+		for( points_t::iterator vertex = sp->points.begin(); vertex != sp->points.end(); ++vertex) {
 			transCurrent = transNext;
 			transNext = &(*vertex);
 			
 			current = next;
 			next = EJVector2ApplyTransform( *transNext, inverseTransform );
 			
-			if( !transCurrent ) { continue; }
+			if( !transCurrent ) {
+				continue;
+			}
 			
 			currentEdge	= nextEdge;
 			currentExt = nextExt;
@@ -605,6 +612,11 @@ typedef std::vector<subpath_t> path_t;
 				// to calculate the first miter.
 				firstMiter1 = miter21;
 				firstMiter2 = miter22;
+				if( !miterAdded ) {
+					// Flip miter21 <> miter22 if it's the butt for the first segment
+					miter21 = firstMiter2;
+					miter22 = firstMiter1;
+				}
 				firstMiterLimitExceeded = miterLimitExceeded;
 				ignoreFirstSegment = false;
 				continue;
@@ -659,7 +671,7 @@ typedef std::vector<subpath_t> path_t;
 			miter12 = firstMiter2;
 		}
 		else {
-			EJVector2 untransformedBack = EJVector2ApplyTransform(back, inverseTransform);
+			EJVector2 untransformedBack = EJVector2ApplyTransform(sp->points.back(), inverseTransform);
 			miter11 = EJVector2Add(untransformedBack, nextExt);
 			miter12 = EJVector2Sub(untransformedBack, nextExt);
 		}
@@ -676,7 +688,7 @@ typedef std::vector<subpath_t> path_t;
 			// calculate point for current edge
 			d1 = EJDistanceToLineSegmentSquared(miter12, next, second);
 			d2 = EJDistanceToLineSegmentSquared(miter11, next, second);
-			p2 = (d1>d2)?miter12:miter11;
+			p2 = ( d1 > d2 )?miter12:miter11;
 			
 			// calculate point for next edge
 			d1 = EJDistanceToLineSegmentSquared(firstMiter1, current, next);
