@@ -79,11 +79,11 @@ EJ_BIND_SET(src, ctx, value) {
 }
 
 EJ_BIND_GET(width, ctx ) {
-	return JSValueMakeNumber( ctx, texture ? texture.width : 0);
+	return JSValueMakeNumber( ctx, texture ? (texture.width / texture.contentScale) : 0);
 }
 
 EJ_BIND_GET(height, ctx ) { 
-	return JSValueMakeNumber( ctx, texture ? texture.height : 0 );
+	return JSValueMakeNumber( ctx, texture ? (texture.height / texture.contentScale) : 0 );
 }
 
 EJ_BIND_GET(complete, ctx ) {

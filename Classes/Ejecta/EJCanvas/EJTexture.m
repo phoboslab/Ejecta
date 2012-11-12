@@ -17,6 +17,7 @@ static GLint textureFilter = GL_LINEAR;
 
 
 
+@synthesize contentScale;
 @synthesize textureId;
 @synthesize width, height, realWidth, realHeight;
 
@@ -24,6 +25,7 @@ static GLint textureFilter = GL_LINEAR;
 	// Load directly (blocking)
 	
 	if( self = [super init] ) {
+		contentScale = 1;
 		fullPath = [path retain];
 		GLubyte * pixels = [self loadPixelsFromPath:path];
 		[self createTextureWithPixels:pixels format:GL_RGBA];
@@ -37,6 +39,7 @@ static GLint textureFilter = GL_LINEAR;
 	// Load in a low-priority thread (non-blocking)
 	
 	if( self = [super init] ) {
+		contentScale = 1;
 		fullPath = [path retain];
 		GLubyte * pixels = [self loadPixelsFromPath:path];
 		
@@ -62,6 +65,7 @@ static GLint textureFilter = GL_LINEAR;
 	// Create an empty texture
 	
 	if( self = [super init] ) {
+		contentScale = 1;
 		fullPath = [@"[Empty]" retain];
 		[self setWidth:widthp height:heightp];
 		[self createTextureWithPixels:NULL format:formatp];
@@ -78,6 +82,7 @@ static GLint textureFilter = GL_LINEAR;
 	// Creates a texture with the given pixels
 	
 	if( self = [super init] ) {
+		contentScale = 1;
 		fullPath = [@"[From Pixels]" retain];
 		[self setWidth:widthp height:heightp];
 		
@@ -160,6 +165,18 @@ static GLint textureFilter = GL_LINEAR;
 }
 
 - (GLubyte *)loadPixelsFromPath:(NSString *)path {
+	// Try @2x texture?
+	if( [UIScreen mainScreen].scale == 2 ) {
+		NSString * path2x = [[[path stringByDeletingPathExtension]
+			stringByAppendingString:@"@2x"]
+			stringByAppendingPathExtension:[path pathExtension]];
+		
+		if( [[NSFileManager defaultManager] fileExistsAtPath:path2x] ) {
+			contentScale = 2;
+			path = path2x;
+		}
+	}
+	
 	// All CGImage functions return pixels with premultiplied alpha and there's no
 	// way to opt-out - thanks Apple, awesome idea.
 	// So, for PNG images we use the lodepng library instead.

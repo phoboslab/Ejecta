@@ -282,6 +282,7 @@ EJ_BIND_FUNCTION(drawImage, ctx, argc, argv) {
 	
 	NSObject<EJDrawable> * drawable = (NSObject<EJDrawable> *)JSObjectGetPrivate((JSObjectRef)argv[0]);
 	EJTexture * image = drawable.texture;
+	float scale = image.contentScale;
 	
 	short sx = 0, sy = 0, sw = 0, sh = 0;
 	float dx = 0, dy = 0, dw = sw, dh = sh;	
@@ -290,8 +291,10 @@ EJ_BIND_FUNCTION(drawImage, ctx, argc, argv) {
 		// drawImage(image, dx, dy)
 		dx = JSValueToNumberFast(ctx, argv[1]);
 		dy = JSValueToNumberFast(ctx, argv[2]);
-		dw = sw = image.width;
-		dh = sh = image.height;
+		sw = image.width;
+		sh = image.height;
+		dw = sw / scale;
+		dh = sh / scale;
 	}
 	else if( argc == 5 ) {
 		// drawImage(image, dx, dy, dw, dh)
@@ -304,10 +307,10 @@ EJ_BIND_FUNCTION(drawImage, ctx, argc, argv) {
 	}
 	else if( argc >= 9 ) {
 		// drawImage(image, sx, sy, sw, sh, dx, dy, dw, dh)
-		sx = JSValueToNumberFast(ctx, argv[1]);
-		sy = JSValueToNumberFast(ctx, argv[2]);
-		sw = JSValueToNumberFast(ctx, argv[3]);
-		sh = JSValueToNumberFast(ctx, argv[4]);
+		sx = JSValueToNumberFast(ctx, argv[1]) * scale;
+		sy = JSValueToNumberFast(ctx, argv[2]) * scale;
+		sw = JSValueToNumberFast(ctx, argv[3]) * scale;
+		sh = JSValueToNumberFast(ctx, argv[4]) * scale;
 		
 		dx = JSValueToNumberFast(ctx, argv[5]);
 		dy = JSValueToNumberFast(ctx, argv[6]);
