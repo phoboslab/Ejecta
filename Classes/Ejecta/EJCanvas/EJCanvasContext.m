@@ -9,6 +9,7 @@ EJVertex CanvasVertexBuffer[EJ_CANVAS_VERTEX_BUFFER_SIZE];
 @synthesize state;
 @synthesize backingStoreRatio;
 @synthesize msaaEnabled, msaaSamples;
+@synthesize imageSmoothingEnabled;
 
 - (id)initWithWidth:(short)widthp height:(short)heightp {
 	if( self = [super init] ) {
@@ -37,6 +38,7 @@ EJVertex CanvasVertexBuffer[EJ_CANVAS_VERTEX_BUFFER_SIZE];
 		fontCache = [[NSCache alloc] init];
 		fontCache.countLimit = 8;
 		
+		imageSmoothingEnabled = YES;
 		msaaEnabled = NO;
 		msaaSamples = 2;
 	}
@@ -128,6 +130,7 @@ EJVertex CanvasVertexBuffer[EJ_CANVAS_VERTEX_BUFFER_SIZE];
 	glBlendFunc( EJCompositeOperationFuncs[op].source, EJCompositeOperationFuncs[op].destination );
 	glDisable(GL_TEXTURE_2D);
 	currentTexture = nil;
+	[EJTexture setSmoothScaling:imageSmoothingEnabled];
 	
 	[self bindVertexBuffer];
 	
@@ -249,6 +252,12 @@ EJVertex CanvasVertexBuffer[EJ_CANVAS_VERTEX_BUFFER_SIZE];
 	
 	glDrawArrays(GL_TRIANGLES, 0, vertexBufferIndex);
 	vertexBufferIndex = 0;
+}
+
+- (void)setImageSmoothingEnabled:(BOOL)enabled {
+	[self setTexture:NULL];
+	imageSmoothingEnabled = enabled;
+	[EJTexture setSmoothScaling:enabled];
 }
 
 - (void)setGlobalCompositeOperation:(EJCompositeOperation)op {

@@ -10,6 +10,7 @@
 	GLuint textureId;
 	GLenum format;
 	float contentScale;
+	GLint textureFilter;
 }
 - (id)initWithPath:(NSString *)path;
 - (id)initWithPath:(NSString *)path context:(EAGLContext*)context;

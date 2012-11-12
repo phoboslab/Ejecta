@@ -89,6 +89,7 @@ typedef struct {
 	short viewportWidth, viewportHeight;
 	short bufferWidth, bufferHeight;
 	
+	BOOL imageSmoothingEnabled;
 	BOOL msaaEnabled;
 	int msaaSamples;
 	
@@ -165,6 +166,7 @@ typedef struct {
 @property (nonatomic, assign) float backingStoreRatio;
 @property (nonatomic) BOOL msaaEnabled;
 @property (nonatomic) int msaaSamples;
+@property (nonatomic) BOOL imageSmoothingEnabled;
 
 /* TODO: not yet implemented:
 	createLinearGradient(x0, y0, x1, y1)

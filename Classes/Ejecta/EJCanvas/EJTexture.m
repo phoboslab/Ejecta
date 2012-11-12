@@ -5,14 +5,15 @@
 
 @implementation EJTexture
 
-static GLint textureFilter = GL_LINEAR;
+// Textures check this global filter state when binding
+static GLint EJTextureGlobalFilter = GL_LINEAR;
 
 + (BOOL)smoothScaling {
-	return (textureFilter == GL_LINEAR); 
+	return (EJTextureGlobalFilter == GL_LINEAR); 
 }
 
-+ (void)setSmoothScaling:(BOOL)smoothScaling { 
-	textureFilter = smoothScaling ? GL_LINEAR : GL_NEAREST; 
++ (void)setSmoothScaling:(BOOL)smoothScaling {
+	EJTextureGlobalFilter = smoothScaling ? GL_LINEAR : GL_NEAREST; 
 }
 
 
@@ -141,13 +142,18 @@ static GLint textureFilter = GL_LINEAR;
 	glBindTexture(GL_TEXTURE_2D, textureId);
 	glTexImage2D(GL_TEXTURE_2D, 0, format, realWidth, realHeight, 0, format, GL_UNSIGNED_BYTE, pixels);
 	
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, textureFilter);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, textureFilter);
+	[self setFilter:EJTextureGlobalFilter];
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	
 	glBindTexture(GL_TEXTURE_2D, boundTexture);
 	if( !wasEnabled ) {	glDisable(GL_TEXTURE_2D); }
+}
+
+- (void)setFilter:(GLint)filter {
+	textureFilter = filter;
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, textureFilter);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, textureFilter);
 }
 
 - (void)updateTextureWithPixels:(GLubyte *)pixels atX:(int)x y:(int)y width:(int)subWidth height:(int)subHeight {
@@ -238,6 +244,9 @@ static GLint textureFilter = GL_LINEAR;
 
 - (void)bind {
 	glBindTexture(GL_TEXTURE_2D, textureId);
+	if( EJTextureGlobalFilter != textureFilter ) {
+		[self setFilter:EJTextureGlobalFilter];
+	}
 }
 
 

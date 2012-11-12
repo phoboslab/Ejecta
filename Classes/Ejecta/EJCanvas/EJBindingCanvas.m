@@ -158,11 +158,12 @@ EJ_BIND_GET(retinaResolutionEnabled, ctx) {
 }
 
 EJ_BIND_SET(imageSmoothingEnabled, ctx, value) {
-	[EJTexture setSmoothScaling:JSValueToBoolean(ctx, value)];
+	ejectaInstance.currentRenderingContext = renderingContext;
+	renderingContext.imageSmoothingEnabled = JSValueToBoolean(ctx, value);
 }
 
 EJ_BIND_GET(imageSmoothingEnabled, ctx) {
-	return JSValueMakeBoolean(ctx, [EJTexture smoothScaling]);
+	return JSValueMakeBoolean(ctx, renderingContext.imageSmoothingEnabled);
 }
 
 EJ_BIND_GET(backingStorePixelRatio, ctx) {
