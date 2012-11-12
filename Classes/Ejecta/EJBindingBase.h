@@ -1,7 +1,7 @@
 #import <Foundation/Foundation.h>
 #import "EJApp.h"
 
-id objc_msgSend(id theReceiver, SEL theSelector, ...);
+#include <objc/message.h>
 
 extern JSValueRef ej_global_undefined;
 
@@ -135,7 +135,7 @@ extern JSValueRef ej_global_undefined;
 	}
 
 static inline bool JSStrIsEqualToStr( const JSChar * s1, const char * s2, int length ) {
-	for( int i = 0; i < length && *s1 != '\0' && *s1 == *s2; i++ ) {
+	for( int i = 0; i < length && *s1 == *s2; i++ ) {
 		s1++;
 		s2++;
 	}
