@@ -8,7 +8,7 @@
 	// This will begin loading the texture in a background thread and will call the
 	// JavaScript onload callback when done
 	loading = YES;
-	oldContext = [EAGLContext currentContext];
+	oldContext = [EJApp instance].glContext;
 	
 	NSInvocationOperation* loadOp = [[NSInvocationOperation alloc] initWithTarget:self
 				selector:@selector(load:) object:oldContext];

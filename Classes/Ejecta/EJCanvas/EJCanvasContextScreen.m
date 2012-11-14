@@ -21,7 +21,7 @@
 		frame.size.width = screen.width;
 		frame.size.height = screen.width / aspect;
 	}
-	if( scalingMode == kEJScalingModeFitHeight ) {
+	else if( scalingMode == kEJScalingModeFitHeight ) {
 		frame.size.width = screen.height * aspect;
 		frame.size.height = screen.height;
 	}
@@ -53,7 +53,7 @@
 	[super create];
 	
 	// Set up the renderbuffer and some initial OpenGL properties
-	[glview.context renderbufferStorage:GL_RENDERBUFFER fromDrawable:(CAEAGLLayer *)glview.layer];
+	[[EJApp instance].glContext renderbufferStorage:GL_RENDERBUFFER fromDrawable:(CAEAGLLayer *)glview.layer];
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, viewRenderBuffer);
 	
 
@@ -129,10 +129,6 @@
 	glFinish();
 }
 
-- (void)resetGLContext {
-	[glview resetContext];
-}
-
 - (void)present {
 	[self flushBuffers];
 	
@@ -143,11 +139,11 @@
 		glResolveMultisampleFramebufferAPPLE();
 		
 		glBindRenderbuffer(GL_RENDERBUFFER, viewRenderBuffer);
-		[glview.context presentRenderbuffer:GL_RENDERBUFFER];
+		[[EJApp instance].glContext presentRenderbuffer:GL_RENDERBUFFER];
 		glBindFramebuffer(GL_FRAMEBUFFER, msaaFrameBuffer);
 	}
 	else {
-		[glview.context presentRenderbuffer:GL_RENDERBUFFER];
+		[[EJApp instance].glContext presentRenderbuffer:GL_RENDERBUFFER];
 	}	
 }
 

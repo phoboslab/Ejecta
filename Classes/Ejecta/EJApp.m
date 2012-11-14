@@ -48,6 +48,7 @@ JSObjectRef ej_callAsConstructor(JSContextRef ctx, JSObjectRef constructor, size
 @implementation EJApp
 @synthesize landscapeMode;
 @synthesize jsGlobalContext;
+@synthesize glContext;
 @synthesize window;
 @synthesize touchDelegate;
 
@@ -121,6 +122,10 @@ static EJApp * ejectaInstance = NULL;
 			kJSPropertyAttributeDontDelete | kJSPropertyAttributeReadOnly, NULL
 		);
 		
+		// Create the OpenGL ES1 Context
+		glContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES1];
+		[EAGLContext setCurrentContext:glContext];
+		
 		// Load the initial JavaScript source files
 		[self loadScriptAtPath:EJECTA_BOOT_JS];
 		[self loadScriptAtPath:EJECTA_MAIN_JS];
@@ -138,6 +143,7 @@ static EJApp * ejectaInstance = NULL;
 	
 	[displayLink release];
 	[timers release];
+	[glContext release];
 	[super dealloc];
 }
 
@@ -191,7 +197,7 @@ static EJApp * ejectaInstance = NULL;
 
 
 - (void)resume {
-	[screenRenderingContext resetGLContext];
+	[EAGLContext setCurrentContext:glContext];
 	[displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 	paused = false;
 }
