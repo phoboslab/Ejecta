@@ -13,7 +13,7 @@
 	GLint textureFilter;
 }
 - (id)initWithPath:(NSString *)path;
-- (id)initWithPath:(NSString *)path context:(EAGLContext*)context;
+- (id)initWithPath:(NSString *)path sharegroup:(EAGLSharegroup*)sharegroup;
 - (id)initWithWidth:(int)widthp height:(int)heightp format:(GLenum) format;
 - (id)initWithWidth:(int)widthp height:(int)heightp;
 - (id)initWithWidth:(int)widthp height:(int)heightp pixels:(GLubyte *)pixels;

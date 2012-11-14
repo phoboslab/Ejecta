@@ -36,7 +36,7 @@ static GLint EJTextureGlobalFilter = GL_LINEAR;
 	return self;
 }
 
-- (id)initWithPath:(NSString *)path context:(EAGLContext*)context {
+- (id)initWithPath:(NSString *)path sharegroup:(EAGLSharegroup*)sharegroup {
 	// Load in a low-priority thread (non-blocking)
 	
 	if( self = [super init] ) {
@@ -45,15 +45,14 @@ static GLint EJTextureGlobalFilter = GL_LINEAR;
 		GLubyte * pixels = [self loadPixelsFromPath:path];
 		
 		if( pixels ) {
-			EAGLContext * contextTextureThread = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES1
-									 sharegroup:context.sharegroup];
-			[EAGLContext setCurrentContext: contextTextureThread];
+			EAGLContext * context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES1 sharegroup:sharegroup];
+			[EAGLContext setCurrentContext:context];
 			
 			[self createTextureWithPixels:pixels format:GL_RGBA];
 			glFlush();
 			
 			[EAGLContext setCurrentContext: nil];
-			[contextTextureThread release];
+			[context release];
 			
 			free(pixels);
 		}

@@ -11,24 +11,24 @@
 	oldContext = [EJApp instance].glContext;
 	
 	NSInvocationOperation* loadOp = [[NSInvocationOperation alloc] initWithTarget:self
-				selector:@selector(load:) object:oldContext];
+				selector:@selector(load:) object:oldContext.sharegroup];
 	[loadOp setThreadPriority:0.0];
 	[[EJApp instance].opQueue addOperation:loadOp];
 	[loadOp release];
 }
 
-- (void)load:(EAGLContext *)context {
+- (void)load:(EAGLSharegroup *)sharegroup {
 	NSAutoreleasePool *autoreleasepool = [[NSAutoreleasePool alloc] init];
 	
 	NSLog(@"Loading Image: %@", path );
-	EJTexture * tempTex = [[[EJTexture alloc] initWithPath:[[EJApp instance] pathForResource:path] context:context] autorelease];
+	EJTexture * tempTex = [[[EJTexture alloc] initWithPath:[[EJApp instance] pathForResource:path] sharegroup:sharegroup] autorelease];
 	[self performSelectorOnMainThread:@selector(endLoad:) withObject:tempTex waitUntilDone:NO];
 	
 	[autoreleasepool release];
 }
 
 - (void)endLoad:(EJTexture *)tex {
-	[EAGLContext setCurrentContext:oldContext];
+	//[EAGLContext setCurrentContext:oldContext];
 	loading = NO;
 	texture = [tex retain];
 	if( tex.textureId ) {
