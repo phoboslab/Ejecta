@@ -122,11 +122,12 @@ EJ_BIND_GET(width, ctx) {
 }
 
 EJ_BIND_SET(width, ctx, value) {
-	if( renderingContext ) {
+	short newWidth = JSValueToNumberFast(ctx, value);
+	if( renderingContext && newWidth != width ) {
 		NSLog(@"Warning: rendering context already created; can't change width");
 		return;
 	}
-	width = JSValueToNumberFast(ctx, value);
+	width = newWidth;
 }
 
 EJ_BIND_GET(height, ctx) {
@@ -134,11 +135,12 @@ EJ_BIND_GET(height, ctx) {
 }
 
 EJ_BIND_SET(height, ctx, value) {
-	if( renderingContext ) {
+	short newHeight = JSValueToNumberFast(ctx, value);
+	if( renderingContext && newHeight != height ) {
 		NSLog(@"Warning: rendering context already created; can't change height");
 		return;
 	}
-	height = JSValueToNumberFast(ctx, value);
+	height = newHeight;
 }
 
 EJ_BIND_GET(offsetLeft, ctx) {
