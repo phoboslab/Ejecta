@@ -1,7 +1,7 @@
 #import <UIKit/UIKit.h>
 #import "EJApp.h"
 
-@interface EjectaAppDelegate : NSObject <UIApplicationDelegate> {
+@interface AppDelegate : NSObject <UIApplicationDelegate> {
 	EJApp * app;
 }
 
