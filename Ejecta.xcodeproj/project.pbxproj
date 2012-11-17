@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		1D3623260D0F684500981E51 /* EjectaAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* EjectaAppDelegate.m */; };
-		1D60589B0D05DD56006BFB54 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765FC0DF74451002DB57D /* CoreGraphics.framework */; };
@@ -26,6 +25,7 @@
 		6BFF29B516580F8000472CD6 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6BFF29AC16580F8000472CD6 /* Icon@2x.png */; };
 		6BFF29B716580F9100472CD6 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6BFF29B616580F9100472CD6 /* MainWindow.xib */; };
 		6BFF29B916580FA400472CD6 /* Ejecta-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6BFF29B816580FA400472CD6 /* Ejecta-Info.plist */; };
+		6BFF29BC1658104300472CD6 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6BFF29BB1658104300472CD6 /* main.m */; };
 		B60094591625EFEB005B4F9C /* EJOpenALBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = B60094581625EFEA005B4F9C /* EJOpenALBuffer.m */; };
 		B600945D162763F1005B4F9C /* EJBindingHttpRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = B600945C162763F0005B4F9C /* EJBindingHttpRequest.m */; };
 		B6074FED15F7720500D987F9 /* EJBindingEventedBase.m in Sources */ = {isa = PBXBuildFile; fileRef = B6074FEC15F7720500D987F9 /* EJBindingEventedBase.m */; };
@@ -74,8 +74,6 @@
 		1D6058910D05DD3D006BFB54 /* Ejecta.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Ejecta.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		288765FC0DF74451002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		32CA4F630368D1EE00C91783 /* Ejecta_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Ejecta_Prefix.pch; sourceTree = "<group>"; };
 		5B7B766F1619A71000691910 /* EJFont.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJFont.h; sourceTree = "<group>"; };
 		5B7B76701619A71000691910 /* EJFont.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = EJFont.mm; sourceTree = "<group>"; };
 		5B7B76751619DB9700691910 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
@@ -92,6 +90,8 @@
 		6BFF29AC16580F8000472CD6 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon@2x.png"; path = "Resources/Icon@2x.png"; sourceTree = "<group>"; };
 		6BFF29B616580F9100472CD6 /* MainWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = MainWindow.xib; path = Resources/MainWindow.xib; sourceTree = "<group>"; };
 		6BFF29B816580FA400472CD6 /* Ejecta-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Ejecta-Info.plist"; path = "Resources/Ejecta-Info.plist"; sourceTree = "<group>"; };
+		6BFF29BA1658101A00472CD6 /* Ejecta_Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Ejecta_Prefix.pch; path = Classes/Ejecta_Prefix.pch; sourceTree = "<group>"; };
+		6BFF29BB1658104300472CD6 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Classes/main.m; sourceTree = "<group>"; };
 		B60094571625EFEA005B4F9C /* EJOpenALBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJOpenALBuffer.h; sourceTree = "<group>"; };
 		B60094581625EFEA005B4F9C /* EJOpenALBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJOpenALBuffer.m; sourceTree = "<group>"; };
 		B600945B162763EF005B4F9C /* EJBindingHttpRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingHttpRequest.h; sourceTree = "<group>"; };
@@ -234,8 +234,8 @@
 			children = (
 				6BFF29A016580F2A00472CD6 /* lodepng */,
 				B625CD1515AFA39E00351585 /* JavaScriptCore */,
-				32CA4F630368D1EE00C91783 /* Ejecta_Prefix.pch */,
-				29B97316FDCFA39411CA2CEA /* main.m */,
+				6BFF29BB1658104300472CD6 /* main.m */,
+				6BFF29BA1658101A00472CD6 /* Ejecta_Prefix.pch */,
 			);
 			name = "Other Sources";
 			sourceTree = "<group>";
@@ -470,7 +470,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1D60589B0D05DD56006BFB54 /* main.m in Sources */,
 				1D3623260D0F684500981E51 /* EjectaAppDelegate.m in Sources */,
 				B615E8EB15E2D3F70087729A /* EJAudioSourceAVAudio.m in Sources */,
 				B615E8EC15E2D3F70087729A /* EJBindingAudio.m in Sources */,
@@ -501,6 +500,7 @@
 				B60094591625EFEB005B4F9C /* EJOpenALBuffer.m in Sources */,
 				B600945D162763F1005B4F9C /* EJBindingHttpRequest.m in Sources */,
 				6BFF29A316580F2A00472CD6 /* lodepng.c in Sources */,
+				6BFF29BC1658104300472CD6 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -516,7 +516,7 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = Ejecta_Prefix.pch;
+				GCC_PREFIX_HEADER = Classes/Ejecta_Prefix.pch;
 				INFOPLIST_FILE = "Resources/Ejecta-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = (
@@ -536,7 +536,7 @@
 				COMPRESS_PNG_FILES = NO;
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = Ejecta_Prefix.pch;
+				GCC_PREFIX_HEADER = Classes/Ejecta_Prefix.pch;
 				INFOPLIST_FILE = "Resources/Ejecta-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = (
