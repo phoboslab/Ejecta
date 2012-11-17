@@ -1,6 +1,6 @@
 #import <Foundation/Foundation.h>
 #import <QuartzCore/QuartzCore.h>
-#import "JavaScriptCore/JavaScriptCore.h"
+#import "JavaScriptCore.h"
 #import "EJConvert.h"
 
 #define EJECTA_VERSION @"1.1"

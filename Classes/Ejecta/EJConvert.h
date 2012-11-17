@@ -1,5 +1,5 @@
 #import <Foundation/Foundation.h>
-#import "JavaScriptCore/JavaScriptCore.h"
+#import "JavaScriptCore.h"
 #import "EJCanvas/EJCanvasTypes.h"
 
 

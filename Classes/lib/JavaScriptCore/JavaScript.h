@@ -1,5 +1,6 @@
 /*
- * Copyright (C) 2006, 2008 Apple Inc. All rights reserved.
+ * Copyright (C) 2006 Apple Inc. All rights reserved.
+ * Copyright (C) 2008 Alp Toker <alp@atoker.com>
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -23,10 +24,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
  */
 
-#ifndef JavaScriptCore_h
-#define JavaScriptCore_h
+#ifndef JavaScript_h
+#define JavaScript_h
 
-#include <JavaScriptCore/JavaScript.h>
-#include <JavaScriptCore/JSStringRefCF.h>
+#include "JSBase.h"
+#include "JSContextRef.h"
+#include "JSStringRef.h"
+#include "JSObjectRef.h"
+#include "JSValueRef.h"
 
-#endif /* JavaScriptCore_h */
+#endif /* JavaScript_h */

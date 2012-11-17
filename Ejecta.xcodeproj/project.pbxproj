@@ -24,7 +24,6 @@
 		6BFF29B416580F8000472CD6 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 6BFF29AB16580F8000472CD6 /* Icon.png */; };
 		6BFF29B516580F8000472CD6 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6BFF29AC16580F8000472CD6 /* Icon@2x.png */; };
 		6BFF29B716580F9100472CD6 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6BFF29B616580F9100472CD6 /* MainWindow.xib */; };
-		6BFF29B916580FA400472CD6 /* Ejecta-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6BFF29B816580FA400472CD6 /* Ejecta-Info.plist */; };
 		6BFF29BC1658104300472CD6 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6BFF29BB1658104300472CD6 /* main.m */; };
 		B60094591625EFEB005B4F9C /* EJOpenALBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = B60094581625EFEA005B4F9C /* EJOpenALBuffer.m */; };
 		B600945D162763F1005B4F9C /* EJBindingHttpRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = B600945C162763F0005B4F9C /* EJBindingHttpRequest.m */; };
@@ -92,6 +91,15 @@
 		6BFF29B816580FA400472CD6 /* Ejecta-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Ejecta-Info.plist"; path = "Resources/Ejecta-Info.plist"; sourceTree = "<group>"; };
 		6BFF29BA1658101A00472CD6 /* Ejecta_Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Ejecta_Prefix.pch; path = Classes/Ejecta_Prefix.pch; sourceTree = "<group>"; };
 		6BFF29BB1658104300472CD6 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Classes/main.m; sourceTree = "<group>"; };
+		6BFF29BE165810EF00472CD6 /* JavaScript.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JavaScript.h; sourceTree = "<group>"; };
+		6BFF29BF165810EF00472CD6 /* JavaScriptCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JavaScriptCore.h; sourceTree = "<group>"; };
+		6BFF29C0165810EF00472CD6 /* JSBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSBase.h; sourceTree = "<group>"; };
+		6BFF29C1165810EF00472CD6 /* JSContextRef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSContextRef.h; sourceTree = "<group>"; };
+		6BFF29C2165810EF00472CD6 /* JSObjectRef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSObjectRef.h; sourceTree = "<group>"; };
+		6BFF29C3165810EF00472CD6 /* JSStringRef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSStringRef.h; sourceTree = "<group>"; };
+		6BFF29C4165810EF00472CD6 /* JSStringRefCF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSStringRefCF.h; sourceTree = "<group>"; };
+		6BFF29C5165810EF00472CD6 /* JSValueRef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSValueRef.h; sourceTree = "<group>"; };
+		6BFF29C6165810EF00472CD6 /* WebKitAvailability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebKitAvailability.h; sourceTree = "<group>"; };
 		B60094571625EFEA005B4F9C /* EJOpenALBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJOpenALBuffer.h; sourceTree = "<group>"; };
 		B60094581625EFEA005B4F9C /* EJOpenALBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJOpenALBuffer.m; sourceTree = "<group>"; };
 		B600945B162763EF005B4F9C /* EJBindingHttpRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingHttpRequest.h; sourceTree = "<group>"; };
@@ -146,15 +154,6 @@
 		B615E8E215E2D3F70087729A /* EJBindingBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingBase.m; sourceTree = "<group>"; };
 		B615E8E315E2D3F70087729A /* EJBindingEjectaCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingEjectaCore.h; sourceTree = "<group>"; };
 		B615E8E415E2D3F70087729A /* EJBindingEjectaCore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingEjectaCore.m; sourceTree = "<group>"; };
-		B625CD1815AFA39E00351585 /* JavaScript.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JavaScript.h; sourceTree = "<group>"; };
-		B625CD1915AFA39E00351585 /* JavaScriptCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JavaScriptCore.h; sourceTree = "<group>"; };
-		B625CD1A15AFA39E00351585 /* JSBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSBase.h; sourceTree = "<group>"; };
-		B625CD1B15AFA39E00351585 /* JSContextRef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSContextRef.h; sourceTree = "<group>"; };
-		B625CD1C15AFA39E00351585 /* JSObjectRef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSObjectRef.h; sourceTree = "<group>"; };
-		B625CD1E15AFA39E00351585 /* JSStringRef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSStringRef.h; sourceTree = "<group>"; };
-		B625CD1F15AFA39E00351585 /* JSStringRefCF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSStringRefCF.h; sourceTree = "<group>"; };
-		B625CD2015AFA39E00351585 /* JSValueRef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSValueRef.h; sourceTree = "<group>"; };
-		B625CD2215AFA39E00351585 /* WebKitAvailability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebKitAvailability.h; sourceTree = "<group>"; };
 		B625CD2315AFA3AA00351585 /* libJavaScriptCore.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libJavaScriptCore.a; sourceTree = "<group>"; };
 		B667BE5215E2E9CF00D768F4 /* EJBindingAdBanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingAdBanner.h; sourceTree = "<group>"; };
 		B667BE5315E2E9CF00D768F4 /* EJBindingAdBanner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingAdBanner.m; sourceTree = "<group>"; };
@@ -232,8 +231,8 @@
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
+				6BFF29BD165810EF00472CD6 /* JavaScriptCore */,
 				6BFF29A016580F2A00472CD6 /* lodepng */,
-				B625CD1515AFA39E00351585 /* JavaScriptCore */,
 				6BFF29BB1658104300472CD6 /* main.m */,
 				6BFF29BA1658101A00472CD6 /* Ejecta_Prefix.pch */,
 			);
@@ -288,6 +287,23 @@
 			);
 			name = lodepng;
 			path = Classes/lib/lodepng;
+			sourceTree = "<group>";
+		};
+		6BFF29BD165810EF00472CD6 /* JavaScriptCore */ = {
+			isa = PBXGroup;
+			children = (
+				6BFF29BE165810EF00472CD6 /* JavaScript.h */,
+				6BFF29BF165810EF00472CD6 /* JavaScriptCore.h */,
+				6BFF29C0165810EF00472CD6 /* JSBase.h */,
+				6BFF29C1165810EF00472CD6 /* JSContextRef.h */,
+				6BFF29C2165810EF00472CD6 /* JSObjectRef.h */,
+				6BFF29C3165810EF00472CD6 /* JSStringRef.h */,
+				6BFF29C4165810EF00472CD6 /* JSStringRefCF.h */,
+				6BFF29C5165810EF00472CD6 /* JSValueRef.h */,
+				6BFF29C6165810EF00472CD6 /* WebKitAvailability.h */,
+			);
+			name = JavaScriptCore;
+			path = Classes/lib/JavaScriptCore;
 			sourceTree = "<group>";
 		};
 		B615E8B615E2D3F70087729A /* Ejecta */ = {
@@ -359,22 +375,6 @@
 				5B7B76701619A71000691910 /* EJFont.mm */,
 			);
 			path = EJCanvas;
-			sourceTree = "<group>";
-		};
-		B625CD1515AFA39E00351585 /* JavaScriptCore */ = {
-			isa = PBXGroup;
-			children = (
-				B625CD1815AFA39E00351585 /* JavaScript.h */,
-				B625CD1915AFA39E00351585 /* JavaScriptCore.h */,
-				B625CD1A15AFA39E00351585 /* JSBase.h */,
-				B625CD1B15AFA39E00351585 /* JSContextRef.h */,
-				B625CD1C15AFA39E00351585 /* JSObjectRef.h */,
-				B625CD1E15AFA39E00351585 /* JSStringRef.h */,
-				B625CD1F15AFA39E00351585 /* JSStringRefCF.h */,
-				B625CD2015AFA39E00351585 /* JSValueRef.h */,
-				B625CD2215AFA39E00351585 /* WebKitAvailability.h */,
-			);
-			path = JavaScriptCore;
 			sourceTree = "<group>";
 		};
 		B667BE5115E2E9CE00D768F4 /* EJUtils */ = {
@@ -459,7 +459,6 @@
 				6BFF29B416580F8000472CD6 /* Icon.png in Resources */,
 				6BFF29B516580F8000472CD6 /* Icon@2x.png in Resources */,
 				6BFF29B716580F9100472CD6 /* MainWindow.xib in Resources */,
-				6BFF29B916580FA400472CD6 /* Ejecta-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -521,7 +520,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)\"",
+					"\"$(SRCROOT)/Classes/lib\"",
 				);
 				PRODUCT_NAME = Ejecta;
 				SDKROOT = iphoneos;
@@ -541,7 +540,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)\"",
+					"\"$(SRCROOT)/Classes/lib\"",
 				);
 				PRODUCT_NAME = Ejecta;
 				SDKROOT = iphoneos;
