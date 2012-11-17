@@ -5,7 +5,6 @@
 @interface EJBindingImage : EJBindingEventedBase <EJDrawable> {
 	EJTexture * texture;
 	NSString * path;
-	EAGLContext * oldContext;
 	BOOL loading;
 }
 

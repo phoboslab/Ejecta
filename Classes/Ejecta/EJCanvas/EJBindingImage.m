@@ -8,27 +8,24 @@
 	// This will begin loading the texture in a background thread and will call the
 	// JavaScript onload callback when done
 	loading = YES;
-	oldContext = [EJApp instance].glContext;
 	
 	NSInvocationOperation* loadOp = [[NSInvocationOperation alloc] initWithTarget:self
-				selector:@selector(load:) object:oldContext.sharegroup];
+				selector:@selector(load:) object:[EJApp instance].glContext.sharegroup];
 	[loadOp setThreadPriority:0.0];
 	[[EJApp instance].opQueue addOperation:loadOp];
 	[loadOp release];
 }
 
 - (void)load:(EAGLSharegroup *)sharegroup {
-	NSAutoreleasePool *autoreleasepool = [[NSAutoreleasePool alloc] init];
-	
-	NSLog(@"Loading Image: %@", path );
-	EJTexture * tempTex = [[[EJTexture alloc] initWithPath:[[EJApp instance] pathForResource:path] sharegroup:sharegroup] autorelease];
-	[self performSelectorOnMainThread:@selector(endLoad:) withObject:tempTex waitUntilDone:NO];
-	
-	[autoreleasepool release];
+	@autoreleasepool {	
+		NSLog(@"Loading Image: %@", path );
+		NSString * fullPath = [[EJApp instance] pathForResource:path];
+		EJTexture * tempTex = [[[EJTexture alloc] initWithPath:fullPath sharegroup:sharegroup] autorelease];
+		[self performSelectorOnMainThread:@selector(endLoad:) withObject:tempTex waitUntilDone:NO];
+	}
 }
 
 - (void)endLoad:(EJTexture *)tex {
-	//[EAGLContext setCurrentContext:oldContext];
 	loading = NO;
 	texture = [tex retain];
 	if( tex.textureId ) {

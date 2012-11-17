@@ -23,7 +23,7 @@ static GLint EJTextureGlobalFilter = GL_LINEAR;
 @synthesize width, height, realWidth, realHeight;
 
 - (id)initWithPath:(NSString *)path {
-	// Load directly (blocking)
+	// For loading on the main thread (blocking)
 	
 	if( self = [super init] ) {
 		contentScale = 1;
@@ -37,22 +37,30 @@ static GLint EJTextureGlobalFilter = GL_LINEAR;
 }
 
 - (id)initWithPath:(NSString *)path sharegroup:(EAGLSharegroup*)sharegroup {
-	// Load in a low-priority thread (non-blocking)
+	// For loading in a background thread
 	
 	if( self = [super init] ) {
+		// If we're running on the main thread for some reason, take care
+		// to not corrupt the current EAGLContext
+		BOOL isMainThread = [NSThread isMainThread];
+	
 		contentScale = 1;
 		fullPath = [path retain];
 		GLubyte * pixels = [self loadPixelsFromPath:path];
 		
 		if( pixels ) {
-			EAGLContext * context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES1 sharegroup:sharegroup];
-			[EAGLContext setCurrentContext:context];
+			EAGLContext * context;
+			if( !isMainThread ) {
+				context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES1 sharegroup:sharegroup];
+				[EAGLContext setCurrentContext:context];
+			}
 			
 			[self createTextureWithPixels:pixels format:GL_RGBA];
-			glFlush();
 			
-			[EAGLContext setCurrentContext: nil];
-			[context release];
+			if( !isMainThread ) {
+				glFlush();
+				[context release];
+			}
 			
 			free(pixels);
 		}
