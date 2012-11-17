@@ -49,7 +49,6 @@
 		B667BE5715E2E9CF00D768F4 /* EJBindingLocalStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = B667BE5515E2E9CF00D768F4 /* EJBindingLocalStorage.m */; };
 		B66F1E801476B6A40090D208 /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B66F1E7F1476B6A40090D208 /* libstdc++.dylib */; };
 		B66F1E811476B6B90090D208 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B66F1E771476B3AC0090D208 /* libicucore.dylib */; };
-		B67D747915A4E246005D69BF /* ejecta.js in Resources */ = {isa = PBXBuildFile; fileRef = B67D747015A4D6F5005D69BF /* ejecta.js */; };
 		B6843C65160F636A00D731FF /* EJBindingAccelerometer.m in Sources */ = {isa = PBXBuildFile; fileRef = B6843C64160F636800D731FF /* EJBindingAccelerometer.m */; };
 		B6843C68160F637F00D731FF /* EJBindingTouchInput.m in Sources */ = {isa = PBXBuildFile; fileRef = B6843C67160F637F00D731FF /* EJBindingTouchInput.m */; };
 		B68C5B95132E6CD60015092E /* App in Resources */ = {isa = PBXBuildFile; fileRef = B68C5AEF132E6CD60015092E /* App */; };
@@ -153,7 +152,6 @@
 		B667BE5515E2E9CF00D768F4 /* EJBindingLocalStorage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingLocalStorage.m; sourceTree = "<group>"; };
 		B66F1E771476B3AC0090D208 /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = usr/lib/libicucore.dylib; sourceTree = SDKROOT; };
 		B66F1E7F1476B6A40090D208 /* libstdc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.dylib"; path = "usr/lib/libstdc++.dylib"; sourceTree = SDKROOT; };
-		B67D747015A4D6F5005D69BF /* ejecta.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = ejecta.js; sourceTree = "<group>"; };
 		B6843C63160F636700D731FF /* EJBindingAccelerometer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingAccelerometer.h; sourceTree = "<group>"; };
 		B6843C64160F636800D731FF /* EJBindingAccelerometer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingAccelerometer.m; sourceTree = "<group>"; };
 		B6843C66160F637E00D731FF /* EJBindingTouchInput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingTouchInput.h; sourceTree = "<group>"; };
@@ -237,7 +235,6 @@
 				B625CD1515AFA39E00351585 /* JavaScriptCore */,
 				32CA4F630368D1EE00C91783 /* Ejecta_Prefix.pch */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
-				B67D747015A4D6F5005D69BF /* ejecta.js */,
 			);
 			name = "Other Sources";
 			sourceTree = "<group>";
@@ -449,7 +446,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B67D747915A4E246005D69BF /* ejecta.js in Resources */,
 				28AD733F0D9D9553002E5188 /* MainWindow.xib in Resources */,
 				B68C5B95132E6CD60015092E /* App in Resources */,
 				B6EE1A4F160BC1D500F09450 /* Default-568h@2x.png in Resources */,

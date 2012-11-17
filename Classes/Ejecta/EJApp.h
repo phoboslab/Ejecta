@@ -6,7 +6,7 @@
 #define EJECTA_VERSION @"1.1"
 #define EJECTA_APP_FOLDER @"App/"
 
-#define EJECTA_BOOT_JS @"../ejecta.js"
+#define EJECTA_BOOT_JS @"ejecta.js"
 #define EJECTA_MAIN_JS @"index.js"
 
 @protocol TouchDelegate
