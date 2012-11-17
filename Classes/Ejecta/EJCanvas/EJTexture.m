@@ -1,7 +1,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import <OpenGLES/EAGLDrawable.h>
 #import "EJTexture.h"
-#import "lodepng/lodepng.h"
+#import "lodepng.h"
 
 @implementation EJTexture
 
