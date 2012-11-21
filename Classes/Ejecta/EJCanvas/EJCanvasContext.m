@@ -308,6 +308,7 @@ EJVertex CanvasVertexBuffer[EJ_CANVAS_VERTEX_BUFFER_SIZE];
 	if( state->clipPath && state->clipPath != stateStack[stateIndex-1].clipPath ) {
 		[self resetClip];
 	}
+	[state->clipPath release];
 	
 	// Load state from stack
 	stateIndex--;
