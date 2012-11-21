@@ -51,7 +51,9 @@ EJVertex CanvasVertexBuffer[EJ_CANVAS_VERTEX_BUFFER_SIZE];
 	// Release all fonts and clip paths from the stack
 	for( int i = 0; i < stateIndex + 1; i++ ) {
 		[stateStack[i].font release];
-		[stateStack[i].clipPath release];
+		if (stateStack[i].clipPath) {
+			[stateStack[i].clipPath release];
+		}
 	}
 	
 	if( viewFrameBuffer ) { glDeleteFramebuffers( 1, &viewFrameBuffer); }
@@ -290,7 +292,9 @@ EJVertex CanvasVertexBuffer[EJ_CANVAS_VERTEX_BUFFER_SIZE];
 	stateIndex++;
 	state = &stateStack[stateIndex];
 	[state->font retain];
-	[state->clipPath retain];
+	if (state->clipPath) {
+		[state->clipPath retain];
+	}
 }
 
 - (void)restore {
@@ -323,6 +327,9 @@ EJVertex CanvasVertexBuffer[EJ_CANVAS_VERTEX_BUFFER_SIZE];
 	// Render clip path, if present and different
 	if( state->clipPath && state->clipPath != oldClipPath ) {
 		[state->clipPath drawPolygonsToContext:self target:kEJPathPolygonTargetDepth];
+	}
+	if ( oldClipPath && oldClipPath == state->clipPath ) {
+		[oldClipPath release];
 	}
 }
 
@@ -500,7 +507,9 @@ EJVertex CanvasVertexBuffer[EJ_CANVAS_VERTEX_BUFFER_SIZE];
 
 - (void)clip {
 	[self flushBuffers];
-	[state->clipPath release];
+	if ( state->clipPath ) {
+		[state->clipPath release];
+	}
 	state->clipPath = nil;
 	
 	state->clipPath = [path copy];
