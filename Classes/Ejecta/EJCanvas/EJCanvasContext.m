@@ -499,7 +499,9 @@ EJVertex CanvasVertexBuffer[EJ_CANVAS_VERTEX_BUFFER_SIZE];
 }
 
 - (void)clip {
-	[self resetClip];
+	[self flushBuffers];
+	[state->clipPath release];
+	state->clipPath = nil;
 	
 	state->clipPath = [path copy];
 	[state->clipPath drawPolygonsToContext:self target:kEJPathPolygonTargetDepth];
