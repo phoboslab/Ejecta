@@ -467,7 +467,7 @@ EJ_BIND_GET(width, ctx) {
 }
 
 EJ_BIND_SET(width, ctx, value) {
-    NSLog(@"Warning: Can't change width");
+    NSLog(@"Warning: Can't change canvas width");
 }
 
 EJ_BIND_GET(height, ctx) {
@@ -476,14 +476,6 @@ EJ_BIND_GET(height, ctx) {
 
 EJ_BIND_SET(height, ctx, value) {
     NSLog(@"Warning: Can't change canvas height");
-}
-
-EJ_BIND_SET(retinaResolutionEnabled, ctx, value) {
-	useRetinaResolution = JSValueToBoolean(ctx, value);
-}
-
-EJ_BIND_GET(retinaResolutionEnabled, ctx) {
-	return JSValueMakeBoolean(ctx, useRetinaResolution);
 }
 
 /*** FUNCTIONS ***/

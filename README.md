@@ -1,12 +1,13 @@
 # EjectaGL
 
-Ejecta is a fast, open source JavaScript, Canvas & Audio implementation for iOS. Think of it as a Browser that can only display a Canvas element.
+EjectaGL is a fast, open source JavaScript, WebGL (& Audio implementation) for iOS. Think of it as a Browser that can only display a WebGL Canvas element.
 
-EjectaGL adds WebGL support to Ejecta.
+EjectaGL is forked from Ejecta project which replaces the 2D Canvas with a WebGL Canvas.
 
 More info & Documentation on Ejecta: http://impactjs.com/ejecta
+(till EjectGL get it's own documentation)
 
-Ejecta/EjectaGL is published under the [MIT Open Source License](http://opensource.org/licenses/mit-license.php).
+EjectaGL is published under the [MIT Open Source License](http://opensource.org/licenses/mit-license.php).
 
 
 ## How to use
@@ -17,9 +18,15 @@ Ejecta/EjectaGL is published under the [MIT Open Source License](http://opensour
 4. Build the XCode project
 
 For an example application, 
-  cp -r SampleApp/* App/
+  cp -r examples/SampleApp/* App/
 
-or copy(recursively) any of the lessons folder ported from http://http://learningwebgl.com/ 
+or copy(recursively) any of the lessons in the examples folder ported from http://http://learningwebgl.com/ 
+
+## Creating a WebGL context
+
+Currently the WebGL context can be created by passing in the 'experimental-wngl' parameter to getContext.
+
+    gl = canvas.getContext('experimental-webgl');
 
 ## Note on Typed Arrays and Performance
 Typed Arrays are really not available in the current JavascriptCore used by Ejecta/EjectaGL. A very primitive version will be supported in the current version that just supports a constructor that takes in an Array object. After this the Typed array is completely opaque and useful only for binding buffer data to a buffer.
@@ -35,8 +42,8 @@ Shader sources can be directly loaded from Javascript strings but ot is inconven
 
 Ex.
  
-   ejecta.require('shader.vp');
-   ejecta.require('shader.fp');
+     ejecta.require('shader.vp');
+     ejecta.require('shader.fp');
 
 The above will interpret shader.vp as vertex shader and shader.fp as fragment shader baded on their extension. They will be available to the Javascript code as psuedo DOM script elements.
 
