@@ -141,6 +141,7 @@ static EJApp * ejectaInstance = NULL;
 	[jsClasses release];
 	[opQueue release];
 	
+	[displayLink invalidate];
 	[displayLink release];
 	[timers release];
 	[glContext release];
