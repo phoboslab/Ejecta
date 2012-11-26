@@ -31,7 +31,8 @@ At this point there are no performace gaurantees and this project should be cons
 ## Loading Shader files
 Shader sources can be directly loaded from Javascript strings but ot is inconvenient. Shaders can be loaded from separate files using the overloaded ejecta.require().
 
-Ex. 
+Ex.
+ 
    ejecta.require('shader.vp');
    ejecta.require('shader.fp');
 
@@ -65,5 +66,5 @@ The following shows how the script source can be got from the pseduo DOM element
 
 The currently supported file extensions for shaders are
 
-1. .vp, .vert for vertex shaders
-2. .fp, .frag for fragment shaders 
+1. .vp or .vert for vertex shaders
+2. .fp or .frag for fragment shaders 
