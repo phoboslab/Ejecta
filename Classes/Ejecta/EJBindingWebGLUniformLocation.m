@@ -10,4 +10,8 @@
 
 @implementation EJBindingWebGLUniformLocation
 
++ (EJBindingWebGLUniformLocation *)fromJSValueRef:(JSValueRef)obj {
+    return (EJBindingWebGLUniformLocation *)JSObjectGetPrivate((JSObjectRef)obj);
+}
+
 @end

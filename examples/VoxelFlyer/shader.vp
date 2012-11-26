@@ -1,0 +1,54 @@
+  attribute vec3 aVertexPosition;
+  attribute vec4 aVertexColor;  
+  attribute vec3 aVertexNormal;
+  attribute vec3 aWorldPosition;
+  attribute vec3 aVelocity;
+  attribute float aStartTime;
+
+  uniform mat4 uPMatrix; // Projection
+  uniform mat4 uCMatrix; // Camera
+  uniform mat4 uRMatrix; // Camera roll rotation
+
+  uniform float uTime; // Current time
+
+  uniform bool uUseLighting;
+  uniform bool uUseFog;  
+
+  uniform vec3 uAmbientColor;
+
+  uniform vec3 uLightingDirection;
+  uniform vec3 uDirectionalColor;
+
+  varying vec4 vColor;
+
+  void main(void) {
+    vec3 position = aVelocity * (uTime - aStartTime);
+
+    // Compute model matrix here.
+    mat4 modelMatrix = mat4(vec4(1,0,0,0),
+                            vec4(0,1,0,0),                            
+                            vec4(0,0,1,0),
+                            vec4(aWorldPosition + position, 1));
+    gl_Position = uPMatrix * uRMatrix * uCMatrix * modelMatrix
+        * vec4(aVertexPosition, 1.0);
+    vec4 transformedNormal = modelMatrix * vec4(aVertexNormal, 0.0);
+    float vLightWeighting = 
+      max(dot(transformedNormal.xyz, uLightingDirection), 0.0);
+
+    if (uUseLighting) {
+      vColor = vec4(
+        (aVertexColor.xyz * (uAmbientColor
+                             + uDirectionalColor * vLightWeighting),
+         aVertexColor.a));
+    } else {
+      vColor = aVertexColor;
+    }
+
+    if (uUseFog) {
+      float dist = length(gl_Position.xyz) / 1000.0;
+      float density = 0.5;
+      float fogFactor = exp2(-density * density * dist * dist);
+      vColor = vColor + vec4(1.0, 1.0, 1.0, 0.0) * (1.0 - fogFactor);
+    } 
+    clamp(vColor, vec4(0, 0, 0, 0), vec4(1.0, 1.0, 1.0, 1.0));
+  }

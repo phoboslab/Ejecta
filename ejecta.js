@@ -71,8 +71,7 @@ window.localStorage = new Ejecta.LocalStorage();
 
 // Very primitive pseudo typed arrays.
 window.Float32Array = Ejecta.Float32Array;
-window.Uint32Array = Array;
-window.Uint8Array = Array;
+window.Uint16Array = Ejecta.Uint16Array;
 
 // Set up a "fake" HTMLElement
 HTMLElement = function( tagName ){ 

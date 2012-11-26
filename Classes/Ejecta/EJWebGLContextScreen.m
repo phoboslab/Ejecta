@@ -12,12 +12,11 @@
 
 @implementation EJWebGLContextScreen
 
-@synthesize useRetinaResolution;
-
-- (id)initWithWidth:(short)widthp height:(short)heightp {
+- (id)initWithWidth:(short)widthp height:(short)heightp contentScale:(float)contentScalep {
 	if( self = [super init] ) {
 		width = widthp;
 		height = heightp;
+        contentScale = contentScalep;
 	}
 	return self;
 }
@@ -25,8 +24,7 @@
 - (void)create {
 	// Work out the final screen size - this takes the scalingMode, canvas size,
 	// screen size and retina properties into account
-	CGRect frame = CGRectMake(0, 0, width, height);
-    float contentScale = (useRetinaResolution && [UIScreen mainScreen].scale == 2) ? 2 : 1;
+	CGRect frame = CGRectMake(0, 0, width / contentScale, height / contentScale);
 	float aspect = frame.size.width / frame.size.height;
 	
 	NSLog(
@@ -47,11 +45,20 @@
 	
 	glGenRenderbuffers(1, &viewRenderBuffer);
 	glBindRenderbuffer(GL_RENDERBUFFER, viewRenderBuffer);
-	
+	   
 	// Set up the renderbuffer and some initial OpenGL properties
 	[[EJApp instance].glContext renderbufferStorage:GL_RENDERBUFFER fromDrawable:(CAEAGLLayer *)glview.layer];
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, viewRenderBuffer);
-		    
+
+    glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &bufferWidth);
+    glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &bufferHeight);
+
+    glGenRenderbuffers(1, &depthRenderBuffer);
+	glBindRenderbuffer(GL_RENDERBUFFER, depthRenderBuffer);
+    
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, bufferWidth, bufferHeight);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRenderBuffer);
+    
 	// Append the OpenGL view to Impact's main view
 	[[EJApp instance] hideLoadingScreen];
 	[[EJApp instance].view addSubview:glview];
@@ -60,8 +67,14 @@
 - (void)dealloc {
     if( viewFrameBuffer ) { glDeleteFramebuffers( 1, &viewFrameBuffer); }
 	if( viewRenderBuffer ) { glDeleteRenderbuffers(1, &viewRenderBuffer); }
+    if( depthRenderBuffer ) { glDeleteRenderbuffers(1, &depthRenderBuffer); }
 	[glview release];
 	[super dealloc];
+}
+
+- (void)prepare {
+    glBindFramebuffer(GL_FRAMEBUFFER, viewFrameBuffer);
+    glBindRenderbuffer(GL_RENDERBUFFER, viewRenderBuffer);
 }
 
 - (void)finish {

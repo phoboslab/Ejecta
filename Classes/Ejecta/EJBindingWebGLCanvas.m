@@ -490,8 +490,7 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 	if( webGLContext ) { return jsObject; }
 	ejectaInstance.currentWebGLContext = nil;
     
-    webGLContext = [[EJWebGLContextScreen alloc] initWithWidth:width/contentScale height:height/contentScale];
-    webGLContext.useRetinaResolution = useRetinaResolution;
+    webGLContext = [[EJWebGLContextScreen alloc] initWithWidth:width height:height contentScale:contentScale];
 	
 	[webGLContext create];
 	ejectaInstance.currentWebGLContext = webGLContext;
@@ -629,12 +628,28 @@ EJ_BIND_FUNCTION(createShader, ctx, argc, argv) {
 	return obj;
 }
 
+EJ_BIND_FUNCTION(cullFace, ctx, argc, argv) {
+    GLenum mode = JSValueToNumberFast(ctx, argv[0]);
+    glCullFace(mode);
+    return NULL;
+}
+
 EJ_BIND_FUNCTION(drawArrays, ctx, argc, argv) {
     GLenum mode = JSValueToNumberFast(ctx, argv[0]);
     GLenum first = JSValueToNumberFast(ctx, argv[1]);
-    GLenum count = JSValueToNumberFast(ctx, argv[2]);
+    GLsizei count = JSValueToNumberFast(ctx, argv[2]);
     
     glDrawArrays(mode, first, count);
+    return NULL;
+}
+
+EJ_BIND_FUNCTION(drawElements, ctx, argc, argv) {
+    GLenum mode = JSValueToNumberFast(ctx, argv[0]);
+    GLsizei count = JSValueToNumberFast(ctx, argv[1]);
+    GLenum type = JSValueToNumberFast(ctx, argv[2]);
+    GLvoid *offset = (GLvoid *)((long)JSValueToNumberFast(ctx, argv[3]));
+    
+    glDrawElements(mode, count, type, offset);
     return NULL;
 }
 
@@ -765,10 +780,34 @@ EJ_BIND_FUNCTION(shaderSource, ctx, argc, argv) {
     return NULL;
 }
 
+EJ_BIND_FUNCTION(uniform1f, ctx, argc, argv) {
+    EJBindingWebGLUniformLocation *jsUniform = [EJBindingWebGLUniformLocation fromJSValueRef:argv[0]];
+    GLfloat x = JSValueToNumberFast(ctx, argv[1]);
+    
+    glUniform1f(jsUniform.index, x);
+    return NULL;
+}
+
+EJ_BIND_FUNCTION(uniform1i, ctx, argc, argv) {
+    EJBindingWebGLUniformLocation *jsUniform = [EJBindingWebGLUniformLocation fromJSValueRef:argv[0]];
+    GLint x = JSValueToNumberFast(ctx, argv[1]);
+    
+    glUniform1i(jsUniform.index, x);
+    return NULL;
+}
+
+EJ_BIND_FUNCTION(uniform3f, ctx, argc, argv) {
+    EJBindingWebGLUniformLocation *jsUniform = [EJBindingWebGLUniformLocation fromJSValueRef:argv[0]];
+    GLfloat x = JSValueToNumberFast(ctx, argv[1]);
+    GLfloat y = JSValueToNumberFast(ctx, argv[2]);
+    GLfloat z = JSValueToNumberFast(ctx, argv[3]);
+    
+    glUniform3f(jsUniform.index, x, y, z);
+    return NULL;
+}
+
 EJ_BIND_FUNCTION(uniformMatrix4fv, ctx, argc, argv) {
-    EJBindingWebGLUniformLocation *jsUniform =
-            (EJBindingWebGLUniformLocation *)JSObjectGetPrivate(
-                    (JSObjectRef)argv[0]);
+    EJBindingWebGLUniformLocation *jsUniform = [EJBindingWebGLUniformLocation fromJSValueRef:argv[0]];
     GLboolean transpose = JSValueToBoolean(ctx, argv[1]);
     GLfloat value[16];
     

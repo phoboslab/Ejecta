@@ -413,6 +413,7 @@ static NSArray * VERTEX_SHADER_EXTENSIONS = NULL;
 - (void)setCurrentWebGLContext:(EJWebGLContextScreen *)webGLContext {
 	if( webGLContext != currentWebGLContext ) {
 		[currentWebGLContext release];
+        [webGLContext prepare];
 		currentWebGLContext = [webGLContext retain];
 	}
 }

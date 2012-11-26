@@ -10,17 +10,17 @@
 #import "EAGLView.h"
 
 @interface EJWebGLContextScreen : NSObject {
-    GLuint viewFrameBuffer, viewRenderBuffer;
+    GLuint viewFrameBuffer, viewRenderBuffer, depthRenderBuffer;
     short width, height;
+    GLint bufferWidth, bufferHeight;
+    float contentScale;
 	EAGLView * glview;
-	BOOL useRetinaResolution;
 }
 
-- (id)initWithWidth:(short)width height:(short)height;
+- (id)initWithWidth:(short)width height:(short)height contentScale:(float)contentScale;
 - (void)create;
+- (void)prepare;
 - (void)finish;
 - (void)present;
-
-@property (nonatomic) BOOL useRetinaResolution;
 
 @end

@@ -11,4 +11,6 @@
 
 @interface EJBindingWebGLUniformLocation : EJBindingWebGLObject
 
++ (EJBindingWebGLUniformLocation *)fromJSValueRef:(JSValueRef)obj;
+
 @end
