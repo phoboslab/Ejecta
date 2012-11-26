@@ -19,6 +19,7 @@
     EJWebGLContextScreen * webGLContext;
     EJApp * ejectaInstance;
 	short width, height;
+    float contentScale;
     BOOL useRetinaResolution;
 }
 

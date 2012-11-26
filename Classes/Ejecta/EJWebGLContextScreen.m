@@ -32,10 +32,11 @@
 	NSLog(
           @"Creating ScreenCanvas: "
           @"size: %dx%d, aspect ratio: %.3f, "
-          @"retina: %@, ",
+          @"retina: %@ = %dx%d",
           width, height, aspect,
-          (useRetinaResolution ? @"yes" : @"no")
-          );
+          (contentScale == 2 ? @"yes" : @"no"),
+          (int)(frame.size.width * contentScale),
+          (int)(frame.size.height * contentScale));
 	
 	// Create the OpenGL UIView with final screen size and content scaling (retina)
 	glview = [[EAGLView alloc] initWithFrame:frame contentScale:contentScale];

@@ -15,16 +15,6 @@
 
 @implementation EJBindingWebGLCanvas
 
-static JSClassRef Float32ArrayClass = NULL;
-
-+ (void)initJSClassRefs {
-    // Cache all JS class references for easy checking of typed array types.
-    if (!Float32ArrayClass) {
-        Float32ArrayClass = [[EJApp instance]
-                             getJSClassForClass:[EJBindingFloat32Array class]];
-    }
-}
-
 - (id)initWithContext:(JSContextRef)ctx object:(JSObjectRef)obj argc:(size_t)argc argv:(const JSValueRef [])argv {
 	if( self = [super initWithContext:ctx object:obj argc:argc argv:argv] ) {
         
@@ -32,8 +22,10 @@ static JSClassRef Float32ArrayClass = NULL;
 		useRetinaResolution = true;
 
         CGSize screen = [EJApp instance].view.bounds.size;
-        width = screen.width;
-        height = screen.height;
+        contentScale = (useRetinaResolution && [UIScreen mainScreen].scale == 2) ? 2 : 1;
+        
+        width = screen.width * contentScale;
+        height = screen.height * contentScale;
 	}
 	return self;
 }
@@ -470,18 +462,28 @@ EJ_DEFINE_NUMBER_CONST(BROWSER_DEFAULT_WEBGL,              0x9244)
 
 /*** PROPERTIES ***/
 
-EJ_BIND_GET(viewportWidth, ctx) {
+EJ_BIND_GET(width, ctx) {
 	return JSValueMakeNumber(ctx, width);
 }
 
-EJ_BIND_SET(viewportWidth, ctx, value) {
+EJ_BIND_SET(width, ctx, value) {
+    NSLog(@"Warning: Can't change width");
 }
 
-EJ_BIND_GET(viewportHeight, ctx) {
+EJ_BIND_GET(height, ctx) {
 	return JSValueMakeNumber(ctx, height);
 }
 
-EJ_BIND_SET(viewportHeight, ctx, value) {
+EJ_BIND_SET(height, ctx, value) {
+    NSLog(@"Warning: Can't change canvas height");
+}
+
+EJ_BIND_SET(retinaResolutionEnabled, ctx, value) {
+	useRetinaResolution = JSValueToBoolean(ctx, value);
+}
+
+EJ_BIND_GET(retinaResolutionEnabled, ctx) {
+	return JSValueMakeBoolean(ctx, useRetinaResolution);
 }
 
 /*** FUNCTIONS ***/
@@ -496,7 +498,7 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 	if( webGLContext ) { return jsObject; }
 	ejectaInstance.currentWebGLContext = nil;
     
-    webGLContext = [[EJWebGLContextScreen alloc] initWithWidth:width height:height];
+    webGLContext = [[EJWebGLContextScreen alloc] initWithWidth:width/contentScale height:height/contentScale];
     webGLContext.useRetinaResolution = useRetinaResolution;
 	
 	[webGLContext create];

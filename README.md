@@ -19,6 +19,8 @@ Ejecta/EjectaGL is published under the [MIT Open Source License](http://opensour
 For an example application, 
   cp -r SampleApp/* App/
 
+or copy(recursively) any of the lessons folder ported from http://http://learningwebgl.com/ 
+
 ## Note on Typed Arrays and Performance
 Typed Arrays are really not available in the current JavascriptCore used by Ejecta/EjectaGL. A very primitive version will be supported in the current version that just supports a constructor that takes in an Array object. After this the Typed array is completely opaque and useful only for binding buffer data to a buffer.
 
