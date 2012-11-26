@@ -24,7 +24,7 @@ or copy(recursively) any of the lessons in the examples folder ported from http:
 
 ## Creating a WebGL context
 
-Currently the WebGL context can be created by passing in the 'experimental-wngl' parameter to getContext.
+Currently the WebGL context can be created by passing in the 'experimental-webgl' parameter to getContext.
 
     gl = canvas.getContext('experimental-webgl');
 
@@ -38,7 +38,7 @@ This is obviously not ideal and can have performance impact but will have to do 
 At this point there are no performace gaurantees and this project should be considered just as a proof of concept.
 
 ## Loading Shader files
-Shader sources can be directly loaded from Javascript strings but ot is inconvenient. Shaders can be loaded from separate files using the overloaded ejecta.require().
+Shader sources can be directly loaded from Javascript strings but it is inconvenient. Shaders can be loaded from separate files using the overloaded ejecta.require().
 
 Ex.
  
