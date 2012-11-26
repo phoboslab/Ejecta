@@ -285,19 +285,19 @@ static EJApp * ejectaInstance = NULL;
 // Touch handlers
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-	[touchDelegate triggerEvent:@"touchstart" withTouches:touches];
+	[touchDelegate triggerEvent:@"touchstart" withChangedTouches:touches allTouches:[event allTouches]];
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-	[touchDelegate triggerEvent:@"touchend" withTouches:touches];
+	[touchDelegate triggerEvent:@"touchend" withChangedTouches:touches allTouches:[event allTouches]];
 }
 
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
-	[touchDelegate triggerEvent:@"touchend" withTouches:touches];
+	[touchDelegate triggerEvent:@"touchend" withChangedTouches:touches allTouches:[event allTouches]];
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-	[touchDelegate triggerEvent:@"touchmove" withTouches:touches];
+	[touchDelegate triggerEvent:@"touchmove" withChangedTouches:touches allTouches:[event allTouches]];
 }
 
 
