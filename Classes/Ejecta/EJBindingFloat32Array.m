@@ -12,7 +12,6 @@
 
 @implementation EJBindingFloat32Array
 
-
 - (id)initWithContext:(JSContextRef)ctx object:(JSObjectRef)obj
                  argc:(size_t)argc argv:(const JSValueRef [])argv {
 	if( self = [super initWithContext:ctx object:obj argc:argc argv:argv] ) {
@@ -22,9 +21,9 @@
             
             // If the parameter is an object it is an array object with values.
             JSObjectRef jsArray = (JSObjectRef)argv[0];
-            JSStringRef src = JSStringCreateWithUTF8CString("length");
-            JSValueRef jsLength = JSObjectGetProperty(ctx, jsArray, src, NULL);
-            JSStringRelease(src);
+            JSStringRef jsProp = JSStringCreateWithUTF8CString("length");
+            JSValueRef jsLength = JSObjectGetProperty(ctx, jsArray, jsProp, NULL);
+            JSStringRelease(jsProp);
             
             length = (size_t) JSValueToNumberFast(ctx, jsLength);
             array = (float *)malloc(length * sizeof(float));

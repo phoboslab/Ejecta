@@ -4,6 +4,7 @@
 #import "EJBindingBase.h"
 #import "EJCanvas/EJCanvasContext.h"
 #import "EJCanvas/EJCanvasContextScreen.h"
+#import "EJUtils/EJBindingShaderDOM.h"
 #import "EJTimer.h"
 
 
@@ -59,6 +60,16 @@ JSObjectRef ej_callAsConstructor(JSContextRef ctx, JSObjectRef constructor, size
 
 static EJApp * ejectaInstance = NULL;
 
+static NSArray * FRAGMENT_SHADER_EXTENSIONS = NULL;
+static NSArray * VERTEX_SHADER_EXTENSIONS = NULL;
+
++ (void)initShaderExtensionList {
+    if (!FRAGMENT_SHADER_EXTENSIONS) {
+        FRAGMENT_SHADER_EXTENSIONS = [NSArray arrayWithObjects:@"fp", @"frag", nil];
+        VERTEX_SHADER_EXTENSIONS = [NSArray arrayWithObjects:@"vp", @"vert", nil];
+    }
+}
+
 + (EJApp *)instance {
 	return ejectaInstance;
 }
@@ -109,7 +120,6 @@ static EJApp * ejectaInstance = NULL;
 		globalClassDef.getProperty = ej_getNativeClass;		
 		JSClassRef globalClass = JSClassCreate(&globalClassDef);
 		
-		
 		jsGlobalContext = JSGlobalContextCreate(NULL);
 		ej_global_undefined = JSValueMakeUndefined(jsGlobalContext);
 		JSValueProtect(jsGlobalContext, ej_global_undefined);
@@ -126,6 +136,11 @@ static EJApp * ejectaInstance = NULL;
 		glContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
 		[EAGLContext setCurrentContext:glContext];
 		
+        // Init hash maps of vertex and fragment shaders
+        [EJApp initShaderExtensionList];
+        vertexShaders = [[NSMutableDictionary alloc] init];
+        fragmentShaders = [[NSMutableDictionary alloc] init];
+       
 		// Load the initial JavaScript source files
 		[self loadScriptAtPath:EJECTA_BOOT_JS];
 		[self loadScriptAtPath:EJECTA_MAIN_JS];
@@ -144,6 +159,8 @@ static EJApp * ejectaInstance = NULL;
 	[displayLink release];
 	[timers release];
 	[glContext release];
+    [vertexShaders release];
+    [fragmentShaders release];
 	[super dealloc];
 }
 
@@ -228,15 +245,72 @@ static EJApp * ejectaInstance = NULL;
 		return;
 	}
 	
-	NSLog(@"Loading Script: %@", path );
-	JSStringRef scriptJS = JSStringCreateWithCFString((CFStringRef)script);
-	JSStringRef pathJS = JSStringCreateWithCFString((CFStringRef)path);
+    // Handle Vertex and fragment shaders specially by looking at the
+    // extension. It should be one of .vp, .fp, .vert, .frag
+    NSString * extension = [path pathExtension];
+    NSString * domId = [self getDomId:path];
+    
+    if ([VERTEX_SHADER_EXTENSIONS indexOfObject:extension] != NSNotFound) {
+        NSLog(@"Loading Vertex Shader Script '%@' with DOM id '%@'", path,
+              domId);
+        [vertexShaders setObject:script forKey:domId];
+    } else if ([FRAGMENT_SHADER_EXTENSIONS indexOfObject:extension] != NSNotFound) {
+        NSLog(@"Loading Fragment Shader Script '%@' with DOM id '%@'", path,
+              domId);
+        [fragmentShaders setObject:script forKey:domId];
+    } else {
+        // No shader file extension - Load it as a javascript file
+        NSLog(@"Loading Script: %@", path );
+        JSStringRef scriptJS = JSStringCreateWithCFString((CFStringRef)script);
+        JSStringRef pathJS = JSStringCreateWithCFString((CFStringRef)path);
 	
-	JSValueRef exception = NULL;
-	JSEvaluateScript( jsGlobalContext, scriptJS, NULL, pathJS, 0, &exception );
-	[self logException:exception ctx:jsGlobalContext];
+        JSValueRef exception = NULL;
+        JSEvaluateScript( jsGlobalContext, scriptJS, NULL, pathJS, 0, &exception );
+        [self logException:exception ctx:jsGlobalContext];
 
-	JSStringRelease( scriptJS );
+        JSStringRelease( scriptJS );
+    }
+}
+
+- (NSString *)getDomId:(NSString *)path {
+    // Construct a DOM id from from the path
+    // shaders/shader.vp will get  changed to shaders-shader-vp
+    NSCharacterSet * delimiters =
+            [NSCharacterSet characterSetWithCharactersInString:@"/."];
+    return [[path componentsSeparatedByCharactersInSet:delimiters]
+            componentsJoinedByString:@"-"];
+}
+
+- (JSValueRef)getShaderDOM:(JSContextRef)ctx id:(NSString *)id {
+    // Construct a dummy DOM for shader script and send it out
+    NSString * vertexShaderText = [vertexShaders objectForKey:id];
+    if (vertexShaderText) {
+        return [self createShaderDOM:ctx script:vertexShaderText type:@"x-shader/x-vertex"];
+    }
+    
+    NSString * fragmentShaderText = [fragmentShaders objectForKey:id];
+    if (fragmentShaderText) {
+        return [self createShaderDOM:ctx script:fragmentShaderText type:@"x-shader/x-fragment"];
+    }
+
+    return NULL;
+}
+
+-(JSValueRef) createShaderDOM:(JSContextRef)ctx script:(NSString *)scriptText
+                         type:(NSString *)typeText {
+    JSClassRef shaderDOMClass = [
+                                 self getJSClassForClass:[EJBindingShaderDOM class]];
+    JSObjectRef obj = JSObjectMake(ctx, shaderDOMClass, NULL);
+    JSValueProtect(ctx, obj);
+    
+    // Create the native instance
+    EJBindingShaderDOM *jsShaderDOM = [[EJBindingShaderDOM alloc] initWithContext:ctx object:obj
+                                       script:scriptText type:typeText];
+    
+    // Attach the native instance to the js object
+    JSObjectSetPrivate(obj, (void *)jsShaderDOM);
+    JSValueUnprotect(ctx, obj);
+    return obj;
 }
 
 - (JSValueRef)invokeCallback:(JSObjectRef)callback thisObject:(JSObjectRef)thisObject argc:(size_t)argc argv:(const JSValueRef [])argv {

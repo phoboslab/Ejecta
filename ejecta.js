@@ -123,8 +123,10 @@ window.document = {
 	getElementById: function( id ){
 		if( id === 'canvas' ) {
 			return window.canvas;
-		}
-		return null;
+        }
+        // Try to search for shader script with the given id.
+        // Returns null if no shaders are found.
+        return ej.getShader(id);
 	},
 	
 	getElementsByTagName: function( tagName ) {

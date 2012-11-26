@@ -27,6 +27,12 @@ EJ_BIND_FUNCTION(require, ctx, argc, argv ) {
 	return NULL;
 }
 
+EJ_BIND_FUNCTION(getShader, ctx, argc, argv ) {
+	if( argc < 1 ) { return NULL; }
+    
+    return [[EJApp instance] getShaderDOM:ctx id:JSValueToNSString(ctx, argv[0])];
+}
+
 EJ_BIND_FUNCTION(openURL, ctx, argc, argv ) {
 	if( argc < 1 ) { return NULL; }
 	

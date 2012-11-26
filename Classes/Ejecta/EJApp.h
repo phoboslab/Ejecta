@@ -29,7 +29,7 @@
 	
 	EJTimerCollection * timers;
 	NSTimeInterval currentTime;
-	
+    
 	EAGLContext * glContext;
 	CADisplayLink * displayLink;
 	
@@ -37,6 +37,9 @@
 	EJCanvasContext * currentRenderingContext;
     EJWebGLContextScreen * currentWebGLContext;
 
+    NSMutableDictionary * vertexShaders;
+    NSMutableDictionary * fragmentShaders;
+    
 	float internalScaling;
 }
 
@@ -53,6 +56,7 @@
 - (JSClassRef)getJSClassForClass:(id)classId;
 - (void)hideLoadingScreen;
 - (void)loadScriptAtPath:(NSString *)path;
+- (JSValueRef)getShaderDOM:(JSContextRef)ctx id:(NSString *)id;
 - (JSValueRef)invokeCallback:(JSObjectRef)callback thisObject:(JSObjectRef)thisObject argc:(size_t)argc argv:(const JSValueRef [])argv;
 - (void)logException:(JSValueRef)exception ctx:(JSContextRef)ctxp;
 

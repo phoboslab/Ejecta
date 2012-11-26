@@ -10,12 +10,9 @@
 #import "EJBindingBase.h"
 #import "EJTypedArray.h"
 
-@interface EJBindingFloat32Array : EJBindingBase <EJTypedArray> {
+@interface EJBindingFloat32Array : EJBindingBase<EJTypedArray> {
     size_t length;
     float *array;
 }
-
-@property (readonly, nonatomic) uint size;
-@property (readonly, nonatomic) void *data;
 
 @end
