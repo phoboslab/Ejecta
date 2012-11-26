@@ -29,7 +29,7 @@ window.navigator = {
 };
 
 // Create the default screen canvas
-window.canvas = new Ejecta.Canvas();
+window.canvas = new Ejecta.WebGLCanvas();
 window.canvas.type = 'canvas';
 window.canvas.style = {};
 
@@ -69,6 +69,10 @@ window.Audio = Ejecta.Audio;
 window.XMLHttpRequest = Ejecta.HttpRequest;
 window.localStorage = new Ejecta.LocalStorage();
 
+// Very primitive pseudo typed arrays.
+window.Float32Array = Ejecta.Float32Array;
+window.Uint32Array = Array;
+window.Uint8Array = Array;
 
 // Set up a "fake" HTMLElement
 HTMLElement = function( tagName ){ 

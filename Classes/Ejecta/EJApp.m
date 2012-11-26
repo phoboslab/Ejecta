@@ -54,7 +54,7 @@ JSObjectRef ej_callAsConstructor(JSContextRef ctx, JSObjectRef constructor, size
 
 @synthesize opQueue;
 @synthesize currentRenderingContext;
-@synthesize screenRenderingContext;
+@synthesize currentWebGLContext;
 @synthesize internalScaling;
 
 static EJApp * ejectaInstance = NULL;
@@ -122,8 +122,8 @@ static EJApp * ejectaInstance = NULL;
 			kJSPropertyAttributeDontDelete | kJSPropertyAttributeReadOnly, NULL
 		);
 		
-		// Create the OpenGL ES1 Context
-		glContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES1];
+		// Create the OpenGL ES2 Context for WebGL
+		glContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
 		[EAGLContext setCurrentContext:glContext];
 		
 		// Load the initial JavaScript source files
@@ -136,7 +136,7 @@ static EJApp * ejectaInstance = NULL;
 
 - (void)dealloc {
 	JSGlobalContextRelease(jsGlobalContext);
-	[currentRenderingContext release];
+    [currentWebGLContext release];
 	[touchDelegate release];
 	[jsClasses release];
 	[opQueue release];
@@ -184,14 +184,13 @@ static EJApp * ejectaInstance = NULL;
 	[timers update];
 	
 	// Redraw the canvas
-	self.currentRenderingContext = screenRenderingContext;
-	[screenRenderingContext present];
+	[currentWebGLContext present];
 }
 
 
 - (void)pause {
 	[displayLink removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-	[screenRenderingContext finish];
+	[currentWebGLContext finish];
 	paused = true;
 }
 
@@ -334,6 +333,13 @@ static EJApp * ejectaInstance = NULL;
 		[currentRenderingContext release];
 		[renderingContext prepare];
 		currentRenderingContext = [renderingContext retain];
+	}
+}
+
+- (void)setCurrentWebGLContext:(EJWebGLContextScreen *)webGLContext {
+	if( webGLContext != currentWebGLContext ) {
+		[currentWebGLContext release];
+		currentWebGLContext = [webGLContext retain];
 	}
 }
 

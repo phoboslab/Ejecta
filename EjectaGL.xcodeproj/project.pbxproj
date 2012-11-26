@@ -15,6 +15,14 @@
 		28AD733F0D9D9553002E5188 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28AD733E0D9D9553002E5188 /* MainWindow.xib */; };
 		5B7B76711619A71000691910 /* EJFont.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5B7B76701619A71000691910 /* EJFont.mm */; };
 		5B7B76761619DB9700691910 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B7B76751619DB9700691910 /* CoreText.framework */; };
+		AC4C254E1661C95F00A11FC6 /* EJBindingWebGLCanvas.m in Sources */ = {isa = PBXBuildFile; fileRef = AC4C254D1661C95F00A11FC6 /* EJBindingWebGLCanvas.m */; };
+		AC4C25511661C9E000A11FC6 /* EJWebGLContextScreen.m in Sources */ = {isa = PBXBuildFile; fileRef = AC4C25501661C9E000A11FC6 /* EJWebGLContextScreen.m */; };
+		AC4C25571662B28A00A11FC6 /* EJBindingWebGLBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = AC4C25561662B28A00A11FC6 /* EJBindingWebGLBuffer.m */; };
+		AC4C255A1662CC5600A11FC6 /* EJBindingFloat32Array.m in Sources */ = {isa = PBXBuildFile; fileRef = AC4C25591662CC5600A11FC6 /* EJBindingFloat32Array.m */; };
+		AC4C255E1662EA3A00A11FC6 /* EJBindingWebGLProgram.m in Sources */ = {isa = PBXBuildFile; fileRef = AC4C255D1662EA3800A11FC6 /* EJBindingWebGLProgram.m */; };
+		AC4C25611662EEDC00A11FC6 /* EJBindingWebGLObject.m in Sources */ = {isa = PBXBuildFile; fileRef = AC4C25601662EEDB00A11FC6 /* EJBindingWebGLObject.m */; };
+		AC4C25641662EFB700A11FC6 /* EJBindingWebGLShader.m in Sources */ = {isa = PBXBuildFile; fileRef = AC4C25631662EFB600A11FC6 /* EJBindingWebGLShader.m */; };
+		AC4C25671663084800A11FC6 /* EJBindingWebGLUniformLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = AC4C25661663084600A11FC6 /* EJBindingWebGLUniformLocation.m */; };
 		B60094591625EFEB005B4F9C /* EJOpenALBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = B60094581625EFEA005B4F9C /* EJOpenALBuffer.m */; };
 		B600945D162763F1005B4F9C /* EJBindingHttpRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = B600945C162763F0005B4F9C /* EJBindingHttpRequest.m */; };
 		B6074FED15F7720500D987F9 /* EJBindingEventedBase.m in Sources */ = {isa = PBXBuildFile; fileRef = B6074FEC15F7720500D987F9 /* EJBindingEventedBase.m */; };
@@ -71,16 +79,33 @@
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D3623240D0F684500981E51 /* EjectaAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = EjectaAppDelegate.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		1D3623250D0F684500981E51 /* EjectaAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EjectaAppDelegate.m; sourceTree = "<group>"; };
-		1D6058910D05DD3D006BFB54 /* Ejecta.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Ejecta.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1D6058910D05DD3D006BFB54 /* EjectaGL.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EjectaGL.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		288765FC0DF74451002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		28AD733E0D9D9553002E5188 /* MainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		32CA4F630368D1EE00C91783 /* Ejecta_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Ejecta_Prefix.pch; sourceTree = "<group>"; };
+		32CA4F630368D1EE00C91783 /* EjectaGL_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EjectaGL_Prefix.pch; sourceTree = "<group>"; };
 		5B7B766F1619A71000691910 /* EJFont.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJFont.h; sourceTree = "<group>"; };
 		5B7B76701619A71000691910 /* EJFont.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = EJFont.mm; sourceTree = "<group>"; };
 		5B7B76751619DB9700691910 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
-		8D1107310486CEB800E47090 /* Ejecta-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Ejecta-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
+		8D1107310486CEB800E47090 /* EjectaGL-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "EjectaGL-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
+		AC4C254C1661C95F00A11FC6 /* EJBindingWebGLCanvas.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingWebGLCanvas.h; sourceTree = "<group>"; };
+		AC4C254D1661C95F00A11FC6 /* EJBindingWebGLCanvas.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingWebGLCanvas.m; sourceTree = "<group>"; };
+		AC4C254F1661C9E000A11FC6 /* EJWebGLContextScreen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJWebGLContextScreen.h; sourceTree = "<group>"; };
+		AC4C25501661C9E000A11FC6 /* EJWebGLContextScreen.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJWebGLContextScreen.m; sourceTree = "<group>"; };
+		AC4C25551662B28900A11FC6 /* EJBindingWebGLBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingWebGLBuffer.h; sourceTree = "<group>"; };
+		AC4C25561662B28A00A11FC6 /* EJBindingWebGLBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingWebGLBuffer.m; sourceTree = "<group>"; };
+		AC4C25581662CC5500A11FC6 /* EJBindingFloat32Array.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingFloat32Array.h; sourceTree = "<group>"; };
+		AC4C25591662CC5600A11FC6 /* EJBindingFloat32Array.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingFloat32Array.m; sourceTree = "<group>"; };
+		AC4C255B1662D76400A11FC6 /* EJTypedArray.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EJTypedArray.h; sourceTree = "<group>"; };
+		AC4C255C1662EA3700A11FC6 /* EJBindingWebGLProgram.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingWebGLProgram.h; sourceTree = "<group>"; };
+		AC4C255D1662EA3800A11FC6 /* EJBindingWebGLProgram.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingWebGLProgram.m; sourceTree = "<group>"; };
+		AC4C255F1662EEDA00A11FC6 /* EJBindingWebGLObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingWebGLObject.h; sourceTree = "<group>"; };
+		AC4C25601662EEDB00A11FC6 /* EJBindingWebGLObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingWebGLObject.m; sourceTree = "<group>"; };
+		AC4C25621662EFB500A11FC6 /* EJBindingWebGLShader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingWebGLShader.h; sourceTree = "<group>"; };
+		AC4C25631662EFB600A11FC6 /* EJBindingWebGLShader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingWebGLShader.m; sourceTree = "<group>"; };
+		AC4C25651663084400A11FC6 /* EJBindingWebGLUniformLocation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingWebGLUniformLocation.h; sourceTree = "<group>"; };
+		AC4C25661663084600A11FC6 /* EJBindingWebGLUniformLocation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingWebGLUniformLocation.m; sourceTree = "<group>"; };
 		B60094571625EFEA005B4F9C /* EJOpenALBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJOpenALBuffer.h; sourceTree = "<group>"; };
 		B60094581625EFEA005B4F9C /* EJOpenALBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJOpenALBuffer.m; sourceTree = "<group>"; };
 		B600945B162763EF005B4F9C /* EJBindingHttpRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingHttpRequest.h; sourceTree = "<group>"; };
@@ -212,7 +237,7 @@
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				1D6058910D05DD3D006BFB54 /* Ejecta.app */,
+				1D6058910D05DD3D006BFB54 /* EjectaGL.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -235,7 +260,7 @@
 			children = (
 				B64238DB15B9FF1500C8C9BF /* lodepng */,
 				B625CD1515AFA39E00351585 /* JavaScriptCore */,
-				32CA4F630368D1EE00C91783 /* Ejecta_Prefix.pch */,
+				32CA4F630368D1EE00C91783 /* EjectaGL_Prefix.pch */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
 				B67D747015A4D6F5005D69BF /* ejecta.js */,
 			);
@@ -255,7 +280,7 @@
 				B6EE1A4D160BC1D500F09450 /* Icon.png */,
 				B6EE1A4E160BC1D500F09450 /* Icon@2x.png */,
 				28AD733E0D9D9553002E5188 /* MainWindow.xib */,
-				8D1107310486CEB800E47090 /* Ejecta-Info.plist */,
+				8D1107310486CEB800E47090 /* EjectaGL-Info.plist */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -282,9 +307,34 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		AC4C254B1661C92100A11FC6 /* EJWebGLCanvas */ = {
+			isa = PBXGroup;
+			children = (
+				AC4C254C1661C95F00A11FC6 /* EJBindingWebGLCanvas.h */,
+				AC4C254D1661C95F00A11FC6 /* EJBindingWebGLCanvas.m */,
+				AC4C254F1661C9E000A11FC6 /* EJWebGLContextScreen.h */,
+				AC4C25501661C9E000A11FC6 /* EJWebGLContextScreen.m */,
+				AC4C25551662B28900A11FC6 /* EJBindingWebGLBuffer.h */,
+				AC4C25561662B28A00A11FC6 /* EJBindingWebGLBuffer.m */,
+				AC4C25581662CC5500A11FC6 /* EJBindingFloat32Array.h */,
+				AC4C25591662CC5600A11FC6 /* EJBindingFloat32Array.m */,
+				AC4C255B1662D76400A11FC6 /* EJTypedArray.h */,
+				AC4C255C1662EA3700A11FC6 /* EJBindingWebGLProgram.h */,
+				AC4C255D1662EA3800A11FC6 /* EJBindingWebGLProgram.m */,
+				AC4C255F1662EEDA00A11FC6 /* EJBindingWebGLObject.h */,
+				AC4C25601662EEDB00A11FC6 /* EJBindingWebGLObject.m */,
+				AC4C25621662EFB500A11FC6 /* EJBindingWebGLShader.h */,
+				AC4C25631662EFB600A11FC6 /* EJBindingWebGLShader.m */,
+				AC4C25651663084400A11FC6 /* EJBindingWebGLUniformLocation.h */,
+				AC4C25661663084600A11FC6 /* EJBindingWebGLUniformLocation.m */,
+			);
+			name = EJWebGLCanvas;
+			sourceTree = "<group>";
+		};
 		B615E8B615E2D3F70087729A /* Ejecta */ = {
 			isa = PBXGroup;
 			children = (
+				AC4C254B1661C92100A11FC6 /* EJWebGLCanvas */,
 				B615E8B715E2D3F70087729A /* EJAudio */,
 				B615E8C115E2D3F70087729A /* EJCanvas */,
 				B667BE5115E2E9CE00D768F4 /* EJUtils */,
@@ -400,9 +450,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		1D6058900D05DD3D006BFB54 /* Ejecta */ = {
+		1D6058900D05DD3D006BFB54 /* EjectaGL */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "Ejecta" */;
+			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "EjectaGL" */;
 			buildPhases = (
 				1D60588D0D05DD3D006BFB54 /* Resources */,
 				1D60588E0D05DD3D006BFB54 /* Sources */,
@@ -412,9 +462,9 @@
 			);
 			dependencies = (
 			);
-			name = Ejecta;
+			name = EjectaGL;
 			productName = iOSImpact;
-			productReference = 1D6058910D05DD3D006BFB54 /* Ejecta.app */;
+			productReference = 1D6058910D05DD3D006BFB54 /* EjectaGL.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -425,7 +475,7 @@
 			attributes = {
 				LastUpgradeCheck = 0450;
 			};
-			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Ejecta" */;
+			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "EjectaGL" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 1;
@@ -439,7 +489,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				1D6058900D05DD3D006BFB54 /* Ejecta */,
+				1D6058900D05DD3D006BFB54 /* EjectaGL */,
 			);
 		};
 /* End PBXProject section */
@@ -502,6 +552,14 @@
 				5B7B76711619A71000691910 /* EJFont.mm in Sources */,
 				B60094591625EFEB005B4F9C /* EJOpenALBuffer.m in Sources */,
 				B600945D162763F1005B4F9C /* EJBindingHttpRequest.m in Sources */,
+				AC4C254E1661C95F00A11FC6 /* EJBindingWebGLCanvas.m in Sources */,
+				AC4C25511661C9E000A11FC6 /* EJWebGLContextScreen.m in Sources */,
+				AC4C25571662B28A00A11FC6 /* EJBindingWebGLBuffer.m in Sources */,
+				AC4C255A1662CC5600A11FC6 /* EJBindingFloat32Array.m in Sources */,
+				AC4C255E1662EA3A00A11FC6 /* EJBindingWebGLProgram.m in Sources */,
+				AC4C25611662EEDC00A11FC6 /* EJBindingWebGLObject.m in Sources */,
+				AC4C25641662EFB700A11FC6 /* EJBindingWebGLShader.m in Sources */,
+				AC4C25671663084800A11FC6 /* EJBindingWebGLUniformLocation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -517,14 +575,14 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = Ejecta_Prefix.pch;
-				INFOPLIST_FILE = "Ejecta-Info.plist";
+				GCC_PREFIX_HEADER = EjectaGL_Prefix.pch;
+				INFOPLIST_FILE = "EjectaGL-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
 				);
-				PRODUCT_NAME = Ejecta;
+				PRODUCT_NAME = EjectaGL;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -537,14 +595,14 @@
 				COMPRESS_PNG_FILES = NO;
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = Ejecta_Prefix.pch;
-				INFOPLIST_FILE = "Ejecta-Info.plist";
+				GCC_PREFIX_HEADER = EjectaGL_Prefix.pch;
+				INFOPLIST_FILE = "EjectaGL-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
 				);
-				PRODUCT_NAME = Ejecta;
+				PRODUCT_NAME = EjectaGL;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -592,7 +650,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "Ejecta" */ = {
+		1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "EjectaGL" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1D6058940D05DD3E006BFB54 /* Debug */,
@@ -601,7 +659,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Ejecta" */ = {
+		C01FCF4E08A954540054247B /* Build configuration list for PBXProject "EjectaGL" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C01FCF4F08A954540054247B /* Debug */,

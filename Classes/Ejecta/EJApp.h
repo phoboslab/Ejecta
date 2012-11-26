@@ -15,6 +15,7 @@
 
 @class EJTimerCollection;
 @class EJCanvasContext;
+@class EJWebGLContextScreen;
 @class EJCanvasContextScreen;
 
 @interface EJApp : UIViewController {
@@ -34,8 +35,8 @@
 	
 	NSOperationQueue * opQueue;
 	EJCanvasContext * currentRenderingContext;
-	EJCanvasContextScreen * screenRenderingContext;
-	
+    EJWebGLContextScreen * currentWebGLContext;
+
 	float internalScaling;
 }
 
@@ -67,7 +68,7 @@
 
 @property (nonatomic, readonly) NSOperationQueue * opQueue;
 @property (nonatomic, assign) EJCanvasContext * currentRenderingContext;
-@property (nonatomic, assign) EJCanvasContextScreen * screenRenderingContext;
+@property (nonatomic, assign) EJWebGLContextScreen * currentWebGLContext;
 @property (nonatomic) float internalScaling;
 
 @end
