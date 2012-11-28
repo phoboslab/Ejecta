@@ -1,12 +1,12 @@
 #import <Foundation/Foundation.h>
 #import <QuartzCore/QuartzCore.h>
-#import "JavaScriptCore/JavaScriptCore.h"
+#import <JavaScriptCore/JavaScriptCore.h>
 #import "EJConvert.h"
 
 #define EJECTA_VERSION @"1.2"
 #define EJECTA_APP_FOLDER @"App/"
 
-#define EJECTA_BOOT_JS @"../ejecta.js"
+#define EJECTA_BOOT_JS @"../Ejecta.js"
 #define EJECTA_MAIN_JS @"index.js"
 
 @protocol EJTouchDelegate

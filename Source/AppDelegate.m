@@ -1,6 +1,6 @@
-#import "EjectaAppDelegate.h"
+#import "AppDelegate.h"
 
-@implementation EjectaAppDelegate
+@implementation AppDelegate
 
 @synthesize window;
 
