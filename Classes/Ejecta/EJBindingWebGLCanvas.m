@@ -10,10 +10,20 @@
 #import "EJBindingWebGLBuffer.h"
 #import "EJBindingWebGLProgram.h"
 #import "EJBindingWebGLShader.h"
+#import "EJBindingWebGLTexture.h"
 #import "EJBindingWebGLUniformLocation.h"
 #import "EJBindingFloat32Array.h"
+#import "EJDrawable.h"
+#import "EJTexture.h"
 
 @implementation EJBindingWebGLCanvas
+
+// Flag to indicate whether images loaded need to be flipped in the Y direction
+// before being uploaded as textures. This is handy since OpenGL texture
+// co-ordinates (increases bottom to top) are in the opposite direction than
+// regular image co-ordinates (increases top to bottom).
+// This flag is controlled by gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, value);
+static bool UnpackFlipY = false;
 
 - (id)initWithContext:(JSContextRef)ctx object:(JSObjectRef)obj argc:(size_t)argc argv:(const JSValueRef [])argv {
 	if( self = [super initWithContext:ctx object:obj argc:argc argv:argv] ) {
@@ -460,6 +470,9 @@ EJ_DEFINE_NUMBER_CONST(CONTEXT_LOST_WEBGL,                 0x9242)
 EJ_DEFINE_NUMBER_CONST(UNPACK_COLORSPACE_CONVERSION_WEBGL, 0x9243)
 EJ_DEFINE_NUMBER_CONST(BROWSER_DEFAULT_WEBGL,              0x9244)
 
+#define GL_UNPACK_FLIP_Y_WEBGL 0x9240
+#define GL_UNPACK_PREMULTIPLY_ALPHA_WEBGL 0x9241
+
 /*** PROPERTIES ***/
 
 EJ_BIND_GET(width, ctx) {
@@ -515,11 +528,32 @@ EJ_BIND_FUNCTION(attachShader, ctx, argc, argv) {
     return NULL;
 }
 
+EJ_BIND_FUNCTION(activeTexture, ctx, argc, argv) {
+    if ( argc < 1 ) { return NULL; }
+    GLenum texture = JSValueToNumberFast(ctx, argv[0]);
+    glActiveTexture(texture);
+    return NULL;
+}
+
 EJ_BIND_FUNCTION(bindBuffer, ctx, argc, argv) {
     GLenum target = JSValueToNumberFast(ctx, argv[0]);
     EJBindingWebGLBuffer *jsBuffer =
             (EJBindingWebGLBuffer *)JSObjectGetPrivate((JSObjectRef)argv[1]);
     glBindBuffer(target, jsBuffer.index);
+    return NULL;
+}
+
+EJ_BIND_FUNCTION(bindTexture, ctx, argc, argv) {
+    GLenum target = JSValueToNumberFast(ctx, argv[0]);
+    GLuint textureId;
+    if ( JSValueIsNull(ctx, argv[1]) ) {
+        // Unbind texture.
+        textureId = 0;
+    } else {
+        EJBindingWebGLTexture *jsTexture = (EJBindingWebGLTexture *)JSObjectGetPrivate((JSObjectRef)argv[1]);
+        textureId = jsTexture.index;
+    }
+    glBindTexture(target, textureId);
     return NULL;
 }
 
@@ -624,6 +658,28 @@ EJ_BIND_FUNCTION(createShader, ctx, argc, argv) {
 	
 	// Attach the native instance to the js object
 	JSObjectSetPrivate(obj, (void *)jsShader);
+	JSValueUnprotect(ctx, obj);
+	return obj;
+}
+
+EJ_BIND_FUNCTION(createTexture, ctx, argc, argv) {
+    GLuint texture;
+    glGenTextures(1, &texture);
+    
+    // Create a texture class
+    JSClassRef textureClass = [
+            [EJApp instance]
+            getJSClassForClass:[EJBindingWebGLTexture class]];
+    JSObjectRef obj = JSObjectMake(ctx, textureClass, NULL);
+	JSValueProtect(ctx, obj);
+	
+	// Create the native instance
+	EJBindingWebGLTexture *jsTexture = [
+            [EJBindingWebGLTexture alloc] initWithContext:ctx object:obj
+                    index:texture];
+	
+	// Attach the native instance to the js object
+	JSObjectSetPrivate(obj, (void *)jsTexture);
 	JSValueUnprotect(ctx, obj);
 	return obj;
 }
@@ -764,10 +820,23 @@ EJ_BIND_FUNCTION(getUniformLocation, ctx, argc, argv) {
 }
 
 EJ_BIND_FUNCTION(linkProgram, ctx, argc, argv) {
-    EJBindingWebGLProgram *jsProgram =
-            (EJBindingWebGLProgram *)JSObjectGetPrivate((JSObjectRef)argv[0]);
+    EJBindingWebGLProgram *jsProgram = (EJBindingWebGLProgram *)JSObjectGetPrivate((JSObjectRef)argv[0]);
     
     glLinkProgram(jsProgram.index);
+    return NULL;
+}
+
+EJ_BIND_FUNCTION(pixelStorei, ctx, argc, argv) {
+    GLenum pname = JSValueToNumberFast(ctx, argv[0]);
+    GLint param = JSValueToNumberFast(ctx, argv[1]);
+    
+    // TODO: Also support GL_UNPACK_PREMULTIPLY_ALPHA_WEBGL for completeness
+    if (pname == GL_UNPACK_FLIP_Y_WEBGL) {
+        UnpackFlipY = (param != 0);
+    }
+    else {
+        glPixelStorei(pname, param);
+    }
     return NULL;
 }
 
@@ -777,6 +846,70 @@ EJ_BIND_FUNCTION(shaderSource, ctx, argc, argv) {
     const GLchar *src = [JSValueToNSString(ctx, argv[1]) UTF8String];
     
     glShaderSource(jsShader.index, 1, &src, NULL);
+    return NULL;
+}
+
+EJ_BIND_FUNCTION(texImage2D, ctx, argc, argv) {
+    if ( argc < 6 ) {
+        NSLog(@"Warning: Wrong number of parameters for texImage2D");
+        return NULL;
+    }
+    
+    GLenum target = JSValueToNumberFast(ctx, argv[0]);
+    GLint level = JSValueToNumberFast(ctx, argv[1]);
+    GLenum internalformat = JSValueToNumberFast(ctx, argv[2]);
+    
+    GLsizei w;
+    GLsizei h;
+    GLint border;
+    GLenum format;
+    GLenum type;
+    EJTexture * image;
+    if ( argc == 6 ) {
+        format = JSValueToNumberFast(ctx, argv[3]);
+        type = JSValueToNumberFast(ctx, argv[4]);
+        NSObject<EJDrawable> * drawable = (NSObject<EJDrawable> *)JSObjectGetPrivate((JSObjectRef)argv[5]);
+        image = drawable.texture;
+        
+        // TODO(viks): Check assumption that nothing needs to be done with image.contentScale
+        w = image.width;
+        h = image.height;
+        border = 0;
+    } else if ( argc >= 9 ) {
+        w = JSValueToNumberFast(ctx, argv[3]);
+        h = JSValueToNumberFast(ctx, argv[4]);
+        border = JSValueToNumberFast(ctx, argv[5]);
+        format = JSValueToNumberFast(ctx, argv[6]);
+        type = JSValueToNumberFast(ctx, argv[7]);
+        NSObject<EJDrawable> * drawable = (NSObject<EJDrawable> *)JSObjectGetPrivate((JSObjectRef)argv[8]);
+        image = drawable.texture;
+    } else {
+        NSLog(@"Warning: Wrong number of parameters for texImage2D");
+        return NULL;
+    }
+
+    GLubyte *adjustedPixels = image.pixels;
+    // TODO(vikram): Also support UNPACK_
+    if (UnpackFlipY) {
+        // Invert the pixels in th Y direction.
+        adjustedPixels = [image getFlippedYPixels];
+    }
+    
+    glTexImage2D(target, level, internalformat, w, h, border, format, type, (GLvoid *)adjustedPixels);
+    if (UnpackFlipY) {
+        free(adjustedPixels);
+    }
+    return NULL;
+}
+
+EJ_BIND_FUNCTION(texParameteri, ctx, argc, argv) {
+    if ( argc < 3 ) { return NULL; }
+    
+    GLenum target = JSValueToNumberFast(ctx, argv[0]);
+    GLenum pname = JSValueToNumberFast(ctx, argv[1]);
+    GLint param = JSValueToNumberFast(ctx, argv[2]);
+    
+    glTexParameteri(target, pname, param);
     return NULL;
 }
 

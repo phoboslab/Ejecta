@@ -8,6 +8,7 @@
 	short width, height, realWidth, realHeight;
 	NSString * fullPath;
 	GLuint textureId;
+    GLubyte *pixels;
 	GLenum format;
 	float contentScale;
 	GLint textureFilter;
@@ -19,13 +20,13 @@
 - (id)initWithWidth:(int)widthp height:(int)heightp pixels:(GLubyte *)pixels;
 
 - (void)setWidth:(int)width height:(int)height;
-- (void)createTextureWithPixels:(GLubyte *)pixels format:(GLenum) format;
-- (void)updateTextureWithPixels:(GLubyte *)pixels atX:(int)x y:(int)y width:(int)subWidth height:(int)subHeight;
 
 - (GLubyte *)loadPixelsFromPath:(NSString *)path;
 - (GLubyte *)loadPixelsWithCGImageFromPath:(NSString *)path;
 - (GLubyte *)loadPixelsWithLodePNGFromPath:(NSString *)path;
+- (GLubyte *)getFlippedYPixels;
 
+- (void)updateTextureWithPixels:(GLubyte *)pixels atX:(int)x y:(int)y width:(int)subWidth height:(int)subHeight;
 - (void)bind;
 
 + (BOOL)smoothScaling;
@@ -33,6 +34,7 @@
 
 @property (readonly, nonatomic)	float contentScale;
 @property (readonly, nonatomic) GLuint textureId;
+@property (readonly, nonatomic) GLubyte *pixels;
 @property (readonly, nonatomic) short width, height, realWidth, realHeight;
 
 @end

@@ -28,7 +28,7 @@
 - (void)endLoad:(EJTexture *)tex {
 	loading = NO;
 	texture = [tex retain];
-	if( tex.textureId ) {
+	if( tex.textureId || tex.pixels ) {
 		[self triggerEvent:@"load" argc:0 argv:NULL];
 	}
 	else {
