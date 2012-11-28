@@ -194,29 +194,19 @@ var touchInput = null;
 var touchEvent = {
 	type: 'touchstart', 
 	target: canvas,
-	touches: [],
+	touches: null,
+	targetTouches: null,
+	changedTouches: null,
 	preventDefault: function(){},
 	stopPropagation: function(){}
 };
-touchEvent.targetTouches = touchEvent.touches;
-touchEvent.changedTouches = touchEvent.touches;
 
-var publishTouchEvent = function( type, args ) {
-	var touches = touchEvent.touches;
-	touches.length = args.length/3;
-	
-	for( var i = 0, j = 0; i < args.length; i+=3, j++ ) {
-		var x = args[i+1],
-			y = args[i+2];
-		touches[j] = {
-			identifier: args[i],
-			pageX: x,
-			pageY: y,
-			clientX: x,
-			clientY: y
-		};
-	}
+var publishTouchEvent = function( type, all, changed ) {
+	touchEvent.touches = all;
+	touchEvent.targetTouches = all;
+	touchEvent.changedTouches = changed;
 	touchEvent.type = type;
+	
 	document._publishEvent( type, touchEvent );
 };
 window.document._eventInitializers.touchstart =
@@ -224,9 +214,9 @@ window.document._eventInitializers.touchstart =
 	window.document._eventInitializers.touchmove = function() {
 	if( !touchInput ) {
 		touchInput = new Ejecta.TouchInput();
-		touchInput.ontouchstart = function(){ publishTouchEvent( 'touchstart', arguments ); };
-		touchInput.ontouchend = function(){ publishTouchEvent( 'touchend', arguments ); };
-		touchInput.ontouchmove = function(){ publishTouchEvent( 'touchmove', arguments ); };
+		touchInput.ontouchstart = function( all, changed ){ publishTouchEvent( 'touchstart', all, changed ); };
+		touchInput.ontouchend = function( all, changed ){ publishTouchEvent( 'touchend', all, changed ); };
+		touchInput.ontouchmove = function( all, changed ){ publishTouchEvent( 'touchmove', all, changed ); };
 	}
 };
 
