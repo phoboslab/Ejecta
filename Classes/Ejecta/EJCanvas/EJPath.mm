@@ -362,11 +362,11 @@ typedef std::vector<subpath_t> path_t;
 		glVertexPointer(2, GL_FLOAT, sizeof(EJVector2), &(sp->points).front());
 		
 		glCullFace(GL_BACK);
-		glStencilOp(GL_INCR_WRAP, GL_INCR_WRAP, GL_INCR_WRAP);
+		glStencilOp(GL_INCR_WRAP, GL_KEEP, GL_INCR_WRAP);
 		glDrawArrays(GL_TRIANGLE_FAN, 0, sp->points.size());
 		
 		glCullFace(GL_FRONT);
-		glStencilOp(GL_DECR_WRAP, GL_DECR_WRAP, GL_DECR_WRAP);
+		glStencilOp(GL_DECR_WRAP, GL_KEEP, GL_DECR_WRAP);
 		glDrawArrays(GL_TRIANGLE_FAN, 0, sp->points.size());
 	}
 	glDisable(GL_CULL_FACE);
@@ -380,6 +380,7 @@ typedef std::vector<subpath_t> path_t;
 	if( target == kEJPathPolygonTargetDepth ) {
 		glDepthFunc(GL_ALWAYS);
 		glDepthMask(GL_TRUE);
+		glClear(GL_DEPTH_BUFFER_BIT);
 	}
 	else if( target == kEJPathPolygonTargetColor ) {
 		glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);

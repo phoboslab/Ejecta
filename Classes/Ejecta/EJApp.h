@@ -3,14 +3,14 @@
 #import "JavaScriptCore.h"
 #import "EJConvert.h"
 
-#define EJECTA_VERSION @"1.1"
+#define EJECTA_VERSION @"1.2"
 #define EJECTA_APP_FOLDER @"App/"
 
 #define EJECTA_BOOT_JS @"ejecta.js"
 #define EJECTA_MAIN_JS @"index.js"
 
-@protocol TouchDelegate
-- (void)triggerEvent:(NSString *)name withTouches:(NSSet *)touches;
+@protocol EJTouchDelegate
+- (void)triggerEvent:(NSString *)name withChangedTouches:(NSSet *)changed allTouches:(NSSet *)all;
 @end
 
 @class EJTimerCollection;
@@ -24,7 +24,7 @@
 	UIWindow * window;
 	NSMutableDictionary * jsClasses;
 	UIImageView * loadingScreen;
-	NSObject<TouchDelegate> * touchDelegate;
+	NSObject<EJTouchDelegate> * touchDelegate;
 	
 	EJTimerCollection * timers;
 	NSTimeInterval currentTime;
@@ -63,7 +63,7 @@
 @property (nonatomic, readonly) JSGlobalContextRef jsGlobalContext;
 @property (nonatomic, readonly) EAGLContext * glContext;
 @property (nonatomic, readonly) UIWindow * window;
-@property (nonatomic, retain) NSObject<TouchDelegate> * touchDelegate;
+@property (nonatomic, retain) NSObject<EJTouchDelegate> * touchDelegate;
 
 @property (nonatomic, readonly) NSOperationQueue * opQueue;
 @property (nonatomic, assign) EJCanvasContext * currentRenderingContext;
