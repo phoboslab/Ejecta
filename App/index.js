@@ -1,7 +1,7 @@
 /*
 
 	INSTRUCTIONS:
-	This file must be copied into ./App in order to work
+	Replace this file with your own application entry point.
 
 */
 var w = window.innerWidth;
