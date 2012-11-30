@@ -12,7 +12,7 @@
 
 @interface EJBindingUint16Array : EJBindingBase <EJTypedArray> {
     size_t length;
-    UInt16 *array;
+    UInt16 * array;
 }
 
 @end

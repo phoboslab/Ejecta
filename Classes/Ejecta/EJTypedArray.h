@@ -11,6 +11,6 @@
 @protocol EJTypedArray <NSObject>
 
 @property (readonly, nonatomic) uint size;
-@property (readonly, nonatomic) void *data;
+@property (readonly, nonatomic) void * data;
 
 @end

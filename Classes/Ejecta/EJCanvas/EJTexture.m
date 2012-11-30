@@ -157,7 +157,7 @@ static GLint EJTextureGlobalFilter = GL_LINEAR;
 	// the larger buffer
 	else {
 		GLubyte * retPixels = malloc( realWidth * realHeight * 4 );
-		memset(retPixels, 0x00, realWidth * realHeight * 4 );
+		memset( retPixels, 0x00, realWidth * realHeight * 4 );
 		
 		for( int y = 0; y < height; y++ ) {
 			memcpy( &retPixels[y*realWidth*4], &origPixels[y*width*4], width*4 );
@@ -171,7 +171,7 @@ static GLint EJTextureGlobalFilter = GL_LINEAR;
 - (GLubyte *)getFlippedYPixels {
     if (!pixels) return NULL;
     
-    GLubyte *retPixels = (GLubyte *)malloc(realWidth * realHeight * 4);
+    GLubyte *retPixels = (GLubyte *)malloc( realWidth * realHeight * 4 );
     
     // TODO(viks): Is there a faster way to do this?
     // Copy pixels but invert in Y direction

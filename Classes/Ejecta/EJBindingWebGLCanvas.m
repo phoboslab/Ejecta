@@ -520,10 +520,9 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 // instead of the alphabetical order.
 
 EJ_BIND_FUNCTION(attachShader, ctx, argc, argv) {
-    EJBindingWebGLProgram *jsProgram =
-            (EJBindingWebGLProgram *)JSObjectGetPrivate((JSObjectRef)argv[0]);
-    EJBindingWebGLShader *jsShader =
-            (EJBindingWebGLShader *)JSObjectGetPrivate((JSObjectRef)argv[1]);
+    if( argc < 2 ) { return NULL; }
+    EJBindingWebGLProgram * jsProgram = (EJBindingWebGLProgram *)JSObjectGetPrivate((JSObjectRef)argv[0]);
+    EJBindingWebGLShader * jsShader = (EJBindingWebGLShader *)JSObjectGetPrivate((JSObjectRef)argv[1]);
     glAttachShader(jsProgram.index, jsShader.index);
     return NULL;
 }
@@ -536,14 +535,15 @@ EJ_BIND_FUNCTION(activeTexture, ctx, argc, argv) {
 }
 
 EJ_BIND_FUNCTION(bindBuffer, ctx, argc, argv) {
+    if( argc < 2 ) { return NULL; }
     GLenum target = JSValueToNumberFast(ctx, argv[0]);
-    EJBindingWebGLBuffer *jsBuffer =
-            (EJBindingWebGLBuffer *)JSObjectGetPrivate((JSObjectRef)argv[1]);
+    EJBindingWebGLBuffer *jsBuffer = (EJBindingWebGLBuffer *)JSObjectGetPrivate((JSObjectRef)argv[1]);
     glBindBuffer(target, jsBuffer.index);
     return NULL;
 }
 
 EJ_BIND_FUNCTION(bindTexture, ctx, argc, argv) {
+    if( argc < 2 ) { return NULL; }
     GLenum target = JSValueToNumberFast(ctx, argv[0]);
     GLuint textureId;
     if ( JSValueIsNull(ctx, argv[1]) ) {
@@ -558,14 +558,14 @@ EJ_BIND_FUNCTION(bindTexture, ctx, argc, argv) {
 }
 
 EJ_BIND_FUNCTION(bufferData, ctx, argc, argv) {
+    if( argc < 3 ) { return NULL; }
     GLenum target = JSValueToNumberFast(ctx, argv[0]);
     GLenum usage = JSValueToNumberFast(ctx, argv[2]);
     
-    NSObject <EJTypedArray> *jsTypedArray =
-            (NSObject <EJTypedArray> *)JSObjectGetPrivate((JSObjectRef)argv[1]);
+    NSObject <EJTypedArray> *jsTypedArray = (NSObject <EJTypedArray> *)JSObjectGetPrivate((JSObjectRef)argv[1]);
     
     // TODO(vikram): What's the right validation check here?
-    if (jsTypedArray && (jsTypedArray.size > 0)) {
+    if( jsTypedArray && jsTypedArray.size > 0 ) {
         glBufferData(target, jsTypedArray.size, jsTypedArray.data, usage);
     } else {
         NSLog(@"Warning: bufferData: Invalid typed array at position 2.");
@@ -574,12 +574,14 @@ EJ_BIND_FUNCTION(bufferData, ctx, argc, argv) {
 }
 
 EJ_BIND_FUNCTION(clear, ctx, argc, argv) {
+    if( argc < 1 ) { return NULL; }
     GLbitfield mask = JSValueToNumberFast(ctx, argv[0]);
     glClear(mask);
     return NULL;
 }
 
 EJ_BIND_FUNCTION(clearColor, ctx, argc, argv) {
+    if( argc < 4 ) { return NULL; }
     GLclampf
             r = JSValueToNumberFast(ctx, argv[0]),
             g = JSValueToNumberFast(ctx, argv[1]),
@@ -591,8 +593,8 @@ EJ_BIND_FUNCTION(clearColor, ctx, argc, argv) {
 }
 
 EJ_BIND_FUNCTION(compileShader, ctx, argc, argv) {
-    EJBindingWebGLShader *jsShader =
-            (EJBindingWebGLShader *)JSObjectGetPrivate((JSObjectRef)argv[0]);
+    if( argc < 1 ) { return NULL; }
+    EJBindingWebGLShader * jsShader = (EJBindingWebGLShader *)JSObjectGetPrivate((JSObjectRef)argv[0]);
     glCompileShader(jsShader.index);
     return NULL;
 }
@@ -602,16 +604,12 @@ EJ_BIND_FUNCTION(createBuffer, ctx, argc, argv) {
     glGenBuffers(1, &buffer);
     
     // Create a buffer class
-    JSClassRef bufferClass = [
-            [EJApp instance]
-            getJSClassForClass:[EJBindingWebGLBuffer class]];
+    JSClassRef bufferClass = [[EJApp instance] getJSClassForClass:[EJBindingWebGLBuffer class]];
     JSObjectRef obj = JSObjectMake(ctx, bufferClass, NULL);
 	JSValueProtect(ctx, obj);
 	
 	// Create the native instance
-	EJBindingWebGLBuffer *jsBuffer = [
-            [EJBindingWebGLBuffer alloc] initWithContext:ctx object:obj
-            index:buffer];
+	EJBindingWebGLBuffer * jsBuffer = [[EJBindingWebGLBuffer alloc] initWithContext:ctx object:obj index:buffer];
 	
 	// Attach the native instance to the js object
 	JSObjectSetPrivate(obj, (void *)jsBuffer);
@@ -623,16 +621,12 @@ EJ_BIND_FUNCTION(createProgram, ctx, argc, argv) {
     GLuint program = glCreateProgram();
     
     // Create a shader program class
-    JSClassRef programClass = [
-            [EJApp instance]
-            getJSClassForClass:[EJBindingWebGLProgram class]];
+    JSClassRef programClass = [[EJApp instance] getJSClassForClass:[EJBindingWebGLProgram class]];
     JSObjectRef obj = JSObjectMake(ctx, programClass, NULL);
 	JSValueProtect(ctx, obj);
 	
 	// Create the native instance
-	EJBindingWebGLProgram *jsProgram = [
-            [EJBindingWebGLProgram alloc] initWithContext:ctx object:obj
-            index:program];
+	EJBindingWebGLProgram * jsProgram = [[EJBindingWebGLProgram alloc] initWithContext:ctx object:obj index:program];
 	
 	// Attach the native instance to the js object
 	JSObjectSetPrivate(obj, (void *)jsProgram);
@@ -641,20 +635,17 @@ EJ_BIND_FUNCTION(createProgram, ctx, argc, argv) {
 }
 
 EJ_BIND_FUNCTION(createShader, ctx, argc, argv) {
+    if( argc < 1 ) { return NULL; }
     GLenum type =  JSValueToNumberFast(ctx, argv[0]);
     GLuint shader = glCreateShader(type);
     
     // Create a shader class
-    JSClassRef shaderClass = [
-                               [EJApp instance]
-                               getJSClassForClass:[EJBindingWebGLShader class]];
+    JSClassRef shaderClass = [[EJApp instance] getJSClassForClass:[EJBindingWebGLShader class]];
     JSObjectRef obj = JSObjectMake(ctx, shaderClass, NULL);
 	JSValueProtect(ctx, obj);
 	
 	// Create the native instance
-	EJBindingWebGLShader *jsShader = [
-            [EJBindingWebGLShader alloc] initWithContext:ctx object:obj
-            index:shader];
+	EJBindingWebGLShader * jsShader = [[EJBindingWebGLShader alloc] initWithContext:ctx object:obj index:shader];
 	
 	// Attach the native instance to the js object
 	JSObjectSetPrivate(obj, (void *)jsShader);
@@ -667,16 +658,12 @@ EJ_BIND_FUNCTION(createTexture, ctx, argc, argv) {
     glGenTextures(1, &texture);
     
     // Create a texture class
-    JSClassRef textureClass = [
-            [EJApp instance]
-            getJSClassForClass:[EJBindingWebGLTexture class]];
+    JSClassRef textureClass = [[EJApp instance] getJSClassForClass:[EJBindingWebGLTexture class]];
     JSObjectRef obj = JSObjectMake(ctx, textureClass, NULL);
 	JSValueProtect(ctx, obj);
 	
 	// Create the native instance
-	EJBindingWebGLTexture *jsTexture = [
-            [EJBindingWebGLTexture alloc] initWithContext:ctx object:obj
-                    index:texture];
+	EJBindingWebGLTexture * jsTexture = [[EJBindingWebGLTexture alloc] initWithContext:ctx object:obj index:texture];
 	
 	// Attach the native instance to the js object
 	JSObjectSetPrivate(obj, (void *)jsTexture);
@@ -685,12 +672,14 @@ EJ_BIND_FUNCTION(createTexture, ctx, argc, argv) {
 }
 
 EJ_BIND_FUNCTION(cullFace, ctx, argc, argv) {
+    if( argc < 1 ) { return NULL; }
     GLenum mode = JSValueToNumberFast(ctx, argv[0]);
     glCullFace(mode);
     return NULL;
 }
 
 EJ_BIND_FUNCTION(drawArrays, ctx, argc, argv) {
+    if( argc < 3 ) { return NULL; }
     GLenum mode = JSValueToNumberFast(ctx, argv[0]);
     GLenum first = JSValueToNumberFast(ctx, argv[1]);
     GLsizei count = JSValueToNumberFast(ctx, argv[2]);
@@ -700,6 +689,7 @@ EJ_BIND_FUNCTION(drawArrays, ctx, argc, argv) {
 }
 
 EJ_BIND_FUNCTION(drawElements, ctx, argc, argv) {
+    if( argc < 4 ) { return NULL; }
     GLenum mode = JSValueToNumberFast(ctx, argv[0]);
     GLsizei count = JSValueToNumberFast(ctx, argv[1]);
     GLenum type = JSValueToNumberFast(ctx, argv[2]);
@@ -710,30 +700,30 @@ EJ_BIND_FUNCTION(drawElements, ctx, argc, argv) {
 }
 
 EJ_BIND_FUNCTION(enable, ctx, argc, argv) {
+    if( argc < 1 ) { return NULL; }
     GLenum cap = JSValueToNumberFast(ctx, argv[0]);
     glEnable(cap);
     return NULL;
 }
 
 EJ_BIND_FUNCTION(enableVertexAttribArray, ctx, argc, argv) {
+    if( argc < 1 ) { return NULL; }
     GLuint index =  JSValueToNumberFast(ctx, argv[0]);
     glEnableVertexAttribArray(index);
     return NULL;
 }
 
 EJ_BIND_FUNCTION(getAttribLocation, ctx, argc, argv) {
-    EJBindingWebGLProgram *jsProgram =
-            (EJBindingWebGLProgram *)JSObjectGetPrivate((JSObjectRef)argv[0]);
-    NSString *name = JSValueToNSString(ctx, argv[1]);
+    if( argc < 2 ) { return NULL; }
+    EJBindingWebGLProgram * jsProgram = (EJBindingWebGLProgram *)JSObjectGetPrivate((JSObjectRef)argv[0]);
+    NSString * name = JSValueToNSString(ctx, argv[1]);
 
-    return JSValueMakeNumber(ctx,
-                             glGetAttribLocation(jsProgram.index,
-                                                 [name UTF8String]));
+    return JSValueMakeNumber(ctx, glGetAttribLocation(jsProgram.index, [name UTF8String]));
 }
 
 EJ_BIND_FUNCTION(getProgramParameter, ctx, argc, argv) {
-    EJBindingWebGLProgram *jsProgram =
-            (EJBindingWebGLProgram *)JSObjectGetPrivate((JSObjectRef)argv[0]);
+    if( argc < 2 ) { return NULL; }
+    EJBindingWebGLProgram * jsProgram = (EJBindingWebGLProgram *)JSObjectGetPrivate((JSObjectRef)argv[0]);
     GLenum pname = JSValueToNumberFast(ctx, argv[1]);
     
     GLint value;
@@ -742,8 +732,8 @@ EJ_BIND_FUNCTION(getProgramParameter, ctx, argc, argv) {
 }
 
 EJ_BIND_FUNCTION(getProgramInfoLog, ctx, argc, argv) {
-    EJBindingWebGLProgram *jsProgram =
-    (EJBindingWebGLProgram *)JSObjectGetPrivate((JSObjectRef)argv[0]);
+    if( argc < 1 ) { return NULL; }
+    EJBindingWebGLProgram * jsProgram = (EJBindingWebGLProgram *)JSObjectGetPrivate((JSObjectRef)argv[0]);
     
     /* Get the info log size */
     GLint size;
@@ -763,15 +753,15 @@ EJ_BIND_FUNCTION(getProgramInfoLog, ctx, argc, argv) {
 }
 
 EJ_BIND_FUNCTION(getShaderInfoLog, ctx, argc, argv) {
-    EJBindingWebGLShader *jsShader =
-            (EJBindingWebGLShader *)JSObjectGetPrivate((JSObjectRef)argv[0]);
+    if( argc < 1 ) { return NULL; }
+    EJBindingWebGLShader * jsShader = (EJBindingWebGLShader *)JSObjectGetPrivate((JSObjectRef)argv[0]);
 
     /* Get the info log size */
     GLint size;
     glGetShaderiv(jsShader.index, GL_INFO_LOG_LENGTH, &size);
     
     /* Get the actual log message and return it */
-    GLchar *message = (GLchar *)malloc(size);
+    GLchar * message = (GLchar *)malloc(size);
     glGetShaderInfoLog(jsShader.index, size, &size, message);
     
     JSStringRef jss = JSStringCreateWithUTF8CString(message);
@@ -784,8 +774,8 @@ EJ_BIND_FUNCTION(getShaderInfoLog, ctx, argc, argv) {
 }
 
 EJ_BIND_FUNCTION(getShaderParameter, ctx, argc, argv) {
-    EJBindingWebGLShader *jsShader =
-            (EJBindingWebGLShader *)JSObjectGetPrivate((JSObjectRef)argv[0]);
+    if( argc < 2 ) { return NULL; }
+    EJBindingWebGLShader * jsShader = (EJBindingWebGLShader *)JSObjectGetPrivate((JSObjectRef)argv[0]);
     GLenum pname = JSValueToNumberFast(ctx, argv[1]);
     
     GLint value;
@@ -794,24 +784,19 @@ EJ_BIND_FUNCTION(getShaderParameter, ctx, argc, argv) {
 }
 
 EJ_BIND_FUNCTION(getUniformLocation, ctx, argc, argv) {
-    EJBindingWebGLProgram *jsProgram =
-            (EJBindingWebGLProgram *)JSObjectGetPrivate((JSObjectRef)argv[0]);
-    NSString *name = JSValueToNSString(ctx, argv[1]);
+    if( argc < 2 ) { return NULL; }
+    EJBindingWebGLProgram * jsProgram = (EJBindingWebGLProgram *)JSObjectGetPrivate((JSObjectRef)argv[0]);
+    NSString * name = JSValueToNSString(ctx, argv[1]);
     
-    GLuint uniform = glGetUniformLocation(jsProgram.index,
-                                          [name UTF8String]);
+    GLuint uniform = glGetUniformLocation(jsProgram.index, [name UTF8String]);
     
     // Create a uniform location class
-    JSClassRef uniformClass = [
-            [EJApp instance]
-            getJSClassForClass:[EJBindingWebGLUniformLocation class]];
+    JSClassRef uniformClass = [[EJApp instance] getJSClassForClass:[EJBindingWebGLUniformLocation class]];
     JSObjectRef obj = JSObjectMake(ctx, uniformClass, NULL);
 	JSValueProtect(ctx, obj);
 	
 	// Create the native instance
-	EJBindingWebGLShader *jsShader = [
-            [EJBindingWebGLShader alloc] initWithContext:ctx object:obj
-            index:uniform];
+	EJBindingWebGLShader * jsShader = [[EJBindingWebGLShader alloc] initWithContext:ctx object:obj index:uniform];
 	
 	// Attach the native instance to the js object
 	JSObjectSetPrivate(obj, (void *)jsShader);
@@ -820,6 +805,7 @@ EJ_BIND_FUNCTION(getUniformLocation, ctx, argc, argv) {
 }
 
 EJ_BIND_FUNCTION(linkProgram, ctx, argc, argv) {
+    if( argc < 1 ) { return NULL; }
     EJBindingWebGLProgram *jsProgram = (EJBindingWebGLProgram *)JSObjectGetPrivate((JSObjectRef)argv[0]);
     
     glLinkProgram(jsProgram.index);
@@ -827,10 +813,11 @@ EJ_BIND_FUNCTION(linkProgram, ctx, argc, argv) {
 }
 
 EJ_BIND_FUNCTION(pixelStorei, ctx, argc, argv) {
+    if( argc < 2 ) { return NULL; }
     GLenum pname = JSValueToNumberFast(ctx, argv[0]);
     GLint param = JSValueToNumberFast(ctx, argv[1]);
     
-    // TODO: Also support GL_UNPACK_PREMULTIPLY_ALPHA_WEBGL for completeness
+    // TODO(vikram): Also support UNPACK_PREMULTIPLY_ALPHA_WEBGL
     if (pname == GL_UNPACK_FLIP_Y_WEBGL) {
         UnpackFlipY = (param != 0);
     }
@@ -841,9 +828,9 @@ EJ_BIND_FUNCTION(pixelStorei, ctx, argc, argv) {
 }
 
 EJ_BIND_FUNCTION(shaderSource, ctx, argc, argv) {
-    EJBindingWebGLShader *jsShader =
-            (EJBindingWebGLShader *)JSObjectGetPrivate((JSObjectRef)argv[0]);
-    const GLchar *src = [JSValueToNSString(ctx, argv[1]) UTF8String];
+    if( argc < 2 ) { return NULL; }
+    EJBindingWebGLShader * jsShader = (EJBindingWebGLShader *)JSObjectGetPrivate((JSObjectRef)argv[0]);
+    const GLchar * src = [JSValueToNSString(ctx, argv[1]) UTF8String];
     
     glShaderSource(jsShader.index, 1, &src, NULL);
     return NULL;
@@ -888,8 +875,8 @@ EJ_BIND_FUNCTION(texImage2D, ctx, argc, argv) {
         return NULL;
     }
 
-    GLubyte *adjustedPixels = image.pixels;
-    // TODO(vikram): Also support UNPACK_
+    GLubyte * adjustedPixels = image.pixels;
+    // TODO(vikram): Also support UNPACK_PREMULTIPLY_ALPHA_WEBGL
     if (UnpackFlipY) {
         // Invert the pixels in th Y direction.
         adjustedPixels = [image getFlippedYPixels];
@@ -914,7 +901,8 @@ EJ_BIND_FUNCTION(texParameteri, ctx, argc, argv) {
 }
 
 EJ_BIND_FUNCTION(uniform1f, ctx, argc, argv) {
-    EJBindingWebGLUniformLocation *jsUniform = [EJBindingWebGLUniformLocation fromJSValueRef:argv[0]];
+    if ( argc < 2 ) { return NULL; }
+    EJBindingWebGLUniformLocation * jsUniform = [EJBindingWebGLUniformLocation fromJSValueRef:argv[0]];
     GLfloat x = JSValueToNumberFast(ctx, argv[1]);
     
     glUniform1f(jsUniform.index, x);
@@ -922,7 +910,8 @@ EJ_BIND_FUNCTION(uniform1f, ctx, argc, argv) {
 }
 
 EJ_BIND_FUNCTION(uniform1i, ctx, argc, argv) {
-    EJBindingWebGLUniformLocation *jsUniform = [EJBindingWebGLUniformLocation fromJSValueRef:argv[0]];
+    if ( argc < 2 ) { return NULL; }
+    EJBindingWebGLUniformLocation * jsUniform = [EJBindingWebGLUniformLocation fromJSValueRef:argv[0]];
     GLint x = JSValueToNumberFast(ctx, argv[1]);
     
     glUniform1i(jsUniform.index, x);
@@ -930,7 +919,8 @@ EJ_BIND_FUNCTION(uniform1i, ctx, argc, argv) {
 }
 
 EJ_BIND_FUNCTION(uniform3f, ctx, argc, argv) {
-    EJBindingWebGLUniformLocation *jsUniform = [EJBindingWebGLUniformLocation fromJSValueRef:argv[0]];
+    if ( argc < 4 ) { return NULL; }
+    EJBindingWebGLUniformLocation * jsUniform = [EJBindingWebGLUniformLocation fromJSValueRef:argv[0]];
     GLfloat x = JSValueToNumberFast(ctx, argv[1]);
     GLfloat y = JSValueToNumberFast(ctx, argv[2]);
     GLfloat z = JSValueToNumberFast(ctx, argv[3]);
@@ -940,28 +930,29 @@ EJ_BIND_FUNCTION(uniform3f, ctx, argc, argv) {
 }
 
 EJ_BIND_FUNCTION(uniformMatrix4fv, ctx, argc, argv) {
-    EJBindingWebGLUniformLocation *jsUniform = [EJBindingWebGLUniformLocation fromJSValueRef:argv[0]];
+    if ( argc < 3 ) { return NULL; }
+    EJBindingWebGLUniformLocation * jsUniform = [EJBindingWebGLUniformLocation fromJSValueRef:argv[0]];
     GLboolean transpose = JSValueToBoolean(ctx, argv[1]);
     GLfloat value[16];
     
     JSObjectRef jsArray = (JSObjectRef)argv[2];
     for (int i = 0; i < 16; i++) {
-        value[i] = JSValueToNumberFast(ctx,
-                JSObjectGetPropertyAtIndex(ctx, jsArray, i, NULL));
+        value[i] = JSValueToNumberFast(ctx, JSObjectGetPropertyAtIndex(ctx, jsArray, i, NULL));
     }
     glUniformMatrix4fv(jsUniform.index, 1, transpose, value);
     return NULL;
 }
 
 EJ_BIND_FUNCTION(useProgram, ctx, argc, argv) {
-    EJBindingWebGLProgram *jsProgram =
-            (EJBindingWebGLProgram *)JSObjectGetPrivate((JSObjectRef)argv[0]);
+    if ( argc < 1 ) { return NULL; }
+    EJBindingWebGLProgram * jsProgram = (EJBindingWebGLProgram *)JSObjectGetPrivate((JSObjectRef)argv[0]);
     
     glUseProgram(jsProgram.index);
     return NULL;
 }
 
 EJ_BIND_FUNCTION(vertexAttribPointer, ctx, argc, argv) {
+    if ( argc < 5 ) { return NULL; }
     GLuint index = JSValueToNumberFast(ctx, argv[0]);
     GLuint itemSize = JSValueToNumberFast(ctx, argv[1]);
     GLenum type = JSValueToNumberFast(ctx, argv[2]);
@@ -969,13 +960,14 @@ EJ_BIND_FUNCTION(vertexAttribPointer, ctx, argc, argv) {
     GLsizei stride = JSValueToNumberFast(ctx, argv[4]);
     
     // TODO(viks): Is the following completly safe?
-    GLvoid *offset = (GLvoid *)((long)JSValueToNumberFast(ctx, argv[5]));
+    GLvoid * offset = (GLvoid *)((long)JSValueToNumberFast(ctx, argv[5]));
     
     glVertexAttribPointer(index, itemSize, type, normalized, stride, offset);
     return NULL;
 }
 
 EJ_BIND_FUNCTION(viewport, ctx, argc, argv) {
+    if ( argc < 4 ) { return NULL; }
     GLint x = JSValueToNumberFast(ctx, argv[0]);
     GLint y = JSValueToNumberFast(ctx, argv[1]);
     GLsizei w = JSValueToNumberFast(ctx, argv[2]);

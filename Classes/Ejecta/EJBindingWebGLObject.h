@@ -13,8 +13,7 @@
     GLuint index;
 }
 
-- (id)initWithContext:(JSContextRef)ctx object:(JSObjectRef)obj
-                index:(GLuint)buffer;
+- (id)initWithContext:(JSContextRef)ctx object:(JSObjectRef)obj index:(GLuint)buffer;
 
 @property GLuint index;
 

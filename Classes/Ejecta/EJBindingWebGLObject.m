@@ -12,8 +12,7 @@
 
 @synthesize index;
 
-- (id)initWithContext:(JSContextRef)ctx object:(JSObjectRef)obj
-                index:(GLuint)buffer {
+- (id)initWithContext:(JSContextRef)ctx object:(JSObjectRef)obj index:(GLuint)buffer {
 	if( self = [super initWithContext:ctx object:obj argc:0 argv:NULL] ) {
         index = buffer;
 	}

@@ -12,8 +12,7 @@
 
 @implementation EJBindingFloat32Array
 
-- (id)initWithContext:(JSContextRef)ctx object:(JSObjectRef)obj
-                 argc:(size_t)argc argv:(const JSValueRef [])argv {
+- (id)initWithContext:(JSContextRef)ctx object:(JSObjectRef)obj argc:(size_t)argc argv:(const JSValueRef [])argv {
 	if( self = [super initWithContext:ctx object:obj argc:argc argv:argv] ) {
         // Support only other arrays as constructor parameter.
         // TODO(vikram): Atleast add support for other Float32Array-s
@@ -28,9 +27,8 @@
             length = (size_t) JSValueToNumberFast(ctx, jsLength);
             array = (float *)malloc(length * sizeof(float));
             
-            for (int i = 0; i < length; i++) {
-                array[i] = JSValueToNumberFast(ctx,
-                        JSObjectGetPropertyAtIndex(ctx, jsArray, i, NULL));
+            for ( int i = 0; i < length; i++ ) {
+                array[i] = JSValueToNumberFast(ctx, JSObjectGetPropertyAtIndex(ctx, jsArray, i, NULL));
             }
         }
 	}

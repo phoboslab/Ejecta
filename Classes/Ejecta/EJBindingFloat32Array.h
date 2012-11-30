@@ -12,7 +12,7 @@
 
 @interface EJBindingFloat32Array : EJBindingBase <EJTypedArray> {
     size_t length;
-    float *array;
+    float * array;
 }
 
 @end

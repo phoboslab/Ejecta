@@ -10,10 +10,9 @@
 
 @implementation EJBindingUint16Array
 
-- (id)initWithContext:(JSContextRef)ctx object:(JSObjectRef)obj
-                 argc:(size_t)argc argv:(const JSValueRef [])argv {
+- (id)initWithContext:(JSContextRef)ctx object:(JSObjectRef)obj argc:(size_t)argc argv:(const JSValueRef [])argv {
 	if( self = [super initWithContext:ctx object:obj argc:argc argv:argv] ) {
-        if (JSValueIsObject(ctx, argv[0])) {
+        if ( JSValueIsObject(ctx, argv[0]) ) {
             
             // If the parameter is an object it is an array object with values.
             JSObjectRef jsArray = (JSObjectRef)argv[0];
@@ -24,9 +23,8 @@
             length = (size_t) JSValueToNumberFast(ctx, jsLength);
             array = (UInt16 *)malloc(length * sizeof(UInt16));
             
-            for (int i = 0; i < length; i++) {
-                array[i] = JSValueToNumberFast(ctx,
-                                               JSObjectGetPropertyAtIndex(ctx, jsArray, i, NULL));
+            for ( int i = 0; i < length; i++ ) {
+                array[i] = JSValueToNumberFast(ctx, JSObjectGetPropertyAtIndex(ctx, jsArray, i, NULL));
             }
         }
 	}
