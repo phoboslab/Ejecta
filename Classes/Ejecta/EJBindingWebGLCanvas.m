@@ -523,6 +523,7 @@ EJ_BIND_FUNCTION(attachShader, ctx, argc, argv) {
     if( argc < 2 ) { return NULL; }
     EJBindingWebGLProgram * jsProgram = (EJBindingWebGLProgram *)JSObjectGetPrivate((JSObjectRef)argv[0]);
     EJBindingWebGLShader * jsShader = (EJBindingWebGLShader *)JSObjectGetPrivate((JSObjectRef)argv[1]);
+    
     glAttachShader(jsProgram.index, jsShader.index);
     return NULL;
 }
@@ -530,6 +531,7 @@ EJ_BIND_FUNCTION(attachShader, ctx, argc, argv) {
 EJ_BIND_FUNCTION(activeTexture, ctx, argc, argv) {
     if ( argc < 1 ) { return NULL; }
     GLenum texture = JSValueToNumberFast(ctx, argv[0]);
+
     glActiveTexture(texture);
     return NULL;
 }
@@ -538,6 +540,7 @@ EJ_BIND_FUNCTION(bindBuffer, ctx, argc, argv) {
     if( argc < 2 ) { return NULL; }
     GLenum target = JSValueToNumberFast(ctx, argv[0]);
     EJBindingWebGLBuffer *jsBuffer = (EJBindingWebGLBuffer *)JSObjectGetPrivate((JSObjectRef)argv[1]);
+
     glBindBuffer(target, jsBuffer.index);
     return NULL;
 }
@@ -553,7 +556,17 @@ EJ_BIND_FUNCTION(bindTexture, ctx, argc, argv) {
         EJBindingWebGLTexture *jsTexture = (EJBindingWebGLTexture *)JSObjectGetPrivate((JSObjectRef)argv[1]);
         textureId = jsTexture.index;
     }
+
     glBindTexture(target, textureId);
+    return NULL;
+}
+
+EJ_BIND_FUNCTION(blendFunc, ctx, argc, argv) {
+    if( argc < 2 ) { return NULL; }
+    GLenum sfactor = JSValueToNumberFast(ctx, argv[0]);
+    GLenum dfactor = JSValueToNumberFast(ctx, argv[1]);
+    
+    glBlendFunc(sfactor, dfactor);
     return NULL;
 }
 
@@ -562,7 +575,7 @@ EJ_BIND_FUNCTION(bufferData, ctx, argc, argv) {
     GLenum target = JSValueToNumberFast(ctx, argv[0]);
     GLenum usage = JSValueToNumberFast(ctx, argv[2]);
     
-    NSObject <EJTypedArray> *jsTypedArray = (NSObject <EJTypedArray> *)JSObjectGetPrivate((JSObjectRef)argv[1]);
+    NSObject <EJTypedArray> * jsTypedArray = (NSObject <EJTypedArray> *)JSObjectGetPrivate((JSObjectRef)argv[1]);
     
     // TODO(vikram): What's the right validation check here?
     if( jsTypedArray && jsTypedArray.size > 0 ) {
@@ -674,7 +687,24 @@ EJ_BIND_FUNCTION(createTexture, ctx, argc, argv) {
 EJ_BIND_FUNCTION(cullFace, ctx, argc, argv) {
     if( argc < 1 ) { return NULL; }
     GLenum mode = JSValueToNumberFast(ctx, argv[0]);
+    
     glCullFace(mode);
+    return NULL;
+}
+
+EJ_BIND_FUNCTION(depthFunc, ctx, argc, argv) {
+    if( argc < 1 ) { return NULL; }
+    GLenum func = JSValueToNumberFast(ctx, argv[0]);
+
+    glDepthFunc(func);
+    return NULL;
+}
+
+EJ_BIND_FUNCTION(disable, ctx, argc, argv) {
+    if( argc < 1 ) { return NULL; }
+    GLenum cap = JSValueToNumberFast(ctx, argv[0]);
+    
+    glDisable(cap);
     return NULL;
 }
 
@@ -702,6 +732,7 @@ EJ_BIND_FUNCTION(drawElements, ctx, argc, argv) {
 EJ_BIND_FUNCTION(enable, ctx, argc, argv) {
     if( argc < 1 ) { return NULL; }
     GLenum cap = JSValueToNumberFast(ctx, argv[0]);
+    
     glEnable(cap);
     return NULL;
 }
@@ -709,6 +740,7 @@ EJ_BIND_FUNCTION(enable, ctx, argc, argv) {
 EJ_BIND_FUNCTION(enableVertexAttribArray, ctx, argc, argv) {
     if( argc < 1 ) { return NULL; }
     GLuint index =  JSValueToNumberFast(ctx, argv[0]);
+    
     glEnableVertexAttribArray(index);
     return NULL;
 }
@@ -937,16 +969,43 @@ EJ_BIND_FUNCTION(uniform3f, ctx, argc, argv) {
     return NULL;
 }
 
+EJ_BIND_FUNCTION(uniform3fv, ctx, argc, argv) {
+    if ( argc < 2 ) { return NULL; }
+    EJBindingWebGLUniformLocation * jsUniform = [EJBindingWebGLUniformLocation fromJSValueRef:argv[0]];
+    GLfloat value[3];
+    JSObjectRef jsArray = (JSObjectRef)argv[1];
+    for (int i = 0; i < 3; i++) {
+        value[i] = JSValueToNumberFast(ctx, JSObjectGetPropertyAtIndex(ctx, jsArray, i, NULL));
+    }
+    
+    glUniform3fv(jsUniform.index, 1, value);
+    return NULL;
+}
+
+EJ_BIND_FUNCTION(uniformMatrix3fv, ctx, argc, argv) {
+    if ( argc < 3 ) { return NULL; }
+    EJBindingWebGLUniformLocation * jsUniform = [EJBindingWebGLUniformLocation fromJSValueRef:argv[0]];
+    GLboolean transpose = JSValueToBoolean(ctx, argv[1]);
+    GLfloat value[9];
+    JSObjectRef jsArray = (JSObjectRef)argv[2];
+    for (int i = 0; i < 9; i++) {
+        value[i] = JSValueToNumberFast(ctx, JSObjectGetPropertyAtIndex(ctx, jsArray, i, NULL));
+    }
+    
+    glUniformMatrix3fv(jsUniform.index, 1, transpose, value);
+    return NULL;
+}
+
 EJ_BIND_FUNCTION(uniformMatrix4fv, ctx, argc, argv) {
     if ( argc < 3 ) { return NULL; }
     EJBindingWebGLUniformLocation * jsUniform = [EJBindingWebGLUniformLocation fromJSValueRef:argv[0]];
     GLboolean transpose = JSValueToBoolean(ctx, argv[1]);
     GLfloat value[16];
-    
     JSObjectRef jsArray = (JSObjectRef)argv[2];
     for (int i = 0; i < 16; i++) {
         value[i] = JSValueToNumberFast(ctx, JSObjectGetPropertyAtIndex(ctx, jsArray, i, NULL));
     }
+    
     glUniformMatrix4fv(jsUniform.index, 1, transpose, value);
     return NULL;
 }
