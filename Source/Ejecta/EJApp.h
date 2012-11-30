@@ -52,6 +52,7 @@
 - (JSClassRef)getJSClassForClass:(id)classId;
 - (void)hideLoadingScreen;
 - (void)loadScriptAtPath:(NSString *)path;
+- (JSValueRef)loadModuleWithId:(NSString *)moduleId module:(JSValueRef)module exports:(JSValueRef)exports;
 - (JSValueRef)invokeCallback:(JSObjectRef)callback thisObject:(JSObjectRef)thisObject argc:(size_t)argc argv:(const JSValueRef [])argv;
 - (void)logException:(JSValueRef)exception ctx:(JSContextRef)ctxp;
 

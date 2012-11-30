@@ -20,9 +20,24 @@ EJ_BIND_FUNCTION(log, ctx, argc, argv ) {
 	return NULL;
 }
 
-EJ_BIND_FUNCTION(require, ctx, argc, argv ) {
+EJ_BIND_FUNCTION(include, ctx, argc, argv ) {
 	if( argc < 1 ) { return NULL; }
 
+	[[EJApp instance] loadScriptAtPath:JSValueToNSString(ctx, argv[0])];
+	return NULL;
+}
+
+EJ_BIND_FUNCTION(requireModule, ctx, argc, argv ) {
+	if( argc < 3 ) { return NULL; }
+	
+	return [[EJApp instance] loadModuleWithId:JSValueToNSString(ctx, argv[0]) module:argv[1] exports:argv[2]];
+}
+
+EJ_BIND_FUNCTION(require, ctx, argc, argv ) {
+	// TODO: remove entirely for next release
+	if( argc < 1 ) { return NULL; }
+	NSLog(@"Warning: ejecta.require() is deprecated. Use ejecta.include() instead.");
+	
 	[[EJApp instance] loadScriptAtPath:JSValueToNSString(ctx, argv[0])];
 	return NULL;
 }

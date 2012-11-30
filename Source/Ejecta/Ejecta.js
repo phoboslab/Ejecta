@@ -54,6 +54,18 @@ window.console.debug =
 	window.console.error =
 	window.console.log;
 
+// CommonJS style require()
+var loadedModules = {};
+window.require = function( name ) {
+	var id = name.replace(/\.js$/,'');
+	if( !loadedModules[id] ) {
+		loadedModules[id] = {};
+		var	module = {id: id, uri: id + '.js'};
+		ejecta.requireModule( id, module, loadedModules[id] );
+	}
+	
+	return loadedModules[id];
+};
 
 // Timers
 window.setTimeout = function(cb, t){ return ej.setTimeout(cb, t); };
@@ -82,7 +94,7 @@ HTMLElement.prototype.appendChild = function( element ) {
 	// If the child is a script element, begin to load it
 	if( element.tagName == 'script' ) {
 		ej.setTimeout( function(){
-			ej.require( element.src );
+			ej.include( element.src );
 			if( element.onload ) {
 				element.onload();
 			}

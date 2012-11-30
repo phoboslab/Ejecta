@@ -239,6 +239,42 @@ static EJApp * ejectaInstance = NULL;
 	[self logException:exception ctx:jsGlobalContext];
 
 	JSStringRelease( scriptJS );
+	JSStringRelease( pathJS );
+}
+
+- (JSValueRef)loadModuleWithId:(NSString *)moduleId module:(JSValueRef)module exports:(JSValueRef)exports {
+	NSString * path = [moduleId stringByAppendingString:@".js"];
+	NSString * script = [NSString stringWithContentsOfFile:[self pathForResource:path] encoding:NSUTF8StringEncoding error:NULL];
+	
+	if( !script ) {
+		NSLog(@"Error: Can't Find Module %@", moduleId );
+		return NULL;
+	}
+	
+	NSLog(@"Loading Module: %@", moduleId );
+	
+	JSStringRef scriptJS = JSStringCreateWithCFString((CFStringRef)script);
+	JSStringRef pathJS = JSStringCreateWithCFString((CFStringRef)path);
+	JSStringRef parameterNames[] = {
+		JSStringCreateWithUTF8CString("module"),
+		JSStringCreateWithUTF8CString("exports"),
+	};
+	
+	JSValueRef exception = NULL;
+	JSObjectRef func = JSObjectMakeFunction( jsGlobalContext, NULL, 2,  parameterNames, scriptJS, pathJS, 0, &exception );
+	
+	JSStringRelease( scriptJS );
+	JSStringRelease( pathJS );
+	JSStringRelease(parameterNames[0]);
+	JSStringRelease(parameterNames[1]);
+	
+	if( exception ) {
+		[self logException:exception ctx:jsGlobalContext];
+		return NULL;
+	}
+	
+	JSValueRef params[] = { module, exports };
+	return [self invokeCallback:func thisObject:NULL argc:2 argv:params];
 }
 
 - (JSValueRef)invokeCallback:(JSObjectRef)callback thisObject:(JSObjectRef)thisObject argc:(size_t)argc argv:(const JSValueRef [])argv {
