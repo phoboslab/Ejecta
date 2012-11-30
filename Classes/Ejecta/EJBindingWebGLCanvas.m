@@ -713,6 +713,14 @@ EJ_BIND_FUNCTION(enableVertexAttribArray, ctx, argc, argv) {
     return NULL;
 }
 
+EJ_BIND_FUNCTION(generateMipmap, ctx, argc, argv) {
+    if( argc < 1 ) { return NULL; }
+    GLenum target = JSValueToNumberFast(ctx, argv[0]);
+    
+    glGenerateMipmap(target);
+    return NULL;
+}
+
 EJ_BIND_FUNCTION(getAttribLocation, ctx, argc, argv) {
     if( argc < 2 ) { return NULL; }
     EJBindingWebGLProgram * jsProgram = (EJBindingWebGLProgram *)JSObjectGetPrivate((JSObjectRef)argv[0]);
