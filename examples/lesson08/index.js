@@ -163,8 +163,6 @@ var mode = 3;
 var LIGHTING_BIT = 1;
 var BLENDING_BIT = 2;
 console.log('Lighting: ' + ((mode & LIGHTING_BIT) != 0) + ' Blending: ' + ((mode & BLENDING_BIT) != 0));
-document.addEventListener( 'touchstart', function( ev ) {
-}, false );
 
 var dist = 0; // Pinch Zoom distance
 function getSqrDist(ev) {
