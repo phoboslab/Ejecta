@@ -326,11 +326,13 @@ static EJApp * ejectaInstance = NULL;
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-	[touchDelegate triggerEvent:@"touchend" withChangedTouches:touches allTouches:[event allTouches]];
+	NSMutableSet * remainingTouches = [[[event allTouches] mutableCopy] autorelease];
+	[remainingTouches minusSet:touches];
+	[touchDelegate triggerEvent:@"touchend" withChangedTouches:touches allTouches:remainingTouches];
 }
 
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
-	[touchDelegate triggerEvent:@"touchend" withChangedTouches:touches allTouches:[event allTouches]];
+	[self touchesEnded:touches withEvent:event];
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
