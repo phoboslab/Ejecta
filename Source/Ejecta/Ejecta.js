@@ -60,7 +60,7 @@ window.require = function( name ) {
 	var id = name.replace(/\.js$/,'');
 	if( !loadedModules[id] ) {
 		loadedModules[id] = {};
-		var	module = {id: id, uri: id + '.js'};
+		var module = {id: id, uri: id + '.js'};
 		ejecta.requireModule( id, module, loadedModules[id] );
 	}
 	
