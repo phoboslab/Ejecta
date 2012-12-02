@@ -69,12 +69,103 @@ window.Audio = Ejecta.Audio;
 window.XMLHttpRequest = Ejecta.HttpRequest;
 window.localStorage = new Ejecta.LocalStorage();
 
-// Very primitive pseudo typed arrays.
-window.Float32Array = Ejecta.Float32Array;
-window.Uint16Array = Ejecta.Uint16Array;
+// Typed array shims
+// It's just a regular Javascript object(not an array) acting like an Array.
+// Absolutely not for performance improvments that Typed arrays are supposed to give.
+// These are just temporary shims for source code compatibility with WebGL
+// until typed arrays are supported in Ejecta's JavascriptCore.
+function BaseTypedArray(arg, type) {
+    // Set the type so that base type(Float32, Int32 etc.) can be queried easily in native code.
+    this.__ejecta_type__ = type;
+ 
+    // Check whether the argument is a regular or typed array.
+    if( (Object.prototype.toString.call(arg) == "[object Array]") ||
+         (arg instanceof BaseTypedArray) ) {
+        this.length = arg.length;
+        for( var i = 0; i < arg.length; i++ ) {
+            this[i] = arg[i];
+        }
+    } else if( typeof(arg) == "number" ) {
+        // Set the array length if the arg is a number.
+        this.length = arg;
+        for( var i = 0; i < arg; i++ ) { this[i] = 0; }
+    } else {
+        // Otherwise it's just an empty array (Throw exception?)
+        this.length = 0;
+    }
+}
 
+// Array type constants.
+// Must match the one in EJConvert.m till a better mechanism is found.
+BaseTypedArray.Int8Array = 1;
+BaseTypedArray.Uint8Array = 2;
+BaseTypedArray.Int16Array = 3;
+BaseTypedArray.Uint16Array = 4;
+BaseTypedArray.Int32Array = 5;
+BaseTypedArray.Uint32Array = 6;
+BaseTypedArray.Float32Array = 7;
+BaseTypedArray.Float64Array = 8;
+
+function Int8Array(arg) {
+    BaseTypedArray.call(this, arg, BaseTypedArray.Int8Array);
+}
+Int8Array.prototype = new BaseTypedArray();
+Int8Array.prototype.constructor = Int8Array;
+ 
+function Uint8Array(arg) {
+    BaseTypedArray.call(this, arg, BaseTypedArray.Int8Array);
+}
+Uint8Array.prototype = new BaseTypedArray();
+Uint8Array.prototype.constructor = Uint8Array;
+
+function Int16Array(arg) {
+    BaseTypedArray.call(this, arg, BaseTypedArray.Int16Array);
+}
+Int16Array.prototype = new BaseTypedArray();
+Int16Array.prototype.constructor = Int16Array;
+
+function Uint16Array(arg) {
+    BaseTypedArray.call(this, arg, BaseTypedArray.Int16Array);
+}
+Uint16Array.prototype = new BaseTypedArray();
+Uint16Array.prototype.constructor = Uint16Array;
+
+function Int32Array(arg) {
+    BaseTypedArray.call(this, arg, BaseTypedArray.Int32Array);
+}
+Int32Array.prototype = new BaseTypedArray();
+Int32Array.prototype.constructor = Int32Array;
+ 
+function Uint32Array(arg) {
+    BaseTypedArray.call(this, arg, BaseTypedArray.Int32Array);
+}
+Uint32Array.prototype = new BaseTypedArray();
+Uint32Array.prototype.constructor = Uint32Array;
+
+function Float32Array(arg) {
+    BaseTypedArray.call(this, arg, BaseTypedArray.Float32Array);
+}
+Float32Array.prototype = new BaseTypedArray();
+Float32Array.prototype.constructor = Float32Array;
+
+function Float64Array(arg) {
+    BaseTypedArray.call(this, arg, BaseTypedArray.Float64Array);
+}
+Float64Array.prototype = new BaseTypedArray();
+Float64Array.prototype.constructor = Float64Array;
+
+window.Int8Array    = Int8Array;
+window.Uint8Array   = Uint8Array;
+window.Int16Array   = Int16Array;
+window.Uint16Array  = Uint16Array;
+window.Int32Array   = Int32Array;
+window.Uint32Array  = Uint32Array;
+window.Float32Array = Float32Array;
+window.Float64Array = Float64Array;
+ 
+ 
 // Set up a "fake" HTMLElement
-HTMLElement = function( tagName ){ 
+HTMLElement = function( tagName ){
 	this.tagName = tagName;
 	this.children = [];
 };

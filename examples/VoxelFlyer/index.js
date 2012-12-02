@@ -4,7 +4,7 @@
  */
 
 // Load lother javascript libraries
-ejecta.require('lib/glMatrix.js');
+ejecta.require('lib/gl-matrix.js');
 
 // Load the shaders
 ejecta.require('shader.fp');

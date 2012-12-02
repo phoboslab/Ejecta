@@ -1,5 +1,15 @@
 #import "EJConvert.h"
 
+// Typed array type identifiers
+#define TA_Int8Array     1
+#define TA_Uint8Array    2
+#define TA_Int16Array    3
+#define TA_Uint16Array   4
+#define TA_Int32Array    5
+#define TA_Uint32Array   6
+#define TA_Float32Array  7
+#define TA_Float64Array  8
+
 NSString * JSValueToNSString( JSContextRef ctx, JSValueRef v ) {
 	JSStringRef jsString = JSValueToStringCopy( ctx, v, NULL );
 	if( !jsString ) return nil;
@@ -146,5 +156,121 @@ void JSObjectToByteArray( JSContextRef ctx, JSObjectRef array, unsigned char * b
 	for( int i = 0; i < count; i++ ) {
 		bytes[i] = JSValueToNumberFast(ctx, JSObjectGetPropertyAtIndex(ctx, array, i, NULL));
 	}
+}
+
+void JSTypedArrayToBuffer( JSContextRef ctx, JSObjectRef jsArray, int *size, void **buffer) {
+    // Convert the Ejecta Typed array shim object to a buffer.
+    JSStringRef jsLengthProp = JSStringCreateWithUTF8CString("length");
+    JSValueRef jsLength = JSObjectGetProperty(ctx, jsArray, jsLengthProp, NULL);
+    JSStringRelease(jsLengthProp);
+    
+    JSStringRef jsTypeProp = JSStringCreateWithUTF8CString("__ejecta_type__");
+    JSValueRef jsType = JSObjectGetProperty(ctx, jsArray, jsTypeProp, NULL);
+    JSStringRelease(jsTypeProp);
+    
+    int length = (size_t) JSValueToNumberFast(ctx, jsLength);
+    int type = (int) JSValueToNumberFast(ctx, jsType);
+    
+    *size = 0;
+    
+    // TODO(vikram): Clean this up to a more concise form.
+    switch (type) {
+        case TA_Int8Array:
+        {
+            *size = length;
+            char *a = (char *)malloc(*size);
+            
+            for( int i = 0; i < length; i++ ) {
+                a[i] = (char)JSValueToNumberFast(ctx, JSObjectGetPropertyAtIndex(ctx, jsArray, i, NULL));
+            }
+            
+            *buffer = (GLvoid *)a;
+            break;
+        }
+        case TA_Uint8Array:
+        {
+            *size = length;
+            unsigned char *a = (unsigned char *)malloc((*size));
+            
+            for( int i = 0; i < length; i++ ) {
+                a[i] = (unsigned char)JSValueToNumberFast(ctx, JSObjectGetPropertyAtIndex(ctx, jsArray, i, NULL));
+            }
+            
+            *buffer = (GLvoid *)a;
+            break;
+        }
+        case TA_Int16Array:
+        {
+            *size = length * sizeof(short);
+            short *a = (short *)malloc(*size);
+            
+            for( int i = 0; i < length; i++ ) {
+                a[i] = (short)JSValueToNumberFast(ctx, JSObjectGetPropertyAtIndex(ctx, jsArray, i, NULL));
+            }
+            
+            *buffer = (GLvoid *)a;
+            break;
+        }
+        case TA_Uint16Array:
+        {
+            *size = length * sizeof(unsigned short);
+            unsigned short *a = (unsigned short *)malloc(*size);
+            
+            for ( int i = 0; i < length; i++ ) {
+                a[i] = (unsigned short)JSValueToNumberFast(ctx, JSObjectGetPropertyAtIndex(ctx, jsArray, i, NULL));
+            }
+            
+            *buffer = (GLvoid *)a;
+            break;
+        }
+        case TA_Int32Array:
+        {
+            *size = length * sizeof(int);
+            int *a = (int *)malloc(*size);
+            
+            for( int i = 0; i < length; i++ ) {
+                a[i] = (int)JSValueToNumberFast(ctx, JSObjectGetPropertyAtIndex(ctx, jsArray, i, NULL));
+            }
+            
+            *buffer = (GLvoid *)a;
+            break;
+        }
+        case TA_Uint32Array:
+        {
+            *size = length * sizeof(unsigned int);
+            unsigned int *a = (unsigned int *)malloc(*size);
+            
+            for ( int i = 0; i < length; i++ ) {
+                a[i] = (unsigned int)JSValueToNumberFast(ctx, JSObjectGetPropertyAtIndex(ctx, jsArray, i, NULL));
+            }
+            
+            *buffer = (GLvoid *)a;
+            break;
+        }
+        case TA_Float32Array:
+        {
+            *size = length * sizeof(float);
+            float *a = (float *)malloc(*size);
+            
+            for( int i = 0; i < length; i++ ) {
+                a[i] = (float)JSValueToNumberFast(ctx, JSObjectGetPropertyAtIndex(ctx, jsArray, i, NULL));
+            }
+            
+            *buffer = (GLvoid *)a;
+            break;
+        }
+        case TA_Float64Array:
+        {
+            *size = length * sizeof(double);
+            double *a = (double *)malloc(*size);
+            
+            for( int i = 0; i < length; i++ ) {
+                a[i] = (double)JSValueToNumberFast(ctx, JSObjectGetPropertyAtIndex(ctx, jsArray, i, NULL));
+            }
+            
+            *buffer = (GLvoid *)a;
+            break;
+        }
+    }
 }
 

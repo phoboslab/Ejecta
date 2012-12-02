@@ -574,14 +574,25 @@ EJ_BIND_FUNCTION(bufferData, ctx, argc, argv) {
     if( argc < 3 ) { return NULL; }
     GLenum target = JSValueToNumberFast(ctx, argv[0]);
     GLenum usage = JSValueToNumberFast(ctx, argv[2]);
-    
-    NSObject <EJTypedArray> * jsTypedArray = (NSObject <EJTypedArray> *)JSObjectGetPrivate((JSObjectRef)argv[1]);
-    
-    // TODO(vikram): What's the right validation check here?
-    if( jsTypedArray && jsTypedArray.size > 0 ) {
-        glBufferData(target, jsTypedArray.size, jsTypedArray.data, usage);
+  
+
+    if( JSValueIsObject(ctx, argv[1]) ) {
+        // If the parameter is an object it is an array object with values.
+        JSObjectRef jsArray = JSValueToObject(ctx, argv[1], NULL);
+        
+        // Get buffer from the typed array
+        int size = 0;
+        GLvoid * buffer = NULL;
+        JSTypedArrayToBuffer(ctx, jsArray, &size, &buffer);
+        
+        if( size > 0 && buffer != NULL ) {
+            glBufferData(target, size, buffer, usage);
+        }
+            
+        // NOTE: Remember to remove this when we switch to actual typed arrays.
+        free(buffer);
     } else {
-        NSLog(@"Warning: bufferData: Invalid typed array at position 2.");
+        NSLog(@"Warning: bufferData: Invalid array arg at position 2.");
     }
     return NULL;
 }

@@ -18,13 +18,11 @@
 		AC4C254E1661C95F00A11FC6 /* EJBindingWebGLCanvas.m in Sources */ = {isa = PBXBuildFile; fileRef = AC4C254D1661C95F00A11FC6 /* EJBindingWebGLCanvas.m */; };
 		AC4C25511661C9E000A11FC6 /* EJWebGLContextScreen.m in Sources */ = {isa = PBXBuildFile; fileRef = AC4C25501661C9E000A11FC6 /* EJWebGLContextScreen.m */; };
 		AC4C25571662B28A00A11FC6 /* EJBindingWebGLBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = AC4C25561662B28A00A11FC6 /* EJBindingWebGLBuffer.m */; };
-		AC4C255A1662CC5600A11FC6 /* EJBindingFloat32Array.m in Sources */ = {isa = PBXBuildFile; fileRef = AC4C25591662CC5600A11FC6 /* EJBindingFloat32Array.m */; };
 		AC4C255E1662EA3A00A11FC6 /* EJBindingWebGLProgram.m in Sources */ = {isa = PBXBuildFile; fileRef = AC4C255D1662EA3800A11FC6 /* EJBindingWebGLProgram.m */; };
 		AC4C25611662EEDC00A11FC6 /* EJBindingWebGLObject.m in Sources */ = {isa = PBXBuildFile; fileRef = AC4C25601662EEDB00A11FC6 /* EJBindingWebGLObject.m */; };
 		AC4C25641662EFB700A11FC6 /* EJBindingWebGLShader.m in Sources */ = {isa = PBXBuildFile; fileRef = AC4C25631662EFB600A11FC6 /* EJBindingWebGLShader.m */; };
 		AC4C25671663084800A11FC6 /* EJBindingWebGLUniformLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = AC4C25661663084600A11FC6 /* EJBindingWebGLUniformLocation.m */; };
 		ACE6EBC816634011002924DD /* EJBindingShaderDOM.m in Sources */ = {isa = PBXBuildFile; fileRef = ACE6EBC716634010002924DD /* EJBindingShaderDOM.m */; };
-		ACE6EBDA1664089C002924DD /* EJBindingUint16Array.m in Sources */ = {isa = PBXBuildFile; fileRef = ACE6EBD91664089C002924DD /* EJBindingUint16Array.m */; };
 		ACE6EBDD16654E7E002924DD /* EJBindingWebGLTexture.m in Sources */ = {isa = PBXBuildFile; fileRef = ACE6EBDC16654E7D002924DD /* EJBindingWebGLTexture.m */; };
 		B60094591625EFEB005B4F9C /* EJOpenALBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = B60094581625EFEA005B4F9C /* EJOpenALBuffer.m */; };
 		B600945D162763F1005B4F9C /* EJBindingHttpRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = B600945C162763F0005B4F9C /* EJBindingHttpRequest.m */; };
@@ -98,9 +96,6 @@
 		AC4C25501661C9E000A11FC6 /* EJWebGLContextScreen.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJWebGLContextScreen.m; sourceTree = "<group>"; };
 		AC4C25551662B28900A11FC6 /* EJBindingWebGLBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingWebGLBuffer.h; sourceTree = "<group>"; };
 		AC4C25561662B28A00A11FC6 /* EJBindingWebGLBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingWebGLBuffer.m; sourceTree = "<group>"; };
-		AC4C25581662CC5500A11FC6 /* EJBindingFloat32Array.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingFloat32Array.h; sourceTree = "<group>"; };
-		AC4C25591662CC5600A11FC6 /* EJBindingFloat32Array.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingFloat32Array.m; sourceTree = "<group>"; };
-		AC4C255B1662D76400A11FC6 /* EJTypedArray.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EJTypedArray.h; sourceTree = "<group>"; };
 		AC4C255C1662EA3700A11FC6 /* EJBindingWebGLProgram.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingWebGLProgram.h; sourceTree = "<group>"; };
 		AC4C255D1662EA3800A11FC6 /* EJBindingWebGLProgram.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingWebGLProgram.m; sourceTree = "<group>"; };
 		AC4C255F1662EEDA00A11FC6 /* EJBindingWebGLObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingWebGLObject.h; sourceTree = "<group>"; };
@@ -111,8 +106,6 @@
 		AC4C25661663084600A11FC6 /* EJBindingWebGLUniformLocation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingWebGLUniformLocation.m; sourceTree = "<group>"; };
 		ACE6EBC616634010002924DD /* EJBindingShaderDOM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingShaderDOM.h; sourceTree = "<group>"; };
 		ACE6EBC716634010002924DD /* EJBindingShaderDOM.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingShaderDOM.m; sourceTree = "<group>"; };
-		ACE6EBD81664089C002924DD /* EJBindingUint16Array.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingUint16Array.h; sourceTree = "<group>"; };
-		ACE6EBD91664089C002924DD /* EJBindingUint16Array.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingUint16Array.m; sourceTree = "<group>"; };
 		ACE6EBDB16654E7C002924DD /* EJBindingWebGLTexture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingWebGLTexture.h; sourceTree = "<group>"; };
 		ACE6EBDC16654E7D002924DD /* EJBindingWebGLTexture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingWebGLTexture.m; sourceTree = "<group>"; };
 		B60094571625EFEA005B4F9C /* EJOpenALBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJOpenALBuffer.h; sourceTree = "<group>"; };
@@ -339,22 +332,9 @@
 			name = EJWebGLCanvas;
 			sourceTree = "<group>";
 		};
-		ACE6EBD616640808002924DD /* EJTypedArray */ = {
-			isa = PBXGroup;
-			children = (
-				AC4C25581662CC5500A11FC6 /* EJBindingFloat32Array.h */,
-				AC4C25591662CC5600A11FC6 /* EJBindingFloat32Array.m */,
-				AC4C255B1662D76400A11FC6 /* EJTypedArray.h */,
-				ACE6EBD81664089C002924DD /* EJBindingUint16Array.h */,
-				ACE6EBD91664089C002924DD /* EJBindingUint16Array.m */,
-			);
-			name = EJTypedArray;
-			sourceTree = "<group>";
-		};
 		B615E8B615E2D3F70087729A /* Ejecta */ = {
 			isa = PBXGroup;
 			children = (
-				ACE6EBD616640808002924DD /* EJTypedArray */,
 				AC4C254B1661C92100A11FC6 /* EJWebGLCanvas */,
 				B615E8B715E2D3F70087729A /* EJAudio */,
 				B615E8C115E2D3F70087729A /* EJCanvas */,
@@ -578,13 +558,11 @@
 				AC4C254E1661C95F00A11FC6 /* EJBindingWebGLCanvas.m in Sources */,
 				AC4C25511661C9E000A11FC6 /* EJWebGLContextScreen.m in Sources */,
 				AC4C25571662B28A00A11FC6 /* EJBindingWebGLBuffer.m in Sources */,
-				AC4C255A1662CC5600A11FC6 /* EJBindingFloat32Array.m in Sources */,
 				AC4C255E1662EA3A00A11FC6 /* EJBindingWebGLProgram.m in Sources */,
 				AC4C25611662EEDC00A11FC6 /* EJBindingWebGLObject.m in Sources */,
 				AC4C25641662EFB700A11FC6 /* EJBindingWebGLShader.m in Sources */,
 				AC4C25671663084800A11FC6 /* EJBindingWebGLUniformLocation.m in Sources */,
 				ACE6EBC816634011002924DD /* EJBindingShaderDOM.m in Sources */,
-				ACE6EBDA1664089C002924DD /* EJBindingUint16Array.m in Sources */,
 				ACE6EBDD16654E7E002924DD /* EJBindingWebGLTexture.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

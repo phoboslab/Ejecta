@@ -18,6 +18,8 @@ JSValueRef ColorRGBAToJSValue( JSContextRef ctx, EJColorRGBA c );
 JSObjectRef ByteArrayToJSObject( JSContextRef ctx, unsigned char * bytes, int count );
 void JSObjectToByteArray( JSContextRef ctx, JSObjectRef array, unsigned char * bytes, int count );
 
+void JSTypedArrayToBuffer( JSContextRef ctx, JSObjectRef jsArray, int *size, void **buffer);
+    
 #ifdef __cplusplus
 }
 #endif
