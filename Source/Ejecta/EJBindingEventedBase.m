@@ -46,7 +46,7 @@
 	}
 	
 	JSObjectRef callback = JSValueToObject(ctx, callbackValue, NULL);
-	if( JSObjectIsFunction(ctx, callback) ) {
+	if( callback && JSObjectIsFunction(ctx, callback) ) {
 		JSValueProtect(ctx, callback);
 		[onCallbacks setObject:[NSValue valueWithPointer:callback] forKey:name];
 		return;
