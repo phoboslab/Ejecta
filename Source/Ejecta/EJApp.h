@@ -10,7 +10,7 @@
 #define EJECTA_MAIN_JS @"index.js"
 
 @protocol EJTouchDelegate
-- (void)triggerEvent:(NSString *)name withChangedTouches:(NSSet *)changed allTouches:(NSSet *)all;
+- (void)triggerEvent:(NSString *)name all:(NSSet *)all changed:(NSSet *)changed remaining:(NSSet *)remaining;
 @end
 
 @class EJTimerCollection;

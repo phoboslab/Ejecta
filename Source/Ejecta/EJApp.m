@@ -322,13 +322,14 @@ static EJApp * ejectaInstance = NULL;
 // Touch handlers
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-	[touchDelegate triggerEvent:@"touchstart" withChangedTouches:touches allTouches:event.allTouches];
+	[touchDelegate triggerEvent:@"touchstart" all:event.allTouches changed:touches remaining:event.allTouches];
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-	NSMutableSet * remainingTouches = [[event.allTouches mutableCopy] autorelease];
-	[remainingTouches minusSet:touches];
-	[touchDelegate triggerEvent:@"touchend" withChangedTouches:touches allTouches:remainingTouches];
+	NSMutableSet * remaining = [[event.allTouches mutableCopy] autorelease];
+	[remaining minusSet:touches];
+	
+	[touchDelegate triggerEvent:@"touchend" all:event.allTouches changed:touches remaining:remaining];
 }
 
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -336,7 +337,7 @@ static EJApp * ejectaInstance = NULL;
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-	[touchDelegate triggerEvent:@"touchmove" withChangedTouches:touches allTouches:event.allTouches];
+	[touchDelegate triggerEvent:@"touchmove" all:event.allTouches changed:touches remaining:event.allTouches];
 }
 
 
