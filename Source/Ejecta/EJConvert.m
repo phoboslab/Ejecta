@@ -25,15 +25,19 @@ JSValueRef NSStringToJSValueProtect( JSContextRef ctx, NSString * string ) {
 }
 
 double JSValueToNumberFast( JSContextRef ctx, JSValueRef v ) {
-	unsigned char * bytes = ((unsigned char *) v) + 8;
-	unsigned char * tagBytes = ((unsigned char *) v) + 12;
-	int32_t unionTag = *((int32_t*)tagBytes);
-	if( unionTag < 0xfffffff8 ) {
-		return *((double *) bytes);
-	}
-	else {
-		return *((int32_t *) bytes);
-	}
+	// This struct represents the memory layout of a C++ JSValue instance
+	// See JSC/runtime/JSValue.h for an explanation of the tagging
+	struct {
+		unsigned char cppClassData[8];
+		union {
+			double asDouble;
+			struct { int32_t asInt; int32_t tag; } asBits;
+		} payload;
+	} * decoded = (void *)v;
+	
+	return decoded->payload.asBits.tag < 0xfffffff9
+		? decoded->payload.asDouble
+		: decoded->payload.asBits.asInt;
 }
 
 static const EJColorRGBA ColorNames[] = {
