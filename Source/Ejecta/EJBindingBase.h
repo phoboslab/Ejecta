@@ -21,8 +21,8 @@ extern JSValueRef ej_global_undefined;
 
 
 // The class method that returns a pointer to the static C callback function
-#define __EJ_GET_CALLBACK_CLASS_METHOD(NAME) \
-	+ (JSObjectCallAsFunctionCallback)_callback_for##NAME {\
+#define __EJ_GET_POINTER_TO(NAME) \
+	+ (JSObjectCallAsFunctionCallback)_ptr_to##NAME {\
 		return (JSObjectCallAsFunctionCallback)&NAME;\
 	}
 
@@ -45,7 +45,7 @@ extern JSValueRef ej_global_undefined;
 		JSValueRef ret = (JSValueRef)objc_msgSend(instance, @selector(_func_##NAME:argc:argv:), ctx, argc, argv); \
 		return ret ? ret : ej_global_undefined; \
 	} \
-	__EJ_GET_CALLBACK_CLASS_METHOD(_func_##NAME)\
+	__EJ_GET_POINTER_TO(_func_##NAME)\
 	\
 	/* The actual implementation for this method */ \
 	- (JSValueRef)_func_##NAME:(JSContextRef)CTX_NAME argc:(size_t)ARGC_NAME argv:(const JSValueRef [])ARGV_NAME
@@ -66,7 +66,7 @@ extern JSValueRef ej_global_undefined;
 		id instance = (id)JSObjectGetPrivate(object); \
 		return (JSValueRef)objc_msgSend(instance, @selector(_get_##NAME:), ctx); \
 	} \
-	__EJ_GET_CALLBACK_CLASS_METHOD(_get_##NAME)\
+	__EJ_GET_POINTER_TO(_get_##NAME)\
 	\
 	/* The actual implementation for this getter */ \
 	- (JSValueRef)_get_##NAME:(JSContextRef)CTX_NAME
@@ -89,7 +89,7 @@ extern JSValueRef ej_global_undefined;
 		objc_msgSend(instance, @selector(_set_##NAME:value:), ctx, value); \
 		return true; \
 	} \
-	__EJ_GET_CALLBACK_CLASS_METHOD(_set_##NAME) \
+	__EJ_GET_POINTER_TO(_set_##NAME) \
 	\
 	/* The actual implementation for this setter */ \
 	- (void)_set_##NAME:(JSContextRef)CTX_NAME value:(JSValueRef)VALUE_NAME
@@ -99,7 +99,7 @@ extern JSValueRef ej_global_undefined;
 // ------------------------------------------------------------------------------------
 // Shorthand to define a function that logs a "not implemented" warning
 
-#define EJ_BIND_FUNCTION_NOT_IMPLEMENTED( NAME ) \
+#define EJ_BIND_FUNCTION_NOT_IMPLEMENTED(NAME) \
 	EJ_BIND_FUNCTION( NAME, ctx, argc, argv ) { \
 		static bool didShowWarning; \
 		if( !didShowWarning ) { \
@@ -113,21 +113,21 @@ extern JSValueRef ej_global_undefined;
 // ------------------------------------------------------------------------------------
 // Shorthand to bind enums with name tables
 
-#define EJ_BIND_ENUM(name, enumNames, target) \
-	EJ_BIND_GET(name, ctx) { \
-		JSStringRef src = JSStringCreateWithUTF8CString( enumNames[target] ); \
+#define EJ_BIND_ENUM(NAME, ENUM_NAMES, TARGET) \
+	EJ_BIND_GET(NAME, ctx) { \
+		JSStringRef src = JSStringCreateWithUTF8CString( ENUM_NAMES[TARGET] ); \
 		JSValueRef ret = JSValueMakeString(ctx, src); \
 		JSStringRelease(src); \
 		return ret; \
 	} \
 	\
-	EJ_BIND_SET(name, ctx, value) { \
+	EJ_BIND_SET(NAME, ctx, value) { \
 		JSStringRef str = JSValueToStringCopy(ctx, value, NULL); \
 		const JSChar * strptr = JSStringGetCharactersPtr( str ); \
 		int length = JSStringGetLength(str)-1; \
-		for( int i = 0; i < sizeof(enumNames)/sizeof(enumNames[0]); i++ ) { \
-			if( JSStrIsEqualToStr( strptr, enumNames[i], length) ) { \
-				target = i; \
+		for( int i = 0; i < sizeof(ENUM_NAMES)/sizeof(ENUM_NAMES[0]); i++ ) { \
+			if( JSStrIsEqualToStr( strptr, ENUM_NAMES[i], length) ) { \
+				TARGET = i; \
 				break; \
 			} \
 		} \
@@ -141,6 +141,21 @@ static inline bool JSStrIsEqualToStr( const JSChar * s1, const char * s2, int le
 	}
 	return (*s1 == *s2);
 }
+
+
+// ------------------------------------------------------------------------------------
+// Shorthand to bind const numbers
+
+#define EJ_BIND_CONST(NAME, VALUE) \
+	static JSValueRef _get_##NAME( \
+		JSContextRef ctx, \
+		JSObjectRef object, \
+		JSStringRef propertyName, \
+		JSValueRef* exception \
+	) { \
+		return JSValueMakeNumber(ctx, VALUE); \
+	} \
+	__EJ_GET_POINTER_TO(_get_##NAME)
 	
 
 @interface EJBindingBase : NSObject {

@@ -36,21 +36,17 @@ NSData * NSDataFromString( NSString *str ) {
 		// Traverse all class methods for this class; i.e. all classes that are defined with the
 		// EJ_BIND_FUNCTION, EJ_BIND_GET or EJ_BIND_SET macros
 		u_int count;
-		Method * methodList = class_copyMethodList(sc, &count);
+		Method * methodList = class_copyMethodList(object_getClass(sc), &count);
 		for (int i = 0; i < count ; i++) {
 			SEL selector = method_getName(methodList[i]);
 			NSString * name = NSStringFromSelector(selector);
 			
-			if( [name hasPrefix:@"_func_"] ) {
-				NSString * shortName = [[[name componentsSeparatedByString:@":"] objectAtIndex:0] 
-					substringFromIndex:sizeof("_func_")-1];
-				[methods addObject:shortName];
+			if( [name hasPrefix:@"_ptr_to_func_"] ) {
+				[methods addObject: [name substringFromIndex:sizeof("_ptr_to_func_")-1] ];
 			}
-			else if( [name hasPrefix:@"_get_"] ) {
+			else if( [name hasPrefix:@"_ptr_to_get_"] ) {
 				// We only look for getters - a property that has a setter, but no getter will be ignored
-				NSString * shortName = [[[name componentsSeparatedByString:@":"] objectAtIndex:0] 
-					substringFromIndex:sizeof("_get_")-1];
-				[properties addObject:shortName];
+				[properties addObject: [name substringFromIndex:sizeof("_ptr_to_get_")-1] ];
 			}
 		}
 		free(methodList);
@@ -67,12 +63,11 @@ NSData * NSDataFromString( NSString *str ) {
 		values[i].name = [nameData bytes];
 		values[i].attributes = kJSPropertyAttributeDontDelete;
 		
-		SEL get = NSSelectorFromString([NSString stringWithFormat:@"_callback_for_get_%@", name]);
+		SEL get = NSSelectorFromString([NSString stringWithFormat:@"_ptr_to_get_%@", name]);
 		values[i].getProperty = (JSObjectGetPropertyCallback)[self performSelector:get];
 		
-		SEL set = NSSelectorFromString([NSString stringWithFormat:@"_callback_for_set_%@", name]);
-		
 		// Property has a setter? Otherwise mark as read only
+		SEL set = NSSelectorFromString([NSString stringWithFormat:@"_ptr_to_set_%@", name]);
 		if( [self respondsToSelector:set] ) {
 			values[i].setProperty = (JSObjectSetPropertyCallback)[self performSelector:set];
 		}
@@ -91,7 +86,7 @@ NSData * NSDataFromString( NSString *str ) {
 		functions[i].name = [nameData bytes];
 		functions[i].attributes = kJSPropertyAttributeDontDelete;
 		
-		SEL call = NSSelectorFromString([NSString stringWithFormat:@"_callback_for_func_%@", name]);
+		SEL call = NSSelectorFromString([NSString stringWithFormat:@"_ptr_to_func_%@", name]);
 		functions[i].callAsFunction = (JSObjectCallAsFunctionCallback)[self performSelector:call];
 	}
 	
