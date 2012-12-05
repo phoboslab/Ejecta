@@ -22,8 +22,8 @@ extern JSValueRef ej_global_undefined;
 
 // The class method that returns a pointer to the static C callback function
 #define __EJ_GET_POINTER_TO(NAME) \
-	+ (JSObjectCallAsFunctionCallback)_ptr_to##NAME {\
-		return (JSObjectCallAsFunctionCallback)&NAME;\
+	+ (void *)_ptr_to##NAME { \
+		return (void *)&NAME; \
 	}
 
 
@@ -157,6 +157,7 @@ static inline bool JSStrIsEqualToStr( const JSChar * s1, const char * s2, int le
 	} \
 	__EJ_GET_POINTER_TO(_get_##NAME)
 	
+
 
 @interface EJBindingBase : NSObject {
 	JSObjectRef jsObject;
