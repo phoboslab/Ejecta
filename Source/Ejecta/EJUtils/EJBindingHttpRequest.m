@@ -293,11 +293,11 @@ EJ_BIND_SET(timeout, ctx, value) {
 
 EJ_BIND_ENUM(responseType, EJHttpRequestTypeNames, type);
 
-EJ_BIND_GET(UNSENT, ctx) { return JSValueMakeNumber(ctx, kEJHttpRequestStateUnsent); }
-EJ_BIND_GET(OPENED, ctx) { return JSValueMakeNumber(ctx, kEJHttpRequestStateOpened); }
-EJ_BIND_GET(HEADERS_RECEIVED, ctx) { return JSValueMakeNumber(ctx, kEJHttpRequestStateHeadersReceived); }
-EJ_BIND_GET(LOADING, ctx) { return JSValueMakeNumber(ctx, kEJHttpRequestStateLoading); }
-EJ_BIND_GET(DONE, ctx) { return JSValueMakeNumber(ctx, kEJHttpRequestStateDone); }
+EJ_BIND_CONST(UNSENT, kEJHttpRequestStateUnsent);
+EJ_BIND_CONST(OPENED, kEJHttpRequestStateOpened);
+EJ_BIND_CONST(HEADERS_RECEIVED, kEJHttpRequestStateHeadersReceived);
+EJ_BIND_CONST(LOADING, kEJHttpRequestStateLoading);
+EJ_BIND_CONST(DONE, kEJHttpRequestStateDone);
 
 EJ_BIND_EVENT(readystatechange);
 EJ_BIND_EVENT(loadend);
