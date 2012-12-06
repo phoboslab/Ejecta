@@ -59,9 +59,11 @@ var loadedModules = {};
 window.require = function( name ) {
 	var id = name.replace(/\.js$/,'');
 	if( !loadedModules[id] ) {
-		loadedModules[id] = {};
-		var module = {id: id, uri: id + '.js'};
-		ejecta.requireModule( id, module, loadedModules[id] );
+		var exports = {};
+		var module = { id: id, uri: id + '.js', exports: exports };
+		ejecta.requireModule( id, module, exports );
+		// Some modules override module.exports, so use the module.exports reference only after loading the module
+		loadedModules[id] = module.exports;
 	}
 	
 	return loadedModules[id];
