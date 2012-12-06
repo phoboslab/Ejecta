@@ -406,7 +406,7 @@ EJ_BIND_FUNCTION(createImageData, ctx, argc, argv) {
 		sw = JSValueToNumberFast(ctx, argv[0]),
 		sh = JSValueToNumberFast(ctx, argv[1]);
 		
-	GLubyte * pixels = malloc( sw * sh * 4 * sizeof(GLubyte));
+	GLubyte * pixels = calloc( sw * sh * 4, sizeof(GLubyte) );
 	EJImageData * imageData = [[[EJImageData alloc] initWithWidth:sw height:sh pixels:pixels] autorelease];
 	
 	// Create the JS object
