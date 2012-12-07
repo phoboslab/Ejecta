@@ -115,6 +115,8 @@ EJ_BIND_SET(font, ctx, value) {
 	if( newFont ) {
 		renderingContext.font = newFont;
 	}
+	
+	JSStringRelease(jsString);
 }
 
 EJ_BIND_GET(width, ctx) {
