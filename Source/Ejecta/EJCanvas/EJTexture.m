@@ -95,8 +95,7 @@ static GLint EJTextureGlobalFilter = GL_LINEAR;
 		[self setWidth:widthp height:heightp];
 		
 		if( width != realWidth || height != realHeight ) {
-			GLubyte * pixelsPow2 = (GLubyte *)malloc( realWidth * realHeight * 4 );
-			memset( pixelsPow2, 0, realWidth * realHeight * 4 );
+			GLubyte * pixelsPow2 = (GLubyte *)calloc( realWidth * realHeight * 4, sizeof(GLubyte) );
 			for( int y = 0; y < height; y++ ) {
 				memcpy( &pixelsPow2[y*realWidth*4], &pixels[y*width*4], width * 4 );
 			}
@@ -205,8 +204,7 @@ static GLint EJTextureGlobalFilter = GL_LINEAR;
 		
 	[self setWidth:CGImageGetWidth(image) height:CGImageGetHeight(image)];
 	
-	GLubyte * pixels = (GLubyte *) malloc( realWidth * realHeight * 4);
-	memset( pixels, 0, realWidth * realHeight * 4 );
+	GLubyte * pixels = (GLubyte *)calloc( realWidth * realHeight * 4, sizeof(GLubyte) );
 	CGContextRef context = CGBitmapContextCreate(pixels, realWidth, realHeight, 8, realWidth * 4, CGImageGetColorSpace(image), kCGImageAlphaPremultipliedLast);
 	CGContextDrawImage(context, CGRectMake(0.0, realHeight - height, (CGFloat)width, (CGFloat)height), image);
 	CGContextRelease(context);
@@ -237,8 +235,7 @@ static GLint EJTextureGlobalFilter = GL_LINEAR;
 	// (power of 2) pixel buffer, free the original pixels and return
 	// the larger buffer
 	else {
-		GLubyte * pixels = malloc( realWidth * realHeight * 4 );
-		memset(pixels, 0x00, realWidth * realHeight * 4 );
+		GLubyte * pixels = (GLubyte *)calloc( realWidth * realHeight * 4, sizeof(GLubyte) );
 		
 		for( int y = 0; y < height; y++ ) {
 			memcpy( &pixels[y*realWidth*4], &origPixels[y*width*4], width*4 );

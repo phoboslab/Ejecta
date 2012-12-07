@@ -54,8 +54,7 @@ NSData * NSDataFromString( NSString *str ) {
 	
 	
 	// Set up the JSStaticValue struct array
-	JSStaticValue * values = malloc( sizeof(JSStaticValue) * (properties.count+1) );
-	memset( values, 0, sizeof(JSStaticValue) * (properties.count+1) );
+	JSStaticValue * values = calloc( properties.count + 1, sizeof(JSStaticValue) );
 	for( int i = 0; i < properties.count; i++ ) {
 		NSString * name = [properties objectAtIndex:i];
 		NSData * nameData = NSDataFromString( name );
@@ -77,8 +76,7 @@ NSData * NSDataFromString( NSString *str ) {
 	}
 	
 	// Set up the JSStaticFunction struct array
-	JSStaticFunction * functions = malloc( sizeof(JSStaticFunction) * (methods.count+1) );
-	memset( functions, 0, sizeof(JSStaticFunction) * (methods.count+1) );
+	JSStaticFunction * functions = calloc( methods.count + 1, sizeof(JSStaticFunction) );
 	for( int i = 0; i < methods.count; i++ ) {
 		NSString * name = [methods objectAtIndex:i];
 		NSData * nameData = NSDataFromString( name );

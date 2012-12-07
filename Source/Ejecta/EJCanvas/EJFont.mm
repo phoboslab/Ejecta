@@ -145,8 +145,7 @@ int GlyphLayoutSortByTextureIndex(const void * a, const void * b) {
 	glyphInfo->th = (glyphInfo->h / EJ_FONT_TEXTURE_SIZE) * contentScale;
 	
 	
-	GLubyte * pixels = (GLubyte *) malloc( pxWidth * pxHeight);
-	memset( pixels, 0, pxWidth * pxHeight );
+	GLubyte * pixels = (GLubyte *)calloc( pxWidth * pxHeight, sizeof(GLubyte) );
 	
 	CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceGray();
 	CGContextRef context = CGBitmapContextCreate(pixels, pxWidth, pxHeight, 8, pxWidth, colorSpace, kCGImageAlphaNone);
