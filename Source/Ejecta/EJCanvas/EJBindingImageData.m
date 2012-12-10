@@ -1,4 +1,5 @@
 #import "EJBindingImageData.h"
+#import <JavaScriptCore/JSTypedArray.h>
 
 @implementation EJBindingImageData
 @synthesize imageData;
@@ -27,7 +28,8 @@
 		JSContextRef ctx = [EJApp instance].jsGlobalContext;
 		int count = imageData.width * imageData.height * 4;
 		
-		JSObjectToByteArray(ctx, dataArray, imageData.pixels, count );
+		void * data = JSTypedArrayGetDataPtr(ctx, dataArray, NULL);
+		memcpy(imageData.pixels, data, count);
 	}
 	
 	return imageData;
@@ -36,8 +38,12 @@
 EJ_BIND_GET(data, ctx ) {
 	if( !dataArray ) {
 		int count = imageData.width * imageData.height * 4;
-		dataArray = ByteArrayToJSObject(ctx, imageData.pixels, count);
+		
+		dataArray = JSTypedArrayMake(ctx, kJSTypedArrayTypeUint8ClampedArray, count);
 		JSValueProtect(ctx, dataArray);
+		
+		void * data = JSTypedArrayGetDataPtr(ctx, dataArray, NULL);
+		memcpy(data, imageData.pixels, count);
 	}
 	return dataArray;
 }
