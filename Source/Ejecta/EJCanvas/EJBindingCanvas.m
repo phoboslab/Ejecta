@@ -9,8 +9,8 @@
 
 static int firstCanvasInstance = YES;
 
-- (id)initWithContext:(JSContextRef)ctx object:(JSObjectRef)obj argc:(size_t)argc argv:(const JSValueRef [])argv {
-	if( self = [super initWithContext:ctx object:obj argc:argc argv:argv] ) {
+- (id)initWithContext:(JSContextRef)ctx argc:(size_t)argc argv:(const JSValueRef [])argv {
+	if( self = [super initWithContext:ctx argc:argc argv:argv] ) {
 		scalingMode = kEJScalingModeFitWidth;
 		useRetinaResolution = true;
 		msaaEnabled = false;
@@ -162,15 +162,9 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 		}
 		
 		// Create the JS object
-		JSClassRef canvasContextClass = [[EJApp instance] getJSClassForClass:[EJBindingCanvasContext2D class]];
-		jsCanvasContext = JSObjectMake( ctx, canvasContextClass, NULL );
-		JSValueProtect(ctx, jsCanvasContext);
-		
-		// Create the native instance
-		EJBindingCanvasContext2D * canvasContextBinding = [[EJBindingCanvasContext2D alloc] initWithContext:ctx object:jsCanvasContext renderingContext:(EJCanvasContext2D *)renderingContext];
-		
-		// Attach the native instance to the js object
-		JSObjectSetPrivate( jsCanvasContext, (void *)canvasContextBinding );
+		EJBindingCanvasContext2D * binding = [[EJBindingCanvasContext2D alloc]
+			initWithRenderingContext:(EJCanvasContext2D *)renderingContext];
+		jsCanvasContext = [EJBindingCanvasContext2D createJSObjectWithContext:ctx instance:binding];
 	}
 	
 	else if( newContextMode == kEJCanvasContextModeWebGL ) {

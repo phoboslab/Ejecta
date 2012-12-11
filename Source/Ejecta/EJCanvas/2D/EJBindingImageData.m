@@ -4,8 +4,8 @@
 @implementation EJBindingImageData
 @synthesize imageData;
 
-- (id)initWithContext:(JSContextRef)ctx object:(JSObjectRef)obj imageData:(EJImageData *)data {
-	if( self = [super initWithContext:ctx object:obj argc:0 argv:NULL] ) {
+- (id)initWithImageData:(EJImageData *)data {
+	if( self = [super initWithContext:NULL argc:0 argv:NULL] ) {
 		imageData = [data retain];
 		dataArray = NULL;
 	}

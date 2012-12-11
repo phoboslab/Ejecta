@@ -3,8 +3,8 @@
 
 @implementation EJBindingAdBanner
 
-- (id)initWithContext:(JSContextRef)ctx object:(JSObjectRef)obj argc:(size_t)argc argv:(const JSValueRef [])argv {
-	if( self = [super initWithContext:ctx object:obj argc:argc argv:argv] ) {
+- (id)initWithContext:(JSContextRef)ctx argc:(size_t)argc argv:(const JSValueRef [])argv {
+	if( self = [super initWithContext:ctx argc:argc argv:argv] ) {
 		isAtBottom = NO;
 		wantsToShow = NO;
 		isReady = NO;

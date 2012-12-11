@@ -7,6 +7,6 @@
 	EJApp * ejectaInstance;
 }
 
-- (id)initWithContext:(JSContextRef)ctx object:(JSObjectRef)obj renderingContext:(EJCanvasContext2D *)renderingContextp;
+- (id)initWithRenderingContext:(EJCanvasContext2D *)renderingContextp;
 
 @end

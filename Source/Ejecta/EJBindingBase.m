@@ -19,9 +19,8 @@ static NSMutableDictionary * CachedJSClasses;
 
 @implementation EJBindingBase
 
-- (id)initWithContext:(JSContextRef)ctxp object:(JSObjectRef)obj argc:(size_t)argc argv:(const JSValueRef [])argv {
+- (id)initWithContext:(JSContextRef)ctxp argc:(size_t)argc argv:(const JSValueRef [])argv {
 	if( self  = [super init] ) {
-		jsObject = obj;
 	}
 	return self;
 }
@@ -122,6 +121,16 @@ static NSMutableDictionary * CachedJSClasses;
 	[methods release];
 	
 	return class;
+}
+
++ (JSObjectRef)createJSObjectWithContext:(JSContextRef)ctx instance:(EJBindingBase *)instance {
+	JSClassRef jsClass = [self getJSClass];
+	
+	JSObjectRef obj = JSObjectMake( ctx, jsClass, NULL );
+	JSObjectSetPrivate( obj, (void *)instance );
+	instance->jsObject = obj;
+	
+	return obj;
 }
 
 @end

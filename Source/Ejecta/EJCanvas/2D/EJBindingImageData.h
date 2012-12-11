@@ -6,7 +6,7 @@
 	JSObjectRef dataArray;
 }
 
-- (id)initWithContext:(JSContextRef)ctx object:(JSObjectRef)obj imageData:(EJImageData *)imageDatap;
+- (id)initWithImageData:(EJImageData *)data;
 
 @property (readonly, nonatomic) EJImageData * imageData;
 

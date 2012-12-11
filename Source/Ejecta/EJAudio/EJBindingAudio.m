@@ -7,8 +7,8 @@
 @synthesize path;
 @synthesize preload;
 
-- (id)initWithContext:(JSContextRef)ctx object:(JSObjectRef)obj argc:(size_t)argc argv:(const JSValueRef [])argv {
-	if( self = [super initWithContext:ctx object:obj argc:argc argv:argv] ) {
+- (id)initWithContext:(JSContextRef)ctx argc:(size_t)argc argv:(const JSValueRef [])argv {
+	if( self = [super initWithContext:ctx argc:argc argv:argv] ) {
 		volume = 1;
 		preload = kEJAudioPreloadNone;
 		
@@ -142,12 +142,8 @@ EJ_BIND_FUNCTION(canPlayType, ctx, argc, argv) {
 }
 
 EJ_BIND_FUNCTION(cloneNode, ctx, argc, argv) {
-	// Create new JS object
-	JSClassRef audioClass = [[EJApp instance] getJSClassForClass:[EJBindingAudio class]];
-	JSObjectRef obj = JSObjectMake( ctx, audioClass, NULL );
-	
-	// Create the native instance
-	EJBindingAudio * audio = [[EJBindingAudio alloc] initWithContext:ctx object:obj argc:0 argv:NULL];
+	EJBindingAudio * audio = [[EJBindingAudio alloc] initWithContext:ctx argc:0 argv:NULL];
+	JSObjectRef clone = [EJBindingAudio createJSObjectWithContext:ctx instance:audio];
 	
 	audio.loop = loop;
 	audio.volume = volume;
@@ -160,9 +156,7 @@ EJ_BIND_FUNCTION(cloneNode, ctx, argc, argv) {
 		[audio load];
 	}
 	
-	// Attach the native instance to the js object
-	JSObjectSetPrivate( obj, (void *)audio );
-	return obj;
+	return clone;
 }
 
 EJ_BIND_GET(loop, ctx) {

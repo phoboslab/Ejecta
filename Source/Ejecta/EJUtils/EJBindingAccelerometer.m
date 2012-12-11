@@ -2,8 +2,8 @@
 
 @implementation EJBindingAccelerometer
 
-- (id)initWithContext:(JSContextRef)ctx object:(JSObjectRef)obj argc:(size_t)argc argv:(const JSValueRef [])argv {
-	if( self = [super initWithContext:ctx object:obj argc:argc argv:argv] ) {
+- (id)initWithContext:(JSContextRef)ctx argc:(size_t)argc argv:(const JSValueRef [])argv {
+	if( self = [super initWithContext:ctx argc:argc argv:argv] ) {
 		[[UIAccelerometer sharedAccelerometer] setUpdateInterval:(1.0 / 60.0)];
 		[[UIAccelerometer sharedAccelerometer] setDelegate:self];
 	}

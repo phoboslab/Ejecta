@@ -10,8 +10,8 @@
 
 @implementation EJBindingCanvasContext2D
 
-- (id)initWithContext:(JSContextRef)ctx object:(JSObjectRef)obj renderingContext:(EJCanvasContext2D *)renderingContextp {
-	if( self = [super initWithContext:ctx object:obj argc:0 argv:NULL] ) {
+- (id)initWithRenderingContext:(EJCanvasContext2D *)renderingContextp {
+	if( self = [super initWithContext:NULL argc:0 argv:NULL] ) {
 		ejectaInstance = [EJApp instance]; // Keep a local copy - may be faster?
 		renderingContext = [renderingContextp retain];
 	}
@@ -295,23 +295,13 @@ EJ_BIND_FUNCTION(getImageData, ctx, argc, argv) {
 		sy = JSValueToNumberFast(ctx, argv[1]),
 		sw = JSValueToNumberFast(ctx, argv[2]),
 		sh = JSValueToNumberFast(ctx, argv[3]);
-		
+	
 	// Get the image data
 	ejectaInstance.currentRenderingContext = renderingContext;
 	EJImageData * imageData = [renderingContext getImageDataSx:sx sy:sy sw:sw sh:sh];
 	
-	// Create the JS object
-	JSClassRef imageDataClass = [[EJApp instance] getJSClassForClass:[EJBindingImageData class]];
-	JSObjectRef obj = JSObjectMake( ctx, imageDataClass, NULL );
-	JSValueProtect(ctx, obj);
-	
-	// Create the native instance
-	EJBindingImageData * jsImageData = [[EJBindingImageData alloc] initWithContext:ctx object:obj imageData:imageData];
-	
-	// Attach the native instance to the js object
-	JSObjectSetPrivate( obj, (void *)jsImageData );
-	JSValueUnprotect(ctx, obj);
-	return obj; 
+	EJBindingImageData * binding = [[EJBindingImageData alloc] initWithImageData:imageData];
+	return [EJBindingImageData createJSObjectWithContext:ctx instance:binding];
 }
 
 EJ_BIND_FUNCTION(createImageData, ctx, argc, argv) {
@@ -324,18 +314,8 @@ EJ_BIND_FUNCTION(createImageData, ctx, argc, argv) {
 	GLubyte * pixels = calloc( sw * sh * 4, sizeof(GLubyte) );
 	EJImageData * imageData = [[[EJImageData alloc] initWithWidth:sw height:sh pixels:pixels] autorelease];
 	
-	// Create the JS object
-	JSClassRef imageDataClass = [[EJApp instance] getJSClassForClass:[EJBindingImageData class]];
-	JSObjectRef obj = JSObjectMake( ctx, imageDataClass, NULL );
-	JSValueProtect(ctx, obj);
-	
-	// Create the native instance
-	EJBindingImageData * jsImageData = [[EJBindingImageData alloc] initWithContext:ctx object:obj imageData:imageData];
-	
-	// Attach the native instance to the js object
-	JSObjectSetPrivate( obj, (void *)jsImageData );
-	JSValueUnprotect(ctx, obj);
-	return obj;
+	EJBindingImageData * binding = [[EJBindingImageData alloc] initWithImageData:imageData];
+	return [EJBindingImageData createJSObjectWithContext:ctx instance:binding];
 }
 
 EJ_BIND_FUNCTION(putImageData, ctx, argc, argv) {
