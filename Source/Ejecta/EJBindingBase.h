@@ -111,11 +111,15 @@ extern JSValueRef ej_global_undefined;
 
 
 // ------------------------------------------------------------------------------------
-// Shorthand to bind enums with name tables
+// Shorthand to bind enums with name tables - use with
+// EJ_BIND_ENUM( name, target, EJ_ENUM_NAMES("name1", "name2", ...) );
 
-#define EJ_BIND_ENUM(NAME, ENUM_NAMES, TARGET) \
+
+#define EJ_ENUM_NAMES(...) __VA_ARGS__ 
+#define EJ_BIND_ENUM(NAME, TARGET, ENUM_NAMES) \
+	static const char * _##NAME##EnumNames[] = {ENUM_NAMES}; \
 	EJ_BIND_GET(NAME, ctx) { \
-		JSStringRef src = JSStringCreateWithUTF8CString( ENUM_NAMES[TARGET] ); \
+		JSStringRef src = JSStringCreateWithUTF8CString( _##NAME##EnumNames[TARGET] ); \
 		JSValueRef ret = JSValueMakeString(ctx, src); \
 		JSStringRelease(src); \
 		return ret; \
@@ -125,15 +129,15 @@ extern JSValueRef ej_global_undefined;
 		JSStringRef str = JSValueToStringCopy(ctx, value, NULL); \
 		const JSChar * strptr = JSStringGetCharactersPtr( str ); \
 		int length = JSStringGetLength(str)-1; \
-		for( int i = 0; i < sizeof(ENUM_NAMES)/sizeof(ENUM_NAMES[0]); i++ ) { \
-			if( JSStrIsEqualToStr( strptr, ENUM_NAMES[i], length) ) { \
+		for( int i = 0; i < sizeof(_##NAME##EnumNames)/sizeof(_##NAME##EnumNames[0]); i++ ) { \
+			if( JSStrIsEqualToStr( strptr, _##NAME##EnumNames[i], length) ) { \
 				TARGET = i; \
 				break; \
 			} \
 		} \
 		JSStringRelease( str );\
 	}
-
+	
 static inline bool JSStrIsEqualToStr( const JSChar * s1, const char * s2, int length ) {
 	for( int i = 0; i < length && *s1 == *s2; i++ ) {
 		s1++;

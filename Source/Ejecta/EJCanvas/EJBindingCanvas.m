@@ -3,11 +3,6 @@
 #import "EJCanvasContext2DScreen.h"
 #import "EJCanvasContext2DTexture.h"
 
-static const char * EJScalingModeNames[] = {
-	[kEJScalingModeNone] = "none",
-	[kEJScalingModeFitWidth] = "fit-width",
-	[kEJScalingModeFitHeight] = "fit-height"
-};
 
 @implementation EJBindingCanvas
 
@@ -48,7 +43,11 @@ static int firstCanvasInstance = YES;
 	}
 }
 
-EJ_BIND_ENUM(scalingMode, EJScalingModeNames, scalingMode);
+EJ_BIND_ENUM(scalingMode, scalingMode, EJ_ENUM_NAMES(
+	[kEJScalingModeNone] = "none",
+	[kEJScalingModeFitWidth] = "fit-width",
+	[kEJScalingModeFitHeight] = "fit-height"
+));
 
 EJ_BIND_GET(width, ctx) {
 	return JSValueMakeNumber(ctx, width);

@@ -1,10 +1,5 @@
 #import "EJBindingAudio.h"
 
-static const char * EJAudioPreloadNames[] = {
-	[kEJAudioPreloadNone] = "none",
-	[kEJAudioPreloadMetadata] = "metadata",
-	[kEJAudioPreloadAuto] = "auto"
-};
 
 @implementation EJBindingAudio
 
@@ -212,7 +207,11 @@ EJ_BIND_GET(ended, ctx) {
 	return JSValueMakeBoolean(ctx, ended);
 }
 
-EJ_BIND_ENUM(preload, EJAudioPreloadNames, self.preload);
+EJ_BIND_ENUM(preload, self.preload, EJ_ENUM_NAMES(
+	[kEJAudioPreloadNone] = "none",
+	[kEJAudioPreloadMetadata] = "metadata",
+	[kEJAudioPreloadAuto] = "auto"
+));
 
 EJ_BIND_EVENT(canplaythrough);
 EJ_BIND_EVENT(ended);

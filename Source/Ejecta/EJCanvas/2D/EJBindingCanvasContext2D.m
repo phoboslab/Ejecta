@@ -7,44 +7,6 @@
 #import "EJDrawable.h"
 #import "EJConvertColorRGBA.h"
 
-static const char * EJLineCapNames[] = {
-	[kEJLineCapButt] = "butt",
-	[kEJLineCapRound] = "round",
-	[kEJLineCapSquare] = "square"
-};
-
-static const char * EJLineJoinNames[] = {
-	[kEJLineJoinMiter] = "miter",
-	[kEJLineJoinBevel] = "bevel",
-	[kEJLineJoinRound] = "round"
-};
-
-static const char * EJTextBaselineNames[] = {
-	[kEJTextBaselineAlphabetic] = "alphabetic",
-	[kEJTextBaselineMiddle] = "middle",
-	[kEJTextBaselineTop] = "top",
-	[kEJTextBaselineHanging] = "hanging",
-	[kEJTextBaselineBottom] = "bottom",
-	[kEJTextBaselineIdeographic] = "ideographic"
-};
-
-static const char * EJTextAlignNames[] = {
-	[kEJTextAlignStart] = "start",
-	[kEJTextAlignEnd] = "end",
-	[kEJTextAlignLeft] = "left",
-	[kEJTextAlignCenter] = "center",
-	[kEJTextAlignRight] = "right"
-};
-
-static const char * EJCompositeOperationNames[] = {
-	[kEJCompositeOperationSourceOver] = "source-over",
-	[kEJCompositeOperationLighter] = "lighter",
-	[kEJCompositeOperationDarker] = "darker",
-	[kEJCompositeOperationDestinationOut] = "destination-out",
-	[kEJCompositeOperationDestinationOver] = "destination-over",
-	[kEJCompositeOperationSourceAtop] = "source-atop",
-	[kEJCompositeOperationXOR] = "xor"
-};
 
 @implementation EJBindingCanvasContext2D
 
@@ -60,11 +22,44 @@ static const char * EJCompositeOperationNames[] = {
 	[super dealloc];
 }
 
-EJ_BIND_ENUM(globalCompositeOperation, EJCompositeOperationNames, renderingContext.globalCompositeOperation);
-EJ_BIND_ENUM(lineCap, EJLineCapNames, renderingContext.state->lineCap);
-EJ_BIND_ENUM(lineJoin, EJLineJoinNames, renderingContext.state->lineJoin);
-EJ_BIND_ENUM(textAlign, EJTextAlignNames, renderingContext.state->textAlign);
-EJ_BIND_ENUM(textBaseline, EJTextBaselineNames, renderingContext.state->textBaseline);
+EJ_BIND_ENUM(globalCompositeOperation, renderingContext.globalCompositeOperation, EJ_ENUM_NAMES(
+	[kEJCompositeOperationSourceOver] = "source-over",
+	[kEJCompositeOperationLighter] = "lighter",
+	[kEJCompositeOperationDarker] = "darker",
+	[kEJCompositeOperationDestinationOut] = "destination-out",
+	[kEJCompositeOperationDestinationOver] = "destination-over",
+	[kEJCompositeOperationSourceAtop] = "source-atop",
+	[kEJCompositeOperationXOR] = "xor"
+));
+
+EJ_BIND_ENUM(lineCap, renderingContext.state->lineCap, EJ_ENUM_NAMES(
+	[kEJLineCapButt] = "butt",
+	[kEJLineCapRound] = "round",
+	[kEJLineCapSquare] = "square"
+));
+
+EJ_BIND_ENUM(lineJoin, renderingContext.state->lineJoin, EJ_ENUM_NAMES(
+	[kEJLineJoinMiter] = "miter",
+	[kEJLineJoinBevel] = "bevel",
+	[kEJLineJoinRound] = "round"
+));
+
+EJ_BIND_ENUM(textAlign, renderingContext.state->textAlign, EJ_ENUM_NAMES(
+	[kEJTextAlignStart] = "start",
+	[kEJTextAlignEnd] = "end",
+	[kEJTextAlignLeft] = "left",
+	[kEJTextAlignCenter] = "center",
+	[kEJTextAlignRight] = "right"
+));
+
+EJ_BIND_ENUM(textBaseline, renderingContext.state->textBaseline, EJ_ENUM_NAMES(
+	[kEJTextBaselineAlphabetic] = "alphabetic",
+	[kEJTextBaselineMiddle] = "middle",
+	[kEJTextBaselineTop] = "top",
+	[kEJTextBaselineHanging] = "hanging",
+	[kEJTextBaselineBottom] = "bottom",
+	[kEJTextBaselineIdeographic] = "ideographic"
+));
 
 EJ_BIND_GET(fillStyle, ctx ) {
 	return ColorRGBAToJSValue(ctx, renderingContext.state->fillColor);

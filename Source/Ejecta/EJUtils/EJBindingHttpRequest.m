@@ -1,13 +1,5 @@
 #import "EJBindingHttpRequest.h"
 
-static const char * EJHttpRequestTypeNames[] = {
-	[kEJHttpRequestTypeString] = "",
-	[kEJHttpRequestTypeArrayBuffer] = "arraybuffer",
-	[kEJHttpRequestTypeBlob] = "blob",
-	[kEJHttpRequestTypeDocument] = "document",
-	[kEJHttpRequestTypeJSON] = "json",
-	[kEJHttpRequestTypeText] = "text"
-};
 
 @implementation EJBindingHttpRequest
 
@@ -300,7 +292,14 @@ EJ_BIND_SET(timeout, ctx, value) {
 	timeout = JSValueToNumberFast( ctx, value );
 }
 
-EJ_BIND_ENUM(responseType, EJHttpRequestTypeNames, type);
+EJ_BIND_ENUM(responseType, type, EJ_ENUM_NAMES(
+	[kEJHttpRequestTypeString] = "",
+	[kEJHttpRequestTypeArrayBuffer] = "arraybuffer",
+	[kEJHttpRequestTypeBlob] = "blob",
+	[kEJHttpRequestTypeDocument] = "document",
+	[kEJHttpRequestTypeJSON] = "json",
+	[kEJHttpRequestTypeText] = "text"
+));
 
 EJ_BIND_CONST(UNSENT, kEJHttpRequestStateUnsent);
 EJ_BIND_CONST(OPENED, kEJHttpRequestStateOpened);
