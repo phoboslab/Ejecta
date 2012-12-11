@@ -133,20 +133,23 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 	}
 	
 	
-	if( contextMode != kEJCanvasContextModeInvalid && contextMode == kEJCanvasContextModeWebGL ) {
-		// Nothing changed - just return the already created context
-		return jsCanvasContext;
-	}
-	else if( contextMode != kEJCanvasContextModeInvalid && contextMode != kEJCanvasContextModeWebGL) {
-		// New mode is different from current - we can't do that
-		NSLog(@"Warning: CanvasContext already created. Can't change 2d/webgl mode.");
-		return NULL;
+	if( contextMode != kEJCanvasContextModeInvalid ) {
+	
+		// Nothing changed? - just return the already created context
+		if( contextMode == kEJCanvasContextModeWebGL ) {
+			return jsCanvasContext;
+		}
+		
+		// New mode is different from current? - we can't do that
+		else {
+			NSLog(@"Warning: CanvasContext already created. Can't change 2d/webgl mode.");
+			return NULL;
+		}
 	}
 	
 	
 	
 	// Create the requested CanvasContext
-	
 	[EJApp instance].currentRenderingContext = nil;
 	
 	if( newContextMode == kEJCanvasContextMode2D ) {

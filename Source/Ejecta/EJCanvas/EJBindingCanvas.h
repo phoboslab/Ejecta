@@ -2,7 +2,6 @@
 #import "EJTexture.h"
 #import "EJDrawable.h"
 #import "EJCanvasContext.h"
-#import "EJCanvasContextScreen.h"
 
 typedef enum {
 	kEJCanvasContextModeInvalid,

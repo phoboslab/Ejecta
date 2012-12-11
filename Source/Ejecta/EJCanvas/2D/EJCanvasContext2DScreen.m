@@ -95,7 +95,7 @@
 	if( backingStoreRatio != 1 && [EJTexture smoothScaling] ) {
 		NSLog(
 			@"Warning: The screen canvas has been scaled; getImageData() may not work as expected. "
-			@"Set imageSmoothingEnabled=false or use an off-screen Canvas for more accurate results."
+			@"Set ctx.imageSmoothingEnabled=false or use an off-screen Canvas for more accurate results."
 		);
 	}
 	

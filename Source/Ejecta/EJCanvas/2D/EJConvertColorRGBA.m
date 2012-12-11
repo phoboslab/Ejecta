@@ -175,11 +175,11 @@ static inline unsigned int ColorHashForString( const JSChar * s, int length ) {
 
 EJColorRGBA JSValueToColorRGBA(JSContextRef ctx, JSValueRef value) {
 	EJColorRGBA c = {.hex = 0xff000000};
-	if( !JSValueIsString(ctx, value) ) { return c; }
 	
 	JSStringRef jsString = JSValueToStringCopy( ctx, value, NULL );
-	int length = JSStringGetLength( jsString );
+	if( !jsString ) { return c; }
 	
+	int length = JSStringGetLength( jsString );
 	if( length < 3 ) { return c; }
 	
 	const JSChar * jsc = JSStringGetCharactersPtr(jsString);

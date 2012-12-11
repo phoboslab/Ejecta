@@ -6,7 +6,7 @@
 extern "C" {
 #endif
 
-EJColorRGBA JSValueToColorRGBA(JSContextRef ctx, JSValueRef value);
+EJColorRGBA JSValueToColorRGBA( JSContextRef ctx, JSValueRef value );
 JSValueRef ColorRGBAToJSValue( JSContextRef ctx, EJColorRGBA c );
 
 #ifdef __cplusplus
