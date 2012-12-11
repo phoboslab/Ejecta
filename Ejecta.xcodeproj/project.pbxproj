@@ -28,15 +28,7 @@
 		B64CE669166682700087CF94 /* EJBindingEjectaCore.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE621166682700087CF94 /* EJBindingEjectaCore.m */; };
 		B64CE66A166682700087CF94 /* EJBindingEventedBase.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE623166682700087CF94 /* EJBindingEventedBase.m */; };
 		B64CE66B166682700087CF94 /* EAGLView.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE626166682700087CF94 /* EAGLView.m */; };
-		B64CE66C166682700087CF94 /* EJBindingCanvas.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE628166682700087CF94 /* EJBindingCanvas.m */; };
 		B64CE66D166682700087CF94 /* EJBindingImage.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE62A166682700087CF94 /* EJBindingImage.m */; };
-		B64CE66E166682700087CF94 /* EJBindingImageData.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE62C166682700087CF94 /* EJBindingImageData.m */; };
-		B64CE66F166682700087CF94 /* EJCanvasContext2D.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE62E166682700087CF94 /* EJCanvasContext2D.m */; };
-		B64CE670166682700087CF94 /* EJCanvasContext2DScreen.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE630166682700087CF94 /* EJCanvasContext2DScreen.m */; };
-		B64CE671166682700087CF94 /* EJCanvasContext2DTexture.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE632166682700087CF94 /* EJCanvasContext2DTexture.m */; };
-		B64CE672166682700087CF94 /* EJFont.mm in Sources */ = {isa = PBXBuildFile; fileRef = B64CE636166682700087CF94 /* EJFont.mm */; };
-		B64CE673166682700087CF94 /* EJImageData.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE638166682700087CF94 /* EJImageData.m */; };
-		B64CE674166682700087CF94 /* EJPath.mm in Sources */ = {isa = PBXBuildFile; fileRef = B64CE63A166682700087CF94 /* EJPath.mm */; };
 		B64CE675166682700087CF94 /* EJTexture.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE63C166682700087CF94 /* EJTexture.m */; };
 		B64CE676166682700087CF94 /* EJConvert.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE63E166682700087CF94 /* EJConvert.m */; };
 		B64CE678166682700087CF94 /* EJTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE641166682700087CF94 /* EJTimer.m */; };
@@ -64,6 +56,17 @@
 		B68C5B95132E6CD60015092E /* App in Resources */ = {isa = PBXBuildFile; fileRef = B68C5AEF132E6CD60015092E /* App */; };
 		B6AC4A061359E7A5003C4982 /* iAd.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6AC4A051359E7A5003C4982 /* iAd.framework */; };
 		B6CFCCD91332F152001F17AF /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6CFCCD81332F152001F17AF /* AVFoundation.framework */; };
+		B6F114DF1676B4FE001F1324 /* EJBindingCanvas.m in Sources */ = {isa = PBXBuildFile; fileRef = B6F114DE1676B4FE001F1324 /* EJBindingCanvas.m */; };
+		B6F114E31676BAFB001F1324 /* EJCanvasContext.m in Sources */ = {isa = PBXBuildFile; fileRef = B6F114E21676BAF9001F1324 /* EJCanvasContext.m */; };
+		B6F114FA1676BD40001F1324 /* EJBindingCanvasContext2D.m in Sources */ = {isa = PBXBuildFile; fileRef = B6F114EB1676BD40001F1324 /* EJBindingCanvasContext2D.m */; };
+		B6F114FB1676BD40001F1324 /* EJBindingImageData.m in Sources */ = {isa = PBXBuildFile; fileRef = B6F114ED1676BD40001F1324 /* EJBindingImageData.m */; };
+		B6F114FC1676BD40001F1324 /* EJCanvasContext2D.m in Sources */ = {isa = PBXBuildFile; fileRef = B6F114EF1676BD40001F1324 /* EJCanvasContext2D.m */; };
+		B6F114FD1676BD40001F1324 /* EJCanvasContext2DScreen.m in Sources */ = {isa = PBXBuildFile; fileRef = B6F114F11676BD40001F1324 /* EJCanvasContext2DScreen.m */; };
+		B6F114FE1676BD40001F1324 /* EJCanvasContext2DTexture.m in Sources */ = {isa = PBXBuildFile; fileRef = B6F114F31676BD40001F1324 /* EJCanvasContext2DTexture.m */; };
+		B6F114FF1676BD40001F1324 /* EJFont.mm in Sources */ = {isa = PBXBuildFile; fileRef = B6F114F51676BD40001F1324 /* EJFont.mm */; };
+		B6F115001676BD40001F1324 /* EJImageData.m in Sources */ = {isa = PBXBuildFile; fileRef = B6F114F71676BD40001F1324 /* EJImageData.m */; };
+		B6F115011676BD40001F1324 /* EJPath.mm in Sources */ = {isa = PBXBuildFile; fileRef = B6F114F91676BD40001F1324 /* EJPath.mm */; };
+		B6F115061676BE18001F1324 /* EJConvertColorRGBA.m in Sources */ = {isa = PBXBuildFile; fileRef = B6F115051676BE18001F1324 /* EJConvertColorRGBA.m */; };
 		B6F463A41636C3FB00FC89C1 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6F463A31636C3FA00FC89C1 /* SystemConfiguration.framework */; };
 /* End PBXBuildFile section */
 
@@ -100,26 +103,9 @@
 		B64CE623166682700087CF94 /* EJBindingEventedBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingEventedBase.m; sourceTree = "<group>"; };
 		B64CE625166682700087CF94 /* EAGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EAGLView.h; sourceTree = "<group>"; };
 		B64CE626166682700087CF94 /* EAGLView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EAGLView.m; sourceTree = "<group>"; };
-		B64CE627166682700087CF94 /* EJBindingCanvas.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingCanvas.h; sourceTree = "<group>"; };
-		B64CE628166682700087CF94 /* EJBindingCanvas.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingCanvas.m; sourceTree = "<group>"; };
 		B64CE629166682700087CF94 /* EJBindingImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingImage.h; sourceTree = "<group>"; };
 		B64CE62A166682700087CF94 /* EJBindingImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingImage.m; sourceTree = "<group>"; };
-		B64CE62B166682700087CF94 /* EJBindingImageData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingImageData.h; sourceTree = "<group>"; };
-		B64CE62C166682700087CF94 /* EJBindingImageData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingImageData.m; sourceTree = "<group>"; };
-		B64CE62D166682700087CF94 /* EJCanvasContext2D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJCanvasContext2D.h; sourceTree = "<group>"; };
-		B64CE62E166682700087CF94 /* EJCanvasContext2D.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJCanvasContext2D.m; sourceTree = "<group>"; };
-		B64CE62F166682700087CF94 /* EJCanvasContext2DScreen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJCanvasContext2DScreen.h; sourceTree = "<group>"; };
-		B64CE630166682700087CF94 /* EJCanvasContext2DScreen.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJCanvasContext2DScreen.m; sourceTree = "<group>"; };
-		B64CE631166682700087CF94 /* EJCanvasContext2DTexture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJCanvasContext2DTexture.h; sourceTree = "<group>"; };
-		B64CE632166682700087CF94 /* EJCanvasContext2DTexture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJCanvasContext2DTexture.m; sourceTree = "<group>"; };
-		B64CE633166682700087CF94 /* EJCanvasTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJCanvasTypes.h; sourceTree = "<group>"; };
 		B64CE634166682700087CF94 /* EJDrawable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJDrawable.h; sourceTree = "<group>"; };
-		B64CE635166682700087CF94 /* EJFont.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJFont.h; sourceTree = "<group>"; };
-		B64CE636166682700087CF94 /* EJFont.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = EJFont.mm; sourceTree = "<group>"; };
-		B64CE637166682700087CF94 /* EJImageData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJImageData.h; sourceTree = "<group>"; };
-		B64CE638166682700087CF94 /* EJImageData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJImageData.m; sourceTree = "<group>"; };
-		B64CE639166682700087CF94 /* EJPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJPath.h; sourceTree = "<group>"; };
-		B64CE63A166682700087CF94 /* EJPath.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = EJPath.mm; sourceTree = "<group>"; };
 		B64CE63B166682700087CF94 /* EJTexture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJTexture.h; sourceTree = "<group>"; };
 		B64CE63C166682700087CF94 /* EJTexture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJTexture.m; sourceTree = "<group>"; };
 		B64CE63D166682700087CF94 /* EJConvert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJConvert.h; sourceTree = "<group>"; };
@@ -171,6 +157,31 @@
 		B6AC4A051359E7A5003C4982 /* iAd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iAd.framework; path = System/Library/Frameworks/iAd.framework; sourceTree = SDKROOT; };
 		B6CFCCD81332F152001F17AF /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		B6F114D016760EDA001F1324 /* JSTypedArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSTypedArray.h; sourceTree = "<group>"; };
+		B6F114DD1676B4FE001F1324 /* EJBindingCanvas.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingCanvas.h; sourceTree = "<group>"; };
+		B6F114DE1676B4FE001F1324 /* EJBindingCanvas.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingCanvas.m; sourceTree = "<group>"; };
+		B6F114E11676BAF7001F1324 /* EJCanvasContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJCanvasContext.h; sourceTree = "<group>"; };
+		B6F114E21676BAF9001F1324 /* EJCanvasContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJCanvasContext.m; sourceTree = "<group>"; };
+		B6F114EA1676BD40001F1324 /* EJBindingCanvasContext2D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingCanvasContext2D.h; sourceTree = "<group>"; };
+		B6F114EB1676BD40001F1324 /* EJBindingCanvasContext2D.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingCanvasContext2D.m; sourceTree = "<group>"; };
+		B6F114EC1676BD40001F1324 /* EJBindingImageData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingImageData.h; sourceTree = "<group>"; };
+		B6F114ED1676BD40001F1324 /* EJBindingImageData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingImageData.m; sourceTree = "<group>"; };
+		B6F114EE1676BD40001F1324 /* EJCanvasContext2D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJCanvasContext2D.h; sourceTree = "<group>"; };
+		B6F114EF1676BD40001F1324 /* EJCanvasContext2D.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJCanvasContext2D.m; sourceTree = "<group>"; };
+		B6F114F01676BD40001F1324 /* EJCanvasContext2DScreen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJCanvasContext2DScreen.h; sourceTree = "<group>"; };
+		B6F114F11676BD40001F1324 /* EJCanvasContext2DScreen.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJCanvasContext2DScreen.m; sourceTree = "<group>"; };
+		B6F114F21676BD40001F1324 /* EJCanvasContext2DTexture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJCanvasContext2DTexture.h; sourceTree = "<group>"; };
+		B6F114F31676BD40001F1324 /* EJCanvasContext2DTexture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJCanvasContext2DTexture.m; sourceTree = "<group>"; };
+		B6F114F41676BD40001F1324 /* EJFont.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJFont.h; sourceTree = "<group>"; };
+		B6F114F51676BD40001F1324 /* EJFont.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = EJFont.mm; sourceTree = "<group>"; };
+		B6F114F61676BD40001F1324 /* EJImageData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJImageData.h; sourceTree = "<group>"; };
+		B6F114F71676BD40001F1324 /* EJImageData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJImageData.m; sourceTree = "<group>"; };
+		B6F114F81676BD40001F1324 /* EJPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJPath.h; sourceTree = "<group>"; };
+		B6F114F91676BD40001F1324 /* EJPath.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = EJPath.mm; sourceTree = "<group>"; };
+		B6F115021676BDB3001F1324 /* EJCanvas2DTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EJCanvas2DTypes.h; sourceTree = "<group>"; };
+		B6F115031676BDB3001F1324 /* EJCanvas2DTypes.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EJCanvas2DTypes.m; sourceTree = "<group>"; };
+		B6F115041676BE18001F1324 /* EJConvertColorRGBA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJConvertColorRGBA.h; sourceTree = "<group>"; };
+		B6F115051676BE18001F1324 /* EJConvertColorRGBA.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJConvertColorRGBA.m; sourceTree = "<group>"; };
+		B6F115071676C097001F1324 /* EJCanvasContextScreen.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EJCanvasContextScreen.h; sourceTree = "<group>"; };
 		B6F463A31636C3FA00FC89C1 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -299,26 +310,15 @@
 		B64CE624166682700087CF94 /* EJCanvas */ = {
 			isa = PBXGroup;
 			children = (
-				B64CE627166682700087CF94 /* EJBindingCanvas.h */,
-				B64CE628166682700087CF94 /* EJBindingCanvas.m */,
+				B6F114E91676BD40001F1324 /* 2D */,
+				B6F114DD1676B4FE001F1324 /* EJBindingCanvas.h */,
+				B6F114DE1676B4FE001F1324 /* EJBindingCanvas.m */,
 				B64CE629166682700087CF94 /* EJBindingImage.h */,
 				B64CE62A166682700087CF94 /* EJBindingImage.m */,
-				B64CE62B166682700087CF94 /* EJBindingImageData.h */,
-				B64CE62C166682700087CF94 /* EJBindingImageData.m */,
-				B64CE62D166682700087CF94 /* EJCanvasContext2D.h */,
-				B64CE62E166682700087CF94 /* EJCanvasContext2D.m */,
-				B64CE62F166682700087CF94 /* EJCanvasContext2DScreen.h */,
-				B64CE630166682700087CF94 /* EJCanvasContext2DScreen.m */,
-				B64CE631166682700087CF94 /* EJCanvasContext2DTexture.h */,
-				B64CE632166682700087CF94 /* EJCanvasContext2DTexture.m */,
-				B64CE633166682700087CF94 /* EJCanvasTypes.h */,
+				B6F114E11676BAF7001F1324 /* EJCanvasContext.h */,
+				B6F114E21676BAF9001F1324 /* EJCanvasContext.m */,
+				B6F115071676C097001F1324 /* EJCanvasContextScreen.h */,
 				B64CE634166682700087CF94 /* EJDrawable.h */,
-				B64CE635166682700087CF94 /* EJFont.h */,
-				B64CE636166682700087CF94 /* EJFont.mm */,
-				B64CE637166682700087CF94 /* EJImageData.h */,
-				B64CE638166682700087CF94 /* EJImageData.m */,
-				B64CE639166682700087CF94 /* EJPath.h */,
-				B64CE63A166682700087CF94 /* EJPath.mm */,
 				B64CE63B166682700087CF94 /* EJTexture.h */,
 				B64CE63C166682700087CF94 /* EJTexture.m */,
 				B64CE625166682700087CF94 /* EAGLView.h */,
@@ -397,6 +397,33 @@
 				B64CE68E166682B10087CF94 /* MainWindow.xib */,
 			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		B6F114E91676BD40001F1324 /* 2D */ = {
+			isa = PBXGroup;
+			children = (
+				B6F114EA1676BD40001F1324 /* EJBindingCanvasContext2D.h */,
+				B6F114EB1676BD40001F1324 /* EJBindingCanvasContext2D.m */,
+				B6F114EE1676BD40001F1324 /* EJCanvasContext2D.h */,
+				B6F114EF1676BD40001F1324 /* EJCanvasContext2D.m */,
+				B6F114F01676BD40001F1324 /* EJCanvasContext2DScreen.h */,
+				B6F114F11676BD40001F1324 /* EJCanvasContext2DScreen.m */,
+				B6F114F21676BD40001F1324 /* EJCanvasContext2DTexture.h */,
+				B6F114F31676BD40001F1324 /* EJCanvasContext2DTexture.m */,
+				B6F114EC1676BD40001F1324 /* EJBindingImageData.h */,
+				B6F114ED1676BD40001F1324 /* EJBindingImageData.m */,
+				B6F114F61676BD40001F1324 /* EJImageData.h */,
+				B6F114F71676BD40001F1324 /* EJImageData.m */,
+				B6F114F41676BD40001F1324 /* EJFont.h */,
+				B6F114F51676BD40001F1324 /* EJFont.mm */,
+				B6F114F81676BD40001F1324 /* EJPath.h */,
+				B6F114F91676BD40001F1324 /* EJPath.mm */,
+				B6F115021676BDB3001F1324 /* EJCanvas2DTypes.h */,
+				B6F115031676BDB3001F1324 /* EJCanvas2DTypes.m */,
+				B6F115041676BE18001F1324 /* EJConvertColorRGBA.h */,
+				B6F115051676BE18001F1324 /* EJConvertColorRGBA.m */,
+			);
+			path = 2D;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -483,15 +510,7 @@
 				B64CE669166682700087CF94 /* EJBindingEjectaCore.m in Sources */,
 				B64CE66A166682700087CF94 /* EJBindingEventedBase.m in Sources */,
 				B64CE66B166682700087CF94 /* EAGLView.m in Sources */,
-				B64CE66C166682700087CF94 /* EJBindingCanvas.m in Sources */,
 				B64CE66D166682700087CF94 /* EJBindingImage.m in Sources */,
-				B64CE66E166682700087CF94 /* EJBindingImageData.m in Sources */,
-				B64CE66F166682700087CF94 /* EJCanvasContext2D.m in Sources */,
-				B64CE670166682700087CF94 /* EJCanvasContext2DScreen.m in Sources */,
-				B64CE671166682700087CF94 /* EJCanvasContext2DTexture.m in Sources */,
-				B64CE672166682700087CF94 /* EJFont.mm in Sources */,
-				B64CE673166682700087CF94 /* EJImageData.m in Sources */,
-				B64CE674166682700087CF94 /* EJPath.mm in Sources */,
 				B64CE675166682700087CF94 /* EJTexture.m in Sources */,
 				B64CE676166682700087CF94 /* EJConvert.m in Sources */,
 				B64CE678166682700087CF94 /* EJTimer.m in Sources */,
@@ -504,6 +523,17 @@
 				B64CE67F166682700087CF94 /* AppDelegate.m in Sources */,
 				B64CE681166682700087CF94 /* lodepng.c in Sources */,
 				B64CE682166682700087CF94 /* main.m in Sources */,
+				B6F114DF1676B4FE001F1324 /* EJBindingCanvas.m in Sources */,
+				B6F114E31676BAFB001F1324 /* EJCanvasContext.m in Sources */,
+				B6F114FA1676BD40001F1324 /* EJBindingCanvasContext2D.m in Sources */,
+				B6F114FB1676BD40001F1324 /* EJBindingImageData.m in Sources */,
+				B6F114FC1676BD40001F1324 /* EJCanvasContext2D.m in Sources */,
+				B6F114FD1676BD40001F1324 /* EJCanvasContext2DScreen.m in Sources */,
+				B6F114FE1676BD40001F1324 /* EJCanvasContext2DTexture.m in Sources */,
+				B6F114FF1676BD40001F1324 /* EJFont.mm in Sources */,
+				B6F115001676BD40001F1324 /* EJImageData.m in Sources */,
+				B6F115011676BD40001F1324 /* EJPath.mm in Sources */,
+				B6F115061676BE18001F1324 /* EJConvertColorRGBA.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

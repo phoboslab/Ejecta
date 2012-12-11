@@ -2,6 +2,8 @@
 #import <QuartzCore/QuartzCore.h>
 #import <JavaScriptCore/JavaScriptCore.h>
 #import "EJConvert.h"
+#import "EJCanvasContext.h"
+#import "EJCanvasContextScreen.h"
 
 #define EJECTA_VERSION @"1.2"
 #define EJECTA_APP_FOLDER @"App/"
@@ -14,8 +16,6 @@
 @end
 
 @class EJTimerCollection;
-@class EJCanvasContext2D;
-@class EJCanvasContext2DScreen;
 
 @interface EJApp : UIViewController {
 	BOOL paused;
@@ -33,8 +33,8 @@
 	CADisplayLink * displayLink;
 	
 	NSOperationQueue * opQueue;
-	EJCanvasContext2D * currentRenderingContext;
-	EJCanvasContext2DScreen * screenRenderingContext;
+	EJCanvasContext * currentRenderingContext;
+	EJCanvasContext<EJCanvasContextScreen> * screenRenderingContext;
 	
 	float internalScaling;
 }
@@ -67,8 +67,8 @@
 @property (nonatomic, retain) NSObject<EJTouchDelegate> * touchDelegate;
 
 @property (nonatomic, readonly) NSOperationQueue * opQueue;
-@property (nonatomic, assign) EJCanvasContext2D * currentRenderingContext;
-@property (nonatomic, assign) EJCanvasContext2DScreen * screenRenderingContext;
+@property (nonatomic, assign) EJCanvasContext * currentRenderingContext;
+@property (nonatomic, assign) EJCanvasContext<EJCanvasContextScreen> * screenRenderingContext;
 @property (nonatomic) float internalScaling;
 
 @end

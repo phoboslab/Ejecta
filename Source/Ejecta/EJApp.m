@@ -2,8 +2,6 @@
 
 #import "EJApp.h"
 #import "EJBindingBase.h"
-#import "EJCanvas/EJCanvasContext2D.h"
-#import "EJCanvas/EJCanvasContext2DScreen.h"
 #import "EJTimer.h"
 
 
@@ -368,7 +366,7 @@ static EJApp * ejectaInstance = NULL;
 	return NULL;
 }
 
-- (void)setCurrentRenderingContext:(EJCanvasContext2D *)renderingContext {
+- (void)setCurrentRenderingContext:(EJCanvasContext *)renderingContext {
 	if( renderingContext != currentRenderingContext ) {
 		[currentRenderingContext flushBuffers];
 		[currentRenderingContext release];
