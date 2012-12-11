@@ -5,11 +5,13 @@
 #import "EJCanvasContextScreen.h"
 
 typedef enum {
+	kEJCanvasContextModeInvalid,
 	kEJCanvasContextMode2D,
 	kEJCanvasContextModeWebGL
 } EJCanvasContextMode;
 
 @interface EJBindingCanvas : EJBindingBase <EJDrawable> {
+	JSObjectRef jsCanvasContext;
 	EJCanvasContext * renderingContext;
 	EJCanvasContextMode contextMode;
 	short width, height;

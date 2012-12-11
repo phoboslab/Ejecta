@@ -10,9 +10,10 @@
 
 @implementation EJBindingCanvasContext2D
 
-- (id)initWithContext:(JSContextRef)ctx object:(JSObjectRef)obj argc:(size_t)argc argv:(const JSValueRef [])argv {
-	if( self = [super initWithContext:ctx object:obj argc:argc argv:argv] ) {
+- (id)initWithContext:(JSContextRef)ctx object:(JSObjectRef)obj renderingContext:(EJCanvasContext2D *)renderingContextp {
+	if( self = [super initWithContext:ctx object:obj argc:0 argv:NULL] ) {
 		ejectaInstance = [EJApp instance]; // Keep a local copy - may be faster?
+		renderingContext = [renderingContextp retain];
 	}
 	return self;
 }

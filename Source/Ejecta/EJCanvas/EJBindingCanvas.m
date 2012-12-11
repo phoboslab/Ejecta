@@ -2,6 +2,7 @@
 
 #import "EJCanvasContext2DScreen.h"
 #import "EJCanvasContext2DTexture.h"
+#import "EJBindingCanvasContext2D.h"
 
 
 @implementation EJBindingCanvas
@@ -32,6 +33,14 @@ static int firstCanvasInstance = YES;
 		}
 	}
 	return self;
+}
+
+- (void)dealloc {
+	[renderingContext release];
+	if( jsCanvasContext ) {
+		JSValueUnprotect([EJApp instance].jsGlobalContext, jsCanvasContext);
+	}
+	[super dealloc];
 }
 
 - (EJTexture *)texture {
@@ -114,33 +123,72 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 	if( argc < 1 ) { return NULL; };
 	
 	NSString * type = JSValueToNSString(ctx, argv[0]);
+	EJCanvasContextMode newContextMode = kEJCanvasContextModeInvalid;
 	
-	if( type )
+	if( [type isEqualToString:@"2d"] ) {
+		newContextMode = kEJCanvasContextMode2D;
+	}
+	else if( [type rangeOfString:@"webgl"].location != NSNotFound ) {
+		newContextMode = kEJCanvasContextModeWebGL;
+	}
 	
-	if( renderingContext ) { return jsObject; }
+	if( contextMode != kEJCanvasContextModeInvalid && contextMode == kEJCanvasContextModeWebGL ) {
+		// Nothing changed - just return the already created context
+		return jsCanvasContext;
+	}
+	else if( contextMode != kEJCanvasContextModeInvalid && contextMode != kEJCanvasContextModeWebGL) {
+		// New mode is different from current - we can't do that
+		NSLog(@"Warning: CanvasContext already created. Can't change 2d/webgl mode.");
+		return NULL;
+	}
+	
+	
+	
+	// Create the requested CanvasContext
+	
 	[EJApp instance].currentRenderingContext = nil;
+	
+	if( newContextMode == kEJCanvasContextMode2D ) {
+		if( isScreenCanvas ) {
+			EJCanvasContext2DScreen * sc = [[EJCanvasContext2DScreen alloc] initWithWidth:width height:height];
+			sc.useRetinaResolution = useRetinaResolution;
+			sc.scalingMode = scalingMode;
+			
+			[EJApp instance].screenRenderingContext = sc;		
+			renderingContext = sc;
+		}
+		else {
+			renderingContext = [[EJCanvasContext2DTexture alloc] initWithWidth:width height:height];
+		}
 		
-	if( isScreenCanvas ) {
-		EJCanvasContext2DScreen * sc = [[EJCanvasContext2DScreen alloc] initWithWidth:width height:height];
-		sc.useRetinaResolution = useRetinaResolution;
-		sc.scalingMode = scalingMode;
+		// Create the JS object
+		JSClassRef canvasContextClass = [[EJApp instance] getJSClassForClass:[EJBindingCanvasContext2D class]];
+		jsCanvasContext = JSObjectMake( ctx, canvasContextClass, NULL );
+		JSValueProtect(ctx, jsCanvasContext);
 		
-		[EJApp instance].screenRenderingContext = sc;		
-		renderingContext = sc;
+		// Create the native instance
+		EJBindingCanvasContext2D * canvasContextBinding = [[EJBindingCanvasContext2D alloc] initWithContext:ctx object:jsCanvasContext renderingContext:(EJCanvasContext2D *)renderingContext];
+		
+		// Attach the native instance to the js object
+		JSObjectSetPrivate( jsCanvasContext, (void *)canvasContextBinding );
 	}
-	else {
-		renderingContext = [[EJCanvasContext2DTexture alloc] initWithWidth:width height:height];
+	
+	else if( newContextMode == kEJCanvasContextModeWebGL ) {
+		NSLog(@"Warning: webgl context not yet implemented.");
+		return NULL;
 	}
+	
+	
+	contextMode = newContextMode;
 	
 	renderingContext.msaaEnabled = msaaEnabled;
 	renderingContext.msaaSamples = msaaSamples;
 	
 	[renderingContext create];
 	[EJApp instance].currentRenderingContext = renderingContext;
-
-	// Context and canvas are one and the same object, so getContext just
-	// returns itself
-	return jsObject;
+	
+	
+	return jsCanvasContext;
 }
 
 @end
