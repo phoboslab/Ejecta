@@ -13,6 +13,13 @@ typedef struct {
 	float x, y;
 } EJVector2;
 
+typedef struct {
+	EJVector2 pos;
+	EJVector2 uv;
+	EJColorRGBA color;
+} EJVertex;
+
+
 static inline EJVector2 EJVector2Make( float x, float y ) {
   EJVector2 p = {x, y};
   return p;
@@ -77,10 +84,3 @@ static inline EJVector2 EJVector2ApplyTransform(EJVector2 p, CGAffineTransform t
 static inline float CGAffineTransformGetScale( CGAffineTransform t ) {
 	return sqrtf( t.a*t.a + t.c*t.c );
 }
-
-typedef struct {
-	EJVector2 pos;
-	EJVector2 uv;
-	EJColorRGBA color;
-} EJVertex;
-
