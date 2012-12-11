@@ -1,7 +1,7 @@
-#import "EJCanvasContext.h"
+#import "EJCanvasContext2D.h"
 #import "EJFont.h"
 
-@implementation EJCanvasContext
+@implementation EJCanvasContext2D
 
 EJVertex CanvasVertexBuffer[EJ_CANVAS_VERTEX_BUFFER_SIZE];
 

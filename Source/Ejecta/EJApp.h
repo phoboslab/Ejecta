@@ -14,8 +14,8 @@
 @end
 
 @class EJTimerCollection;
-@class EJCanvasContext;
-@class EJCanvasContextScreen;
+@class EJCanvasContext2D;
+@class EJCanvasContext2DScreen;
 
 @interface EJApp : UIViewController {
 	BOOL paused;
@@ -33,8 +33,8 @@
 	CADisplayLink * displayLink;
 	
 	NSOperationQueue * opQueue;
-	EJCanvasContext * currentRenderingContext;
-	EJCanvasContextScreen * screenRenderingContext;
+	EJCanvasContext2D * currentRenderingContext;
+	EJCanvasContext2DScreen * screenRenderingContext;
 	
 	float internalScaling;
 }
@@ -67,8 +67,8 @@
 @property (nonatomic, retain) NSObject<EJTouchDelegate> * touchDelegate;
 
 @property (nonatomic, readonly) NSOperationQueue * opQueue;
-@property (nonatomic, assign) EJCanvasContext * currentRenderingContext;
-@property (nonatomic, assign) EJCanvasContextScreen * screenRenderingContext;
+@property (nonatomic, assign) EJCanvasContext2D * currentRenderingContext;
+@property (nonatomic, assign) EJCanvasContext2DScreen * screenRenderingContext;
 @property (nonatomic) float internalScaling;
 
 @end

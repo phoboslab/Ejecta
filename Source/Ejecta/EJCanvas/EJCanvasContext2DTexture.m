@@ -1,6 +1,6 @@
-#import "EJCanvasContextTexture.h"
+#import "EJCanvasContext2DTexture.h"
 
-@implementation EJCanvasContextTexture
+@implementation EJCanvasContext2DTexture
 
 - (void)create {
 	// Create the texture

@@ -11,7 +11,7 @@ typedef enum {
 	kEJPathPolygonTargetDepth
 } EJPathPolygonTarget;
 
-@class EJCanvasContext;
+@class EJCanvasContext2D;
 
 @interface EJPath : NSObject {
 	EJVector2 currentPos, startPos, lastPushed;
@@ -40,7 +40,7 @@ typedef enum {
 - (void)arcToX1:(float)x1 y1:(float)y1 x2:(float)x2 y2:(float)y2 radius:(float)radius;
 - (void)arcX:(float)x y:(float)y radius:(float)radius startAngle:(float)startAngle endAngle:(float)endAngle	antiClockwise:(BOOL)antiClockwise;
 
-- (void)drawPolygonsToContext:(EJCanvasContext *)context target:(EJPathPolygonTarget)target;
-- (void)drawLinesToContext:(EJCanvasContext *)context;
+- (void)drawPolygonsToContext:(EJCanvasContext2D *)context target:(EJPathPolygonTarget)target;
+- (void)drawLinesToContext:(EJCanvasContext2D *)context;
 
 @end

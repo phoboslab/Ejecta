@@ -1,4 +1,4 @@
-#import "EJCanvasContext.h"
+#import "EJCanvasContext2D.h"
 #import "EAGLView.h"
 
 typedef enum {
@@ -7,7 +7,7 @@ typedef enum {
 	kEJScalingModeFitHeight
 } EJScalingMode;
 
-@interface EJCanvasContextScreen : EJCanvasContext {
+@interface EJCanvasContext2DScreen : EJCanvasContext2D {
 	EAGLView * glview;
 	GLuint colorRenderbuffer;
 	

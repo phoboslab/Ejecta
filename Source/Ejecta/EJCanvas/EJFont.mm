@@ -1,7 +1,7 @@
 #import "EJFont.h"
 #import <CoreText/CoreText.h>
 #import <QuartzCore/QuartzCore.h>
-#import "EJCanvasContext.h"
+#import "EJCanvasContext2D.h"
 #include <malloc/malloc.h>
 #include <ext/hash_map>
 
@@ -195,7 +195,7 @@ int GlyphLayoutSortByTextureIndex(const void * a, const void * b) {
 	return glyphInfo->textureIndex;
 }
 
-- (void)drawString:(NSString*)string toContext:(EJCanvasContext*)context x:(float)x y:(float)y {
+- (void)drawString:(NSString*)string toContext:(EJCanvasContext2D*)context x:(float)x y:(float)y {
 	if( string.length == 0 ) { return; }
 	
 	

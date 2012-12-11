@@ -1,7 +1,7 @@
 #import <Foundation/Foundation.h>
 #import "EJBindingBase.h"
-#import "EJCanvasContextTexture.h"
-#import "EJCanvasContextScreen.h"
+#import "EJCanvasContext2DTexture.h"
+#import "EJCanvasContext2DScreen.h"
 #import "EJTexture.h"
 #import "EJDrawable.h"
 
@@ -52,7 +52,7 @@ static const char * EJScalingModeNames[] = {
 
 
 @interface EJBindingCanvas : EJBindingBase <EJDrawable> {
-	EJCanvasContext * renderingContext;
+	EJCanvasContext2D * renderingContext;
 	EJApp * ejectaInstance;
 	short width, height;
 	

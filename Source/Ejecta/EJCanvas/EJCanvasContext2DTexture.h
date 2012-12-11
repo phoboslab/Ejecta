@@ -1,6 +1,6 @@
-#import "EJCanvasContext.h"
+#import "EJCanvasContext2D.h"
 
-@interface EJCanvasContextTexture : EJCanvasContext {
+@interface EJCanvasContext2DTexture : EJCanvasContext2D {
 	BOOL msaaNeedsResolving;
 	EJTexture * texture;
 }

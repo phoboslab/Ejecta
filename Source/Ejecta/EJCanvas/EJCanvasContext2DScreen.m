@@ -1,8 +1,8 @@
 #import <QuartzCore/QuartzCore.h>
-#import "EJCanvasContextScreen.h"
+#import "EJCanvasContext2DScreen.h"
 #import "EJApp.h"
 
-@implementation EJCanvasContextScreen
+@implementation EJCanvasContext2DScreen
 
 @synthesize useRetinaResolution;
 @synthesize scalingMode;

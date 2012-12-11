@@ -1,5 +1,5 @@
 #import "EJPath.h"
-#import "EJCanvasContext.h"
+#import "EJCanvasContext2D.h"
 
 #include <vector>
 
@@ -311,7 +311,7 @@ typedef std::vector<subpath_t> path_t;
 	}
 }
 
-- (void)drawPolygonsToContext:(EJCanvasContext *)context target:(EJPathPolygonTarget)target {
+- (void)drawPolygonsToContext:(EJCanvasContext2D *)context target:(EJPathPolygonTarget)target {
 	[self endSubPath];
 	if( longestSubpath < 3 ) { return; }
 	
@@ -405,7 +405,7 @@ typedef std::vector<subpath_t> path_t;
 	}
 }
 
-- (void)drawArcToContext:(EJCanvasContext *)context atPoint:(EJVector2)point v1:(EJVector2)p1 v2:(EJVector2)p2 color:(EJColorRGBA)color {
+- (void)drawArcToContext:(EJCanvasContext2D *)context atPoint:(EJVector2)point v1:(EJVector2)p1 v2:(EJVector2)p2 color:(EJColorRGBA)color {
 
 	EJCanvasState * state = context.state;
 	float width2 = state->lineWidth/2;
@@ -462,7 +462,7 @@ typedef std::vector<subpath_t> path_t;
 	}
 }
 
-- (void)drawLinesToContext:(EJCanvasContext *)context {
+- (void)drawLinesToContext:(EJCanvasContext2D *)context {
 	[self endSubPath];
 	
 	EJCanvasState * state = context.state;

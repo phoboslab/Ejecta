@@ -40,8 +40,8 @@ static int firstCanvasInstance = YES;
 }
 
 - (EJTexture *)texture {
-	if( [renderingContext isKindOfClass:[EJCanvasContextTexture class]] ) {
-		return ((EJCanvasContextTexture *)renderingContext).texture;
+	if( [renderingContext isKindOfClass:[EJCanvasContext2DTexture class]] ) {
+		return ((EJCanvasContext2DTexture *)renderingContext).texture;
 	}
 	else {
 		return nil;
@@ -204,7 +204,7 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 	ejectaInstance.currentRenderingContext = nil;
 		
 	if( isScreenCanvas ) {
-		EJCanvasContextScreen * sc = [[EJCanvasContextScreen alloc] initWithWidth:width height:height];
+		EJCanvasContext2DScreen * sc = [[EJCanvasContext2DScreen alloc] initWithWidth:width height:height];
 		sc.useRetinaResolution = useRetinaResolution;
 		sc.scalingMode = scalingMode;
 		
@@ -212,7 +212,7 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 		renderingContext = sc;
 	}
 	else {
-		renderingContext = [[EJCanvasContextTexture alloc] initWithWidth:width height:height];
+		renderingContext = [[EJCanvasContext2DTexture alloc] initWithWidth:width height:height];
 	}
 	
 	renderingContext.msaaEnabled = msaaEnabled;

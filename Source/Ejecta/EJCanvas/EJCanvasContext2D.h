@@ -80,7 +80,7 @@ typedef struct {
 } EJCanvasState;
 
 
-@interface EJCanvasContext : NSObject {
+@interface EJCanvasContext2D : NSObject {
 	GLuint viewFrameBuffer, viewRenderBuffer;
 	GLuint msaaFrameBuffer, msaaRenderBuffer;
 	GLuint stencilBuffer;
