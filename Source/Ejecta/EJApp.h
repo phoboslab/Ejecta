@@ -3,7 +3,7 @@
 #import <JavaScriptCore/JavaScriptCore.h>
 #import "EJConvert.h"
 #import "EJCanvasContext.h"
-#import "EJCanvasContextScreen.h"
+#import "EJPresentable.h"
 
 #define EJECTA_VERSION @"1.2"
 #define EJECTA_APP_FOLDER @"App/"
@@ -33,7 +33,7 @@
 	
 	NSOperationQueue * opQueue;
 	EJCanvasContext * currentRenderingContext;
-	EJCanvasContext<EJCanvasContextScreen> * screenRenderingContext;
+	EJCanvasContext<EJPresentable> * screenRenderingContext;
 	
 	float internalScaling;
 }
@@ -66,7 +66,7 @@
 
 @property (nonatomic, readonly) NSOperationQueue * opQueue;
 @property (nonatomic, assign) EJCanvasContext * currentRenderingContext;
-@property (nonatomic, assign) EJCanvasContext<EJCanvasContextScreen> * screenRenderingContext;
+@property (nonatomic, assign) EJCanvasContext<EJPresentable> * screenRenderingContext;
 @property (nonatomic) float internalScaling;
 
 @end

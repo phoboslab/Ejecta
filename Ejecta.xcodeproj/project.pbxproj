@@ -181,7 +181,7 @@
 		B6F115031676BDB3001F1324 /* EJCanvas2DTypes.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EJCanvas2DTypes.m; sourceTree = "<group>"; };
 		B6F115041676BE18001F1324 /* EJConvertColorRGBA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJConvertColorRGBA.h; sourceTree = "<group>"; };
 		B6F115051676BE18001F1324 /* EJConvertColorRGBA.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJConvertColorRGBA.m; sourceTree = "<group>"; };
-		B6F115071676C097001F1324 /* EJCanvasContextScreen.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EJCanvasContextScreen.h; sourceTree = "<group>"; };
+		B6F115071676C097001F1324 /* EJPresentable.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EJPresentable.h; sourceTree = "<group>"; };
 		B6F463A31636C3FA00FC89C1 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -317,7 +317,7 @@
 				B64CE62A166682700087CF94 /* EJBindingImage.m */,
 				B6F114E11676BAF7001F1324 /* EJCanvasContext.h */,
 				B6F114E21676BAF9001F1324 /* EJCanvasContext.m */,
-				B6F115071676C097001F1324 /* EJCanvasContextScreen.h */,
+				B6F115071676C097001F1324 /* EJPresentable.h */,
 				B64CE634166682700087CF94 /* EJDrawable.h */,
 				B64CE63B166682700087CF94 /* EJTexture.h */,
 				B64CE63C166682700087CF94 /* EJTexture.m */,

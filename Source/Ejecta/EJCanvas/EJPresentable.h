@@ -6,7 +6,7 @@ typedef enum {
 	kEJScalingModeFitHeight
 } EJScalingMode;
 
-@protocol EJCanvasContextScreen
+@protocol EJPresentable
 
 - (void)present;
 - (void)finish;
