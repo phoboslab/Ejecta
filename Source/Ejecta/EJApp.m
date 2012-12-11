@@ -27,7 +27,7 @@ JSValueRef ej_getNativeClass(JSContextRef ctx, JSObjectRef object, JSStringRef p
 JSObjectRef ej_callAsConstructor(JSContextRef ctx, JSObjectRef constructor, size_t argc, const JSValueRef argv[], JSValueRef* exception) {
 	id class = (id)JSObjectGetPrivate( constructor );
 	
-	JSClassRef jsClass = [[EJApp instance] getJSClassForClass:class];
+	JSClassRef jsClass = [class getJSClass];
 	JSObjectRef obj = JSObjectMake( ctx, jsClass, NULL );
 	
 	id instance = [(EJBindingBase *)[class alloc] initWithContext:ctx object:obj argc:argc argv:argv];
@@ -97,7 +97,6 @@ static EJApp * ejectaInstance = NULL;
 		
 				
 		// Create the global JS context and attach the 'Ejecta' object
-		jsClasses = [[NSMutableDictionary alloc] init];
 		
 		JSClassDefinition constructorClassDef = kJSClassDefinitionEmpty;
 		constructorClassDef.callAsConstructor = ej_callAsConstructor;
@@ -136,7 +135,6 @@ static EJApp * ejectaInstance = NULL;
 	JSGlobalContextRelease(jsGlobalContext);
 	[currentRenderingContext release];
 	[touchDelegate release];
-	[jsClasses release];
 	[opQueue release];
 	
 	[displayLink invalidate];
@@ -280,17 +278,6 @@ static EJApp * ejectaInstance = NULL;
 	JSValueRef result = JSObjectCallAsFunction( jsGlobalContext, callback, thisObject, argc, argv, &exception );
 	[self logException:exception ctx:jsGlobalContext];
 	return result;
-}
-
-- (JSClassRef)getJSClassForClass:(id)classId {
-	JSClassRef jsClass = [[jsClasses objectForKey:classId] pointerValue];
-	
-	// Not already loaded? Ask the objc class for the JSClassRef!
-	if( !jsClass ) {
-		jsClass = [classId getJSClass];
-		[jsClasses setObject:[NSValue valueWithPointer:jsClass] forKey:classId];
-	}
-	return jsClass;
 }
 
 - (void)logException:(JSValueRef)exception ctx:(JSContextRef)ctxp {

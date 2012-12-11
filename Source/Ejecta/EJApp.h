@@ -22,7 +22,6 @@
 	BOOL landscapeMode;
 	JSGlobalContextRef jsGlobalContext;
 	UIWindow * window;
-	NSMutableDictionary * jsClasses;
 	UIImageView * loadingScreen;
 	NSObject<EJTouchDelegate> * touchDelegate;
 	
@@ -49,7 +48,6 @@
 - (JSValueRef)createTimer:(JSContextRef)ctx argc:(size_t)argc argv:(const JSValueRef [])argv repeat:(BOOL)repeat;
 - (JSValueRef)deleteTimer:(JSContextRef)ctx argc:(size_t)argc argv:(const JSValueRef [])argv;
 
-- (JSClassRef)getJSClassForClass:(id)classId;
 - (void)hideLoadingScreen;
 - (void)loadScriptAtPath:(NSString *)path;
 - (JSValueRef)loadModuleWithId:(NSString *)moduleId module:(JSValueRef)module exports:(JSValueRef)exports;

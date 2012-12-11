@@ -14,6 +14,8 @@ NSData * NSDataFromString( NSString *str ) {
 	return d;
 }
 
+static NSMutableDictionary * CachedJSClasses;
+
 
 @implementation EJBindingBase
 
@@ -25,6 +27,25 @@ NSData * NSDataFromString( NSString *str ) {
 }
 
 + (JSClassRef)getJSClass {
+	id ownClass = [self class];
+	
+	// Try the cache first
+	if( !CachedJSClasses ) {
+		CachedJSClasses = [[NSMutableDictionary alloc] initWithCapacity:16];
+	}
+	
+	JSClassRef jsClass = [[CachedJSClasses objectForKey:ownClass] pointerValue];
+	if( jsClass ) {
+		return jsClass;
+	}
+	
+	// Still here? Create and insert into cache
+	jsClass = [self createJSClass];
+	[CachedJSClasses setObject:[NSValue valueWithPointer:jsClass] forKey:ownClass];
+	return jsClass;
+}
+
++ (JSClassRef)createJSClass {
 	// Gather all class methods that return C callbacks for this class or it's parents
 	NSMutableArray * methods = [[NSMutableArray alloc] init];
 	NSMutableArray * properties = [[NSMutableArray alloc] init];
