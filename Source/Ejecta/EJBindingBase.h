@@ -103,7 +103,7 @@ extern JSValueRef ej_global_undefined;
 	EJ_BIND_FUNCTION( NAME, ctx, argc, argv ) { \
 		static bool didShowWarning; \
 		if( !didShowWarning ) { \
-			NSLog(@"Warning: method %s() is not yet implemented!", #NAME); \
+			NSLog(@"Warning: method " @ #NAME @" is not yet implemented!"); \
 			didShowWarning = true; \
 		} \
 		return NULL; \
