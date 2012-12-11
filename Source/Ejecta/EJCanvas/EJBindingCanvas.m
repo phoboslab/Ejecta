@@ -132,6 +132,7 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 		newContextMode = kEJCanvasContextModeWebGL;
 	}
 	
+	
 	if( contextMode != kEJCanvasContextModeInvalid && contextMode == kEJCanvasContextModeWebGL ) {
 		// Nothing changed - just return the already created context
 		return jsCanvasContext;
@@ -163,7 +164,7 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 		
 		// Create the JS object
 		EJBindingCanvasContext2D * binding = [[EJBindingCanvasContext2D alloc]
-			initWithRenderingContext:(EJCanvasContext2D *)renderingContext];
+			initWithCanvas:jsObject renderingContext:(EJCanvasContext2D *)renderingContext];
 		jsCanvasContext = [EJBindingCanvasContext2D createJSObjectWithContext:ctx instance:binding];
 	}
 	
