@@ -178,7 +178,6 @@
 		B6F114F81676BD40001F1324 /* EJPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJPath.h; sourceTree = "<group>"; };
 		B6F114F91676BD40001F1324 /* EJPath.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = EJPath.mm; sourceTree = "<group>"; };
 		B6F115021676BDB3001F1324 /* EJCanvas2DTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EJCanvas2DTypes.h; sourceTree = "<group>"; };
-		B6F115031676BDB3001F1324 /* EJCanvas2DTypes.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EJCanvas2DTypes.m; sourceTree = "<group>"; };
 		B6F115041676BE18001F1324 /* EJConvertColorRGBA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJConvertColorRGBA.h; sourceTree = "<group>"; };
 		B6F115051676BE18001F1324 /* EJConvertColorRGBA.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJConvertColorRGBA.m; sourceTree = "<group>"; };
 		B6F115071676C097001F1324 /* EJPresentable.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EJPresentable.h; sourceTree = "<group>"; };
@@ -419,7 +418,6 @@
 				B6F114F81676BD40001F1324 /* EJPath.h */,
 				B6F114F91676BD40001F1324 /* EJPath.mm */,
 				B6F115021676BDB3001F1324 /* EJCanvas2DTypes.h */,
-				B6F115031676BDB3001F1324 /* EJCanvas2DTypes.m */,
 				B6F115041676BE18001F1324 /* EJConvertColorRGBA.h */,
 				B6F115051676BE18001F1324 /* EJConvertColorRGBA.m */,
 			);
