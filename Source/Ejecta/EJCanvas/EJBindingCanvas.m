@@ -3,6 +3,12 @@
 #import "EJCanvasContext2DScreen.h"
 #import "EJCanvasContext2DTexture.h"
 
+static const char * EJScalingModeNames[] = {
+	[kEJScalingModeNone] = "none",
+	[kEJScalingModeFitWidth] = "fit-width",
+	[kEJScalingModeFitHeight] = "fit-height"
+};
+
 @implementation EJBindingCanvas
 
 static int firstCanvasInstance = YES;

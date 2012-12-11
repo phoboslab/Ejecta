@@ -14,13 +14,6 @@ typedef enum {
 	kEJAudioPreloadAuto
 } EJAudioPreload;
 
-static const char * EJAudioPreloadNames[] = {
-	[kEJAudioPreloadNone] = "none",
-	[kEJAudioPreloadMetadata] = "metadata",
-	[kEJAudioPreloadAuto] = "auto"
-};
-
-
 @interface EJBindingAudio : EJBindingEventedBase <AVAudioPlayerDelegate> {
 	NSString * path;
 	EJAudioPreload preload;

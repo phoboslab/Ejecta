@@ -1,6 +1,16 @@
 #import "EJCanvasContext2D.h"
 #import "EJFont.h"
 
+static const struct { GLenum source; GLenum destination; } EJCompositeOperationFuncs[] = {
+	[kEJCompositeOperationSourceOver] = {GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA},
+	[kEJCompositeOperationLighter] = {GL_SRC_ALPHA, GL_ONE},
+	[kEJCompositeOperationDarker] = {GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA},
+	[kEJCompositeOperationDestinationOut] = {GL_ZERO, GL_ONE_MINUS_SRC_ALPHA},
+	[kEJCompositeOperationDestinationOver] = {GL_ONE_MINUS_DST_ALPHA, GL_ONE},
+	[kEJCompositeOperationSourceAtop] = {GL_DST_ALPHA, GL_ONE_MINUS_SRC_ALPHA},
+	[kEJCompositeOperationXOR] = {GL_ONE_MINUS_DST_ALPHA, GL_ONE_MINUS_SRC_ALPHA}
+};
+
 @implementation EJCanvasContext2D
 
 EJVertex CanvasVertexBuffer[EJ_CANVAS_VERTEX_BUFFER_SIZE];

@@ -1,5 +1,14 @@
 #import "EJBindingHttpRequest.h"
 
+static const char * EJHttpRequestTypeNames[] = {
+	[kEJHttpRequestTypeString] = "",
+	[kEJHttpRequestTypeArrayBuffer] = "arraybuffer",
+	[kEJHttpRequestTypeBlob] = "blob",
+	[kEJHttpRequestTypeDocument] = "document",
+	[kEJHttpRequestTypeJSON] = "json",
+	[kEJHttpRequestTypeText] = "text"
+};
+
 @implementation EJBindingHttpRequest
 
 - (id)initWithContext:(JSContextRef)ctxp object:(JSObjectRef)obj argc:(size_t)argc argv:(const JSValueRef [])argv {

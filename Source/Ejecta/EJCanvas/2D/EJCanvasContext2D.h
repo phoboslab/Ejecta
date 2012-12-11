@@ -49,16 +49,6 @@ typedef enum {
 	kEJCompositeOperationXOR
 } EJCompositeOperation;
 
-static const struct { GLenum source; GLenum destination; } EJCompositeOperationFuncs[] = {
-	[kEJCompositeOperationSourceOver] = {GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA},
-	[kEJCompositeOperationLighter] = {GL_SRC_ALPHA, GL_ONE},
-	[kEJCompositeOperationDarker] = {GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA},
-	[kEJCompositeOperationDestinationOut] = {GL_ZERO, GL_ONE_MINUS_SRC_ALPHA},
-	[kEJCompositeOperationDestinationOver] = {GL_ONE_MINUS_DST_ALPHA, GL_ONE},
-	[kEJCompositeOperationSourceAtop] = {GL_DST_ALPHA, GL_ONE_MINUS_SRC_ALPHA},
-	[kEJCompositeOperationXOR] = {GL_ONE_MINUS_DST_ALPHA, GL_ONE_MINUS_SRC_ALPHA}
-};
-
 
 typedef struct {
 	CGAffineTransform transform;

@@ -1,5 +1,10 @@
 #import "EJBindingAudio.h"
 
+static const char * EJAudioPreloadNames[] = {
+	[kEJAudioPreloadNone] = "none",
+	[kEJAudioPreloadMetadata] = "metadata",
+	[kEJAudioPreloadAuto] = "auto"
+};
 
 @implementation EJBindingAudio
 
