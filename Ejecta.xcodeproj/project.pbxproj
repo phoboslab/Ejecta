@@ -32,7 +32,6 @@
 		B64CE675166682700087CF94 /* EJTexture.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE63C166682700087CF94 /* EJTexture.m */; };
 		B64CE676166682700087CF94 /* EJConvert.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE63E166682700087CF94 /* EJConvert.m */; };
 		B64CE678166682700087CF94 /* EJTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE641166682700087CF94 /* EJTimer.m */; };
-		B64CE679166682700087CF94 /* EJBindingAccelerometer.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE644166682700087CF94 /* EJBindingAccelerometer.m */; };
 		B64CE67A166682700087CF94 /* EJBindingAdBanner.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE646166682700087CF94 /* EJBindingAdBanner.m */; };
 		B64CE67B166682700087CF94 /* EJBindingGameCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE648166682700087CF94 /* EJBindingGameCenter.m */; };
 		B64CE67C166682700087CF94 /* EJBindingHttpRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE64A166682700087CF94 /* EJBindingHttpRequest.m */; };
@@ -67,6 +66,8 @@
 		B6F115001676BD40001F1324 /* EJImageData.m in Sources */ = {isa = PBXBuildFile; fileRef = B6F114F71676BD40001F1324 /* EJImageData.m */; };
 		B6F115011676BD40001F1324 /* EJPath.mm in Sources */ = {isa = PBXBuildFile; fileRef = B6F114F91676BD40001F1324 /* EJPath.mm */; };
 		B6F115061676BE18001F1324 /* EJConvertColorRGBA.m in Sources */ = {isa = PBXBuildFile; fileRef = B6F115051676BE18001F1324 /* EJConvertColorRGBA.m */; };
+		B6F1151A1677F08A001F1324 /* EJBindingDeviceMotion.m in Sources */ = {isa = PBXBuildFile; fileRef = B6F115191677F088001F1324 /* EJBindingDeviceMotion.m */; };
+		B6F1151C1677FCF5001F1324 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6F1151B1677FCF2001F1324 /* CoreMotion.framework */; };
 		B6F463A41636C3FB00FC89C1 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6F463A31636C3FA00FC89C1 /* SystemConfiguration.framework */; };
 /* End PBXBuildFile section */
 
@@ -113,8 +114,6 @@
 		B64CE63F166682700087CF94 /* Ejecta.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = Ejecta.js; sourceTree = "<group>"; };
 		B64CE640166682700087CF94 /* EJTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJTimer.h; sourceTree = "<group>"; };
 		B64CE641166682700087CF94 /* EJTimer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJTimer.m; sourceTree = "<group>"; };
-		B64CE643166682700087CF94 /* EJBindingAccelerometer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingAccelerometer.h; sourceTree = "<group>"; };
-		B64CE644166682700087CF94 /* EJBindingAccelerometer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingAccelerometer.m; sourceTree = "<group>"; };
 		B64CE645166682700087CF94 /* EJBindingAdBanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingAdBanner.h; sourceTree = "<group>"; };
 		B64CE646166682700087CF94 /* EJBindingAdBanner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingAdBanner.m; sourceTree = "<group>"; };
 		B64CE647166682700087CF94 /* EJBindingGameCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingGameCenter.h; sourceTree = "<group>"; };
@@ -181,6 +180,9 @@
 		B6F115041676BE18001F1324 /* EJConvertColorRGBA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJConvertColorRGBA.h; sourceTree = "<group>"; };
 		B6F115051676BE18001F1324 /* EJConvertColorRGBA.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJConvertColorRGBA.m; sourceTree = "<group>"; };
 		B6F115071676C097001F1324 /* EJPresentable.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EJPresentable.h; sourceTree = "<group>"; };
+		B6F115181677F086001F1324 /* EJBindingDeviceMotion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingDeviceMotion.h; sourceTree = "<group>"; };
+		B6F115191677F088001F1324 /* EJBindingDeviceMotion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingDeviceMotion.m; sourceTree = "<group>"; };
+		B6F1151B1677FCF2001F1324 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 		B6F463A31636C3FA00FC89C1 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -189,6 +191,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B6F1151C1677FCF5001F1324 /* CoreMotion.framework in Frameworks */,
 				B6F463A41636C3FB00FC89C1 /* SystemConfiguration.framework in Frameworks */,
 				5B7B76761619DB9700691910 /* CoreText.framework in Frameworks */,
 				B6074FF315F8E41700D987F9 /* GameKit.framework in Frameworks */,
@@ -236,6 +239,7 @@
 				B64CE60C1666825F0087CF94 /* libJavaScriptCore.a */,
 				B66F1E7F1476B6A40090D208 /* libstdc++.dylib */,
 				B66F1E771476B3AC0090D208 /* libicucore.dylib */,
+				B6F1151B1677FCF2001F1324 /* CoreMotion.framework */,
 				B6F463A31636C3FA00FC89C1 /* SystemConfiguration.framework */,
 				5B7B76751619DB9700691910 /* CoreText.framework */,
 				B6074FF215F8E41600D987F9 /* GameKit.framework */,
@@ -329,8 +333,8 @@
 		B64CE642166682700087CF94 /* EJUtils */ = {
 			isa = PBXGroup;
 			children = (
-				B64CE643166682700087CF94 /* EJBindingAccelerometer.h */,
-				B64CE644166682700087CF94 /* EJBindingAccelerometer.m */,
+				B6F115181677F086001F1324 /* EJBindingDeviceMotion.h */,
+				B6F115191677F088001F1324 /* EJBindingDeviceMotion.m */,
 				B64CE645166682700087CF94 /* EJBindingAdBanner.h */,
 				B64CE646166682700087CF94 /* EJBindingAdBanner.m */,
 				B64CE647166682700087CF94 /* EJBindingGameCenter.h */,
@@ -512,7 +516,6 @@
 				B64CE675166682700087CF94 /* EJTexture.m in Sources */,
 				B64CE676166682700087CF94 /* EJConvert.m in Sources */,
 				B64CE678166682700087CF94 /* EJTimer.m in Sources */,
-				B64CE679166682700087CF94 /* EJBindingAccelerometer.m in Sources */,
 				B64CE67A166682700087CF94 /* EJBindingAdBanner.m in Sources */,
 				B64CE67B166682700087CF94 /* EJBindingGameCenter.m in Sources */,
 				B64CE67C166682700087CF94 /* EJBindingHttpRequest.m in Sources */,
@@ -532,6 +535,7 @@
 				B6F115001676BD40001F1324 /* EJImageData.m in Sources */,
 				B6F115011676BD40001F1324 /* EJPath.mm in Sources */,
 				B6F115061676BE18001F1324 /* EJConvertColorRGBA.m in Sources */,
+				B6F1151A1677F08A001F1324 /* EJBindingDeviceMotion.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
