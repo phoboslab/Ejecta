@@ -7,8 +7,6 @@
 
 @implementation EJBindingCanvas
 
-static int firstCanvasInstance = YES;
-
 - (id)initWithContext:(JSContextRef)ctx argc:(size_t)argc argv:(const JSValueRef [])argv {
 	if( self = [super initWithContext:ctx argc:argc argv:argv] ) {
 		scalingMode = kEJScalingModeFitWidth;
@@ -16,10 +14,9 @@ static int firstCanvasInstance = YES;
 		msaaEnabled = false;
 		msaaSamples = 2;
 		
-		// If this is the first canvas instance we created, make it the screen canvas
-		if( firstCanvasInstance ) {
+		// If we don't have a screen canvas yet, make it this one
+		if( ![EJApp instance].screenRenderingContext ) {
 			isScreenCanvas = YES;
-			firstCanvasInstance = NO;
 		}
 		
 		if( argc == 2 ) {

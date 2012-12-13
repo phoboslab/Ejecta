@@ -114,7 +114,6 @@ extern JSValueRef ej_global_undefined;
 // Shorthand to bind enums with name tables - use with
 // EJ_BIND_ENUM( name, target, EJ_ENUM_NAMES("name1", "name2", ...) );
 
-
 #define EJ_ENUM_NAMES(...) __VA_ARGS__ 
 #define EJ_BIND_ENUM(NAME, TARGET, ENUM_NAMES) \
 	static const char * _##NAME##EnumNames[] = {ENUM_NAMES}; \
