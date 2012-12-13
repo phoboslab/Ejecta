@@ -26,6 +26,10 @@
 }
 
 - (void)dealloc {
+	if( sourceId ) {
+		alDeleteSources(1, &sourceId);
+	}
+	
 	// If the retainCount is 2, only this instance and the .buffers dictionary
 	// still retain the source - so remove it from the dict and delete it completely
 	if( [buffer retainCount] == 2 ) {
@@ -33,10 +37,6 @@
 	}
 	[buffer release];
 	[path release];
-	
-	if( sourceId ) {
-		alDeleteSources(1, &sourceId);
-	}
 	
 	[super dealloc];
 }
