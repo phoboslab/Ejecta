@@ -18,8 +18,6 @@
 		B607AD10132EB52400D7C3EA /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B607AD0F132EB52400D7C3EA /* QuartzCore.framework */; };
 		B6243666166684420046B8C7 /* libJavaScriptCore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B64CE60C1666825F0087CF94 /* libJavaScriptCore.a */; };
 		B62436681666851E0046B8C7 /* Ejecta.js in Resources */ = {isa = PBXBuildFile; fileRef = B64CE63F166682700087CF94 /* Ejecta.js */; };
-		B6324BBB167FC86E00ED6B29 /* EJGLProgram2D.fsh in Sources */ = {isa = PBXBuildFile; fileRef = B6324BB5167FC86A00ED6B29 /* EJGLProgram2D.fsh */; };
-		B6324BBC167FC86E00ED6B29 /* EJGLProgram2D.vsh in Sources */ = {isa = PBXBuildFile; fileRef = B6324BB6167FC86B00ED6B29 /* EJGLProgram2D.vsh */; };
 		B6324BC1167FC87D00ED6B29 /* EJGLProgram2D.fsh in Resources */ = {isa = PBXBuildFile; fileRef = B6324BB5167FC86A00ED6B29 /* EJGLProgram2D.fsh */; };
 		B6324BC2167FC87D00ED6B29 /* EJGLProgram2D.vsh in Resources */ = {isa = PBXBuildFile; fileRef = B6324BB6167FC86B00ED6B29 /* EJGLProgram2D.vsh */; };
 		B64CE662166682700087CF94 /* EJApp.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE611166682700087CF94 /* EJApp.m */; };
@@ -552,8 +550,6 @@
 				B6F115061676BE18001F1324 /* EJConvertColorRGBA.m in Sources */,
 				B6F1151A1677F08A001F1324 /* EJBindingDeviceMotion.m in Sources */,
 				B6F115B7167E895B001F1324 /* EJGLProgram2D.m in Sources */,
-				B6324BBB167FC86E00ED6B29 /* EJGLProgram2D.fsh in Sources */,
-				B6324BBC167FC86E00ED6B29 /* EJGLProgram2D.vsh in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
