@@ -7,7 +7,6 @@
 	GLuint colorRenderbuffer;
 	
 	BOOL useRetinaResolution;
-	UIDeviceOrientation orientation;
 	EJScalingMode scalingMode;
 }
 

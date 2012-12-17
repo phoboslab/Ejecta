@@ -2,6 +2,8 @@
 
 @implementation EJCanvasContext
 
+@synthesize glContext;
+@synthesize width, height;
 @synthesize msaaEnabled, msaaSamples;
 
 - (void)create {}

@@ -1,5 +1,5 @@
 #import <UIKit/UIKit.h>
-
+#import "EJTexture.h"
 
 @protocol EJDrawable
 

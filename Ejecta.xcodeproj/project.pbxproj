@@ -18,6 +18,10 @@
 		B607AD10132EB52400D7C3EA /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B607AD0F132EB52400D7C3EA /* QuartzCore.framework */; };
 		B6243666166684420046B8C7 /* libJavaScriptCore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B64CE60C1666825F0087CF94 /* libJavaScriptCore.a */; };
 		B62436681666851E0046B8C7 /* Ejecta.js in Resources */ = {isa = PBXBuildFile; fileRef = B64CE63F166682700087CF94 /* Ejecta.js */; };
+		B6324BBB167FC86E00ED6B29 /* EJGLProgram2D.fsh in Sources */ = {isa = PBXBuildFile; fileRef = B6324BB5167FC86A00ED6B29 /* EJGLProgram2D.fsh */; };
+		B6324BBC167FC86E00ED6B29 /* EJGLProgram2D.vsh in Sources */ = {isa = PBXBuildFile; fileRef = B6324BB6167FC86B00ED6B29 /* EJGLProgram2D.vsh */; };
+		B6324BC1167FC87D00ED6B29 /* EJGLProgram2D.fsh in Resources */ = {isa = PBXBuildFile; fileRef = B6324BB5167FC86A00ED6B29 /* EJGLProgram2D.fsh */; };
+		B6324BC2167FC87D00ED6B29 /* EJGLProgram2D.vsh in Resources */ = {isa = PBXBuildFile; fileRef = B6324BB6167FC86B00ED6B29 /* EJGLProgram2D.vsh */; };
 		B64CE662166682700087CF94 /* EJApp.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE611166682700087CF94 /* EJApp.m */; };
 		B64CE663166682700087CF94 /* EJAudioSourceAVAudio.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE615166682700087CF94 /* EJAudioSourceAVAudio.m */; };
 		B64CE664166682700087CF94 /* EJAudioSourceOpenAL.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE617166682700087CF94 /* EJAudioSourceOpenAL.m */; };
@@ -68,6 +72,7 @@
 		B6F115061676BE18001F1324 /* EJConvertColorRGBA.m in Sources */ = {isa = PBXBuildFile; fileRef = B6F115051676BE18001F1324 /* EJConvertColorRGBA.m */; };
 		B6F1151A1677F08A001F1324 /* EJBindingDeviceMotion.m in Sources */ = {isa = PBXBuildFile; fileRef = B6F115191677F088001F1324 /* EJBindingDeviceMotion.m */; };
 		B6F1151C1677FCF5001F1324 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6F1151B1677FCF2001F1324 /* CoreMotion.framework */; };
+		B6F115B7167E895B001F1324 /* EJGLProgram2D.m in Sources */ = {isa = PBXBuildFile; fileRef = B6F115B6167E8954001F1324 /* EJGLProgram2D.m */; };
 		B6F463A41636C3FB00FC89C1 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6F463A31636C3FA00FC89C1 /* SystemConfiguration.framework */; };
 /* End PBXBuildFile section */
 
@@ -82,6 +87,8 @@
 		B607AC32132EA75F00D7C3EA /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		B607AD09132EB51000D7C3EA /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		B607AD0F132EB52400D7C3EA /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		B6324BB5167FC86A00ED6B29 /* EJGLProgram2D.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = EJGLProgram2D.fsh; sourceTree = "<group>"; };
+		B6324BB6167FC86B00ED6B29 /* EJGLProgram2D.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = EJGLProgram2D.vsh; sourceTree = "<group>"; };
 		B64CE60C1666825F0087CF94 /* libJavaScriptCore.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libJavaScriptCore.a; path = Source/lib/libJavaScriptCore.a; sourceTree = "<group>"; };
 		B64CE610166682700087CF94 /* EJApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJApp.h; sourceTree = "<group>"; };
 		B64CE611166682700087CF94 /* EJApp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJApp.m; sourceTree = "<group>"; };
@@ -183,6 +190,8 @@
 		B6F115181677F086001F1324 /* EJBindingDeviceMotion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingDeviceMotion.h; sourceTree = "<group>"; };
 		B6F115191677F088001F1324 /* EJBindingDeviceMotion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingDeviceMotion.m; sourceTree = "<group>"; };
 		B6F1151B1677FCF2001F1324 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
+		B6F115B5167E894E001F1324 /* EJGLProgram2D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJGLProgram2D.h; sourceTree = "<group>"; };
+		B6F115B6167E8954001F1324 /* EJGLProgram2D.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJGLProgram2D.m; sourceTree = "<group>"; };
 		B6F463A31636C3FA00FC89C1 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -424,6 +433,10 @@
 				B6F115021676BDB3001F1324 /* EJCanvas2DTypes.h */,
 				B6F115041676BE18001F1324 /* EJConvertColorRGBA.h */,
 				B6F115051676BE18001F1324 /* EJConvertColorRGBA.m */,
+				B6F115B5167E894E001F1324 /* EJGLProgram2D.h */,
+				B6F115B6167E8954001F1324 /* EJGLProgram2D.m */,
+				B6324BB5167FC86A00ED6B29 /* EJGLProgram2D.fsh */,
+				B6324BB6167FC86B00ED6B29 /* EJGLProgram2D.vsh */,
 			);
 			path = 2D;
 			sourceTree = "<group>";
@@ -480,6 +493,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B6324BC1167FC87D00ED6B29 /* EJGLProgram2D.fsh in Resources */,
+				B6324BC2167FC87D00ED6B29 /* EJGLProgram2D.vsh in Resources */,
 				B68C5B95132E6CD60015092E /* App in Resources */,
 				B64CE68F166682B10087CF94 /* Default-568h@2x.png in Resources */,
 				B64CE690166682B10087CF94 /* Default-Landscape.png in Resources */,
@@ -536,6 +551,9 @@
 				B6F115011676BD40001F1324 /* EJPath.mm in Sources */,
 				B6F115061676BE18001F1324 /* EJConvertColorRGBA.m in Sources */,
 				B6F1151A1677F08A001F1324 /* EJBindingDeviceMotion.m in Sources */,
+				B6F115B7167E895B001F1324 /* EJGLProgram2D.m in Sources */,
+				B6324BBB167FC86E00ED6B29 /* EJGLProgram2D.fsh in Sources */,
+				B6324BBC167FC86E00ED6B29 /* EJGLProgram2D.vsh in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

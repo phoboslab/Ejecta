@@ -147,10 +147,7 @@ int GlyphLayoutSortByTextureIndex(const void * a, const void * b) {
 	
 	GLubyte * pixels = (GLubyte *)calloc( pxWidth * pxHeight, sizeof(GLubyte) );
 	
-	CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceGray();
-	CGContextRef context = CGBitmapContextCreate(pixels, pxWidth, pxHeight, 8, pxWidth, colorSpace, kCGImageAlphaNone);
-	CGColorSpaceRelease(colorSpace);
-	
+	CGContextRef context = CGBitmapContextCreate(pixels, pxWidth, pxHeight, 8, pxWidth, NULL, kCGImageAlphaOnly);
 	
 	CGFontRef graphicsFont = cgMainFont;
 	if( font != ctMainFont ) {
@@ -325,7 +322,7 @@ int GlyphLayoutSortByTextureIndex(const void * a, const void * b) {
 			float gx = x + PT_TO_PX(layoutBuffer[i].xpos) + glyphInfo->x;
 			float gy = y - (glyphInfo->h + glyphInfo->y);
 			
-			[context pushRectX:gx y:gy w:glyphInfo->w h:glyphInfo->h
+			[context pushTexturedRectX:gx y:gy w:glyphInfo->w h:glyphInfo->h
 				tx:glyphInfo->tx ty:glyphInfo->ty+glyphInfo->th tw:glyphInfo->tw th:-glyphInfo->th
 				color:color withTransform:state->transform];
 			

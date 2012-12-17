@@ -4,11 +4,12 @@
 #import "EJPath.h"
 #import "EJCanvas2DTypes.h"
 #import "EJCanvasContext.h"
+#import "EJGLProgram2D.h"
 
 #define EJ_CANVAS_STATE_STACK_SIZE 16
-#define EJ_CANVAS_VERTEX_BUFFER_SIZE 2048
+#define EJ_CANVAS_VERTEX_BUFFER_SIZE 1600 // 1600 * 20b = ~32kb
 
-extern EJVertex CanvasVertexBuffer[EJ_CANVAS_VERTEX_BUFFER_SIZE];
+extern EJVertex EJCanvasVertexBuffer[EJ_CANVAS_VERTEX_BUFFER_SIZE];
 
 typedef enum {
 	kEJLineCapButt,
@@ -70,7 +71,6 @@ typedef struct {
 	EJPath * clipPath;
 } EJCanvasState;
 
-
 @interface EJCanvasContext2D : EJCanvasContext {
 	GLuint viewFrameBuffer, viewRenderBuffer;
 	GLuint msaaFrameBuffer, msaaRenderBuffer;
@@ -78,6 +78,7 @@ typedef struct {
 	
 	short viewportWidth, viewportHeight;
 	short bufferWidth, bufferHeight;
+	EJVector2 vertexScale, vertexTranslate;
 	
 	BOOL imageSmoothingEnabled;
 	EJTexture * currentTexture;
@@ -92,6 +93,8 @@ typedef struct {
 	float backingStoreRatio;
 	
 	NSCache * fontCache;
+	
+	EJGLProgram2D * program2D;
 }
 
 - (id)initWithWidth:(short)width height:(short)height;
@@ -105,10 +108,12 @@ typedef struct {
 			 color:(EJColorRGBA)color
 	 withTransform:(CGAffineTransform)transform;
 - (void)pushQuadV1:(EJVector2)v1 v2:(EJVector2)v2 v3:(EJVector2)v3 v4:(EJVector2)v4
-	t1:(EJVector2)t1 t2:(EJVector2)t2 t3:(EJVector2)t3 t4:(EJVector2)t4
 	color:(EJColorRGBA)color
 	withTransform:(CGAffineTransform)transform;
 - (void)pushRectX:(float)x y:(float)y w:(float)w h:(float)h
+	color:(EJColorRGBA)color
+	withTransform:(CGAffineTransform)transform;
+- (void)pushTexturedRectX:(float)x y:(float)y w:(float)w h:(float)h
 	tx:(float)tx ty:(float)ty tw:(float)tw th:(float)th
 	color:(EJColorRGBA)color
 	withTransform:(CGAffineTransform)transform;

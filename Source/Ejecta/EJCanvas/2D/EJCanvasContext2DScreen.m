@@ -34,7 +34,7 @@
 	bufferHeight = viewportHeight = frame.size.height * contentScale;
 	
 	NSLog(
-		@"Creating ScreenCanvas: "
+		@"Creating ScreenCanvas (2D): "
 			@"size: %dx%d, aspect ratio: %.3f, "
 			@"scaled: %.3f = %.0fx%.0f, "
 			@"retina: %@ = %.0fx%.0f, "
@@ -53,17 +53,19 @@
 	[super create];
 	
 	// Set up the renderbuffer and some initial OpenGL properties
-	[[EJApp instance].glContext renderbufferStorage:GL_RENDERBUFFER fromDrawable:(CAEAGLLayer *)glview.layer];
+	[glContext renderbufferStorage:GL_RENDERBUFFER fromDrawable:(CAEAGLLayer *)glview.layer];
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, viewRenderBuffer);
 	
 
 	glDisable(GL_CULL_FACE);
-	glDisable(GL_LIGHTING);
 	glDisable(GL_DITHER);
 	
 	glEnable(GL_BLEND);
-	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_ALWAYS);
+	
+	// Flip the screen - OpenGL has the origin in the bottom left corner. We want the top left.
+	vertexScale = EJVector2Make(2.0f/width, 2.0f/-height);
+	vertexTranslate = EJVector2Make(-1.0f, 1.0f);
 	
 	[self prepare];
 	
@@ -78,14 +80,6 @@
 - (void)dealloc {
 	[glview release];
 	[super dealloc];
-}
-
-- (void)prepare {
-	[super prepare];
-	
-	// Flip the screen - OpenGL has the origin in the bottom left corner. We want the top left.
-	glTranslatef(0, height, 0);
-	glScalef( 1, -1, 1 );
 }
 
 - (EJImageData*)getImageDataSx:(float)sx sy:(float)sy sw:(float)sw sh:(float)sh {
@@ -139,11 +133,11 @@
 		glResolveMultisampleFramebufferAPPLE();
 		
 		glBindRenderbuffer(GL_RENDERBUFFER, viewRenderBuffer);
-		[[EJApp instance].glContext presentRenderbuffer:GL_RENDERBUFFER];
+		[glContext presentRenderbuffer:GL_RENDERBUFFER];
 		glBindFramebuffer(GL_FRAMEBUFFER, msaaFrameBuffer);
 	}
 	else {
-		[[EJApp instance].glContext presentRenderbuffer:GL_RENDERBUFFER];
+		[glContext presentRenderbuffer:GL_RENDERBUFFER];
 	}	
 }
 

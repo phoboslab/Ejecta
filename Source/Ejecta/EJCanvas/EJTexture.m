@@ -20,6 +20,7 @@ static GLint EJTextureGlobalFilter = GL_LINEAR;
 
 @synthesize contentScale;
 @synthesize textureId;
+@synthesize format;
 @synthesize width, height, realWidth, realHeight;
 
 - (id)initWithPath:(NSString *)path {
@@ -51,7 +52,7 @@ static GLint EJTextureGlobalFilter = GL_LINEAR;
 		if( pixels ) {
 			EAGLContext * context;
 			if( !isMainThread ) {
-				context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES1 sharegroup:sharegroup];
+				context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2 sharegroup:sharegroup];
 				[EAGLContext setCurrentContext:context];
 			}
 			
@@ -122,6 +123,10 @@ static GLint EJTextureGlobalFilter = GL_LINEAR;
 	// The internal (real) size of the texture needs to be a power of two
 	realWidth = pow(2, ceil(log2( width )));
 	realHeight = pow(2, ceil(log2( height )));
+	
+	// TODO HACK? Are NPOT textures really supported?
+	realWidth = width;
+	realHeight = height;
 }
 
 - (void)createTextureWithPixels:(GLubyte *)pixels format:(GLenum)formatp {
@@ -138,12 +143,10 @@ static GLint EJTextureGlobalFilter = GL_LINEAR;
 		NSLog(@"Warning: Image %@ larger than MAX_TEXTURE_SIZE (%d)", fullPath, maxTextureSize);
 	}
 	format = formatp;
-		
-	bool wasEnabled = glIsEnabled(GL_TEXTURE_2D);
+	
 	int boundTexture = 0;
 	glGetIntegerv(GL_TEXTURE_BINDING_2D, &boundTexture);
 	
-	glEnable(GL_TEXTURE_2D);
 	glGenTextures(1, &textureId);
 	glBindTexture(GL_TEXTURE_2D, textureId);
 	glTexImage2D(GL_TEXTURE_2D, 0, format, realWidth, realHeight, 0, format, GL_UNSIGNED_BYTE, pixels);
@@ -153,7 +156,6 @@ static GLint EJTextureGlobalFilter = GL_LINEAR;
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	
 	glBindTexture(GL_TEXTURE_2D, boundTexture);
-	if( !wasEnabled ) {	glDisable(GL_TEXTURE_2D); }
 }
 
 - (void)setFilter:(GLint)filter {
@@ -165,7 +167,6 @@ static GLint EJTextureGlobalFilter = GL_LINEAR;
 - (void)updateTextureWithPixels:(GLubyte *)pixels atX:(int)x y:(int)y width:(int)subWidth height:(int)subHeight {
 	if( !textureId ) { NSLog(@"No texture to update. Call createTexture... first");	return; }
 	
-	bool wasEnabled = glIsEnabled(GL_TEXTURE_2D);
 	int boundTexture = 0;
 	glGetIntegerv(GL_TEXTURE_BINDING_2D, &boundTexture);
 	
@@ -173,7 +174,6 @@ static GLint EJTextureGlobalFilter = GL_LINEAR;
 	glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, subWidth, subHeight, format, GL_UNSIGNED_BYTE, pixels);
 	
 	glBindTexture(GL_TEXTURE_2D, boundTexture);
-	if( !wasEnabled ) {	glDisable(GL_TEXTURE_2D); }
 }
 
 - (GLubyte *)loadPixelsFromPath:(NSString *)path {

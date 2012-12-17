@@ -1,9 +1,10 @@
 #import "EJCanvasContext2D.h"
 #import "EJFont.h"
+#import "EJApp.h"
 
 @implementation EJCanvasContext2D
 
-EJVertex CanvasVertexBuffer[EJ_CANVAS_VERTEX_BUFFER_SIZE];
+EJVertex EJCanvasVertexBuffer[EJ_CANVAS_VERTEX_BUFFER_SIZE];
 
 static const struct { GLenum source; GLenum destination; } EJCompositeOperationFuncs[] = {
 	[kEJCompositeOperationSourceOver] = {GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA},
@@ -22,6 +23,7 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 
 - (id)initWithWidth:(short)widthp height:(short)heightp {
 	if( self = [super init] ) {
+		glContext = [EJApp instance].glContextES2;
 	
 		memset(stateStack, 0, sizeof(stateStack));
 		stateIndex = 0;
@@ -41,6 +43,9 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 		bufferWidth = viewportWidth = width = widthp;
 		bufferHeight = viewportHeight = height = heightp;
 		
+		vertexScale = EJVector2Make(2.0f/width, 2.0f/height);
+		vertexTranslate = EJVector2Make(-1.0f, -1.0f);
+		
 		path = [[EJPath alloc] init];
 		backingStoreRatio = 1;
 		
@@ -55,6 +60,7 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 }
 
 - (void)dealloc {
+	[program2D release];
 	[fontCache release];
 	
 	// Release all fonts and clip paths from the stack
@@ -90,6 +96,8 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 	
 	glGenRenderbuffers(1, &viewRenderBuffer);
 	glBindRenderbuffer(GL_RENDERBUFFER, viewRenderBuffer);
+	
+	program2D = [[EJGLProgram2D	instance] retain];
 }
 
 - (void)createStencilBufferOnce {
@@ -109,16 +117,21 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 	glBindRenderbuffer(GL_RENDERBUFFER, msaaEnabled ? msaaRenderBuffer : viewRenderBuffer );
 	
 	glClear(GL_STENCIL_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glEnable(GL_DEPTH_TEST);
 }
 
-- (void)bindVertexBuffer {
-	glVertexPointer(2, GL_FLOAT, sizeof(EJVertex), &CanvasVertexBuffer[0].pos.x);
-	glTexCoordPointer(2, GL_FLOAT, sizeof(EJVertex), &CanvasVertexBuffer[0].uv.x);
-	glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(EJVertex), &CanvasVertexBuffer[0].color);
+- (void)bindVertexBuffer {	
+	glEnableVertexAttribArray(kEJGLProgram2DAttributePos);
+	glVertexAttribPointer(kEJGLProgram2DAttributePos, 2, GL_FLOAT, GL_FALSE,
+		sizeof(EJVertex), (char *)EJCanvasVertexBuffer + offsetof(EJVertex, pos));
 	
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glEnableClientState(GL_COLOR_ARRAY);
+	glEnableVertexAttribArray(kEJGLProgram2DAttributeUV);
+	glVertexAttribPointer(kEJGLProgram2DAttributeUV, 2, GL_FLOAT, GL_FALSE,
+		sizeof(EJVertex), (char *)EJCanvasVertexBuffer + offsetof(EJVertex, uv));
+
+	glEnableVertexAttribArray(kEJGLProgram2DAttributeColor);
+	glVertexAttribPointer(kEJGLProgram2DAttributeColor, 4, GL_UNSIGNED_BYTE, GL_TRUE,
+		sizeof(EJVertex), (char *)EJCanvasVertexBuffer + offsetof(EJVertex, color));
 }
 
 - (void)prepare {
@@ -128,20 +141,24 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 	
 	glViewport(0, 0, viewportWidth, viewportHeight);
 	
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrthof(0, width, 0, height, -1, 1);
-	
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	
 	EJCompositeOperation op = state->globalCompositeOperation;
 	glBlendFunc( EJCompositeOperationFuncs[op].source, EJCompositeOperationFuncs[op].destination );
-	glDisable(GL_TEXTURE_2D);
 	currentTexture = nil;
 	[EJTexture setSmoothScaling:imageSmoothingEnabled];
 	
+	glUseProgram(program2D.program);
+	glUniform2f(program2D.scale, vertexScale.x, vertexScale.y);
+	glUniform2f(program2D.translate, vertexTranslate.x, vertexTranslate.y);
+	glUniform1i(program2D.textureFormat, 0);
+	
 	[self bindVertexBuffer];
+	
+	if( stencilBuffer ) {
+		glEnable(GL_DEPTH_TEST);
+	}
+	else {
+		glDisable(GL_DEPTH_TEST);
+	}
 	
 	if( state->clipPath ) {
 		glDepthFunc(GL_EQUAL);
@@ -155,18 +172,10 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 	if( currentTexture == newTexture ) { return; }
 	
 	[self flushBuffers];
-		
-	if( !newTexture && currentTexture ) {
-		// Was enabled; should be disabled
-		glDisable(GL_TEXTURE_2D);
-	}
-	else if( newTexture && !currentTexture ) {
-		// Was disabled; should be enabled
-		glEnable(GL_TEXTURE_2D);
-	}
 	
 	currentTexture = newTexture;
 	[currentTexture bind];
+	glUniform1i(program2D.textureFormat, currentTexture.format);
 }
 
 - (void)pushTriX1:(float)x1 y1:(float)y1 x2:(float)x2 y2:(float)y2
@@ -188,16 +197,15 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 		d3 = EJVector2ApplyTransform( d3, transform );
 	}
 	
-	EJVertex * vb = &CanvasVertexBuffer[vertexBufferIndex];
-	vb[0] = (EJVertex) { d1, {0.5, 1}, color };
-	vb[1] = (EJVertex) { d2, {0.5, 0.5}, color };
-	vb[2] = (EJVertex) { d3, {0.5, 1}, color };
+	EJVertex * vb = &EJCanvasVertexBuffer[vertexBufferIndex];
+	vb[0] = (EJVertex) { d1, {0, 0}, color };
+	vb[1] = (EJVertex) { d2, {0, 0}, color };
+	vb[2] = (EJVertex) { d3, {0, 0}, color };
 	
 	vertexBufferIndex += 3;
 }
 
 - (void)pushQuadV1:(EJVector2)v1 v2:(EJVector2)v2 v3:(EJVector2)v3 v4:(EJVector2)v4
-	t1:(EJVector2)t1 t2:(EJVector2)t2 t3:(EJVector2)t3 t4:(EJVector2)t4
 	color:(EJColorRGBA)color
 	withTransform:(CGAffineTransform)transform
 {
@@ -212,30 +220,29 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 		v4 = EJVector2ApplyTransform( v4, transform );
 	}
 	
-	EJVertex * vb = &CanvasVertexBuffer[vertexBufferIndex];
-	vb[0] = (EJVertex) { v1, t1, color };
-	vb[1] = (EJVertex) { v2, t2, color };
-	vb[2] = (EJVertex) { v3, t3, color };
-	vb[3] = (EJVertex) { v2, t2, color };
-	vb[4] = (EJVertex) { v3, t3, color };
-	vb[5] = (EJVertex) { v4, t4, color };
+	EJVertex * vb = &EJCanvasVertexBuffer[vertexBufferIndex];
+	vb[0] = (EJVertex) { v1, {0, 0}, color };
+	vb[1] = (EJVertex) { v2, {0, 0}, color };
+	vb[2] = (EJVertex) { v3, {0, 0}, color };
+	vb[3] = (EJVertex) { v2, {0, 0}, color };
+	vb[4] = (EJVertex) { v3, {0, 0}, color };
+	vb[5] = (EJVertex) { v4, {0, 0}, color };
 	
 	vertexBufferIndex += 6;
 }
 
 - (void)pushRectX:(float)x y:(float)y w:(float)w h:(float)h
-	tx:(float)tx ty:(float)ty tw:(float)tw th:(float)th
 	color:(EJColorRGBA)color
 	withTransform:(CGAffineTransform)transform
 {
 	if( vertexBufferIndex >= EJ_CANVAS_VERTEX_BUFFER_SIZE - 6 ) {
 		[self flushBuffers];
 	}
-	
-	EJVector2 d11 = { x, y };
-	EJVector2 d21 = { x+w, y };
-	EJVector2 d12 = { x, y+h };
-	EJVector2 d22 = { x+w, y+h };
+		
+	EJVector2 d11 = {x, y};
+	EJVector2 d21 = {x+w, y};
+	EJVector2 d12 = {x, y+h};
+	EJVector2 d22 = {x+w, y+h};
 	
 	if( !CGAffineTransformIsIdentity(transform) ) {
 		d11 = EJVector2ApplyTransform( d11, transform );
@@ -244,14 +251,48 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 		d22 = EJVector2ApplyTransform( d22, transform );
 	}
 	
-	EJVertex * vb = &CanvasVertexBuffer[vertexBufferIndex];
+	EJVertex * vb = &EJCanvasVertexBuffer[vertexBufferIndex];
+	vb[0] = (EJVertex) { d11, {0, 0}, color };	// top left
+	vb[1] = (EJVertex) { d21, {0, 0}, color };	// top right
+	vb[2] = (EJVertex) { d12, {0, 0}, color };	// bottom left
+		
+	vb[3] = (EJVertex) { d21, {0, 0}, color };	// top right
+	vb[4] = (EJVertex) { d12, {0, 0}, color };	// bottom left
+	vb[5] = (EJVertex) { d22, {0, 0}, color };	// bottom right
+	
+	vertexBufferIndex += 6;
+}
+
+
+- (void)pushTexturedRectX:(float)x y:(float)y w:(float)w h:(float)h
+	tx:(float)tx ty:(float)ty tw:(float)tw th:(float)th
+	color:(EJColorRGBA)color
+	withTransform:(CGAffineTransform)transform
+{
+	if( vertexBufferIndex >= EJ_CANVAS_VERTEX_BUFFER_SIZE - 6 ) {
+		[self flushBuffers];
+	}
+	
+	EJVector2 d11 = {x, y};
+	EJVector2 d21 = {x+w, y};
+	EJVector2 d12 = {x, y+h};
+	EJVector2 d22 = {x+w, y+h};
+	
+	if( !CGAffineTransformIsIdentity(transform) ) {
+		d11 = EJVector2ApplyTransform( d11, transform );
+		d21 = EJVector2ApplyTransform( d21, transform );
+		d12 = EJVector2ApplyTransform( d12, transform );
+		d22 = EJVector2ApplyTransform( d22, transform );
+	}
+
+	EJVertex * vb = &EJCanvasVertexBuffer[vertexBufferIndex];
 	vb[0] = (EJVertex) { d11, {tx, ty}, color };	// top left
 	vb[1] = (EJVertex) { d21, {tx+tw, ty}, color };	// top right
 	vb[2] = (EJVertex) { d12, {tx, ty+th}, color };	// bottom left
 		
 	vb[3] = (EJVertex) { d21, {tx+tw, ty}, color };	// top right
 	vb[4] = (EJVertex) { d12, {tx, ty+th}, color };	// bottom left
-	vb[5] = (EJVertex) { d22, {tx+tw, ty+th}, color };// bottom right
+	vb[5] = (EJVertex) { d22, {tx+tw, ty+th}, color };	// bottom right
 	
 	vertexBufferIndex += 6;
 }
@@ -369,7 +410,7 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 	
 	EJColorRGBA color = {.rgba = {255, 255, 255, 255 * state->globalAlpha}};
 	[self setTexture:texture];
-	[self pushRectX:dx y:dy w:dw h:dh tx:sx/tw ty:sy/th tw:sw/tw th:sh/th color:color withTransform:state->transform];
+	[self pushTexturedRectX:dx y:dy w:dw h:dh tx:sx/tw ty:sy/th tw:sw/tw th:sh/th color:color withTransform:state->transform];
 }
 
 - (void)fillRectX:(float)x y:(float)y w:(float)w h:(float)h {
@@ -377,7 +418,7 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 	
 	EJColorRGBA color = state->fillColor;
 	color.rgba.a = (float)color.rgba.a * state->globalAlpha;
-	[self pushRectX:x y:y w:w h:h tx:0 ty:0 tw:0 th:0 color:color withTransform:state->transform];
+	[self pushRectX:x y:y w:w h:h color:color withTransform:state->transform];
 }
 
 - (void)strokeRectX:(float)x y:(float)y w:(float)w h:(float)h {
@@ -403,7 +444,7 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 	self.globalCompositeOperation = kEJCompositeOperationDestinationOut;
 	
 	static EJColorRGBA white = {.hex = 0xffffffff};
-	[self pushRectX:x y:y w:w h:h tx:0 ty:0 tw:0 th:0 color:white withTransform:state->transform];
+	[self pushRectX:x y:y w:w h:h color:white withTransform:state->transform];
 	
 	self.globalCompositeOperation = oldOp;
 }
@@ -425,7 +466,7 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 	
 	static EJColorRGBA white = {.hex = 0xffffffff};
 	
-	[self pushRectX:dx y:dy w:tw h:th tx:0 ty:0 tw:1 th:1 color:white withTransform:CGAffineTransformIdentity];
+	[self pushTexturedRectX:dx y:dy w:tw h:th tx:0 ty:0 tw:1 th:1 color:white withTransform:CGAffineTransformIdentity];
 	[self flushBuffers];
 }
 

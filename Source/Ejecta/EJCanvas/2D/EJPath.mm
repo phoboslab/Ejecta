@@ -26,7 +26,7 @@ typedef std::vector<subpath_t> path_t;
 - (id)init {
 	self = [super init];
 	if(self) {
-		transform	= CGAffineTransformIdentity;
+		transform = CGAffineTransformIdentity;
 		stencilMask = 0x1;
 		[self reset];
 	}
@@ -332,8 +332,8 @@ typedef std::vector<subpath_t> path_t;
 	
 	
 	// Disable drawing to the color buffer, enable the stencil buffer
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	glDisableClientState(GL_COLOR_ARRAY);
+	glDisableVertexAttribArray(kEJGLProgram2DAttributeUV);
+	glDisableVertexAttribArray(kEJGLProgram2DAttributeColor);
 	
 	glDisable(GL_BLEND);
 	glEnable(GL_STENCIL_TEST);
@@ -348,7 +348,6 @@ typedef std::vector<subpath_t> path_t;
 	glStencilOp(GL_ZERO, GL_ZERO, GL_ZERO);
 	[context
 		pushRectX:minPos.x y:minPos.y w:maxPos.x-minPos.x h:maxPos.y-minPos.y
-		tx:0 ty:0 tw:0 th:0
 		color:color	withTransform:CGAffineTransformIdentity];
 	[context flushBuffers];
 	
@@ -359,7 +358,8 @@ typedef std::vector<subpath_t> path_t;
 	
 	glEnable(GL_CULL_FACE);
 	for( path_t::iterator sp = paths.begin(); sp != paths.end(); ++sp ) {
-		glVertexPointer(2, GL_FLOAT, sizeof(EJVector2), &(sp->points).front());
+		//glVertexPointer(2, GL_FLOAT, sizeof(EJVector2), &(sp->points).front());
+		glVertexAttribPointer(kEJGLProgram2DAttributePos, 2, GL_FLOAT, GL_FALSE, 0, &(sp->points).front());
 		
 		glCullFace(GL_BACK);
 		glStencilOp(GL_INCR_WRAP, GL_KEEP, GL_INCR_WRAP);
@@ -391,7 +391,6 @@ typedef std::vector<subpath_t> path_t;
     glStencilOp(GL_ZERO, GL_ZERO, GL_ZERO);
 	[context
 		pushRectX:minPos.x y:minPos.y w:maxPos.x-minPos.x h:maxPos.y-minPos.y
-		tx:0 ty:0 tw:0 th:0
 		color:color	withTransform:CGAffineTransformIdentity];
 	[context flushBuffers];
 	glDisable(GL_STENCIL_TEST);
@@ -428,7 +427,7 @@ typedef std::vector<subpath_t> path_t;
 	}
 	
 	// 1 step per 5 pixel
-	float pxScale = CGAffineTransformGetScale(state->transform) * context.backingStoreRatio;
+	float pxScale = CGAffineTransformGetScale(state->transform);
 	int numSteps = MAX( 1, (angle2 * width2 * pxScale) / 5.0f );
 	
 	if(numSteps==1) {
@@ -466,7 +465,6 @@ typedef std::vector<subpath_t> path_t;
 	[self endSubPath];
 	
 	EJCanvasState * state = context.state;
-	EJVector2 vecZero = { 0.0f, 0.0f };
 	
 	// Find the width of the line as it is projected onto the screen.
 	float projectedLineWidth = CGAffineTransformGetScale( state->transform ) * state->lineWidth;
@@ -486,7 +484,8 @@ typedef std::vector<subpath_t> path_t;
 	
 	// Enable stencil test when drawing transparent lines.
 	// Cycle through all bits, so that the stencil buffer only has to be cleared after eight stroke operations
-	if( color.rgba.a < 0xff ) {
+	BOOL useStencil = (color.rgba.a < 0xff || state->globalCompositeOperation != kEJCompositeOperationSourceOver);
+	if( useStencil ) {
 		[context flushBuffers];
 		[context createStencilBufferOnce];
 		
@@ -501,9 +500,7 @@ typedef std::vector<subpath_t> path_t;
 	// To draw the line correctly with transformations, we need to construct the line
 	// vertices from the untransformed points and only apply the transformation in
 	// the last step (pushQuad) again.	
-	CGAffineTransform inverseTransform = CGAffineTransformIsIdentity(transform)
-		? transform
-		: CGAffineTransformInvert(transform);
+	CGAffineTransform inverseTransform = CGAffineTransformInvert(transform);
 	
 	
 	// Oh god, I'm so sorry... This code sucks quite a bit. I'd be surprised if I
@@ -565,7 +562,6 @@ typedef std::vector<subpath_t> path_t;
 						
 						[context
 							 pushQuadV1:cap11 v2:cap12 v3:miter21 v4:miter22
-							 t1:vecZero t2:vecZero t3:vecZero t4:vecZero
 							 color:color withTransform:transform];
 					}
 					else {
@@ -651,7 +647,6 @@ typedef std::vector<subpath_t> path_t;
 
 			[context
 				pushQuadV1:miter11 v2:miter12 v3:miter21 v4:miter22
-				t1:vecZero t2:vecZero t3:vecZero t4:vecZero
 				color:color withTransform:transform];
 
 			// No miter added? The "miter" for the next segment needs to be the butt for the next segment,
@@ -705,7 +700,6 @@ typedef std::vector<subpath_t> path_t;
 
 		[context
 			pushQuadV1:miter11 v2:miter12 v3:miter21 v4:miter22
-			t1:vecZero t2:vecZero t3:vecZero t4:vecZero
 			color:color withTransform:transform];		
 
 		// End cap
@@ -717,7 +711,6 @@ typedef std::vector<subpath_t> path_t;
 				
 				[context
 					pushQuadV1:cap11 v2:cap12 v3:miter11 v4:miter12
-					t1:vecZero t2:vecZero t3:vecZero t4:vecZero
 					color:color withTransform:transform];
 			}
 			else {
@@ -727,7 +720,7 @@ typedef std::vector<subpath_t> path_t;
 	} // for each path
 	
 	// disable stencil test when drawing transparent lines
-	if( color.rgba.a < 0xff ) {
+	if( useStencil ) {
 		[context flushBuffers];
 		glDisable(GL_STENCIL_TEST);
 		

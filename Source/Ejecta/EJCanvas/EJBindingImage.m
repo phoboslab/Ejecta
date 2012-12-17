@@ -10,7 +10,7 @@
 	loading = YES;
 	
 	NSInvocationOperation* loadOp = [[NSInvocationOperation alloc] initWithTarget:self
-				selector:@selector(load:) object:[EJApp instance].glContext.sharegroup];
+				selector:@selector(load:) object:[EJApp instance].glSharegroup];
 	[loadOp setThreadPriority:0.0];
 	[[EJApp instance].opQueue addOperation:loadOp];
 	[loadOp release];

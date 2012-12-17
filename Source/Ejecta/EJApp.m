@@ -40,7 +40,9 @@ JSObjectRef ej_callAsConstructor(JSContextRef ctx, JSObjectRef constructor, size
 @implementation EJApp
 @synthesize landscapeMode;
 @synthesize jsGlobalContext;
-@synthesize glContext;
+@synthesize glContextES1;
+@synthesize glContextES2;
+@synthesize glSharegroup;
 @synthesize window;
 @synthesize touchDelegate;
 
@@ -114,8 +116,11 @@ static EJApp * ejectaInstance = NULL;
 		);
 		
 		// Create the OpenGL ES1 Context
-		glContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES1];
-		[EAGLContext setCurrentContext:glContext];
+		glContextES2 = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
+		glSharegroup = glContextES2.sharegroup;
+		//glContextES2 = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2 sharegroup:glSharegroup];
+		glCurrentContext = glContextES2;
+		[EAGLContext setCurrentContext:glCurrentContext];
 		
 		// Load the initial JavaScript source files
 		[self loadScriptAtPath:EJECTA_BOOT_JS];
@@ -134,7 +139,8 @@ static EJApp * ejectaInstance = NULL;
 	[displayLink invalidate];
 	[displayLink release];
 	[timers release];
-	[glContext release];
+	[glContextES1 release];
+	[glContextES2 release];
 	[super dealloc];
 }
 
@@ -188,7 +194,7 @@ static EJApp * ejectaInstance = NULL;
 
 
 - (void)resume {
-	[EAGLContext setCurrentContext:glContext];
+	[EAGLContext setCurrentContext:glCurrentContext];
 	[displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 	paused = false;
 }
@@ -351,6 +357,13 @@ static EJApp * ejectaInstance = NULL;
 	if( renderingContext != currentRenderingContext ) {
 		[currentRenderingContext flushBuffers];
 		[currentRenderingContext release];
+		
+		// Switch GL Context if different
+		if( renderingContext.glContext != glCurrentContext ) {
+			//glCurrentContext = renderingContext.glContext;
+			//[EAGLContext setCurrentContext:glCurrentContext];
+		}
+		
 		[renderingContext prepare];
 		currentRenderingContext = [renderingContext retain];
 	}

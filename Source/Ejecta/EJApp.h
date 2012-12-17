@@ -28,7 +28,10 @@
 	EJTimerCollection * timers;
 	NSTimeInterval currentTime;
 	
-	EAGLContext * glContext;
+	EAGLContext * glCurrentContext;
+	EAGLContext * glContextES1;
+	EAGLContext * glContextES2;
+	EAGLSharegroup * glSharegroup;
 	CADisplayLink * displayLink;
 	
 	NSOperationQueue * opQueue;
@@ -60,7 +63,9 @@
 
 @property (nonatomic, readonly) BOOL landscapeMode;
 @property (nonatomic, readonly) JSGlobalContextRef jsGlobalContext;
-@property (nonatomic, readonly) EAGLContext * glContext;
+@property (nonatomic, readonly) EAGLContext * glContextES1;
+@property (nonatomic, readonly) EAGLContext * glContextES2;
+@property (nonatomic, readonly) EAGLSharegroup * glSharegroup;
 @property (nonatomic, readonly) UIWindow * window;
 @property (nonatomic, retain) NSObject<EJTouchDelegate> * touchDelegate;
 
