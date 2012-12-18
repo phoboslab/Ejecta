@@ -40,8 +40,7 @@ JSObjectRef ej_callAsConstructor(JSContextRef ctx, JSObjectRef constructor, size
 @implementation EJApp
 @synthesize landscapeMode;
 @synthesize jsGlobalContext;
-@synthesize glContextES1;
-@synthesize glContextES2;
+@synthesize glContext2D;
 @synthesize glSharegroup;
 @synthesize window;
 @synthesize touchDelegate;
@@ -116,10 +115,9 @@ static EJApp * ejectaInstance = NULL;
 		);
 		
 		// Create the OpenGL ES1 Context
-		glContextES2 = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
-		glSharegroup = glContextES2.sharegroup;
-		//glContextES2 = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2 sharegroup:glSharegroup];
-		glCurrentContext = glContextES2;
+		glContext2D = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
+		glSharegroup = glContext2D.sharegroup;
+		glCurrentContext = glContext2D;
 		[EAGLContext setCurrentContext:glCurrentContext];
 		
 		// Load the initial JavaScript source files
@@ -139,8 +137,7 @@ static EJApp * ejectaInstance = NULL;
 	[displayLink invalidate];
 	[displayLink release];
 	[timers release];
-	[glContextES1 release];
-	[glContextES2 release];
+	[glContext2D release];
 	[super dealloc];
 }
 
@@ -359,9 +356,9 @@ static EJApp * ejectaInstance = NULL;
 		[currentRenderingContext release];
 		
 		// Switch GL Context if different
-		if( renderingContext.glContext != glCurrentContext ) {
-			//glCurrentContext = renderingContext.glContext;
-			//[EAGLContext setCurrentContext:glCurrentContext];
+		if( renderingContext && renderingContext.glContext != glCurrentContext ) {
+			glCurrentContext = renderingContext.glContext;
+			[EAGLContext setCurrentContext:glCurrentContext];
 		}
 		
 		[renderingContext prepare];

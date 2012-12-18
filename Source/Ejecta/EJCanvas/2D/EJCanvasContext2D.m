@@ -23,7 +23,7 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 
 - (id)initWithWidth:(short)widthp height:(short)heightp {
 	if( self = [super init] ) {
-		glContext = [EJApp instance].glContextES2;
+		glContext = [EJApp instance].glContext2D;
 	
 		memset(stateStack, 0, sizeof(stateStack));
 		stateIndex = 0;

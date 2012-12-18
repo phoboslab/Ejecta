@@ -29,8 +29,7 @@
 	NSTimeInterval currentTime;
 	
 	EAGLContext * glCurrentContext;
-	EAGLContext * glContextES1;
-	EAGLContext * glContextES2;
+	EAGLContext * glContext2D;
 	EAGLSharegroup * glSharegroup;
 	CADisplayLink * displayLink;
 	
@@ -63,8 +62,7 @@
 
 @property (nonatomic, readonly) BOOL landscapeMode;
 @property (nonatomic, readonly) JSGlobalContextRef jsGlobalContext;
-@property (nonatomic, readonly) EAGLContext * glContextES1;
-@property (nonatomic, readonly) EAGLContext * glContextES2;
+@property (nonatomic, readonly) EAGLContext * glContext2D;
 @property (nonatomic, readonly) EAGLSharegroup * glSharegroup;
 @property (nonatomic, readonly) UIWindow * window;
 @property (nonatomic, retain) NSObject<EJTouchDelegate> * touchDelegate;
