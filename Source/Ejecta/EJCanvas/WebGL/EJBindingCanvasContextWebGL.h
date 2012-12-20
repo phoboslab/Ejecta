@@ -2,11 +2,11 @@
 #import "EJBindingBase.h"
 #import "EJCanvasContextWebGL.h"
 
-#define EJ_UNPACK_FLIP_Y_WEBGL 0x9240
-#define EJ_UNPACK_PREMULTIPLY_ALPHA_WEBGL 0x9241
-#define EJ_CONTEXT_LOST_WEBGL 0x9242
-#define EJ_UNPACK_COLORSPACE_CONVERSION_WEBGL 0x9243
-#define EJ_BROWSER_DEFAULT_WEBGL 0x9244
+#define GL_UNPACK_FLIP_Y_WEBGL 0x9240
+#define GL_UNPACK_PREMULTIPLY_ALPHA_WEBGL 0x9241
+#define GL_CONTEXT_LOST_WEBGL 0x9242
+#define GL_UNPACK_COLORSPACE_CONVERSION_WEBGL 0x9243
+#define GL_BROWSER_DEFAULT_WEBGL 0x9244
 
 GLfloat * JSValueToGLfloatArray(JSContextRef ctx, JSValueRef value, size_t expectedSize);
 GLint * JSValueToGLintArray(JSContextRef ctx, JSValueRef value, size_t expectedSize);
