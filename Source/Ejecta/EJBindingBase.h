@@ -159,7 +159,60 @@ static inline bool JSStrIsEqualToStr( const JSChar * s1, const char * s2, int le
 		return JSValueMakeNumber(ctx, VALUE); \
 	} \
 	__EJ_GET_POINTER_TO(_get_##NAME)
+
+
+// Commas can't be used directly in macro arguments
+#define _EJ_COMMA() ,
+#define _EJ_EMPTY()
+#define _EJ_LITERAL(X) X _EJ_EMPTY
+
+
+// ------------------------------------------------------------------------------------
+// Expand a F(INDEX,ARG) macro for each argument, max 16 arguments - use with
+// EJ_MAP( F, arg1, arg2, ... );
+
+// An offset for the index as well as a joiner (a macro that is expanded between each
+// F() expansion) can be specified with
+// EJ_MAP_EXT( OFFSET, JOINER, F, arg1, arg2 );
+
+// Adopted from https://github.com/swansontec/map-macro
+
+#define EJ_MAP_EXT(OFFSET, JOINER, F, ...) _EJ_EVAL(_EJ_MAP1(OFFSET, JOINER, F, __VA_ARGS__, (), 0))
+#define EJ_MAP(F, ...) _EJ_EVAL(_EJ_MAP1(0, _EJ_EMPTY, F, __VA_ARGS__, (), 0))
+
+#define _EJ_EVAL0(...) __VA_ARGS__
+#define _EJ_EVAL1(...) _EJ_EVAL0( _EJ_EVAL0(__VA_ARGS__) )
+#define _EJ_EVAL2(...) _EJ_EVAL1( _EJ_EVAL1(__VA_ARGS__) )
+#define _EJ_EVAL(...)  _EJ_EVAL2( _EJ_EVAL2(__VA_ARGS__) )
+
+#define _EJ_MAP_END(...)
+#define _EJ_MAP_OUT
+#define _EJ_MAP_GET_END() 0, _EJ_MAP_END
+#define _EJ_MAP_NEXT0(ITEM, NEXT, ...) NEXT _EJ_MAP_OUT
+#define _EJ_MAP_NEXT1(JOINER, ITEM, NEXT) _EJ_MAP_NEXT0 (ITEM, JOINER() NEXT, 0)
+#define _EJ_MAP_NEXT(JOINER, ITEM, NEXT) _EJ_MAP_NEXT1 (JOINER, _EJ_MAP_GET_END ITEM, NEXT)
+
+#define _EJ_MAP0(IDX, JOINER, F, NAME, PEEK, ...) F(IDX, NAME) _EJ_MAP_NEXT(JOINER, PEEK, _EJ_MAP1) (IDX+1, JOINER, F, PEEK, __VA_ARGS__)
+#define _EJ_MAP1(IDX, JOINER, F, NAME, PEEK, ...) F(IDX, NAME) _EJ_MAP_NEXT(JOINER, PEEK, _EJ_MAP0) (IDX+1, JOINER, F, PEEK, __VA_ARGS__)
+
+
+// EJ_ARGC(...) - get the argument count in a macro with __VA_ARGS__; max 16 args
+#define EJ_ARGC(...) _EJ_ARGC_SEQ(__VA_ARGS__,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1)
+#define _EJ_ARGC_SEQ(x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11,x12,x13,x14,x15,x16,n,...) n
+
+
+// Unpack JavaScript values to numbers - use with
+// EJ_UNPACK_ARGV(float value1, int value2);
+// or with an offset into argv
+// EJ_UNPACK_ARGV_OFFSET(OFFSET, float value1, int value2, ...);
+#define EJ_UNPACK_ARGV(...) EJ_UNPACK_ARGV_OFFSET(0, __VA_ARGS__)
+#define EJ_UNPACK_ARGV_OFFSET(OFFSET, ...) \
+	if( argc < EJ_ARGC(__VA_ARGS__)+OFFSET ) { \
+		return NULL; \
+	} \
+	EJ_MAP_EXT(OFFSET, _EJ_LITERAL(;), _EJ_UNPACK_NUMBER, __VA_ARGS__)
 	
+#define _EJ_UNPACK_NUMBER(INDEX, NAME) NAME = JSValueToNumberFast(ctx, argc[INDEX]);
 
 
 @interface EJBindingBase : NSObject {
