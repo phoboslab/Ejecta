@@ -133,7 +133,7 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 	if( contextMode != kEJCanvasContextModeInvalid ) {
 	
 		// Nothing changed? - just return the already created context
-		if( contextMode == kEJCanvasContextModeWebGL ) {
+		if( contextMode == newContextMode ) {
 			return jsCanvasContext;
 		}
 		
