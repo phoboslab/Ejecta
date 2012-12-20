@@ -16,10 +16,10 @@
 }
 
 + (GLuint)indexFromJSValue:(JSValueRef)value {
-	// TODO: check if isObject first!?
+	if( !value ) { return 0; }
+	
 	EJBindingWebGLObject * binding = (EJBindingWebGLObject *)JSObjectGetPrivate((JSObjectRef)value);
-	//return [binding isMemberOfClass:[self class]] ? binding->index : 0;
-	return binding ? binding->index : 0;
+	return (binding && [binding isMemberOfClass:[self class]]) ? binding->index : 0;
 }
 
 + (JSObjectRef)createJSObjectWithContext:(JSContextRef)ctx webglContext:(EJBindingCanvasContextWebGL *)webglContext index:(GLuint)index {
