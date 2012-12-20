@@ -70,6 +70,9 @@
 		B6F115061676BE18001F1324 /* EJConvertColorRGBA.m in Sources */ = {isa = PBXBuildFile; fileRef = B6F115051676BE18001F1324 /* EJConvertColorRGBA.m */; };
 		B6F1151A1677F08A001F1324 /* EJBindingDeviceMotion.m in Sources */ = {isa = PBXBuildFile; fileRef = B6F115191677F088001F1324 /* EJBindingDeviceMotion.m */; };
 		B6F1151C1677FCF5001F1324 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6F1151B1677FCF2001F1324 /* CoreMotion.framework */; };
+		B6F1154D167A7D17001F1324 /* EJBindingCanvasContextWebGL.m in Sources */ = {isa = PBXBuildFile; fileRef = B6F1154C167A7D17001F1324 /* EJBindingCanvasContextWebGL.m */; };
+		B6F11550167A7DA1001F1324 /* EJCanvasContextWebGL.m in Sources */ = {isa = PBXBuildFile; fileRef = B6F1154F167A7DA1001F1324 /* EJCanvasContextWebGL.m */; };
+		B6F11556167BD59D001F1324 /* EJBindingWebGLObjects.m in Sources */ = {isa = PBXBuildFile; fileRef = B6F11555167BD59B001F1324 /* EJBindingWebGLObjects.m */; };
 		B6F115B7167E895B001F1324 /* EJGLProgram2D.m in Sources */ = {isa = PBXBuildFile; fileRef = B6F115B6167E8954001F1324 /* EJGLProgram2D.m */; };
 		B6F463A41636C3FB00FC89C1 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6F463A31636C3FA00FC89C1 /* SystemConfiguration.framework */; };
 /* End PBXBuildFile section */
@@ -188,6 +191,12 @@
 		B6F115181677F086001F1324 /* EJBindingDeviceMotion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingDeviceMotion.h; sourceTree = "<group>"; };
 		B6F115191677F088001F1324 /* EJBindingDeviceMotion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingDeviceMotion.m; sourceTree = "<group>"; };
 		B6F1151B1677FCF2001F1324 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
+		B6F1154B167A7D17001F1324 /* EJBindingCanvasContextWebGL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EJBindingCanvasContextWebGL.h; path = WebGL/EJBindingCanvasContextWebGL.h; sourceTree = "<group>"; };
+		B6F1154C167A7D17001F1324 /* EJBindingCanvasContextWebGL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EJBindingCanvasContextWebGL.m; path = WebGL/EJBindingCanvasContextWebGL.m; sourceTree = "<group>"; };
+		B6F1154E167A7DA0001F1324 /* EJCanvasContextWebGL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EJCanvasContextWebGL.h; path = WebGL/EJCanvasContextWebGL.h; sourceTree = "<group>"; };
+		B6F1154F167A7DA1001F1324 /* EJCanvasContextWebGL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EJCanvasContextWebGL.m; path = WebGL/EJCanvasContextWebGL.m; sourceTree = "<group>"; };
+		B6F11554167BD599001F1324 /* EJBindingWebGLObjects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EJBindingWebGLObjects.h; path = WebGL/EJBindingWebGLObjects.h; sourceTree = "<group>"; };
+		B6F11555167BD59B001F1324 /* EJBindingWebGLObjects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EJBindingWebGLObjects.m; path = WebGL/EJBindingWebGLObjects.m; sourceTree = "<group>"; };
 		B6F115B5167E894E001F1324 /* EJGLProgram2D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJGLProgram2D.h; sourceTree = "<group>"; };
 		B6F115B6167E8954001F1324 /* EJGLProgram2D.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJGLProgram2D.m; sourceTree = "<group>"; };
 		B6F463A31636C3FA00FC89C1 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
@@ -321,6 +330,7 @@
 			isa = PBXGroup;
 			children = (
 				B6F114E91676BD40001F1324 /* 2D */,
+				B6F11549167A7CA7001F1324 /* WebGL */,
 				B6F114DD1676B4FE001F1324 /* EJBindingCanvas.h */,
 				B6F114DE1676B4FE001F1324 /* EJBindingCanvas.m */,
 				B64CE629166682700087CF94 /* EJBindingImage.h */,
@@ -439,6 +449,19 @@
 			path = 2D;
 			sourceTree = "<group>";
 		};
+		B6F11549167A7CA7001F1324 /* WebGL */ = {
+			isa = PBXGroup;
+			children = (
+				B6F1154B167A7D17001F1324 /* EJBindingCanvasContextWebGL.h */,
+				B6F1154C167A7D17001F1324 /* EJBindingCanvasContextWebGL.m */,
+				B6F1154E167A7DA0001F1324 /* EJCanvasContextWebGL.h */,
+				B6F1154F167A7DA1001F1324 /* EJCanvasContextWebGL.m */,
+				B6F11554167BD599001F1324 /* EJBindingWebGLObjects.h */,
+				B6F11555167BD59B001F1324 /* EJBindingWebGLObjects.m */,
+			);
+			name = WebGL;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -549,6 +572,9 @@
 				B6F115011676BD40001F1324 /* EJPath.mm in Sources */,
 				B6F115061676BE18001F1324 /* EJConvertColorRGBA.m in Sources */,
 				B6F1151A1677F08A001F1324 /* EJBindingDeviceMotion.m in Sources */,
+				B6F1154D167A7D17001F1324 /* EJBindingCanvasContextWebGL.m in Sources */,
+				B6F11550167A7DA1001F1324 /* EJCanvasContextWebGL.m in Sources */,
+				B6F11556167BD59D001F1324 /* EJBindingWebGLObjects.m in Sources */,
 				B6F115B7167E895B001F1324 /* EJGLProgram2D.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

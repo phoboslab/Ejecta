@@ -4,6 +4,9 @@
 #import "EJCanvasContext2DTexture.h"
 #import "EJBindingCanvasContext2D.h"
 
+#import "EJCanvasContextWebGL.h"
+#import "EJBindingCanvasContextWebGL.h"
+
 
 @implementation EJBindingCanvas
 
@@ -166,11 +169,22 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 		EJBindingCanvasContext2D * binding = [[EJBindingCanvasContext2D alloc]
 			initWithCanvas:jsObject renderingContext:(EJCanvasContext2D *)renderingContext];
 		jsCanvasContext = [EJBindingCanvasContext2D createJSObjectWithContext:ctx instance:binding];
+		JSValueProtect(ctx, jsCanvasContext);
 	}
 	
 	else if( newContextMode == kEJCanvasContextModeWebGL ) {
-		NSLog(@"Warning: webgl context not yet implemented.");
-		return NULL;
+		EJCanvasContextWebGL * sc = [[EJCanvasContextWebGL alloc] initWithWidth:width height:height];
+		sc.useRetinaResolution = useRetinaResolution;
+		sc.scalingMode = scalingMode;
+		
+		[EJApp instance].screenRenderingContext = sc;		
+		renderingContext = sc;
+		
+		// Create the JS object
+		EJBindingCanvasContextWebGL * binding = [[EJBindingCanvasContextWebGL alloc]
+			initWithCanvas:jsObject renderingContext:(EJCanvasContextWebGL *)renderingContext];
+		jsCanvasContext = [EJBindingCanvasContextWebGL createJSObjectWithContext:ctx instance:binding];
+		JSValueProtect(ctx, jsCanvasContext);
 	}
 	
 	

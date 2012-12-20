@@ -35,6 +35,10 @@
 	return imageData;
 }
 
+- (EJTexture *)texture {
+	return imageData.texture;
+}
+
 EJ_BIND_GET(data, ctx ) {
 	if( !dataArray ) {
 		int count = imageData.width * imageData.height * 4;
