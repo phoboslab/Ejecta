@@ -97,6 +97,8 @@
 
 }
 
+
+
 EJ_BIND_GET(canvas, ctx) {
 	return jsCanvas;
 }
@@ -109,6 +111,20 @@ EJ_BIND_GET(drawinBufferHeight, ctx) {
 	return JSValueMakeNumber(ctx, renderingContext.height * renderingContext.backingStoreRatio);
 }
 
+
+
+// ------------------------------------------------------------------------------------
+// Methods
+
+
+// Shorthand to directly bind a c function that only takes numbers
+#define EJ_BIND_FUNCTION_DIRECT(NAME, BINDING, ...) \
+	EJ_BIND_FUNCTION(NAME, ctx, argc, argv) { \
+		if( argc < EJ_ARGC(__VA_ARGS__) ) { return NULL; } \
+		BINDING( EJ_MAP_EXT(0, _EJ_COMMA, _EJ_BIND_FUNCTION_DIRECT_UNPACK, __VA_ARGS__) ); \
+		return NULL;\
+	}
+#define _EJ_BIND_FUNCTION_DIRECT_UNPACK(INDEX, IGNORED) JSValueToNumberFast(ctx, argv[INDEX])
 
 
 EJ_BIND_FUNCTION(getContextAttributes, ctx, argc, argv) {
@@ -144,7 +160,6 @@ EJ_BIND_FUNCTION(attachShader, ctx, argc, argv) {
 	return NULL;
 }
 
-
 EJ_BIND_FUNCTION(bindAttribLocation, ctx, argc, argv) {
 	if( argc < 3 ) { return NULL; }
 	
@@ -156,96 +171,30 @@ EJ_BIND_FUNCTION(bindAttribLocation, ctx, argc, argv) {
 	return NULL;
 }
 
-EJ_BIND_FUNCTION(bindFramebuffer, ctx, argc, argv) {
-	if( argc < 2 ) { return NULL; }
-	
-	GLenum target = JSValueToNumberFast(ctx, argv[0]);
-	GLuint framebuffer = [EJBindingWebGLFramebuffer indexFromJSValue:argv[1]];
-	glBindFramebuffer(target, framebuffer);
-	return NULL;
-}
 
-EJ_BIND_FUNCTION(bindRenderbuffer, ctx, argc, argv) {
-	if( argc < 2 ) { return NULL; }
-	
-	GLenum target = JSValueToNumberFast(ctx, argv[0]);
-	GLuint renderbuffer = [EJBindingWebGLRenderbuffer indexFromJSValue:argv[1]];
-	glBindRenderbuffer(target, renderbuffer);
-	return NULL;
-}
+#define EJ_BIND_BIND(I, NAME) \
+	EJ_BIND_FUNCTION(bind##NAME, ctx, argc, argv) { \
+		if( argc < 2 ) { return NULL; } \
+		GLenum target = JSValueToNumberFast(ctx, argv[0]); \
+		GLuint index = [EJBindingWebGL##NAME indexFromJSValue:argv[1]]; \
+		glBind##NAME(target, index); \
+		return NULL; \
+	}
 
-EJ_BIND_FUNCTION(bindBuffer, ctx, argc, argv) {
-	if( argc < 2 ) { return NULL; }
-	
-	GLenum target = JSValueToNumberFast(ctx, argv[0]);
-	GLuint buffer = [EJBindingWebGLBuffer indexFromJSValue:argv[1]];
-	glBindBuffer(target, buffer);
-	return NULL;
-}
+	EJ_MAP(EJ_BIND_BIND, Framebuffer, Renderbuffer, Buffer, Texture);
 
-EJ_BIND_FUNCTION(bindTexture, ctx, argc, argv) {
-	if( argc < 2 ) { return NULL; }
-	
-	GLenum target = JSValueToNumberFast(ctx, argv[0]);
-	GLuint texture = [EJBindingWebGLTexture indexFromJSValue:argv[1]];
-	glBindTexture(target, texture);
-	return NULL;
-}
+#undef EJ_BIND_BIND
 
-EJ_BIND_FUNCTION(blendColor, ctx, argc, argv) {
-	if( argc < 4 ) { return NULL; }
-	
-	GLclampf
-		red = JSValueToNumberFast(ctx, argv[0]),
-		green = JSValueToNumberFast(ctx, argv[1]),
-		blue = JSValueToNumberFast(ctx, argv[2]),
-		alpha = JSValueToNumberFast(ctx, argv[3]);
-		
-	glBlendColor(red, green, blue, alpha);
-	return NULL;
-}
 
-EJ_BIND_FUNCTION(blendEquation, ctx, argc, argv) {
-	if( argc < 2 ) { return NULL; }
-	
-	GLenum mode = JSValueToNumberFast(ctx, argv[0]);
-	glBlendEquation(mode);
-	return NULL;
-}
-
-EJ_BIND_FUNCTION(blendEquationSeparate, ctx, argc, argv) {
-	if( argc < 2 ) { return NULL; }
-	
-	GLenum modeRGB = JSValueToNumberFast(ctx, argv[0]);
-	GLenum modeAlpha = JSValueToNumberFast(ctx, argv[0]);
-	glBlendEquationSeparate(modeRGB, modeAlpha);
-	return NULL;
-}
-
-EJ_BIND_FUNCTION(blendFunc, ctx, argc, argv) {
-	if( argc < 2 ) { return NULL; }
-	
-	GLenum sfactor = JSValueToNumberFast(ctx, argv[0]);
-	GLenum dfactor = JSValueToNumberFast(ctx, argv[1]);
-	glBlendFunc(sfactor, dfactor);
-	return NULL;
-}
-
-EJ_BIND_FUNCTION(blendFuncSeparate, ctx, argc, argv) {
-	if( argc < 2 ) { return NULL; }
-	
-	GLenum srcRGB = JSValueToNumberFast(ctx, argv[0]);
-	GLenum dstRGB = JSValueToNumberFast(ctx, argv[1]);
-	GLenum srcAlpha = JSValueToNumberFast(ctx, argv[0]);
-	GLenum dstAlpha = JSValueToNumberFast(ctx, argv[1]);
-	
-	glBlendFuncSeparate(srcRGB, dstRGB, srcAlpha, dstAlpha);
-	return NULL;
-}
+EJ_BIND_FUNCTION_DIRECT(blendColor, glBlendColor, red, green, blue, alpha);
+EJ_BIND_FUNCTION_DIRECT(blendEquation, glBlendEquation, mode);
+EJ_BIND_FUNCTION_DIRECT(blendEquationSeparate, glBlendEquationSeparate, modeRGB, modeAlpha);
+EJ_BIND_FUNCTION_DIRECT(blendFunc, glBlendFunc, sfactor, dfactor);
+EJ_BIND_FUNCTION_DIRECT(blendFuncSeparate, glBlendFuncSeparate, srcRGB, dstRGB, srcAlpha, dstAlpha);
 
 EJ_BIND_FUNCTION(bufferData, ctx, argc, argv) {
 	if( argc < 3 ) { return NULL; }
-
+	
 	GLenum target = JSValueToNumberFast(ctx, argv[0]);
 	GLenum usage = JSValueToNumberFast(ctx, argv[2]);
 
@@ -283,55 +232,11 @@ EJ_BIND_FUNCTION(checkFramebufferStatus, ctx, argc, argv) {
 	return JSValueMakeNumber(ctx, glCheckFramebufferStatus(target));
 }
 
-EJ_BIND_FUNCTION(clear, ctx, argc, argv) {
-	if( argc < 1 ) { return NULL; }
-
-	GLbitfield mask = JSValueToNumberFast(ctx, argv[0]);
-	glClear(mask);
-	return NULL;
-}
-
-EJ_BIND_FUNCTION(clearColor, ctx, argc, argv) {
-	if( argc < 4 ) { return NULL; }
-	
-	GLclampf
-		red = JSValueToNumberFast(ctx, argv[0]),
-		green = JSValueToNumberFast(ctx, argv[1]),
-		blue = JSValueToNumberFast(ctx, argv[2]),
-		alpha = JSValueToNumberFast(ctx, argv[3]);
-	
-	glClearColor(red, green, blue, alpha);
-	return NULL;
-}
-
-EJ_BIND_FUNCTION(clearDepth, ctx, argc, argv) {
-	if( argc < 1 ) { return NULL; }
-
-	GLclampf depth = JSValueToNumberFast(ctx, argv[0]);
-	glClearDepthf(depth);
-	return NULL;
-}
-
-EJ_BIND_FUNCTION(clearStencil, ctx, argc, argv) {
-	if( argc < 1 ) { return NULL; }
-
-	GLint s = JSValueToNumberFast(ctx, argv[0]);
-	glClearStencil(s);
-	return NULL;
-}
-
-EJ_BIND_FUNCTION(colorMask, ctx, argc, argv) {
-	if( argc < 4 ) { return NULL; }
-	
-	GLboolean
-		red = JSValueToNumberFast(ctx, argv[0]),
-		green = JSValueToNumberFast(ctx, argv[1]),
-		blue = JSValueToNumberFast(ctx, argv[2]),
-		alpha = JSValueToNumberFast(ctx, argv[3]);
-	
-	glColorMask(red, green, blue, alpha);
-	return NULL;
-}
+EJ_BIND_FUNCTION_DIRECT(clear, glClear, mask);
+EJ_BIND_FUNCTION_DIRECT(clearColor, glClearColor, red, green, blue, alpha);
+EJ_BIND_FUNCTION_DIRECT(clearDepth, glClearDepthf, depth);
+EJ_BIND_FUNCTION_DIRECT(clearStencil, glClearStencil, s);
+EJ_BIND_FUNCTION_DIRECT(colorMask, glColorMask, red, green, blue, alpha);
 
 EJ_BIND_FUNCTION(compileShader, ctx, argc, argv) {
 	if( argc < 1 ) { return NULL; }
@@ -341,51 +246,22 @@ EJ_BIND_FUNCTION(compileShader, ctx, argc, argv) {
 	return NULL;
 }
 
-EJ_BIND_FUNCTION(copyTexImage2D, ctx, argc, argv) {
-	GLenum target = JSValueToNumberFast(ctx, argv[0]);
-	GLint level = JSValueToNumberFast(ctx, argv[1]);
-	GLenum internalformat = JSValueToNumberFast(ctx, argv[2]);
-	GLint x = JSValueToNumberFast(ctx, argv[3]);
-	GLint y = JSValueToNumberFast(ctx, argv[4]);
-	GLsizei width = JSValueToNumberFast(ctx, argv[5]);
-	GLsizei height = JSValueToNumberFast(ctx, argv[6]);
-	GLint border = JSValueToNumberFast(ctx, argv[7]);
-	
-	glCopyTexImage2D(target, level, internalformat, x, y, width, height, border);
-	return NULL;
-}
+EJ_BIND_FUNCTION_DIRECT(copyTexImage2D, glCopyTexImage2D, target, level, internalformat, x, y, width, height, border);
+EJ_BIND_FUNCTION_DIRECT(copyTexSubImage2D, glCopyTexSubImage2D, target, level, xoffset, yoffset, x, y, width, height);
 
-EJ_BIND_FUNCTION(copyTexSubImage2D, ctx, argc, argv) {
-	GLenum target = JSValueToNumberFast(ctx, argv[0]);
-	GLint level = JSValueToNumberFast(ctx, argv[1]);
-	GLint xoffset = JSValueToNumberFast(ctx, argv[2]);
-	GLint yoffset = JSValueToNumberFast(ctx, argv[3]);
-	GLint x = JSValueToNumberFast(ctx, argv[4]);
-	GLint y = JSValueToNumberFast(ctx, argv[5]);
-	GLsizei width = JSValueToNumberFast(ctx, argv[6]);
-	GLsizei height = JSValueToNumberFast(ctx, argv[7]);
-	
-	glCopyTexSubImage2D(target, level, xoffset, yoffset, x, y, width, height);
-	return NULL;
-}
+#define EJ_BIND_CREATE(I, NAME) \
+	EJ_BIND_FUNCTION(create##NAME, ctx, argc, argv) { \
+		GLuint index; \
+		glGen##NAME##s(1, &index); \
+		JSObjectRef obj = [EJBindingWebGL##NAME createJSObjectWithContext:ctx webglContext:self index:index]; \
+		[buffers setObject:[NSValue valueWithPointer:obj] forKey:[NSNumber numberWithInt:index]]; \
+		return obj; \
+	}
 
-EJ_BIND_FUNCTION(createBuffer, ctx, argc, argv) {
-	GLuint buffer;
-	glGenBuffers(1, &buffer);
-	
-	JSObjectRef obj = [EJBindingWebGLBuffer createJSObjectWithContext:ctx webglContext:self index:buffer];
-	[buffers setObject:[NSValue valueWithPointer:obj] forKey:[NSNumber numberWithInt:buffer]];
-	return obj;
-}
+	EJ_MAP(EJ_BIND_CREATE, Framebuffer, Renderbuffer, Buffer, Texture);
 
-EJ_BIND_FUNCTION(createFramebuffer, ctx, argc, argv) {
-	GLuint framebuffer;
-	glGenFramebuffers(1, &framebuffer);
-	
-	JSObjectRef obj = [EJBindingWebGLFramebuffer createJSObjectWithContext:ctx webglContext:self index:framebuffer];
-	[framebuffers setObject:[NSValue valueWithPointer:obj] forKey:[NSNumber numberWithInt:framebuffer]];
-	return obj;
-}
+#undef EJ_BIND_CREATE
+
 
 EJ_BIND_FUNCTION(createProgram, ctx, argc, argv) {
 	GLuint program = glCreateProgram();
@@ -395,19 +271,9 @@ EJ_BIND_FUNCTION(createProgram, ctx, argc, argv) {
 	return obj;
 }
 
-EJ_BIND_FUNCTION(createRenderbuffer, ctx, argc, argv) {
-	GLuint renderbuffer;
-	glGenFramebuffers(1, &renderbuffer);
-	
-	JSObjectRef obj = [EJBindingWebGLRenderbuffer createJSObjectWithContext:ctx webglContext:self index:renderbuffer];
-	[renderbuffers setObject:[NSValue valueWithPointer:obj] forKey:[NSNumber numberWithInt:renderbuffer]];
-	return obj;
-}
-
 EJ_BIND_FUNCTION(createShader, ctx, argc, argv) {
-	if( argc < 1 ) { return NULL; }
-	
-	GLenum type =  JSValueToNumberFast(ctx, argv[0]);
+	EJ_UNPACK_ARGV(GLenum type);
+
 	GLuint shader = glCreateShader(type);
 	
 	JSObjectRef obj = [EJBindingWebGLShader createJSObjectWithContext:ctx webglContext:self index:shader];
@@ -415,24 +281,10 @@ EJ_BIND_FUNCTION(createShader, ctx, argc, argv) {
 	return obj;
 }
 
-EJ_BIND_FUNCTION(createTexture, ctx, argc, argv) {
-	GLuint texture;
-	glGenTextures(1, &texture);
-	
-	JSObjectRef obj = [EJBindingWebGLTexture createJSObjectWithContext:ctx webglContext:self index:texture];
-	[textures setObject:[NSValue valueWithPointer:obj] forKey:[NSNumber numberWithInt:texture]];
-	return obj;
-}
+EJ_BIND_FUNCTION_DIRECT(cullFace, glCullFace, mode);
 
-EJ_BIND_FUNCTION(cullFace, ctx, argc, argv) {
-	if( argc < 1 ) { return NULL; }
-	
-	GLenum mode = JSValueToNumberFast(ctx, argv[0]);
-	glCullFace(mode);
-	return NULL;
-}
 
-#define EJ_BIND_DELETE_OBJECT(NAME) \
+#define EJ_BIND_DELETE_OBJECT(I, NAME) \
 	EJ_BIND_FUNCTION(delete##NAME, ctx, argc, argv) { \
 		if( argc < 1 ) { return NULL; } \
 		GLuint index = [EJBindingWebGL##NAME indexFromJSValue:argv[0]]; \
@@ -440,40 +292,14 @@ EJ_BIND_FUNCTION(cullFace, ctx, argc, argv) {
 		return NULL; \
 	}
 
-EJ_BIND_DELETE_OBJECT(Buffer);
-EJ_BIND_DELETE_OBJECT(Framebuffer);
-EJ_BIND_DELETE_OBJECT(Renderbuffer);
-EJ_BIND_DELETE_OBJECT(Shader);
-EJ_BIND_DELETE_OBJECT(Texture);
-EJ_BIND_DELETE_OBJECT(Program);
+	EJ_MAP(EJ_BIND_DELETE_OBJECT, Buffer, Framebuffer, Renderbuffer, Shader, Texture, Program);
 
 #undef EJ_BIND_DELETE_OBJECT
 
 
-EJ_BIND_FUNCTION(depthFunc, ctx, argc, argv) {
-	if( argc < 1 ) { return NULL; }
-	
-	GLenum func = JSValueToNumberFast(ctx, argv[0]);
-	glDepthFunc(func);
-	return NULL;
-}
-
-EJ_BIND_FUNCTION(depthMask, ctx, argc, argv) {
-	if( argc < 1 ) { return NULL; }
-	
-	GLboolean flag = JSValueToNumberFast(ctx, argv[0]);
-	glDepthMask(flag);
-	return NULL;
-}
-
-EJ_BIND_FUNCTION(depthRange, ctx, argc, argv) {
-	if( argc < 2 ) { return NULL; }
-	
-	GLclampf zNear = JSValueToNumberFast(ctx, argv[0]);
-	GLclampf zFar = JSValueToNumberFast(ctx, argv[1]);
-	glDepthRangef(zNear, zFar);
-	return NULL;
-}
+EJ_BIND_FUNCTION_DIRECT(depthFunc, glDepthFunc, func);
+EJ_BIND_FUNCTION_DIRECT(depthMask, glDepthMask, flag);
+EJ_BIND_FUNCTION_DIRECT(depthRange, glDepthRangef, zNear, zFar);
 
 EJ_BIND_FUNCTION(detachShader, ctx, argc, argv) {
 	if( argc < 2 ) { return NULL; }
@@ -484,60 +310,22 @@ EJ_BIND_FUNCTION(detachShader, ctx, argc, argv) {
 	return NULL;
 }
 
-EJ_BIND_FUNCTION(disable, ctx, argc, argv) {
-	if( argc < 1 ) { return NULL; }
-	
-	GLenum cap = JSValueToNumberFast(ctx, argv[0]);
-	glDisable(cap);
-	return NULL;
-}
-
-EJ_BIND_FUNCTION(disableVertexAttribArray, ctx, argc, argv) {
-	if( argc < 1 ) { return NULL; }
-	
-	GLuint index = JSValueToNumberFast(ctx, argv[0]);
-	glDisableVertexAttribArray(index);
-	return NULL;
-}
-
-EJ_BIND_FUNCTION(drawArrays, ctx, argc, argv) {
-	if( argc < 3 ) { return NULL; }
-	
-	GLenum mode = JSValueToNumberFast(ctx, argv[0]);
-	GLenum first = JSValueToNumberFast(ctx, argv[1]);
-	GLsizei count = JSValueToNumberFast(ctx, argv[2]);
-
-	glDrawArrays(mode, first, count);
-	return NULL;
-}
+EJ_BIND_FUNCTION_DIRECT(disable, glDisable, cap);
+EJ_BIND_FUNCTION_DIRECT(disableVertexAttribArray, glDisableVertexAttribArray, index);
+EJ_BIND_FUNCTION_DIRECT(drawArrays, glDrawArrays, mode, first, count);
 
 EJ_BIND_FUNCTION(drawElements, ctx, argc, argv) {
 	if( argc < 4 ) { return NULL; }
 	
-	GLenum mode = JSValueToNumberFast(ctx, argv[0]);
-	GLsizei count = JSValueToNumberFast(ctx, argv[1]);
-	GLenum type = JSValueToNumberFast(ctx, argv[2]);
+	EJ_UNPACK_ARGV(GLenum mode, GLsizei count, GLenum type);
 	GLvoid *offset = (GLvoid *)((long)JSValueToNumberFast(ctx, argv[3]));
 	
 	glDrawElements(mode, count, type, offset);
 	return NULL;
 }
 
-EJ_BIND_FUNCTION(enable, ctx, argc, argv) {
-	if( argc < 1 ) { return NULL; }
-	
-	GLenum cap = JSValueToNumberFast(ctx, argv[0]);
-	glEnable(cap);
-	return NULL;
-}
-
-EJ_BIND_FUNCTION(enableVertexAttribArray, ctx, argc, argv) {
-	if( argc < 1 ) { return NULL; }
-	
-	GLuint index = JSValueToNumberFast(ctx, argv[0]);
-	glEnableVertexAttribArray(index);
-	return NULL;
-}
+EJ_BIND_FUNCTION_DIRECT(enable, glEnable, cap);
+EJ_BIND_FUNCTION_DIRECT(enableVertexAttribArray, glEnableVertexAttribArray, index);
 
 EJ_BIND_FUNCTION(flush, ctx, argc, argv) {
 	glFlush();
@@ -552,9 +340,7 @@ EJ_BIND_FUNCTION(finish, ctx, argc, argv) {
 EJ_BIND_FUNCTION(framebufferRenderbuffer, ctx, argc, argv) {
 	if( argc < 4 ) { return NULL; }
 	
-	GLenum target = JSValueToNumberFast(ctx, argv[0]);
-	GLenum attachment = JSValueToNumberFast(ctx, argv[1]);
-	GLenum renderbuffertarget = JSValueToNumberFast(ctx, argv[2]);
+	EJ_UNPACK_ARGV(GLenum target, GLenum attachment, GLenum renderbuffertarget);
 	GLuint renderbuffer = [EJBindingWebGLRenderbuffer indexFromJSValue:argv[3]];
 	
 	glFramebufferRenderbuffer(target, attachment, renderbuffertarget, renderbuffer);
@@ -564,9 +350,7 @@ EJ_BIND_FUNCTION(framebufferRenderbuffer, ctx, argc, argv) {
 EJ_BIND_FUNCTION(framebufferTexture2D, ctx, argc, argv) {
 	if( argc < 5 ) { return NULL; }
 	
-	GLenum target = JSValueToNumberFast(ctx, argv[0]);
-	GLenum attachment = JSValueToNumberFast(ctx, argv[1]);
-	GLenum textarget = JSValueToNumberFast(ctx, argv[2]);
+	EJ_UNPACK_ARGV(GLenum target, GLenum attachment, GLenum textarget);
 	GLuint texture = [EJBindingWebGLTexture indexFromJSValue:argv[3]];
 	GLint level = JSValueToNumberFast(ctx, argv[4]);
 	
@@ -574,21 +358,8 @@ EJ_BIND_FUNCTION(framebufferTexture2D, ctx, argc, argv) {
 	return NULL;
 }
 
-EJ_BIND_FUNCTION(frontFace, ctx, argc, argv) {
-	if( argc < 1 ) { return NULL; }
-	
-	GLenum mode = JSValueToNumberFast(ctx, argv[0]);
-	glFrontFace(mode);
-	return NULL;
-}
-
-EJ_BIND_FUNCTION(generateMipmap, ctx, argc, argv) {
-	if( argc < 1 ) { return NULL; }
-	
-	GLenum target = JSValueToNumberFast(ctx, argv[0]);
-	glGenerateMipmap(target);
-	return NULL;
-}
+EJ_BIND_FUNCTION_DIRECT(frontFace, glFrontFace, mode);
+EJ_BIND_FUNCTION_DIRECT(generateMipmap, glGenerateMipmap, mode);
 
 EJ_BIND_FUNCTION(getActiveAttrib, ctx, argc, argv) {
 	if( argc < 2 ) { return NULL; }
@@ -663,12 +434,8 @@ EJ_BIND_FUNCTION(getAttribLocation, ctx, argc, argv) {
 	return JSValueMakeNumber(ctx, glGetAttribLocation(program, [name UTF8String]));
 }
 
-EJ_BIND_FUNCTION(getFramebufferAttachmentParameter, ctx, argc, argv) {
-	if( argc < 3 ) { return NULL; }
-	
-	GLenum target = JSValueToNumberFast(ctx, argv[0]);
-	GLenum attachment = JSValueToNumberFast(ctx, argv[1]);
-	GLenum pname = JSValueToNumberFast(ctx, argv[2]);
+EJ_BIND_FUNCTION(getFramebufferAttachmentParameter, ctx, argc, argv) {	
+	EJ_UNPACK_ARGV(GLenum target, GLenum attachment, GLenum pname);
 	
 	GLint param;
 	glGetFramebufferAttachmentParameteriv(target, attachment, pname, &param);
@@ -723,10 +490,7 @@ EJ_BIND_FUNCTION(getProgramInfoLog, ctx, argc, argv) {
 }
 
 EJ_BIND_FUNCTION(getRenderbufferParameter, ctx, argc, argv) {
-	if( argc < 2 ) { return NULL; }
-	
-	GLenum target = JSValueToNumberFast(ctx, argv[0]);
-	GLenum pname = JSValueToNumberFast(ctx, argv[1]);
+	EJ_UNPACK_ARGV(GLenum target, GLenum pname);
 	
 	GLint value;
 	glGetRenderbufferParameteriv(target, pname, &value);
@@ -788,12 +552,9 @@ EJ_BIND_FUNCTION(getShaderSource, ctx, argc, argv) {
 }
 
 EJ_BIND_FUNCTION(getTexParameter, ctx, argc, argv) {
-	if( argc < 2 ) { return NULL; }
+	EJ_UNPACK_ARGV(GLenum target, GLenum pname);
 	
-	GLenum target = JSValueToNumberFast(ctx, argv[0]);
-	GLenum pname = JSValueToNumberFast(ctx, argv[0]);
 	GLint value;
-	
 	glGetTexParameteriv(target, pname, &value);
 	return JSValueMakeNumber(ctx, value);
 }
@@ -814,10 +575,7 @@ EJ_BIND_FUNCTION(getUniformLocation, ctx, argc, argv) {
 }
 
 EJ_BIND_FUNCTION(getVertexAttrib, ctx, argc, argv) {
-	if( argc < 2 ) { return NULL; }
-	
-	GLuint index = JSValueToNumberFast(ctx, argv[0]);
-	GLenum pname = JSValueToNumberFast(ctx, argv[1]);
+	EJ_UNPACK_ARGV(GLuint index, GLenum pname);
 	
 	if( pname == GL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING ) {
 		GLint buffer;
@@ -838,57 +596,30 @@ EJ_BIND_FUNCTION(getVertexAttrib, ctx, argc, argv) {
 }
 
 EJ_BIND_FUNCTION(getVertexAttribOffset, ctx, argc, argv) {
-	if( argc < 2 ) { return NULL; }
-	
-	GLuint index = JSValueToNumberFast(ctx, argv[0]);
-	GLenum pname = JSValueToNumberFast(ctx, argv[1]);
-	
-	//EJ_UNPACK_ARGV(GLuint index, GLenum pname);
+	EJ_UNPACK_ARGV(GLuint index, GLenum pname);
 	
 	GLvoid * pointer;
 	glGetVertexAttribPointerv(index, pname, &pointer);
 	return JSValueMakeNumber(ctx, (int)pointer);
 }
 
-EJ_BIND_FUNCTION(hint, ctx, argc, argv) {
-	if( argc < 2 ) { return NULL; }
-	
-	GLenum target = JSValueToNumberFast(ctx, argv[0]);
-	GLenum mode = JSValueToNumberFast(ctx, argv[1]);
-	glHint(target, mode);
-	return NULL;
-}
+EJ_BIND_FUNCTION_DIRECT(hint, glHint, target, mode);
 
-#define EJ_BIND_IS_OBJECT(NAME) \
+
+#define EJ_BIND_IS_OBJECT(I, NAME) \
 	EJ_BIND_FUNCTION(is##NAME, ctx, argc, argv) { \
 		if( argc < 1 ) { return NULL; } \
 		GLuint index = [EJBindingWebGL##NAME indexFromJSValue:argv[0]]; \
 		return JSValueMakeBoolean(ctx, glIs##NAME(index)); \
 	} \
 
-EJ_BIND_IS_OBJECT(Buffer);
-EJ_BIND_IS_OBJECT(Framebuffer);
-EJ_BIND_IS_OBJECT(Program);
-EJ_BIND_IS_OBJECT(Renderbuffer);
-EJ_BIND_IS_OBJECT(Shader);
-EJ_BIND_IS_OBJECT(Texture);
+	EJ_MAP(EJ_BIND_IS_OBJECT, Buffer, Framebuffer, Program, Renderbuffer, Shader, Texture);
 
 #undef EJ_BIND_IS_OBJECT
 
-EJ_BIND_FUNCTION(isEnabled, ctx, argc, argv) {
-	if( argc < 1 ) { return NULL; }
-	
-	GLenum cap = JSValueToNumberFast(ctx, argv[0]);
-	return JSValueMakeBoolean(ctx, glIsEnabled(cap));
-}
 
-EJ_BIND_FUNCTION(lineWidth, ctx, argc, argv) {
-	if( argc < 1 ) { return NULL; }
-	
-	GLfloat width = JSValueToNumberFast(ctx, argv[0]);
-	glLineWidth(width);
-	return NULL;
-}
+EJ_BIND_FUNCTION_DIRECT(isEnabled, glIsEnabled, cap);
+EJ_BIND_FUNCTION_DIRECT(lineWidth, glLineWidth, width);
 
 EJ_BIND_FUNCTION(linkProgram, ctx, argc, argv) {
 	if( argc < 1 ) { return NULL; }
@@ -899,10 +630,7 @@ EJ_BIND_FUNCTION(linkProgram, ctx, argc, argv) {
 }
 
 EJ_BIND_FUNCTION(pixelStorei, ctx, argc, argv) {
-	if( argc < 2 ) { return NULL; }
-	
-	GLenum pname = JSValueToNumberFast(ctx, argv[0]);
-	GLint param = JSValueToNumberFast(ctx, argv[1]);
+	EJ_UNPACK_ARGV(GLenum pname, GLint param);
 	
 	if( pname == GL_UNPACK_FLIP_Y_WEBGL ) {
 		unpackFlipY = param;
@@ -916,25 +644,11 @@ EJ_BIND_FUNCTION(pixelStorei, ctx, argc, argv) {
 	return NULL;
 }
 
-EJ_BIND_FUNCTION(polygonOffset, ctx, argc, argv) {
-	if( argc < 2 ) { return NULL; }
-	
-	GLfloat factor = JSValueToNumberFast(ctx, argv[0]);
-	GLfloat units = JSValueToNumberFast(ctx, argv[1]);
-	
-	glPolygonOffset(factor, units);
-	return NULL;
-}
+EJ_BIND_FUNCTION_DIRECT(polygonOffset, glPolygonOffset, factor, units);
 
 EJ_BIND_FUNCTION(readPixels, ctx, argc, argv) {
 	if( argc < 7 ) { return NULL; }
-	
-	GLint x = JSValueToNumberFast(ctx, argv[0]);
-	GLint y = JSValueToNumberFast(ctx, argv[1]);
-	GLsizei width = JSValueToNumberFast(ctx, argv[2]);
-	GLsizei height = JSValueToNumberFast(ctx, argv[3]);
-	GLenum format = JSValueToNumberFast(ctx, argv[4]);
-	GLenum type = JSValueToNumberFast(ctx, argv[5]);
+	EJ_UNPACK_ARGV(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type);
 	
 	size_t size;
 	void * pixels = JSTypedArrayGetDataPtr(ctx, argv[6], &size);
@@ -945,39 +659,9 @@ EJ_BIND_FUNCTION(readPixels, ctx, argc, argv) {
 	return NULL;
 }
 
-EJ_BIND_FUNCTION(renderbufferStorage, ctx, argc, argv) {
-	if( argc < 4 ) { return NULL; }
-	
-	GLenum target = JSValueToNumberFast(ctx, argv[0]);
-	GLenum internalformat = JSValueToNumberFast(ctx, argv[1]);
-	GLsizei width = JSValueToNumberFast(ctx, argv[2]);
-	GLsizei height = JSValueToNumberFast(ctx, argv[3]);
-	
-	glRenderbufferStorage(target, internalformat, width, height);
-	return NULL;
-}
-
-EJ_BIND_FUNCTION(sampleCoverage, ctx, argc, argv) {
-	if( argc < 2 ) { return NULL; }
-	
-	GLclampf value = JSValueToNumberFast(ctx, argv[0]);
-	GLboolean invert = JSValueToNumberFast(ctx, argv[1]);
-	
-	glSampleCoverage(value, invert);
-	return NULL;
-}
-
-EJ_BIND_FUNCTION(scissor, ctx, argc, argv) {
-	if( argc < 4 ) { return NULL; }
-	
-	GLint x = JSValueToNumberFast(ctx, argv[0]);
-	GLint y = JSValueToNumberFast(ctx, argv[1]);
-	GLsizei width = JSValueToNumberFast(ctx, argv[2]);
-	GLsizei height = JSValueToNumberFast(ctx, argv[3]);
-	
-	glScissor(x, y, width, height);
-	return NULL;
-}
+EJ_BIND_FUNCTION_DIRECT(renderbufferStorage, glRenderbufferStorage, target, internalformat, width, height);
+EJ_BIND_FUNCTION_DIRECT(sampleCoverage, glSampleCoverage, value, invert);
+EJ_BIND_FUNCTION_DIRECT(scissor, glScissor, x, y, width, height);
 
 EJ_BIND_FUNCTION(shaderSource, ctx, argc, argv) {
 	if( argc < 2 ) { return NULL; }
@@ -989,189 +673,41 @@ EJ_BIND_FUNCTION(shaderSource, ctx, argc, argv) {
 	return NULL;
 }
 
-EJ_BIND_FUNCTION(stencilFunc, ctx, argc, argv) {
-	if( argc < 3 ) { return NULL; }
-	
-	GLenum func = JSValueToNumberFast(ctx, argv[0]);
-	GLint ref = JSValueToNumberFast(ctx, argv[1]);
-	GLuint mask = JSValueToNumberFast(ctx, argv[2]);
-	
-	glStencilFunc(func, ref, mask);
-	return NULL;
-}
-
-EJ_BIND_FUNCTION(stencilFuncSeparate, ctx, argc, argv) {
-	if( argc < 4 ) { return NULL; }
-	
-	GLenum face = JSValueToNumberFast(ctx, argv[0]);
-	GLenum func = JSValueToNumberFast(ctx, argv[1]);
-	GLint ref = JSValueToNumberFast(ctx, argv[2]);
-	GLuint mask = JSValueToNumberFast(ctx, argv[3]);
-	
-	glStencilFuncSeparate(face, func, ref, mask);
-	return NULL;
-}
-
-EJ_BIND_FUNCTION(stencilMask, ctx, argc, argv) {
-	if( argc < 1 ) { return NULL; }
-	
-	GLuint mask = JSValueToNumberFast(ctx, argv[0]);
-	
-	glStencilMask(mask);
-	return NULL;
-}
-
-EJ_BIND_FUNCTION(stencilMaskSeparate, ctx, argc, argv) {
-	if( argc < 2 ) { return NULL; }
-	
-	GLenum face = JSValueToNumberFast(ctx, argv[0]);
-	GLuint mask = JSValueToNumberFast(ctx, argv[1]);
-	
-	glStencilMaskSeparate(face, mask);
-	return NULL;
-}
-
-EJ_BIND_FUNCTION(stencilOp, ctx, argc, argv) {
-	if( argc < 3 ) { return NULL; }
-	
-	GLenum fail = JSValueToNumberFast(ctx, argv[0]);
-	GLenum zfail = JSValueToNumberFast(ctx, argv[1]);
-	GLenum zpass = JSValueToNumberFast(ctx, argv[2]);
-	
-	glStencilOp(fail, zfail, zpass);
-	return NULL;
-}
-
-EJ_BIND_FUNCTION(stencilOpSeparate, ctx, argc, argv) {
-	if( argc < 4 ) { return NULL; }
-	
-	GLenum face = JSValueToNumberFast(ctx, argv[0]);
-	GLenum fail = JSValueToNumberFast(ctx, argv[1]);
-	GLenum zfail = JSValueToNumberFast(ctx, argv[2]);
-	GLenum zpass = JSValueToNumberFast(ctx, argv[3]);
-	
-	glStencilOpSeparate(face, fail, zfail, zpass);
-	return NULL;
-}
+EJ_BIND_FUNCTION_DIRECT(stencilFunc, glStencilFunc, func, ref, mask);
+EJ_BIND_FUNCTION_DIRECT(stencilFuncSeparate, glStencilFuncSeparate, face, func, ref, mask);
+EJ_BIND_FUNCTION_DIRECT(stencilMask, glStencilMask, mask);
+EJ_BIND_FUNCTION_DIRECT(stencilMaskSeparate, glStencilMaskSeparate, face, mask);
+EJ_BIND_FUNCTION_DIRECT(stencilOp, glStencilOp, fail, zfail, zpass);
+EJ_BIND_FUNCTION_DIRECT(stencilOpSeparate, glStencilOpSeparate, face, fail, zfail, zpass);
 
 EJ_BIND_FUNCTION(texImage2D, ctx, argc, argv) {	
 	// TODO
 	return NULL;
 }
 
-EJ_BIND_FUNCTION(texParameteri, ctx, argc, argv) {
-	if ( argc < 3 ) { return NULL; }
-	
-	GLenum target = JSValueToNumberFast(ctx, argv[0]);
-	GLenum pname = JSValueToNumberFast(ctx, argv[1]);
-	GLint param = JSValueToNumberFast(ctx, argv[2]);
-	
-	glTexParameteri(target, pname, param);
-	return NULL;
-}
+EJ_BIND_FUNCTION_DIRECT(texParameteri, glTexParameteri, target, pname, param);
+EJ_BIND_FUNCTION_DIRECT(texParameterf, glTexParameterf, target, pname, param);
 
-EJ_BIND_FUNCTION(texParameterf, ctx, argc, argv) {
-	if ( argc < 3 ) { return NULL; }
-	
-	GLenum target = JSValueToNumberFast(ctx, argv[0]);
-	GLenum pname = JSValueToNumberFast(ctx, argv[1]);
-	GLfloat param = JSValueToNumberFast(ctx, argv[2]);
-	
-	glTexParameterf(target, pname, param);
-	return NULL;
-}
 
-EJ_BIND_FUNCTION(uniform1f, ctx, argc, argv) {
-	if ( argc < 2 ) { return NULL; }
-	
-	GLuint uniform = [EJBindingWebGLUniformLocation indexFromJSValue:argv[0]];
-	GLfloat x = JSValueToNumberFast(ctx, argv[1]);
-	
-	glUniform1f(uniform, x);
-	return NULL;
-}
+#define EJ_BIND_UNIFORM(NAME, ... ) \
+	EJ_BIND_FUNCTION(uniform##NAME, ctx, argc, argv) { \
+		if( argc < EJ_ARGC(__VA_ARGS__)+1 ) { return NULL; } \
+		GLuint uniform = [EJBindingWebGLUniformLocation indexFromJSValue:argv[0]]; \
+		glUniform##NAME( uniform, EJ_MAP_EXT(1, _EJ_COMMA, _EJ_BIND_FUNCTION_DIRECT_UNPACK, __VA_ARGS__) ); \
+		return NULL; \
+	}
 
-EJ_BIND_FUNCTION(uniform1i, ctx, argc, argv) {
-	if ( argc < 2 ) { return NULL; }
-	
-	GLuint uniform = [EJBindingWebGLUniformLocation indexFromJSValue:argv[0]];
-	GLint x = JSValueToNumberFast(ctx, argv[1]);
-	
-	glUniform1i(uniform, x);
-	return NULL;
-}
+	EJ_BIND_UNIFORM(1f, x);
+	EJ_BIND_UNIFORM(2f, x, y);
+	EJ_BIND_UNIFORM(3f, x, y, z);
+	EJ_BIND_UNIFORM(4f, x, y, z, w);
+	EJ_BIND_UNIFORM(1i, x);
+	EJ_BIND_UNIFORM(2i, x, y);
+	EJ_BIND_UNIFORM(3i, x, y, z);
+	EJ_BIND_UNIFORM(4i, x, y, z, w);
 
-EJ_BIND_FUNCTION(uniform2f, ctx, argc, argv) {
-	if ( argc < 3 ) { return NULL; }
-	
-	GLuint uniform = [EJBindingWebGLUniformLocation indexFromJSValue:argv[0]];
-	GLfloat x = JSValueToNumberFast(ctx, argv[1]);
-	GLfloat y = JSValueToNumberFast(ctx, argv[2]);
-	
-	glUniform2f(uniform, x, y);
-	return NULL;
-}
+#undef EJ_BIND_UNIFORM
 
-EJ_BIND_FUNCTION(uniform2i, ctx, argc, argv) {
-	if ( argc < 3 ) { return NULL; }
-	
-	GLuint uniform = [EJBindingWebGLUniformLocation indexFromJSValue:argv[0]];
-	GLint x = JSValueToNumberFast(ctx, argv[1]);
-	GLint y = JSValueToNumberFast(ctx, argv[2]);
-	
-	glUniform2i(uniform, x, y);
-	return NULL;
-}
-
-EJ_BIND_FUNCTION(uniform3f, ctx, argc, argv) {
-	if ( argc < 4 ) { return NULL; }
-	
-	GLuint uniform = [EJBindingWebGLUniformLocation indexFromJSValue:argv[0]];
-	GLfloat x = JSValueToNumberFast(ctx, argv[1]);
-	GLfloat y = JSValueToNumberFast(ctx, argv[2]);
-	GLfloat z = JSValueToNumberFast(ctx, argv[3]);
-	
-	glUniform3f(uniform, x, y, z);
-	return NULL;
-}
-
-EJ_BIND_FUNCTION(uniform3i, ctx, argc, argv) {
-	if ( argc < 4 ) { return NULL; }
-	
-	GLuint uniform = [EJBindingWebGLUniformLocation indexFromJSValue:argv[0]];
-	GLint x = JSValueToNumberFast(ctx, argv[1]);
-	GLint y = JSValueToNumberFast(ctx, argv[2]);
-	GLint z = JSValueToNumberFast(ctx, argv[3]);
-	
-	glUniform3i(uniform, x, y, z);
-	return NULL;
-}
-
-EJ_BIND_FUNCTION(uniform4f, ctx, argc, argv) {
-	if ( argc < 5 ) { return NULL; }
-	
-	GLuint uniform = [EJBindingWebGLUniformLocation indexFromJSValue:argv[0]];
-	GLfloat x = JSValueToNumberFast(ctx, argv[1]);
-	GLfloat y = JSValueToNumberFast(ctx, argv[2]);
-	GLfloat z = JSValueToNumberFast(ctx, argv[3]);
-	GLfloat w = JSValueToNumberFast(ctx, argv[4]);
-	
-	glUniform4f(uniform, x, y, z, w);
-	return NULL;
-}
-
-EJ_BIND_FUNCTION(uniform4i, ctx, argc, argv) {
-	if ( argc < 5 ) { return NULL; }
-	
-	GLuint uniform = [EJBindingWebGLUniformLocation indexFromJSValue:argv[0]];
-	GLint x = JSValueToNumberFast(ctx, argv[1]);
-	GLint y = JSValueToNumberFast(ctx, argv[2]);
-	GLint z = JSValueToNumberFast(ctx, argv[3]);
-	GLint w = JSValueToNumberFast(ctx, argv[4]);
-	
-	glUniform4i(uniform, x, y, z, w);
-	return NULL;
-}
 
 #define EJ_BIND_UNIFORM_V(NAME, LENGTH, TYPE) \
 	EJ_BIND_FUNCTION(uniform##NAME, ctx, argc, argv) { \
@@ -1184,14 +720,14 @@ EJ_BIND_FUNCTION(uniform4i, ctx, argc, argv) {
 		return NULL; \
 	} \
 
-EJ_BIND_UNIFORM_V(1fv, 1, GLfloat);
-EJ_BIND_UNIFORM_V(2fv, 2, GLfloat);
-EJ_BIND_UNIFORM_V(3fv, 3, GLfloat);
-EJ_BIND_UNIFORM_V(4fv, 4, GLfloat);
-EJ_BIND_UNIFORM_V(1iv, 1, GLint);
-EJ_BIND_UNIFORM_V(2iv, 2, GLint);
-EJ_BIND_UNIFORM_V(3iv, 3, GLint);
-EJ_BIND_UNIFORM_V(4iv, 4, GLint);
+	EJ_BIND_UNIFORM_V(1fv, 1, GLfloat);
+	EJ_BIND_UNIFORM_V(2fv, 2, GLfloat);
+	EJ_BIND_UNIFORM_V(3fv, 3, GLfloat);
+	EJ_BIND_UNIFORM_V(4fv, 4, GLfloat);
+	EJ_BIND_UNIFORM_V(1iv, 1, GLint);
+	EJ_BIND_UNIFORM_V(2iv, 2, GLint);
+	EJ_BIND_UNIFORM_V(3iv, 3, GLint);
+	EJ_BIND_UNIFORM_V(4iv, 4, GLint);
 
 #undef EJ_BIND_UNIFORM_V
 
@@ -1208,58 +744,17 @@ EJ_BIND_UNIFORM_V(4iv, 4, GLint);
 		return NULL; \
 	} \
 
-EJ_BIND_UNIFORM_MATRIX_V(2fv, 4, GLfloat);
-EJ_BIND_UNIFORM_MATRIX_V(3fv, 9, GLfloat);
-EJ_BIND_UNIFORM_MATRIX_V(4fv, 16, GLfloat);
+	EJ_BIND_UNIFORM_MATRIX_V(2fv, 4, GLfloat);
+	EJ_BIND_UNIFORM_MATRIX_V(3fv, 9, GLfloat);
+	EJ_BIND_UNIFORM_MATRIX_V(4fv, 16, GLfloat);
 
 #undef EJ_BIND_UNIFORM_MATRIX_V
 
 
-EJ_BIND_FUNCTION(vertexAttrib1f, ctx, argc, argv) {
-	if ( argc < 2 ) { return NULL; }
-	
-	GLuint index = JSValueToNumberFast(ctx, argv[0]);
-	GLfloat x = JSValueToNumberFast(ctx, argv[1]);
-	
-	glVertexAttrib1f(index, x);
-	return NULL;
-}
-
-EJ_BIND_FUNCTION(vertexAttrib2f, ctx, argc, argv) {
-	if ( argc < 3 ) { return NULL; }
-	
-	GLuint index = JSValueToNumberFast(ctx, argv[0]);
-	GLfloat x = JSValueToNumberFast(ctx, argv[1]);
-	GLfloat y = JSValueToNumberFast(ctx, argv[2]);
-	
-	glVertexAttrib2f(index, x, y);
-	return NULL;
-}
-
-EJ_BIND_FUNCTION(vertexAttrib3f, ctx, argc, argv) {
-	if ( argc < 4 ) { return NULL; }
-	
-	GLuint index = JSValueToNumberFast(ctx, argv[0]);
-	GLfloat x = JSValueToNumberFast(ctx, argv[1]);
-	GLfloat y = JSValueToNumberFast(ctx, argv[2]);
-	GLfloat z = JSValueToNumberFast(ctx, argv[3]);
-	
-	glVertexAttrib3f(index, x, y, z);
-	return NULL;
-}
-
-EJ_BIND_FUNCTION(vertexAttrib4f, ctx, argc, argv) {
-	if ( argc < 5 ) { return NULL; }
-	
-	GLuint index = JSValueToNumberFast(ctx, argv[0]);
-	GLfloat x = JSValueToNumberFast(ctx, argv[1]);
-	GLfloat y = JSValueToNumberFast(ctx, argv[2]);
-	GLfloat z = JSValueToNumberFast(ctx, argv[3]);
-	GLfloat w = JSValueToNumberFast(ctx, argv[4]);
-	
-	glVertexAttrib4f(index, x, y, z, w);
-	return NULL;
-}
+EJ_BIND_FUNCTION_DIRECT(vertexAttrib1f, glVertexAttrib1f, index, x);
+EJ_BIND_FUNCTION_DIRECT(vertexAttrib2f, glVertexAttrib2f, index, x, y);
+EJ_BIND_FUNCTION_DIRECT(vertexAttrib3f, glVertexAttrib3f, index, x, y, z);
+EJ_BIND_FUNCTION_DIRECT(vertexAttrib4f, glVertexAttrib4f, index, x, y, z, w);
 
 #define EJ_BIND_VERTEXATTRIB_V(NAME, LENGTH, TYPE) \
 	EJ_BIND_FUNCTION(vertexAttrib##NAME, ctx, argc, argv) { \
@@ -1272,12 +767,13 @@ EJ_BIND_FUNCTION(vertexAttrib4f, ctx, argc, argv) {
 		return NULL; \
 	} \
 
-EJ_BIND_VERTEXATTRIB_V(1fv, 1, GLfloat);
-EJ_BIND_VERTEXATTRIB_V(2fv, 2, GLfloat);
-EJ_BIND_VERTEXATTRIB_V(3fv, 3, GLfloat);
-EJ_BIND_VERTEXATTRIB_V(4fv, 4, GLfloat);
+	EJ_BIND_VERTEXATTRIB_V(1fv, 1, GLfloat);
+	EJ_BIND_VERTEXATTRIB_V(2fv, 2, GLfloat);
+	EJ_BIND_VERTEXATTRIB_V(3fv, 3, GLfloat);
+	EJ_BIND_VERTEXATTRIB_V(4fv, 4, GLfloat);
 
 #undef EJ_BIND_VERTEXATTRIB_V
+
 
 EJ_BIND_FUNCTION(useProgram, ctx, argc, argv) {
 	if ( argc < 1 ) { return NULL; }
@@ -1299,11 +795,7 @@ EJ_BIND_FUNCTION(validateProgram, ctx, argc, argv) {
 
 EJ_BIND_FUNCTION(vertexAttribPointer, ctx, argc, argv) {
 	if ( argc < 5 ) { return NULL; }
-	GLuint index = JSValueToNumberFast(ctx, argv[0]);
-	GLuint itemSize = JSValueToNumberFast(ctx, argv[1]);
-	GLenum type = JSValueToNumberFast(ctx, argv[2]);
-	GLboolean normalized = JSValueToBoolean(ctx, argv[3]);
-	GLsizei stride = JSValueToNumberFast(ctx, argv[4]);
+	EJ_UNPACK_ARGV(GLuint index, GLuint itemSize, GLenum type, GLboolean normalized, GLsizei stride);
 	
 	// TODO(viks): Is the following completly safe?
 	GLvoid * offset = (GLvoid *)((long)JSValueToNumberFast(ctx, argv[5]));
@@ -1313,17 +805,21 @@ EJ_BIND_FUNCTION(vertexAttribPointer, ctx, argc, argv) {
 }
 
 EJ_BIND_FUNCTION(viewport, ctx, argc, argv) {
-	if ( argc < 4 ) { return NULL; }
+	EJ_UNPACK_ARGV(GLint x, GLint y, GLsizei w, GLsizei h);
 	
 	float scale = renderingContext.backingStoreRatio;
-	GLint x = JSValueToNumberFast(ctx, argv[0]) * scale;
-	GLint y = JSValueToNumberFast(ctx, argv[1]) * scale;
-	GLsizei w = JSValueToNumberFast(ctx, argv[2]) * scale;
-	GLsizei h = JSValueToNumberFast(ctx, argv[3]) * scale;
-	
-	glViewport(x, y, w, h);
+	glViewport(x * scale, y * scale, w * scale, h * scale);
 	return NULL;
 }
+
+#undef EJ_BIND_FUNCTION_DIRECT
+
+
+
+
+
+// ------------------------------------------------------------------------------------
+// Constants
 
 
 #define EJ_BIND_CONST_GL(NAME) EJ_BIND_CONST(NAME, GL_##NAME)
