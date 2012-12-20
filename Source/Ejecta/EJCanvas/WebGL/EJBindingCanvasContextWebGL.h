@@ -8,9 +8,6 @@
 #define GL_UNPACK_COLORSPACE_CONVERSION_WEBGL 0x9243
 #define GL_BROWSER_DEFAULT_WEBGL 0x9244
 
-GLfloat * JSValueToGLfloatArray(JSContextRef ctx, JSValueRef value, size_t expectedSize);
-GLint * JSValueToGLintArray(JSContextRef ctx, JSValueRef value, size_t expectedSize);
-
 @interface EJBindingCanvasContextWebGL : EJBindingBase {
 	
 	BOOL unpackFlipY;
