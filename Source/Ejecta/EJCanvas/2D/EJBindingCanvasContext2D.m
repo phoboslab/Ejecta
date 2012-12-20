@@ -155,47 +155,31 @@ EJ_BIND_FUNCTION(restore, ctx, argc, argv) {
 }
 
 EJ_BIND_FUNCTION(rotate, ctx, argc, argv) {
-	if( argc < 1 ) { return NULL; }
-	[renderingContext rotate:JSValueToNumberFast(ctx, argv[0])];
+	EJ_UNPACK_ARGV(float angle);
+	[renderingContext rotate:angle];
 	return NULL;
 }
 
 EJ_BIND_FUNCTION(translate, ctx, argc, argv) {
-	if( argc < 2 ) { return NULL; }
-	[renderingContext translateX:JSValueToNumberFast(ctx, argv[0]) y:JSValueToNumberFast(ctx, argv[1])];
+	EJ_UNPACK_ARGV(float x, float y);
+	[renderingContext translateX:x y:y];
 	return NULL;
 }
 
 EJ_BIND_FUNCTION(scale, ctx, argc, argv) {
-	if( argc < 2 ) { return NULL; }
-	[renderingContext scaleX:JSValueToNumberFast(ctx, argv[0]) y:JSValueToNumberFast(ctx, argv[1])];
+	EJ_UNPACK_ARGV(float x, float y);
+	[renderingContext scaleX:x y:y];
 	return NULL;
 }
 
 EJ_BIND_FUNCTION(transform, ctx, argc, argv) {
-	if( argc < 6 ) { return NULL; }
-	
-	float
-		m11 = JSValueToNumberFast(ctx, argv[0]),
-		m12 = JSValueToNumberFast(ctx, argv[1]),
-		m21 = JSValueToNumberFast(ctx, argv[2]),
-		m22 = JSValueToNumberFast(ctx, argv[3]),
-		dx = JSValueToNumberFast(ctx, argv[4]),
-		dy = JSValueToNumberFast(ctx, argv[5]);
+	EJ_UNPACK_ARGV(float m11, float m12, float m21, float m22, float dx, float dy);
 	[renderingContext transformM11:m11 m12:m12 m21:m21 m22:m22 dx:dx dy:dy];
 	return NULL;
 }
 
 EJ_BIND_FUNCTION(setTransform, ctx, argc, argv) {
-	if( argc < 6 ) { return NULL; }
-	
-	float
-		m11 = JSValueToNumberFast(ctx, argv[0]),
-		m12 = JSValueToNumberFast(ctx, argv[1]),
-		m21 = JSValueToNumberFast(ctx, argv[2]),
-		m22 = JSValueToNumberFast(ctx, argv[3]),
-		dx = JSValueToNumberFast(ctx, argv[4]),
-		dy = JSValueToNumberFast(ctx, argv[5]);
+	EJ_UNPACK_ARGV(float m11, float m12, float m21, float m22, float dx, float dy);
 	[renderingContext setTransformM11:m11 m12:m12 m21:m21 m22:m22 dx:dx dy:dy];
 	return NULL;
 }
@@ -212,8 +196,7 @@ EJ_BIND_FUNCTION(drawImage, ctx, argc, argv) {
 	
 	if( argc == 3 ) {
 		// drawImage(image, dx, dy)
-		dx = JSValueToNumberFast(ctx, argv[1]);
-		dy = JSValueToNumberFast(ctx, argv[2]);
+		EJ_UNPACK_ARGV_OFFSET(1, dx, dy);
 		sw = image.width;
 		sh = image.height;
 		dw = sw / scale;
@@ -221,24 +204,13 @@ EJ_BIND_FUNCTION(drawImage, ctx, argc, argv) {
 	}
 	else if( argc == 5 ) {
 		// drawImage(image, dx, dy, dw, dh)
-		dx = JSValueToNumberFast(ctx, argv[1]);
-		dy = JSValueToNumberFast(ctx, argv[2]);
-		dw = JSValueToNumberFast(ctx, argv[3]);
-		dh = JSValueToNumberFast(ctx, argv[4]);
+		EJ_UNPACK_ARGV_OFFSET(1, dx, dy, dw, dh);
 		sw = image.width;
 		sh = image.height;
 	}
 	else if( argc >= 9 ) {
 		// drawImage(image, sx, sy, sw, sh, dx, dy, dw, dh)
-		sx = JSValueToNumberFast(ctx, argv[1]) * scale;
-		sy = JSValueToNumberFast(ctx, argv[2]) * scale;
-		sw = JSValueToNumberFast(ctx, argv[3]) * scale;
-		sh = JSValueToNumberFast(ctx, argv[4]) * scale;
-		
-		dx = JSValueToNumberFast(ctx, argv[5]);
-		dy = JSValueToNumberFast(ctx, argv[6]);
-		dw = JSValueToNumberFast(ctx, argv[7]);
-		dh = JSValueToNumberFast(ctx, argv[8]);
+		EJ_UNPACK_ARGV_OFFSET(1, sx, sy, sw, sh, dx, dy, dw, dh);
 	}
 	else {
 		return NULL;
@@ -251,27 +223,15 @@ EJ_BIND_FUNCTION(drawImage, ctx, argc, argv) {
 }
 
 EJ_BIND_FUNCTION(fillRect, ctx, argc, argv) {
-	if( argc < 4 ) { return NULL; }
-	
-	float
-		dx = JSValueToNumberFast(ctx, argv[0]),
-		dy = JSValueToNumberFast(ctx, argv[1]),
-		w = JSValueToNumberFast(ctx, argv[2]),
-		h = JSValueToNumberFast(ctx, argv[3]);
-		
+	EJ_UNPACK_ARGV(float dx, float dy, float w, float h);
+			
 	ejectaInstance.currentRenderingContext = renderingContext;
 	[renderingContext fillRectX:dx y:dy w:w h:h];
 	return NULL;
 }
 
 EJ_BIND_FUNCTION(strokeRect, ctx, argc, argv) {
-	if( argc < 4 ) { return NULL; }
-	
-	float
-		dx = JSValueToNumberFast(ctx, argv[0]),
-		dy = JSValueToNumberFast(ctx, argv[1]),
-		w = JSValueToNumberFast(ctx, argv[2]),
-		h = JSValueToNumberFast(ctx, argv[3]);
+	EJ_UNPACK_ARGV(float dx, float dy, float w, float h);
 	
 	ejectaInstance.currentRenderingContext = renderingContext;
 	[renderingContext strokeRectX:dx y:dy w:w h:h];
@@ -279,13 +239,7 @@ EJ_BIND_FUNCTION(strokeRect, ctx, argc, argv) {
 }
 
 EJ_BIND_FUNCTION(clearRect, ctx, argc, argv) {
-	if( argc < 4 ) { return NULL; }
-	
-	float
-		dx = JSValueToNumberFast(ctx, argv[0]),
-		dy = JSValueToNumberFast(ctx, argv[1]),
-		w = JSValueToNumberFast(ctx, argv[2]),
-		h = JSValueToNumberFast(ctx, argv[3]);
+	EJ_UNPACK_ARGV(float dx, float dy, float w, float h);
 	
 	ejectaInstance.currentRenderingContext = renderingContext;
 	[renderingContext clearRectX:dx y:dy w:w h:h];
@@ -293,13 +247,7 @@ EJ_BIND_FUNCTION(clearRect, ctx, argc, argv) {
 }
 
 EJ_BIND_FUNCTION(getImageData, ctx, argc, argv) {
-	if( argc < 4 ) { return NULL; }
-	
-	float
-		sx = JSValueToNumberFast(ctx, argv[0]),
-		sy = JSValueToNumberFast(ctx, argv[1]),
-		sw = JSValueToNumberFast(ctx, argv[2]),
-		sh = JSValueToNumberFast(ctx, argv[3]);
+	EJ_UNPACK_ARGV(float sx, float sy, float sw, float sh);
 	
 	// Get the image data
 	ejectaInstance.currentRenderingContext = renderingContext;
@@ -310,11 +258,7 @@ EJ_BIND_FUNCTION(getImageData, ctx, argc, argv) {
 }
 
 EJ_BIND_FUNCTION(createImageData, ctx, argc, argv) {
-	if( argc < 2 ) { return NULL; }
-	
-	float
-		sw = JSValueToNumberFast(ctx, argv[0]),
-		sh = JSValueToNumberFast(ctx, argv[1]);
+	EJ_UNPACK_ARGV(float sw, float sh);
 		
 	GLubyte * pixels = calloc( sw * sh * 4, sizeof(GLubyte) );
 	EJImageData * imageData = [[[EJImageData alloc] initWithWidth:sw height:sh pixels:pixels] autorelease];
@@ -327,9 +271,7 @@ EJ_BIND_FUNCTION(putImageData, ctx, argc, argv) {
 	if( argc < 3 ) { return NULL; }
 	
 	EJBindingImageData * jsImageData = (EJBindingImageData *)JSObjectGetPrivate((JSObjectRef)argv[0]);
-	float
-		dx = JSValueToNumberFast(ctx, argv[1]),
-		dy = JSValueToNumberFast(ctx, argv[2]);
+	EJ_UNPACK_ARGV_OFFSET(1, float dx, float dy);
 	
 	ejectaInstance.currentRenderingContext = renderingContext;
 	[renderingContext putImageData:jsImageData.imageData dx:dx dy:dy];
@@ -359,87 +301,44 @@ EJ_BIND_FUNCTION( stroke, ctx, argc, argv ) {
 }
 
 EJ_BIND_FUNCTION( moveTo, ctx, argc, argv ) {
-	if( argc < 2 ) { return NULL; }
-	
-	float
-		x = JSValueToNumberFast(ctx, argv[0]),
-		y = JSValueToNumberFast(ctx, argv[1]);
+	EJ_UNPACK_ARGV(float x, float y);
 	[renderingContext moveToX:x y:y];
 	
 	return NULL;
 }
 
 EJ_BIND_FUNCTION( lineTo, ctx, argc, argv ) {
-	if( argc < 2 ) { return NULL; }
-	
-	float
-		x = JSValueToNumberFast(ctx, argv[0]),
-		y = JSValueToNumberFast(ctx, argv[1]);
+	EJ_UNPACK_ARGV(float x, float y);
 	[renderingContext lineToX:x y:y];
 	return NULL;
 }
 
 EJ_BIND_FUNCTION( rect, ctx, argc, argv ) {
-	if( argc < 4 ) { return NULL; }
-	
-	float
-		x = JSValueToNumberFast(ctx, argv[0]),
-		y = JSValueToNumberFast(ctx, argv[1]),
-		w = JSValueToNumberFast(ctx, argv[2]),
-		h = JSValueToNumberFast(ctx, argv[3]);
+	EJ_UNPACK_ARGV(float x, float y, float w, float h);
 	[renderingContext rectX:x y:y w:w h:h];
 	return NULL;
 }
 
 EJ_BIND_FUNCTION( bezierCurveTo, ctx, argc, argv ) {
-	if( argc < 6 ) { return NULL; }
-	
-	float
-		cpx1 = JSValueToNumberFast(ctx, argv[0]),
-		cpy1 = JSValueToNumberFast(ctx, argv[1]),
-		cpx2 = JSValueToNumberFast(ctx, argv[2]),
-		cpy2 = JSValueToNumberFast(ctx, argv[3]),
-		x = JSValueToNumberFast(ctx, argv[4]),
-		y = JSValueToNumberFast(ctx, argv[5]);
+	EJ_UNPACK_ARGV(float cpx1, float cpy1, float cpx2, float cpy2, float x, float y);
 	[renderingContext bezierCurveToCpx1:cpx1 cpy1:cpy1 cpx2:cpx2 cpy2:cpy2 x:x y:y];
 	return NULL;
 }
 
 EJ_BIND_FUNCTION( quadraticCurveTo, ctx, argc, argv ) {
-	if( argc < 4 ) { return NULL; }
-	
-	float
-		cpx = JSValueToNumberFast(ctx, argv[0]),
-		cpy = JSValueToNumberFast(ctx, argv[1]),
-		x = JSValueToNumberFast(ctx, argv[2]),
-		y = JSValueToNumberFast(ctx, argv[3]);
+	EJ_UNPACK_ARGV(float cpx, float cpy, float x, float y);
 	[renderingContext quadraticCurveToCpx:cpx cpy:cpy x:x y:y];
 	return NULL;
 }
 
 EJ_BIND_FUNCTION( arcTo, ctx, argc, argv ) {
-	if( argc < 5 ) { return NULL; }
-	
-	float
-		x1 = JSValueToNumberFast(ctx, argv[0]),
-		y1 = JSValueToNumberFast(ctx, argv[1]),
-		x2 = JSValueToNumberFast(ctx, argv[2]),
-		y2 = JSValueToNumberFast(ctx, argv[3]),
-		radius = JSValueToNumberFast(ctx, argv[4]);
+	EJ_UNPACK_ARGV(float x1, float y1, float x2, float y2, float radius);
 	[renderingContext arcToX1:x1 y1:y1 x2:x2 y2:y2 radius:radius];
 	return NULL;
 }
 
 EJ_BIND_FUNCTION( arc, ctx, argc, argv ) {
-	if( argc < 5 ) { return NULL; }
-	
-	float
-		x = JSValueToNumberFast(ctx, argv[0]),
-		y = JSValueToNumberFast(ctx, argv[1]),
-		radius = JSValueToNumberFast(ctx, argv[2]),
-		startAngle = JSValueToNumberFast(ctx, argv[3]),
-		endAngle = JSValueToNumberFast(ctx, argv[4]);
-	BOOL antiClockwise = argc < 6 ? false : JSValueToBoolean(ctx, argv[5]);
+	EJ_UNPACK_ARGV(float x, float y, float radius, float startAngle, float endAngle, BOOL antiClockwise);
 	[renderingContext arcX:x y:y radius:radius startAngle:startAngle endAngle:endAngle antiClockwise:antiClockwise];
 	return NULL;
 }
@@ -462,9 +361,7 @@ EJ_BIND_FUNCTION( fillText, ctx, argc, argv ) {
 	if( argc < 3 ) { return NULL; }
 	
 	NSString * string = JSValueToNSString(ctx, argv[0]);
-	float
-		x = JSValueToNumberFast(ctx, argv[1]),
-		y = JSValueToNumberFast(ctx, argv[2]);
+	EJ_UNPACK_ARGV_OFFSET(1, float x, float y);
 	
 	ejectaInstance.currentRenderingContext = renderingContext;
 	[renderingContext fillText:string x:x y:y];
@@ -475,9 +372,7 @@ EJ_BIND_FUNCTION( strokeText, ctx, argc, argv ) {
 	if( argc < 3 ) { return NULL; }
 	
 	NSString * string = JSValueToNSString(ctx, argv[0]);
-	float
-		x = JSValueToNumberFast(ctx, argv[1]),
-		y = JSValueToNumberFast(ctx, argv[2]);
+	EJ_UNPACK_ARGV_OFFSET(1, float x, float y);
 	
 	ejectaInstance.currentRenderingContext = renderingContext;
 	[renderingContext strokeText:string x:x y:y];
