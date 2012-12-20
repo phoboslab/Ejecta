@@ -112,11 +112,11 @@ extern JSValueRef ej_global_undefined;
 
 // ------------------------------------------------------------------------------------
 // Shorthand to bind enums with name tables - use with
-// EJ_BIND_ENUM( name, target, EJ_ENUM_NAMES("name1", "name2", ...) );
+// EJ_BIND_ENUM( name, target, "name1", "name2", ...) );
 
-#define EJ_ENUM_NAMES(...) __VA_ARGS__ 
-#define EJ_BIND_ENUM(NAME, TARGET, ENUM_NAMES) \
-	static const char * _##NAME##EnumNames[] = {ENUM_NAMES}; \
+
+#define EJ_BIND_ENUM(NAME, TARGET, ...) \
+	static const char * _##NAME##EnumNames[] = {__VA_ARGS__}; \
 	EJ_BIND_GET(NAME, ctx) { \
 		JSStringRef src = JSStringCreateWithUTF8CString( _##NAME##EnumNames[TARGET] ); \
 		JSValueRef ret = JSValueMakeString(ctx, src); \
@@ -125,17 +125,19 @@ extern JSValueRef ej_global_undefined;
 	} \
 	\
 	EJ_BIND_SET(NAME, ctx, value) { \
-		JSStringRef str = JSValueToStringCopy(ctx, value, NULL); \
-		const JSChar * strptr = JSStringGetCharactersPtr( str ); \
-		int length = JSStringGetLength(str)-1; \
-		for( int i = 0; i < sizeof(_##NAME##EnumNames)/sizeof(_##NAME##EnumNames[0]); i++ ) { \
-			if( JSStrIsEqualToStr( strptr, _##NAME##EnumNames[i], length) ) { \
-				TARGET = i; \
-				break; \
-			} \
-		} \
-		JSStringRelease( str );\
+		JSStringRef _str = JSValueToStringCopy(ctx, value, NULL); \
+		const JSChar * _strptr = JSStringGetCharactersPtr( _str ); \
+		int _length = JSStringGetLength(_str)-1; \
+		const char ** _names = _##NAME##EnumNames; \
+		int _target; \
+		EJ_MAP_EXT(0, _EJ_LITERAL(else), _EJ_BIND_ENUM_COMPARE, __VA_ARGS__) \
+		else { JSStringRelease( _str ); return; } \
+		TARGET = _target; \
+		JSStringRelease( _str );\
 	}
+
+#define _EJ_BIND_ENUM_COMPARE(INDEX, NAME) \
+	if( _length == sizeof(NAME)-2 && JSStrIsEqualToStr( _strptr, _names[INDEX], _length) ) { _target = INDEX; }
 	
 static inline bool JSStrIsEqualToStr( const JSChar * s1, const char * s2, int length ) {
 	for( int i = 0; i < length && *s1 == *s2; i++ ) {
@@ -196,15 +198,19 @@ static inline bool JSStrIsEqualToStr( const JSChar * s1, const char * s2, int le
 #define _EJ_MAP1(IDX, JOINER, F, NAME, PEEK, ...) F(IDX, NAME) _EJ_MAP_NEXT(JOINER, PEEK, _EJ_MAP0) (IDX+1, JOINER, F, PEEK, __VA_ARGS__)
 
 
+// ------------------------------------------------------------------------------------
 // EJ_ARGC(...) - get the argument count in a macro with __VA_ARGS__; max 16 args
+
 #define EJ_ARGC(...) _EJ_ARGC_SEQ(__VA_ARGS__,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1)
 #define _EJ_ARGC_SEQ(x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11,x12,x13,x14,x15,x16,n,...) n
 
 
+// ------------------------------------------------------------------------------------
 // Unpack JavaScript values to numbers - use with
 // EJ_UNPACK_ARGV(float value1, int value2);
 // or with an offset into argv
 // EJ_UNPACK_ARGV_OFFSET(OFFSET, float value1, int value2, ...);
+
 #define EJ_UNPACK_ARGV(...) EJ_UNPACK_ARGV_OFFSET(0, __VA_ARGS__)
 #define EJ_UNPACK_ARGV_OFFSET(OFFSET, ...) \
 	if( argc < EJ_ARGC(__VA_ARGS__)+OFFSET ) { \
@@ -212,7 +218,7 @@ static inline bool JSStrIsEqualToStr( const JSChar * s1, const char * s2, int le
 	} \
 	EJ_MAP_EXT(OFFSET, _EJ_LITERAL(;), _EJ_UNPACK_NUMBER, __VA_ARGS__)
 	
-#define _EJ_UNPACK_NUMBER(INDEX, NAME) NAME = JSValueToNumberFast(ctx, argc[INDEX]);
+#define _EJ_UNPACK_NUMBER(INDEX, NAME) NAME = JSValueToNumberFast(ctx, argv[INDEX]);
 
 
 @interface EJBindingBase : NSObject {

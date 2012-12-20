@@ -201,11 +201,11 @@ EJ_BIND_GET(ended, ctx) {
 	return JSValueMakeBoolean(ctx, ended);
 }
 
-EJ_BIND_ENUM(preload, self.preload, EJ_ENUM_NAMES(
-	[kEJAudioPreloadNone] = "none",
-	[kEJAudioPreloadMetadata] = "metadata",
-	[kEJAudioPreloadAuto] = "auto"
-));
+EJ_BIND_ENUM(preload, self.preload,
+	"none",		// kEJAudioPreloadNone
+	"metadata", // kEJAudioPreloadMetadata
+	"auto"		// kEJAudioPreloadAuto
+);
 
 EJ_BIND_EVENT(canplaythrough);
 EJ_BIND_EVENT(ended);

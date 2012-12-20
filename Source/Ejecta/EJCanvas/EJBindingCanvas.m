@@ -52,11 +52,11 @@
 	}
 }
 
-EJ_BIND_ENUM(scalingMode, scalingMode, EJ_ENUM_NAMES(
-	[kEJScalingModeNone] = "none",
-	[kEJScalingModeFitWidth] = "fit-width",
-	[kEJScalingModeFitHeight] = "fit-height"
-));
+EJ_BIND_ENUM(scalingMode, scalingMode,
+	"none",			// kEJScalingModeNone
+	"fit-width",	// kEJScalingModeFitWidth
+	"fit-height"	// FitHeight
+);
 
 EJ_BIND_GET(width, ctx) {
 	return JSValueMakeNumber(ctx, width);
