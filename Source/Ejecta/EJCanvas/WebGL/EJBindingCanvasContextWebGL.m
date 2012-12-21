@@ -877,8 +877,121 @@ EJ_BIND_FUNCTION(getTexParameter, ctx, argc, argv) {
 }
 
 EJ_BIND_FUNCTION(getUniform, ctx, argc, argv) {
-	// TODO
-	return NULL;
+	GLuint program = [EJBindingWebGLProgram indexFromJSValue:argv[0]];
+	GLuint uniform = [EJBindingWebGLUniformLocation indexFromJSValue:argv[1]];
+	
+	
+	// Oh Uniform
+	// how can I get thy type?
+	
+	// I can't get thy type
+	// from a location
+	// I can get thy type
+	// from an index
+	
+	// I can't get thy index
+	// from a location
+	// I can get thy location
+	// from a name
+	
+	// I can get thy name
+	// from an index
+	
+	// I can iterate all indices
+	
+	GLint numUniforms;
+	glGetProgramiv(program, GL_ACTIVE_UNIFORMS, &numUniforms);
+	
+	GLint nameLength;
+	glGetProgramiv(program, GL_ACTIVE_UNIFORM_MAX_LENGTH, &nameLength);
+	
+	BOOL found = false;
+	GLint numElements;
+	GLenum elementType;
+	GLchar * nameBuffer = malloc(nameLength);
+	
+	for( int i = 0; i < numUniforms; i++ ) {
+		glGetActiveUniform(program, i, nameLength, NULL, &numElements, &elementType, nameBuffer);
+		if( glGetUniformLocation(program, nameBuffer) == uniform ) {
+			found = true;
+			break;
+		}
+	}
+	
+	free(nameBuffer);
+	if( !found ) { return NULL; }
+	
+	
+	
+	// Figure out the element type and size
+	GLint type = GL_NONE, size = 0;
+	switch( elementType ) {
+		case GL_FLOAT:		type = GL_FLOAT; size = 1; break;
+		case GL_FLOAT_VEC2:	type = GL_FLOAT; size = 2; break;
+		case GL_FLOAT_VEC3:	type = GL_FLOAT; size = 3; break;
+		case GL_FLOAT_VEC4:	type = GL_FLOAT; size = 4; break;
+		case GL_BOOL:		type = GL_BOOL;	 size = 1; break;
+		case GL_BOOL_VEC2:	type = GL_BOOL;	 size = 2; break;
+		case GL_BOOL_VEC3:	type = GL_BOOL;	 size = 3; break;
+		case GL_BOOL_VEC4:	type = GL_BOOL;	 size = 4; break;
+		case GL_INT:		type = GL_INT;	 size = 1; break;
+		case GL_INT_VEC2:	type = GL_INT;	 size = 2; break;
+		case GL_INT_VEC3:	type = GL_INT;	 size = 3; break;
+		case GL_INT_VEC4:	type = GL_INT;	 size = 4; break;
+		case GL_FLOAT_MAT2:	type = GL_FLOAT; size = 4; break;
+		case GL_FLOAT_MAT3:	type = GL_FLOAT; size = 9; break;
+		case GL_FLOAT_MAT4:	type = GL_FLOAT; size = 16; break;
+	};
+	
+	// Single value
+	if( size == 1 ) {
+		if( type == GL_FLOAT ) {
+			float value;
+			glGetUniformfv(program, uniform, &value);
+			return JSValueMakeNumber(ctx, value);
+		}
+		else if( type == GL_INT ) {
+			int value;
+			glGetUniformiv(program, uniform, &value);
+			return JSValueMakeNumber(ctx, value);
+		}
+		else if( type == GL_BOOL ) {
+			int value;
+			glGetUniformiv(program, uniform, &value);
+			return JSValueMakeBoolean(ctx, value);
+		}
+	}
+	
+	
+	JSObjectRef array = NULL;
+	
+	// Float32Array
+	if( type == GL_FLOAT ) {
+		array = JSTypedArrayMake(ctx, kJSTypedArrayTypeFloat32Array, size);
+		void * buffer = JSTypedArrayGetDataPtr(ctx, array, NULL);
+		glGetUniformfv(program, uniform, buffer);
+	}
+	
+	// Int32Array
+	else if( type == GL_INT ) {
+		array = JSTypedArrayMake(ctx, kJSTypedArrayTypeInt32Array, size);
+		void * buffer = JSTypedArrayGetDataPtr(ctx, array, NULL);
+		glGetUniformiv(program, uniform, buffer);
+	}
+	
+	// boolean[]
+	else if( type == GL_BOOL ) {
+		int buffer[size];
+		JSValueRef arrayArgs[size];
+		
+		glGetUniformiv(program, uniform, buffer);
+		for( int i = 0; i < size; i++ ) {
+			arrayArgs[i] = JSValueMakeBoolean(ctx, buffer[i]);
+		}
+		array = JSObjectMakeArray(ctx, size, arrayArgs, NULL);
+	}
+	
+	return array;
 }
 
 EJ_BIND_FUNCTION(getUniformLocation, ctx, argc, argv) {
