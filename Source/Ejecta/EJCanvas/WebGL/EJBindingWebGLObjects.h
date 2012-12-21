@@ -55,3 +55,9 @@
 - (id)initWithSize:(GLint)sizep type:(GLenum)typep name:(NSString *)namep;
 + (JSObjectRef)createJSObjectWithContext:(JSContextRef)ctx size:(GLint)sizep type:(GLenum)typep name:(NSString *)namep;
 @end
+
+
+@interface EJBindingWebGLContextAttributes : EJBindingBase
+@end
+
+

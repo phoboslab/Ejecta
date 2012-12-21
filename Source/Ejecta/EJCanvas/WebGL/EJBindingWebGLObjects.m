@@ -132,3 +132,14 @@ EJ_BIND_GET(name, ctx) { return NSStringToJSValue(ctx, name); }
 
 @end
 
+
+@implementation EJBindingWebGLContextAttributes : EJBindingBase
+// FIXME: make this non-static
+EJ_BIND_CONST(alpha, true);
+EJ_BIND_CONST(depth, true);
+EJ_BIND_CONST(stencil, true);
+EJ_BIND_CONST(antialias, false);
+EJ_BIND_CONST(premultipliedAlpha, false);
+EJ_BIND_CONST(preserveDrawingBuffer, false);
+@end
+

@@ -157,8 +157,8 @@ EJ_BIND_GET(drawinBufferHeight, ctx) {
 
 
 EJ_BIND_FUNCTION(getContextAttributes, ctx, argc, argv) {
-	// TODO WebGLContextAttributes getContextAttributes()
-	return NULL;
+	return [EJBindingWebGLContextAttributes createJSObjectWithContext:ctx
+		instance:[[EJBindingWebGLContextAttributes alloc] init]];
 }
 
 EJ_BIND_FUNCTION(isContextLost, ctx, argc, argv) {
