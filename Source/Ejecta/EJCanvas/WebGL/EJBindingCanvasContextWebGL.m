@@ -448,14 +448,11 @@ EJ_BIND_FUNCTION_DIRECT(disableVertexAttribArray, glDisableVertexAttribArray, in
 EJ_BIND_FUNCTION_DIRECT(drawArrays, glDrawArrays, mode, first, count);
 
 EJ_BIND_FUNCTION(drawElements, ctx, argc, argv) {
-	if( argc < 4 ) { return NULL; }
+	EJ_UNPACK_ARGV(GLenum mode, GLsizei count, GLenum type, GLint offset);
 	
 	ejectaInstance.currentRenderingContext = renderingContext;
 	
-	EJ_UNPACK_ARGV(GLenum mode, GLsizei count, GLenum type);
-	GLvoid *offset = (GLvoid *)((long)JSValueToNumberFast(ctx, argv[3]));
-	
-	glDrawElements(mode, count, type, offset);
+	glDrawElements(mode, count, type, EJ_BUFFER_OFFSET(offset));
 	return NULL;
 }
 
@@ -560,7 +557,7 @@ EJ_BIND_FUNCTION(getAttachedShaders, ctx, argc, argv) {
 	GLint count;
 	glGetProgramiv(program, GL_ATTACHED_SHADERS, &count);
 	
-	GLuint * list = malloc(count * sizeof(GLint));
+	GLuint * list = malloc(count * sizeof(GLuint));
 	glGetAttachedShaders(program, count, NULL, list);
 	
 	JSValueRef * args = malloc(count * sizeof(JSObjectRef));
@@ -1073,15 +1070,11 @@ EJ_BIND_FUNCTION(validateProgram, ctx, argc, argv) {
 }
 
 EJ_BIND_FUNCTION(vertexAttribPointer, ctx, argc, argv) {
-	if ( argc < 5 ) { return NULL; }
-	EJ_UNPACK_ARGV(GLuint index, GLuint itemSize, GLenum type, GLboolean normalized, GLsizei stride);
+	EJ_UNPACK_ARGV(GLuint index, GLuint itemSize, GLenum type, GLboolean normalized, GLsizei stride, GLint offset);
 	
 	ejectaInstance.currentRenderingContext = renderingContext;
 	
-	// TODO(viks): Is the following completly safe?
-	GLvoid * offset = (GLvoid *)((long)JSValueToNumberFast(ctx, argv[5]));
-	
-	glVertexAttribPointer(index, itemSize, type, normalized, stride, offset);
+	glVertexAttribPointer(index, itemSize, type, normalized, stride, EJ_BUFFER_OFFSET(offset));
 	return NULL;
 }
 
