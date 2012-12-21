@@ -507,7 +507,7 @@ EJ_BIND_FUNCTION(getActiveAttrib, ctx, argc, argv) {
 	ejectaInstance.currentRenderingContext = renderingContext;
 	
 	GLuint program = [EJBindingWebGLProgram indexFromJSValue:argv[0]];
-	GLuint index = JSValueToNumberFast(ctx, argv[0]);
+	GLuint index = JSValueToNumberFast(ctx, argv[1]);
 	
 	GLint buffsize;
 	glGetProgramiv(program, GL_ACTIVE_ATTRIBUTE_MAX_LENGTH, &buffsize);
@@ -530,7 +530,7 @@ EJ_BIND_FUNCTION(getActiveUniform, ctx, argc, argv) {
 	ejectaInstance.currentRenderingContext = renderingContext;
 	
 	GLuint program = [EJBindingWebGLProgram indexFromJSValue:argv[0]];
-	GLuint index = JSValueToNumberFast(ctx, argv[0]);
+	GLuint index = JSValueToNumberFast(ctx, argv[1]);
 	
 	GLint buffsize;
 	glGetProgramiv(program, GL_ACTIVE_UNIFORM_MAX_LENGTH, &buffsize);
