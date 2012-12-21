@@ -191,8 +191,8 @@ EJ_BIND_FUNCTION(drawImage, ctx, argc, argv) {
 	EJTexture * image = drawable.texture;
 	float scale = image.contentScale;
 	
-	short sx = 0, sy = 0, sw = 0, sh = 0;
-	float dx = 0, dy = 0, dw = sw, dh = sh;	
+	short sx = 0, sy = 0, sw, sh;
+	float dx, dy, dw, dh;
 	
 	if( argc == 3 ) {
 		// drawImage(image, dx, dy)
