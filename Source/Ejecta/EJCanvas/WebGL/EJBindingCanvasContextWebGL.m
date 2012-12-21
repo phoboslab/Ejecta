@@ -582,6 +582,140 @@ EJ_BIND_FUNCTION(getAttribLocation, ctx, argc, argv) {
 	return JSValueMakeNumber(ctx, glGetAttribLocation(program, [name UTF8String]));
 }
 
+EJ_BIND_FUNCTION(getParameter, ctx, argc, argv) {
+	EJ_UNPACK_ARGV(GLenum pname);
+	
+	ejectaInstance.currentRenderingContext = renderingContext;
+	
+	JSValueRef ret = NULL;
+	
+	int intbuffer[4];
+	float floatvalue;
+	JSValueRef arrayArgs[4];
+	
+	switch( pname ) {
+		// Float32Array (with 0 elements)
+		case GL_COMPRESSED_TEXTURE_FORMATS:
+			ret = JSTypedArrayMake(ctx, kJSTypedArrayTypeFloat32Array, 0);
+			break;
+			
+		// Float32Array (with 2 elements) 
+		case GL_ALIASED_LINE_WIDTH_RANGE:
+		case GL_ALIASED_POINT_SIZE_RANGE:
+		case GL_DEPTH_RANGE:
+			ret = JSTypedArrayMake(ctx, kJSTypedArrayTypeFloat32Array, 2);
+			glGetFloatv(pname, JSTypedArrayGetDataPtr(ctx, ret, NULL));
+			break;
+		
+		// Float32Array (with 4 values)
+		case GL_BLEND_COLOR:
+		case GL_COLOR_CLEAR_VALUE:
+			ret = JSTypedArrayMake(ctx, kJSTypedArrayTypeFloat32Array, 4);
+			glGetFloatv(pname, JSTypedArrayGetDataPtr(ctx, ret, NULL));
+			break;
+			
+		// Int32Array (with 2 values)
+		case GL_MAX_VIEWPORT_DIMS:
+			ret = JSTypedArrayMake(ctx, kJSTypedArrayTypeInt32Array, 2);
+			glGetIntegerv(pname, JSTypedArrayGetDataPtr(ctx, ret, NULL));
+			break;
+			
+		// Int32Array (with 4 values)
+		case GL_SCISSOR_BOX:
+		case GL_VIEWPORT:
+			ret = JSTypedArrayMake(ctx, kJSTypedArrayTypeInt32Array, 4);
+			glGetIntegerv(pname, JSTypedArrayGetDataPtr(ctx, ret, NULL));
+			break;
+		
+		// boolean[] (with 4 values)
+		case GL_COLOR_WRITEMASK:
+			glGetIntegerv(pname, intbuffer);
+			for(int i = 0; i < 4; i++ ) {
+				arrayArgs[i] = JSValueMakeBoolean(ctx, intbuffer[i]);
+			}
+			ret = JSObjectMakeArray(ctx, 4, arrayArgs, NULL);
+			break;
+
+		// WebGLBuffer
+		case GL_ARRAY_BUFFER_BINDING:
+		case GL_ELEMENT_ARRAY_BUFFER_BINDING:
+			glGetIntegerv(pname, intbuffer);
+			ret = [[buffers objectForKey:[NSNumber numberWithInt:intbuffer[0]]] pointerValue];
+			break;
+		
+		// WebGLProgram
+		case GL_CURRENT_PROGRAM:
+			glGetIntegerv(pname, intbuffer);
+			ret = [[programs objectForKey:[NSNumber numberWithInt:intbuffer[0]]] pointerValue];
+			break;
+		
+		// WebGLFramebuffer
+		case GL_FRAMEBUFFER_BINDING:
+			glGetIntegerv(pname, intbuffer);
+			ret = [[framebuffers objectForKey:[NSNumber numberWithInt:intbuffer[0]]] pointerValue];
+			break;
+			
+		// WebGLRenderbuffer
+		case GL_RENDERBUFFER_BINDING:
+			glGetIntegerv(pname, intbuffer);
+			ret = [[renderbuffers objectForKey:[NSNumber numberWithInt:intbuffer[0]]] pointerValue];
+			break;
+		
+		// WebGLTexture
+		case GL_TEXTURE_BINDING_2D:
+		case GL_TEXTURE_BINDING_CUBE_MAP:
+			glGetIntegerv(pname, intbuffer);
+			ret = [[textures objectForKey:[NSNumber numberWithInt:intbuffer[0]]] pointerValue];
+			break;
+			
+		// Ejecta/WebGL specific
+		case GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS:
+			// device may support more, but we only map 8 here
+			ret = JSValueMakeNumber(ctx, EJ_CANVAS_MAX_TEXTURE_UNITS);
+			break;
+		
+		case GL_UNPACK_FLIP_Y_WEBGL:
+			ret = JSValueMakeBoolean(ctx, unpackFlipY);
+			break;
+			
+		case GL_UNPACK_PREMULTIPLY_ALPHA_WEBGL:
+			ret = JSValueMakeBoolean(ctx, premultiplyAlpha);
+			break;
+		
+		case GL_UNPACK_COLORSPACE_CONVERSION_WEBGL:
+			ret = JSValueMakeBoolean(ctx, false);
+			break;
+			
+		// string
+		case GL_RENDERER:
+		case GL_SHADING_LANGUAGE_VERSION:
+		case GL_VENDOR:
+		case GL_VERSION:
+			ret = NSStringToJSValue(ctx, [NSString stringWithUTF8String:(char *)glGetString(pname)]);
+			break;
+		
+		// single float
+		case GL_DEPTH_CLEAR_VALUE:
+		case GL_LINE_WIDTH:
+		case GL_POLYGON_OFFSET_FACTOR:
+		case GL_POLYGON_OFFSET_UNITS:
+		case GL_SAMPLE_COVERAGE_VALUE:
+			glGetFloatv(pname, &floatvalue);
+			ret = JSValueMakeNumber(ctx, floatvalue);
+			break;
+		
+		// single int/long/bool - the whole rest
+		default:
+			glGetIntegerv(pname, intbuffer);
+			ret = JSValueMakeNumber(ctx, intbuffer[0]);
+			break;
+	}
+	
+	// That was fun!
+	
+	return ret;
+}
+
 EJ_BIND_FUNCTION(getFramebufferAttachmentParameter, ctx, argc, argv) {	
 	EJ_UNPACK_ARGV(GLenum target, GLenum attachment, GLenum pname);
 	
