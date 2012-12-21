@@ -716,6 +716,21 @@ EJ_BIND_FUNCTION(getParameter, ctx, argc, argv) {
 	return ret;
 }
 
+EJ_BIND_FUNCTION(getBufferParameter, ctx, argc, argv) {
+	EJ_UNPACK_ARGV(GLenum target, GLenum pname);
+	
+	ejectaInstance.currentRenderingContext = renderingContext;
+	
+	GLint param;
+	glGetBufferParameteriv(target, pname, &param);
+	return JSValueMakeNumber(ctx, param);
+}
+
+EJ_BIND_FUNCTION(getError, ctx, argc, argv) {
+	ejectaInstance.currentRenderingContext = renderingContext;
+	return JSValueMakeNumber(ctx, glGetError());
+}
+
 EJ_BIND_FUNCTION(getFramebufferAttachmentParameter, ctx, argc, argv) {	
 	EJ_UNPACK_ARGV(GLenum target, GLenum attachment, GLenum pname);
 	
@@ -1158,6 +1173,27 @@ EJ_BIND_FUNCTION(texParameteri, ctx, argc, argv) {
 #undef EJ_BIND_UNIFORM_MATRIX_V
 
 
+EJ_BIND_FUNCTION(useProgram, ctx, argc, argv) {
+	if ( argc < 1 ) { return NULL; }
+	
+	ejectaInstance.currentRenderingContext = renderingContext;
+	
+	GLuint program = [EJBindingWebGLProgram indexFromJSValue:argv[0]];
+	glUseProgram(program);
+	return NULL;
+}
+
+EJ_BIND_FUNCTION(validateProgram, ctx, argc, argv) {
+	if ( argc < 1 ) { return NULL; }
+	
+	ejectaInstance.currentRenderingContext = renderingContext;
+	
+	GLuint program = [EJBindingWebGLProgram indexFromJSValue:argv[0]];
+	glValidateProgram(program);
+	return NULL;
+}
+
+
 EJ_BIND_FUNCTION_DIRECT(vertexAttrib1f, glVertexAttrib1f, index, x);
 EJ_BIND_FUNCTION_DIRECT(vertexAttrib2f, glVertexAttrib2f, index, x, y);
 EJ_BIND_FUNCTION_DIRECT(vertexAttrib3f, glVertexAttrib3f, index, x, y, z);
@@ -1182,26 +1218,6 @@ EJ_BIND_FUNCTION_DIRECT(vertexAttrib4f, glVertexAttrib4f, index, x, y, z, w);
 
 #undef EJ_BIND_VERTEXATTRIB_V
 
-
-EJ_BIND_FUNCTION(useProgram, ctx, argc, argv) {
-	if ( argc < 1 ) { return NULL; }
-	
-	ejectaInstance.currentRenderingContext = renderingContext;
-	
-	GLuint program = [EJBindingWebGLProgram indexFromJSValue:argv[0]];
-	glUseProgram(program);
-	return NULL;
-}
-
-EJ_BIND_FUNCTION(validateProgram, ctx, argc, argv) {
-	if ( argc < 1 ) { return NULL; }
-	
-	ejectaInstance.currentRenderingContext = renderingContext;
-	
-	GLuint program = [EJBindingWebGLProgram indexFromJSValue:argv[0]];
-	glValidateProgram(program);
-	return NULL;
-}
 
 EJ_BIND_FUNCTION(vertexAttribPointer, ctx, argc, argv) {
 	EJ_UNPACK_ARGV(GLuint index, GLuint itemSize, GLenum type, GLboolean normalized, GLsizei stride, GLint offset);
