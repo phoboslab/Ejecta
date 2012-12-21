@@ -100,14 +100,22 @@ extern JSValueRef ej_global_undefined;
 // Shorthand to define a function that logs a "not implemented" warning
 
 #define EJ_BIND_FUNCTION_NOT_IMPLEMENTED(NAME) \
-	EJ_BIND_FUNCTION( NAME, ctx, argc, argv ) { \
+	static JSValueRef _func_##NAME( \
+		JSContextRef ctx, \
+		JSObjectRef function, \
+		JSObjectRef object, \
+		size_t argc, \
+		const JSValueRef argv[], \
+		JSValueRef* exception \
+	) { \
 		static bool didShowWarning; \
 		if( !didShowWarning ) { \
 			NSLog(@"Warning: method " @ #NAME @" is not yet implemented!"); \
 			didShowWarning = true; \
 		} \
-		return NULL; \
-	}
+		return ej_global_undefined; \
+	} \
+	__EJ_GET_POINTER_TO(_func_##NAME)
 
 
 // ------------------------------------------------------------------------------------
