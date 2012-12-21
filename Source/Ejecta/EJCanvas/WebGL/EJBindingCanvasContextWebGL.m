@@ -26,6 +26,11 @@
 }
 
 - (void)dealloc {
+	// Make sure this rendering context is the current one, so all
+	// OpenGL objects can be deleted properly.
+	EAGLContext * oldContext = [EAGLContext currentContext];
+	[EAGLContext setCurrentContext:renderingContext.glContext];
+	
 	for( NSNumber * n in buffers ) { GLuint buffer = n.intValue; glDeleteBuffers(1, &buffer); }
 	[buffers release];
 	
@@ -44,7 +49,12 @@
 	for( NSNumber * n in renderbuffers ) { GLuint buffer = n.intValue; glDeleteRenderbuffers(1, &buffer); }
 	[renderbuffers release];
 	
+	[textures release];
+	
+	[EAGLContext setCurrentContext:oldContext];
+	
 	[renderingContext release];
+	
 	[super dealloc];
 }
 

@@ -60,6 +60,11 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 }
 
 - (void)dealloc {
+	// Make sure this rendering context is the current one, so all
+	// OpenGL objects can be deleted properly.
+	EAGLContext * oldContext = [EAGLContext currentContext];
+	[EAGLContext setCurrentContext:glContext];
+	
 	[program2D release];
 	[fontCache release];
 	
@@ -76,6 +81,8 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 	if( stencilBuffer ) { glDeleteRenderbuffers(1, &stencilBuffer); }
 	
 	[path release];
+	[EAGLContext setCurrentContext:oldContext];
+	
 	[super dealloc];
 }
 

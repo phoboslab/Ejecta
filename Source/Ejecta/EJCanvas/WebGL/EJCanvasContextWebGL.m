@@ -82,12 +82,20 @@
 }
 
 - (void)dealloc {
+	// Make sure this rendering context is the current one, so all
+	// OpenGL objects can be deleted properly. Remember the currently bound
+	// Context, but only if it's not the context to be deleted
+	EAGLContext * oldContext = [EAGLContext currentContext];
+	if( oldContext == glContext ) { oldContext = NULL; }
+	[EAGLContext setCurrentContext:glContext];
+	
     if( viewFrameBuffer ) { glDeleteFramebuffers( 1, &viewFrameBuffer); }
 	if( viewRenderBuffer ) { glDeleteRenderbuffers(1, &viewRenderBuffer); }
     if( depthRenderBuffer ) { glDeleteRenderbuffers(1, &depthRenderBuffer); }
 	[glview release];
-	[EAGLContext setCurrentContext:NULL];
 	[glContext release];
+	
+	[EAGLContext setCurrentContext:oldContext];
 	[super dealloc];
 }
 
