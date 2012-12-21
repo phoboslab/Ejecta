@@ -5,6 +5,6 @@
 
 @interface EAGLView : UIView
 
-- (id)initWithFrame:(CGRect)frame contentScale:(float)contentScale;
+- (id)initWithFrame:(CGRect)frame contentScale:(float)contentScale retainedBacking:(BOOL)retainedBacking;
 
 @end

@@ -7,7 +7,7 @@
     return [CAEAGLLayer class];
 }
 
-- (id)initWithFrame:(CGRect)frame contentScale:(float)contentScale {
+- (id)initWithFrame:(CGRect)frame contentScale:(float)contentScale retainedBacking:(BOOL)retainedBacking {
 	if( self = [super initWithFrame:frame] ) {
 		[self setMultipleTouchEnabled:YES];
         
@@ -17,8 +17,9 @@
 		eaglLayer.contentsScale = contentScale;
 
 		eaglLayer.opaque = TRUE;
+		
 		eaglLayer.drawableProperties = @{
-			kEAGLDrawablePropertyRetainedBacking: @YES,
+			kEAGLDrawablePropertyRetainedBacking: [NSNumber numberWithBool:retainedBacking],
 			kEAGLDrawablePropertyColorFormat: kEAGLColorFormatRGBA8
 		};
     }

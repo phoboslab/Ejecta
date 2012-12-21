@@ -54,7 +54,7 @@
 	);
 	
 	// Create the OpenGL UIView with final screen size and content scaling (retina)
-	glview = [[EAGLView alloc] initWithFrame:frame contentScale:contentScale];
+	glview = [[EAGLView alloc] initWithFrame:frame contentScale:contentScale retainedBacking:NO];
     
 	// Create the frame- and renderbuffers
     glGenFramebuffers(1, &viewFrameBuffer);
