@@ -1081,16 +1081,39 @@ EJ_BIND_FUNCTION(linkProgram, ctx, argc, argv) {
 EJ_BIND_FUNCTION(pixelStorei, ctx, argc, argv) {
 	EJ_UNPACK_ARGV(GLenum pname, GLint param);
 	
-	if( pname == GL_UNPACK_FLIP_Y_WEBGL ) {
-		unpackFlipY = param;
+	switch( pname ) {
+		case GL_UNPACK_FLIP_Y_WEBGL:
+			unpackFlipY = param;
+			if( param ) {
+				NSLog(
+					@"Warning: Enabling UNPACK_FLIP_Y_WEBGL makes texture loading slow and "
+					@"memory inefficient. Leave it disabled if you can."
+				);
+			}
+			break;
+			
+		case GL_UNPACK_PREMULTIPLY_ALPHA_WEBGL:
+			premultiplyAlpha = param;
+			if( param ) {
+				NSLog(
+					@"Warning: Enabling UNPACK_PREMULTIPLY_ALPHA_WEBGL makes texture loading "
+					@"slow and memory inefficient. Leave it disabled if you can."
+				);
+			}
+			break;
+		
+		case GL_UNPACK_COLORSPACE_CONVERSION_WEBGL:
+			if( param ) {
+				NSLog(@"Warning: UNPACK_COLORSPACE_CONVERSION_WEBGL is unsupported");
+			}
+			break;
+			
+		default:
+			ejectaInstance.currentRenderingContext = renderingContext;
+			glPixelStorei(pname, param);
+			break;
 	}
-	else if( pname == GL_UNPACK_PREMULTIPLY_ALPHA_WEBGL ) {
-		premultiplyAlpha = param;
-	}
-	else {
-		ejectaInstance.currentRenderingContext = renderingContext;
-		glPixelStorei(pname, param);
-	}
+	
 	return NULL;
 }
 
