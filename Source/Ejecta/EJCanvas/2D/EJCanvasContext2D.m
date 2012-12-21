@@ -412,8 +412,8 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 
 - (void)drawImage:(EJTexture *)texture sx:(float)sx sy:(float)sy sw:(float)sw sh:(float)sh dx:(float)dx dy:(float)dy dw:(float)dw dh:(float)dh {
 	
-	float tw = texture.realWidth;
-	float th = texture.realHeight;
+	float tw = texture.width;
+	float th = texture.height;
 	
 	EJColorRGBA color = {.rgba = {255, 255, 255, 255 * state->globalAlpha}};
 	[self setTexture:texture];
@@ -468,8 +468,8 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 	EJTexture * texture = imageData.texture;
 	[self setTexture:texture];
 	
-	short tw = texture.realWidth;
-	short th = texture.realHeight;
+	short tw = texture.width;
+	short th = texture.height;
 	
 	static EJColorRGBA white = {.hex = 0xffffffff};
 	

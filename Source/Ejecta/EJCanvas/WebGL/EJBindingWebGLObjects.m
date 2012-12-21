@@ -37,12 +37,14 @@
 }
 @end
 
+
 @implementation EJBindingWebGLProgram
 - (void)dealloc {
 	[webglContext deleteProgram:index];
 	[super dealloc];
 }
 @end
+
 
 @implementation EJBindingWebGLShader
 - (void)dealloc {
@@ -51,16 +53,42 @@
 }
 @end
 
+
 @implementation EJBindingWebGLTexture
+- (id)initWithWebGLContext:(EJBindingCanvasContextWebGL *)webglContextp {
+	if( self = [super initWithContext:NULL argc:0 argv:NULL] ) {
+		webglContext = [webglContextp retain];
+		texture = [[EJTexture alloc] initEmptyForWebGL];
+	}
+	return self;
+}
+
 - (void)dealloc {
-	[webglContext deleteTexture:index];
+	if( texture.textureId ) {
+		[webglContext deleteTexture:texture.textureId];
+	}
+	[texture release];
 	[super dealloc];
 }
+
++ (EJTexture *)textureFromJSValue:(JSValueRef)value {
+	if( !value ) { return NULL; }
+	
+	EJBindingWebGLTexture * binding = (EJBindingWebGLTexture *)JSObjectGetPrivate((JSObjectRef)value);
+	return (binding && [binding isMemberOfClass:[self class]]) ? binding->texture : NULL;
+}
+
++ (JSObjectRef)createJSObjectWithContext:(JSContextRef)ctx webglContext:(EJBindingCanvasContextWebGL *)webglContext {
+	id native = [[self alloc] initWithWebGLContext:webglContext];
+	return [self createJSObjectWithContext:ctx instance:native];
+}
 @end
+
 
 @implementation EJBindingWebGLUniformLocation
 // nothing to delete
 @end
+
 
 @implementation EJBindingWebGLRenderbuffer
 - (void)dealloc {

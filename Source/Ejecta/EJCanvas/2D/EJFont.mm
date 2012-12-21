@@ -175,7 +175,7 @@ int GlyphLayoutSortByTextureIndex(const void * a, const void * b) {
 	
 	// Render glyph and update the texture
 	CGContextShowGlyphsAtPoint(context, -glyphInfo->x, -glyphInfo->y, &glyph, 1);
-	[texture updateTextureWithPixels:pixels	atX:txLineX y:txLineY width:pxWidth height:pxHeight];
+	[texture updateWithPixels:pixels atX:txLineX y:txLineY width:pxWidth height:pxHeight];
 	
 	// Update texture coordinates
 	txLineX += pxWidth;

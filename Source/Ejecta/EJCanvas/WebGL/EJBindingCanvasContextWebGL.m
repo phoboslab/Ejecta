@@ -16,11 +16,13 @@
 		jsCanvas = canvas;
 		
 		buffers = [NSMutableDictionary new];
+		textures = [NSMutableDictionary new];
 		programs = [NSMutableDictionary new];
 		shaders = [NSMutableDictionary new];
-		textures = [NSMutableDictionary new];
 		framebuffers = [NSMutableDictionary new];
 		renderbuffers = [NSMutableDictionary new];
+		
+		activeTexture = &textureUnits[0];
 	}
 	return self;
 }
@@ -39,9 +41,6 @@
 	
 	for( NSNumber * n in shaders ) { glDeleteShader(n.intValue); }
 	[shaders release];
-	
-	for( NSNumber * n in textures ) { GLuint texture = n.intValue; glDeleteTextures(1, &texture); }
-	[textures release];
 	
 	for( NSNumber * n in framebuffers ) { GLuint buffer = n.intValue; glDeleteFramebuffers(1, &buffer); }
 	[framebuffers release];
@@ -67,6 +66,26 @@
 	}
 }
 
+- (void)deleteTexture:(GLuint)texture {
+	// This just deletes the pointer to the JSObject; the texture itself
+	// is retained and released by the binding
+	NSNumber * key = [NSNumber numberWithInt:texture];
+	JSObjectRef obj = [[textures objectForKey:key] pointerValue];
+	[textures removeObjectForKey:key];
+	
+	// See if it's bound in any of the texture units
+	for( int i = 0; i < EJ_CANVAS_MAX_TEXTURE_UNITS; i++ ) {
+		if( textureUnits[i].jsTexture == obj ) {
+			textureUnits[i].jsTexture = NULL;
+			textureUnits[i].texture = NULL;
+		}
+		else if( textureUnits[i].jsCubeMap == obj ) {
+			textureUnits[i].jsCubeMap = NULL;
+			textureUnits[i].cubeMap = NULL;
+		}
+	}
+}
+
 - (void)deleteProgram:(GLuint)program {
 	NSNumber * key = [NSNumber numberWithInt:program];
 	if( [programs objectForKey:key] ) {
@@ -85,15 +104,7 @@
 	}
 
 }
-- (void)deleteTexture:(GLuint)texture {
-	NSNumber * key = [NSNumber numberWithInt:texture];
-	if( [textures objectForKey:key] ) {
-		ejectaInstance.currentRenderingContext = renderingContext;
-		glDeleteTextures(1, &texture);
-		[textures removeObjectForKey:key];
-	}
 
-}
 - (void)deleteRenderbuffer:(GLuint)renderbuffer {
 	NSNumber * key = [NSNumber numberWithInt:renderbuffer];
 	if( [renderbuffers objectForKey:key] ) {
@@ -103,6 +114,7 @@
 	}
 
 }
+
 - (void)deleteFramebuffer:(GLuint)framebuffer {
 	NSNumber * key = [NSNumber numberWithInt:framebuffer];
 	if( [framebuffers objectForKey:key] ) {
@@ -167,7 +179,11 @@ EJ_BIND_FUNCTION(activeTexture, ctx, argc, argv) {
 	ejectaInstance.currentRenderingContext = renderingContext;
 	
 	GLenum texture = JSValueToNumberFast(ctx, argv[0]);
-	glActiveTexture(texture);
+	GLuint index = texture - GL_TEXTURE0;
+	if( index < EJ_CANVAS_MAX_TEXTURE_UNITS ) {
+		activeTexture = &textureUnits[index];
+		glActiveTexture(texture);
+	}
 	return NULL;
 }
 
@@ -206,10 +222,44 @@ EJ_BIND_FUNCTION(bindAttribLocation, ctx, argc, argv) {
 		return NULL; \
 	}
 
-	EJ_MAP(EJ_BIND_BIND, Framebuffer, Renderbuffer, Buffer, Texture);
+	EJ_MAP(EJ_BIND_BIND, Framebuffer, Renderbuffer, Buffer);
 
 #undef EJ_BIND_BIND
 
+
+EJ_BIND_FUNCTION(bindTexture, ctx, argc, argv) {
+	if( argc < 2 ) { return NULL; }
+	
+	GLenum target = JSValueToNumberFast(ctx, argv[0]);
+	EJTexture * texture = [EJBindingWebGLTexture textureFromJSValue:argv[1]];
+	
+	if( target == GL_TEXTURE_2D ) {
+		if( texture ) {
+			[texture bindToTarget:target];
+			activeTexture->jsTexture = (JSObjectRef)argv[1];
+			activeTexture->texture = texture;
+		}
+		else {
+			activeTexture->jsTexture = NULL;
+			activeTexture->texture = NULL;
+			glBindTexture(target, 0);
+		}
+	}
+	else if( target == GL_TEXTURE_CUBE_MAP ) {
+		if( texture ) {
+			[texture bindToTarget:target];
+			activeTexture->jsCubeMap = (JSObjectRef)argv[1];
+			activeTexture->cubeMap = texture;
+		}
+		else {
+			activeTexture->jsCubeMap = NULL;
+			activeTexture->cubeMap = NULL;
+			glBindTexture(target, 0);
+		}
+	}
+	
+	return NULL;
+}
 
 EJ_BIND_FUNCTION_DIRECT(blendColor, glBlendColor, red, green, blue, alpha);
 EJ_BIND_FUNCTION_DIRECT(blendEquation, glBlendEquation, mode);
@@ -278,8 +328,46 @@ EJ_BIND_FUNCTION(compileShader, ctx, argc, argv) {
 	return NULL;
 }
 
-EJ_BIND_FUNCTION_DIRECT(copyTexImage2D, glCopyTexImage2D, target, level, internalformat, x, y, width, height, border);
-EJ_BIND_FUNCTION_DIRECT(copyTexSubImage2D, glCopyTexSubImage2D, target, level, xoffset, yoffset, x, y, width, height);
+EJ_BIND_FUNCTION_NOT_IMPLEMENTED(compressedTexImage2D);
+EJ_BIND_FUNCTION_NOT_IMPLEMENTED(compressedTexSubImage2D);
+
+EJ_BIND_FUNCTION(copyTexImage2D, ctx, argc, argv) {
+	EJ_UNPACK_ARGV(GLenum target, GLint level, GLenum internalformat, GLint x, GLint y, GLsizei width, GLsizei height);
+	
+	EJTexture * targetTexture;
+	if( target == GL_TEXTURE_2D ) {
+		targetTexture = activeTexture->texture;
+	}
+	else { // Assume CUBE_MAP
+		targetTexture = activeTexture->cubeMap;
+	}
+	
+	// We might need a new texture id, so rebind
+	[targetTexture ensureMutability];
+	[targetTexture bindToTarget:target];
+	
+	glCopyTexImage2D(target, level, internalformat, x, y, width, height, 0);
+	return NULL;
+}
+
+EJ_BIND_FUNCTION(copyTexSubImage2D, ctx, argc, argv) {
+	EJ_UNPACK_ARGV(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint x, GLint y, GLsizei width, GLsizei height);
+	
+	EJTexture * targetTexture;
+	if( target == GL_TEXTURE_2D ) {
+		targetTexture = activeTexture->texture;
+	}
+	else { // Assume CUBE_MAP
+		targetTexture = activeTexture->cubeMap;
+	}
+	
+	// We might need a new texture id, so rebind
+	[targetTexture ensureMutability];
+	[targetTexture bindToTarget:target];
+	
+	glCopyTexSubImage2D(target, level, xoffset, yoffset, x, y, width, height);
+	return NULL;
+}
 
 #define EJ_BIND_CREATE(I, NAME) \
 	EJ_BIND_FUNCTION(create##NAME, ctx, argc, argv) { \
@@ -290,9 +378,18 @@ EJ_BIND_FUNCTION_DIRECT(copyTexSubImage2D, glCopyTexSubImage2D, target, level, x
 		return obj; \
 	}
 
-	EJ_MAP(EJ_BIND_CREATE, Framebuffer, Renderbuffer, Buffer, Texture);
+	EJ_MAP(EJ_BIND_CREATE, Framebuffer, Renderbuffer, Buffer);
 
 #undef EJ_BIND_CREATE
+
+
+EJ_BIND_FUNCTION(createTexture, ctx, argc, argv) {
+	ejectaInstance.currentRenderingContext = renderingContext;
+	
+	// The texture is initialized empty; it doesn't have a valid gl textureId, so we
+	// can't put it in our textures dictionary just yet
+	return [EJBindingWebGLTexture createJSObjectWithContext:ctx webglContext:self];
+}
 
 
 EJ_BIND_FUNCTION(createProgram, ctx, argc, argv) {
@@ -395,10 +492,12 @@ EJ_BIND_FUNCTION(framebufferTexture2D, ctx, argc, argv) {
 	ejectaInstance.currentRenderingContext = renderingContext;
 	
 	EJ_UNPACK_ARGV(GLenum target, GLenum attachment, GLenum textarget);
-	GLuint texture = [EJBindingWebGLTexture indexFromJSValue:argv[3]];
-	GLint level = JSValueToNumberFast(ctx, argv[4]);
+	EJ_UNPACK_ARGV_OFFSET(4, GLint level);
 	
-	glFramebufferTexture2D(target, attachment, textarget, texture, level);
+	EJTexture * texture = [EJBindingWebGLTexture textureFromJSValue:argv[3]];
+	[texture ensureMutability];
+	
+	glFramebufferTexture2D(target, attachment, textarget, texture.textureId, level);
 	return NULL;
 }
 
@@ -620,10 +719,14 @@ EJ_BIND_FUNCTION(getShaderSource, ctx, argc, argv) {
 EJ_BIND_FUNCTION(getTexParameter, ctx, argc, argv) {
 	EJ_UNPACK_ARGV(GLenum target, GLenum pname);
 	
-	ejectaInstance.currentRenderingContext = renderingContext;
+	GLint value = 0;
+	if( target == GL_TEXTURE_2D ) {
+		value = [activeTexture->texture getParam:pname];
+	}
+	else if( target == GL_TEXTURE_CUBE_MAP ) {
+		value = [activeTexture->cubeMap getParam:pname];
+	}
 	
-	GLint value;
-	glGetTexParameteriv(target, pname, &value);
 	return JSValueMakeNumber(ctx, value);
 }
 
@@ -688,12 +791,22 @@ EJ_BIND_FUNCTION_DIRECT(hint, glHint, target, mode);
 		return JSValueMakeBoolean(ctx, glIs##NAME(index)); \
 	} \
 
-	EJ_MAP(EJ_BIND_IS_OBJECT, Buffer, Framebuffer, Program, Renderbuffer, Shader, Texture);
+	EJ_MAP(EJ_BIND_IS_OBJECT, Buffer, Framebuffer, Program, Renderbuffer, Shader);
 
 #undef EJ_BIND_IS_OBJECT
 
 
 EJ_BIND_FUNCTION_DIRECT(isEnabled, glIsEnabled, cap);
+
+EJ_BIND_FUNCTION(isTexture, ctx, argc, argv) {
+	if( argc < 1 ) { return NULL; }
+	
+	ejectaInstance.currentRenderingContext = renderingContext;
+	
+	EJTexture * texture = [EJBindingWebGLTexture textureFromJSValue:argv[0]];
+	return JSValueMakeBoolean(ctx, glIsTexture(texture.textureId));
+}
+
 EJ_BIND_FUNCTION_DIRECT(lineWidth, glLineWidth, width);
 
 EJ_BIND_FUNCTION(linkProgram, ctx, argc, argv) {
@@ -762,13 +875,91 @@ EJ_BIND_FUNCTION_DIRECT(stencilMaskSeparate, glStencilMaskSeparate, face, mask);
 EJ_BIND_FUNCTION_DIRECT(stencilOp, glStencilOp, fail, zfail, zpass);
 EJ_BIND_FUNCTION_DIRECT(stencilOpSeparate, glStencilOpSeparate, face, fail, zfail, zpass);
 
-EJ_BIND_FUNCTION(texImage2D, ctx, argc, argv) {	
+EJ_BIND_FUNCTION(texImage2D, ctx, argc, argv) {
+	if( argc < 6 ) { return NULL; }
+	
+	// TODO
+	ejectaInstance.currentRenderingContext = renderingContext;
+	
+	if( argc == 6) {
+		EJ_UNPACK_ARGV(GLenum target, GLint level, GLenum internalformat, GLenum format, GLenum type);
+		
+		EJTexture * targetTexture = NULL;
+		JSObjectRef jsTargetTexture;
+		if( target == GL_TEXTURE_2D ) {
+			targetTexture = activeTexture->texture;
+			jsTargetTexture = activeTexture->jsTexture;
+		}
+		else if( target == GL_TEXTURE_CUBE_MAP ) {
+			targetTexture = activeTexture->cubeMap;
+			jsTargetTexture = activeTexture->jsCubeMap;
+		}
+		
+		NSObject<EJDrawable> * drawable = (NSObject<EJDrawable> *)JSObjectGetPrivate((JSObjectRef)argv[5]);
+		EJTexture * image = drawable.texture;
+		
+		if(
+			targetTexture && image && level == 0 && format == GL_RGBA &&
+			internalformat == GL_RGBA && type == GL_UNSIGNED_BYTE
+		) {
+			// If this texture previously already had a texture id, we have to remove it from
+			// the textures array
+			if( targetTexture.textureId ) {
+				[textures removeObjectForKey:[NSNumber numberWithInt:targetTexture.textureId]];
+			}
+			
+			[targetTexture createWithTexture:image];
+			[targetTexture bindToTarget:target];
+			
+			// Remeber the new texture id in the textures array
+			NSNumber * key = [NSNumber numberWithInt:targetTexture.textureId];
+			[textures setObject:[NSValue valueWithPointer:jsTargetTexture] forKey:key];
+		}
+	}
+	
+	return NULL;
+}
+
+EJ_BIND_FUNCTION(texSubImage2D, ctx, argc, argv) {
 	// TODO
 	return NULL;
 }
 
-EJ_BIND_FUNCTION_DIRECT(texParameteri, glTexParameteri, target, pname, param);
-EJ_BIND_FUNCTION_DIRECT(texParameterf, glTexParameterf, target, pname, param);
+EJ_BIND_FUNCTION(texParameterf, ctx, argc, argv) {
+	EJ_UNPACK_ARGV(GLenum target, GLenum pname, GLfloat param);
+	
+	ejectaInstance.currentRenderingContext = renderingContext;
+	
+	EJTexture * targetTexture = NULL;
+	if( target == GL_TEXTURE_2D ) {
+		targetTexture = activeTexture->texture;
+	}
+	else if( target == GL_TEXTURE_CUBE_MAP ) {
+		targetTexture = activeTexture->cubeMap;
+	}
+	[targetTexture setParam:pname param:param];
+	[targetTexture bindToTarget:target]; // binding the texture will update its params
+	
+	return NULL;
+}
+
+EJ_BIND_FUNCTION(texParameteri, ctx, argc, argv) {
+	EJ_UNPACK_ARGV(GLenum target, GLenum pname, GLint param);
+	
+	ejectaInstance.currentRenderingContext = renderingContext;
+	
+	EJTexture * targetTexture = NULL;
+	if( target == GL_TEXTURE_2D ) {
+		targetTexture = activeTexture->texture;
+	}
+	else if( target == GL_TEXTURE_CUBE_MAP ) {
+		targetTexture = activeTexture->cubeMap;
+	}
+	[targetTexture setParam:pname param:param];
+	[targetTexture bindToTarget:target]; // binding the texture will update its params
+	
+	return NULL;
+}
 
 
 #define EJ_BIND_UNIFORM(NAME, ... ) \
