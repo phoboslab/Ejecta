@@ -31,7 +31,8 @@ typedef enum {
     kJSTypedArrayTypeUint16Array,
     kJSTypedArrayTypeUint32Array,
     kJSTypedArrayTypeFloat32Array,
-    kJSTypedArrayTypeFloat64Array
+    kJSTypedArrayTypeFloat64Array,
+    kJSTypedArrayTypeArrayBuffer
 } JSTypedArrayType;
 
 /*!
