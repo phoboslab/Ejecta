@@ -489,11 +489,10 @@ EJ_BIND_FUNCTION(framebufferTexture2D, ctx, argc, argv) {
 	ejectaInstance.currentRenderingContext = renderingContext;
 	
 	EJ_UNPACK_ARGV(GLenum target, GLenum attachment, GLenum textarget);
+	EJTexture * texture = [EJBindingWebGLTexture textureFromJSValue:argv[3]];
 	EJ_UNPACK_ARGV_OFFSET(4, GLint level);
 	
-	EJTexture * texture = [EJBindingWebGLTexture textureFromJSValue:argv[3]];
 	[texture ensureMutableKeepPixels:NO forTarget:GL_TEXTURE_2D];
-	
 	glFramebufferTexture2D(target, attachment, textarget, texture.textureId, level);
 	return NULL;
 }

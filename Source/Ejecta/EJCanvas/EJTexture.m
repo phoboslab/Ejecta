@@ -171,22 +171,18 @@ static NSString * kEJTexturePathEmpty = @"[Empty]";
 			}
 		}
 		else {
-			[self createEmpty];
+			[textureObject release];
+			textureObject = NULL;
 		}
 	}
 	
 	if( !textureObject ) {
-		[self createEmpty];
+		textureObject = [[EJTextureObject alloc] init];
 	}
 }
 
 - (GLuint)textureId {
 	return textureObject.textureId;
-}
-
-- (void)createEmpty {
-	[textureObject release];
-	textureObject = [[EJTextureObject alloc] init];
 }
 
 - (void)createWithTexture:(EJTexture *)other {
@@ -258,7 +254,7 @@ static NSString * kEJTexturePathEmpty = @"[Empty]";
 }
 
 - (NSMutableData *)pixels {
-	// Was this texture created from pixels in Canvas2D? We can't re-create it then.
+	// If this texture was dynamically created from pixels in Canvas2D, we can't re-create.
 	// FIXME: somehow get the original pixels again and re-create.
 	if( fullPath == kEJTexturePathEmpty || fullPath == kEJTexturePathFromPixels ) {
 		NSLog(@"Warning: Can't get texture pixels; the source texture was created dynamically");

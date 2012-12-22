@@ -12,7 +12,7 @@ void EJFlipPixelsY(GLuint bytesPerRow, GLuint rows, GLubyte * pixels) {
 	
 	for( GLuint rowTop = 0, rowBottom = rows-1; rowTop < middle; rowTop++, rowBottom-- ) {
 		
-		// Swap bytes in packs of sizeof(GLint) bytes
+		// Swap bytes in packs of sizeof(GLuint) bytes
 		GLuint * iTop = (GLuint *)(pixels + rowTop * bytesPerRow);
 		GLuint * iBottom = (GLuint *)(pixels + rowBottom * bytesPerRow);
 		
@@ -38,8 +38,8 @@ void EJFlipPixelsY(GLuint bytesPerRow, GLuint rows, GLubyte * pixels) {
 }
 
 void EJPremultiplyAlpha(GLuint width, GLuint height, GLenum format, GLubyte * pixels) {
-	if( !pixels ) { return;	} // Nothing to do here
-	
+	if( !pixels ) { return;	}
+		
 	if( format == GL_RGBA ) {
 		GLuint length = width * height * 4;
 		for( int i = 0; i < length; i += 4 ) {

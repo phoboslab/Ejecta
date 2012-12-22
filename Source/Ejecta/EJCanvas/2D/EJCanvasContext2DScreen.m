@@ -84,7 +84,7 @@
 
 - (EJImageData*)getImageDataSx:(float)sx sy:(float)sy sw:(float)sw sh:(float)sh {
 	// FIXME: This takes care of the flipped pixel layout and the internal scaling.
-	// The latter will mush pixel; not sure how to fix it - print warning instead.
+	// The latter will mush pixels; not sure how to fix it - print warning instead.
 	
 	if( backingStoreRatio != 1 && [EJTexture smoothScaling] ) {
 		NSLog(

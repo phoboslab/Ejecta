@@ -50,7 +50,6 @@ typedef enum {
 
 - (void)ensureMutableKeepPixels:(BOOL)keepPixels forTarget:(GLenum)target;
 
-- (void)createEmpty;
 - (void)createWithTexture:(EJTexture *)other;
 - (void)createWithPixels:(const GLubyte *)pixels format:(GLenum)format;
 - (void)createWithPixels:(const GLubyte *)pixels format:(GLenum)formatp target:(GLenum)target;
