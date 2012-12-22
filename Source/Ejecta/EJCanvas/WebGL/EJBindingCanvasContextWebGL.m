@@ -144,17 +144,6 @@ EJ_BIND_GET(drawinBufferHeight, ctx) {
 // ------------------------------------------------------------------------------------
 // Methods
 
-// Macro to check if a TypedArray type matches the gl element type
-#define EJ_ARRAY_MATCHES_TYPE(ARRAY, TYPE) ( \
-	(ARRAY == kJSTypedArrayTypeUint8Array && TYPE == GL_UNSIGNED_BYTE) || \
-	(ARRAY == kJSTypedArrayTypeUint16Array && ( \
-		TYPE == GL_UNSIGNED_SHORT_5_6_5 || \
-		TYPE == GL_UNSIGNED_SHORT_4_4_4_4 || \
-		TYPE == GL_UNSIGNED_SHORT_5_5_5_1 \
-	)) \
-)
-
-
 // Shorthand to directly bind a c function that only takes numbers
 #define EJ_BIND_FUNCTION_DIRECT(NAME, BINDING, ...) \
 	EJ_BIND_FUNCTION(NAME, ctx, argc, argv) { \
