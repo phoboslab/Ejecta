@@ -51,7 +51,7 @@ void EJPremultiplyAlpha(GLuint width, GLuint height, GLenum format, GLubyte * pi
 	}
 	else if ( format == GL_LUMINANCE_ALPHA ) {
 		GLuint length = width * height * 2;
-		for( int i = 0; i < length; i += 4 ) {
+		for( int i = 0; i < length; i += 2 ) {
 			float f = (float)pixels[i+1]/255.0f;
 			pixels[i+0] = (float)pixels[i+0] * f;
 		}
