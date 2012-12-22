@@ -165,15 +165,17 @@ static NSString * kEJTexturePathEmpty = @"[Empty]";
 - (void)ensureMutableKeepPixels:(BOOL)keepPixels forTarget:(GLenum)target {
 	if( textureObject && textureObject.immutable && textureObject.retainCount > 1 ) {
 		if( keepPixels ) {
-			GLubyte * pixels = [self loadPixelsFromPath:fullPath];
-			[self createWithPixels:pixels format:GL_RGBA target:target];
-			free(pixels);
+			const GLubyte * pixels = self.pixels.bytes;
+			if( pixels ) {
+				[self createWithPixels:pixels format:GL_RGBA target:target];
+			}
 		}
 		else {
 			[self createEmpty];
 		}
 	}
-	else if( !textureObject ) {
+	
+	if( !textureObject ) {
 		[self createEmpty];
 	}
 }

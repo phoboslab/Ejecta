@@ -1184,7 +1184,7 @@ EJ_BIND_FUNCTION(texImage2D, ctx, argc, argv) {
 		[textures removeObjectForKey:[NSNumber numberWithInt:targetTexture.textureId]];
 	}
 	
-	
+	// With EJDrawable (Image, Canvas or ImageData)
 	if( argc == 6) {
 		EJ_UNPACK_ARGV_OFFSET(3, GLenum format, GLenum type);
 		
@@ -1227,6 +1227,7 @@ EJ_BIND_FUNCTION(texImage2D, ctx, argc, argv) {
 		}
 	}
 	
+	// With ArrayBufferView
 	else if( argc == 9 ) {
 		EJ_UNPACK_ARGV_OFFSET(3, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type);
 		
