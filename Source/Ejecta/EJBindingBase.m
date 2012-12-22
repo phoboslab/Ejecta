@@ -10,7 +10,7 @@ void _ej_class_finalize(JSObjectRef object) {
 NSData * NSDataFromString( NSString *str ) {
 	int len = [str length] + 1;
 	NSMutableData * d = [NSMutableData dataWithLength:len];
-	strlcpy([d mutableBytes], [str UTF8String], len);
+	strlcpy(d.mutableBytes, [str UTF8String], len);
 	return d;
 }
 
