@@ -100,3 +100,27 @@ GLint * JSValueToGLintArray(JSContextRef ctx, JSValueRef value, size_t expectedS
 	
 	return NULL;
 }
+
+GLuint EJGetBytesPerPixel(GLenum type, GLenum format) {
+	if( type == GL_UNSIGNED_BYTE ) {
+		switch( format ) {
+			case GL_LUMINANCE:
+			case GL_ALPHA:
+				return 1;
+			case GL_LUMINANCE_ALPHA:
+				return 2;
+			case GL_RGB:
+				return 3;
+			case GL_RGBA:
+				return 4;
+		}
+	}
+	else if(
+		type == GL_UNSIGNED_SHORT_5_6_5 ||
+		type == GL_UNSIGNED_SHORT_4_4_4_4 ||
+		type == GL_UNSIGNED_SHORT_5_5_5_1
+	) {
+		return 2;
+	}
+	return 0;
+}

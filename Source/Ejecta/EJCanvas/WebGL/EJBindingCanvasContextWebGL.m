@@ -1141,7 +1141,9 @@ EJ_BIND_FUNCTION(readPixels, ctx, argc, argv) {
 	
 	size_t size;
 	void * pixels = JSTypedArrayGetDataPtr(ctx, argv[6], &size);
-	if( size >= width * height * 4 ) {
+	
+	GLuint bytesPerPixel = EJGetBytesPerPixel(type, format);
+	if( bytesPerPixel && size >= width * height * bytesPerPixel ) {
 		glReadPixels(x, y, width, height, format, type, pixels);
 	}
 	
@@ -1247,21 +1249,12 @@ EJ_BIND_FUNCTION(texImage2D, ctx, argc, argv) {
 		
 		JSTypedArrayType arrayType = JSTypedArrayGetType(ctx, argv[8]);
 		if( border == 0 && EJ_ARRAY_MATCHES_TYPE(arrayType, type) ) {
-			int bytesPerPixel = 2; // For GL_UNSIGNED_SHORT_* types
-			if( type == GL_UNSIGNED_BYTE ) {
-				switch( format ) {
-					case GL_ALPHA: bytesPerPixel = 1; break;
-					case GL_RGB: bytesPerPixel = 3; break;
-					case GL_RGBA: bytesPerPixel = 4; break;
-					case GL_LUMINANCE: bytesPerPixel = 1; break;
-					case GL_LUMINANCE_ALPHA: bytesPerPixel = 2; break;
-				}
-			}
+			int bytesPerPixel = EJGetBytesPerPixel(type, format);
 			
 			size_t byteLength;
 			void * pixels = JSTypedArrayGetDataPtr(ctx, argv[8], &byteLength);
 			
-			if( byteLength >= width * height * bytesPerPixel ) {
+			if( bytesPerPixel && byteLength >= width * height * bytesPerPixel ) {
 				if( unpackFlipY ) {
 					EJFlipPixelsY(width * bytesPerPixel, height, pixels);
 				}
