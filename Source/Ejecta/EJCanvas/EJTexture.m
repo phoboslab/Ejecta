@@ -59,7 +59,6 @@ static GLint EJTextureGlobalFilter = GL_LINEAR_MIPMAP_LINEAR;
 static NSString * kEJTexturePathFromPixels = @"[From Pixels]";
 static NSString * kEJTexturePathEmpty = @"[Empty]";
 
-
 @synthesize contentScale;
 @synthesize format;
 @synthesize width, height;
@@ -143,7 +142,7 @@ static NSString * kEJTexturePathEmpty = @"[Empty]";
 	return [self initWithWidth:widthp height:heightp format:GL_RGBA];
 }
 
-- (id)initWithWidth:(int)widthp height:(int)heightp pixels:(GLubyte *)pixels {
+- (id)initWithWidth:(int)widthp height:(int)heightp pixels:(const GLubyte *)pixels {
 	// Creates a texture with the given pixels
 	
 	if( self = [super init] ) {
@@ -163,42 +162,34 @@ static NSString * kEJTexturePathEmpty = @"[Empty]";
 	[super dealloc];
 }
 
+- (void)ensureMutableKeepPixels:(BOOL)keepPixels forTarget:(GLenum)target {
+	if( textureObject && textureObject.immutable && textureObject.retainCount > 1 ) {
+		if( keepPixels ) {
+			GLubyte * pixels = [self loadPixelsFromPath:fullPath];
+			[self createWithPixels:pixels format:GL_RGBA target:target];
+			free(pixels);
+		}
+		else {
+			[self createEmpty];
+		}
+	}
+	else if( !textureObject ) {
+		[self createEmpty];
+	}
+}
+
 - (GLuint)textureId {
 	return textureObject.textureId;
 }
 
-- (void)ensureMutability {
-	if( !textureObject ) {
-		textureObject = [[EJTextureObject alloc] init];
-		return;
-	}
-	
-	// If the texture was marked immutable for WebGL and we're not the sole owner of it, we have
-	// to create a new one, reloading the original image into a mutable textureObject
-	if(
-		owningContext == kEJTextureOwningContextWebGL &&
-		textureObject.immutable &&
-		textureObject.retainCount > 1
-	) {
-		
-		// Was this texture created from pixels in Canvas2D? We can't re-create it then.
-		// FIXME: somehow get the original pixels again and re-create.
-		if( fullPath == kEJTexturePathEmpty || fullPath == kEJTexturePathFromPixels ) {
-			NSLog(@"Warning: Can't re-create texture pixels; the source texture was created in Canvas2D");
-			return;
-		}
-		
-		// Reload
-		GLubyte * pixels = [self loadPixelsFromPath:fullPath];
-		[self createWithPixels:pixels format:GL_RGBA];
-		free(pixels);
-	}	
+- (void)createEmpty {
+	[textureObject release];
+	textureObject = [[EJTextureObject alloc] init];
 }
 
 - (void)createWithTexture:(EJTexture *)other {
 	[textureObject release];
 	[fullPath release];
-	
 	format = other->format;
 	contentScale = other->contentScale;
 	fullPath = [other->fullPath retain];
@@ -207,25 +198,19 @@ static NSString * kEJTexturePathEmpty = @"[Empty]";
 	height = other->height;
 }
 
-- (void)createWithWidth:(short)widthp height:(short)heightp pixels:(GLubyte *)pixels format:(GLenum)formatp target:(GLenum)target {
-	width = widthp;
-	height = heightp;
-	[self createWithPixels:pixels format:format target:target];
-}
-
-- (void)createWithPixels:(GLubyte *)pixels format:(GLenum)formatp {
+- (void)createWithPixels:(const GLubyte *)pixels format:(GLenum)formatp {
 	[self createWithPixels:pixels format:formatp target:GL_TEXTURE_2D];
 }
 
-- (void)createWithPixels:(GLubyte *)pixels format:(GLenum)formatp target:(GLenum)target {
+- (void)createWithPixels:(const GLubyte *)pixels format:(GLenum)formatp target:(GLenum)target {
 	// Release previous texture if we had one
 	if( textureObject ) {
 		[textureObject release];
 		textureObject = NULL;
 	}
-		
-	// Set the default texture params for Canvas2D
+	
 	if( owningContext == kEJTextureOwningContextCanvas2D ) {
+		// Set the default texture params for Canvas2D
 		params[kEJTextureParamMinFilter] = EJTextureGlobalFilter;
 		params[kEJTextureParamMagFilter] = EJTextureGlobalFilter;
 		params[kEJTextureParamWrapS] = GL_CLAMP_TO_EDGE;
@@ -233,7 +218,7 @@ static NSString * kEJTexturePathEmpty = @"[Empty]";
 	}
 
 	GLint maxTextureSize;
-	glGetIntegerv( GL_MAX_TEXTURE_SIZE, &maxTextureSize );
+	glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
 	
 	if( width > maxTextureSize || height > maxTextureSize ) {
 		NSLog(@"Warning: Image %@ larger than MAX_TEXTURE_SIZE (%d)", fullPath, maxTextureSize);
@@ -241,37 +226,50 @@ static NSString * kEJTexturePathEmpty = @"[Empty]";
 	format = formatp;
 	
 	int boundTexture = 0;
-	glGetIntegerv((target == GL_TEXTURE_2D ? GL_TEXTURE_BINDING_2D : GL_TEXTURE_BINDING_CUBE_MAP), &boundTexture);
+	GLenum bindingName = (target == GL_TEXTURE_2D)
+		? GL_TEXTURE_BINDING_2D
+		: GL_TEXTURE_BINDING_CUBE_MAP;
+	glGetIntegerv(bindingName, &boundTexture);
 	
 	textureObject = [[EJTextureObject alloc] init];
 	[textureObject bindToTarget:target withParams:params];
+	
 	glTexImage2D(target, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, pixels);
 	
 	glBindTexture(target, boundTexture);
 	
-	if( owningContext == kEJTextureOwningContextCanvas2D ) {
-		// If this texture was created for the Canvas2D, mark this texture as
-		// immutable, so we can't modify it in WebGL
-		textureObject.immutable = YES;
-	}
+	// If this texture was created for the Canvas2D, mark this texture as
+	// immutable, so we can't modify it in WebGL
+	textureObject.immutable = YES;
 }
 
-- (void)updateWithPixels:(GLubyte *)pixels atX:(int)x y:(int)y width:(int)subWidth height:(int)subHeight {
-	[self updateWithPixels:pixels atX:x y:y width:subWidth height:subHeight target:GL_TEXTURE_2D];
-}
-
-- (void)updateWithPixels:(GLubyte *)pixels atX:(int)x y:(int)y width:(int)subWidth height:(int)subHeight target:(GLenum)target {
+- (void)updateWithPixels:(const GLubyte *)pixels atX:(int)x y:(int)y width:(int)subWidth height:(int)subHeight {
 	if( !textureObject ) { NSLog(@"No texture to update. Call createTexture* first"); return; }
 	
-	[self ensureMutability];
-	
 	int boundTexture = 0;
-	glGetIntegerv((target == GL_TEXTURE_2D ? GL_TEXTURE_BINDING_2D : GL_TEXTURE_BINDING_CUBE_MAP), &boundTexture);
+	glGetIntegerv(GL_TEXTURE_BINDING_2D, &boundTexture);
 	
-	glBindTexture(target, textureObject.textureId);
-	glTexSubImage2D(target, 0, x, y, subWidth, subHeight, format, GL_UNSIGNED_BYTE, pixels);
+	glBindTexture(GL_TEXTURE_2D, textureObject.textureId);
+	glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, subWidth, subHeight, format, GL_UNSIGNED_BYTE, pixels);
 	
-	glBindTexture(target, boundTexture);
+	glBindTexture(GL_TEXTURE_2D, boundTexture);
+}
+
+- (NSMutableData *)pixels {
+	// Was this texture created from pixels in Canvas2D? We can't re-create it then.
+	// FIXME: somehow get the original pixels again and re-create.
+	if( fullPath == kEJTexturePathEmpty || fullPath == kEJTexturePathFromPixels ) {
+		NSLog(@"Warning: Can't get texture pixels; the source texture was created dynamically");
+		return NULL;
+	}
+	
+	GLubyte * bytes = [self loadPixelsFromPath:fullPath];
+	if( bytes ) {
+		return [NSMutableData dataWithBytesNoCopy:bytes length:width*height*4];
+	}
+	else {
+		return NULL;
+	}
 }
 
 - (GLubyte *)loadPixelsFromPath:(NSString *)path {

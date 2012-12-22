@@ -7,6 +7,9 @@
 extern "C" {
 #endif
 
+void EJFlipPixelsY(GLuint bytesPerRow, GLuint rows, GLubyte * pixels);
+void EJPremultiplyAlpha(GLuint width, GLuint height, GLenum format, GLubyte * pixels);
+
 GLfloat * JSValueToGLfloatArray(JSContextRef ctx, JSValueRef value, size_t expectedSize);
 GLint * JSValueToGLintArray(JSContextRef ctx, JSValueRef value, size_t expectedSize);
 

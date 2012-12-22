@@ -46,15 +46,15 @@ typedef enum {
 - (id)initWithPath:(NSString *)path sharegroup:(EAGLSharegroup*)sharegroup;
 - (id)initWithWidth:(int)widthp height:(int)heightp format:(GLenum) format;
 - (id)initWithWidth:(int)widthp height:(int)heightp;
-- (id)initWithWidth:(int)widthp height:(int)heightp pixels:(GLubyte *)pixels;
+- (id)initWithWidth:(int)widthp height:(int)heightp pixels:(const GLubyte *)pixels;
 
-- (void)ensureMutability;
+- (void)ensureMutableKeepPixels:(BOOL)keepPixels forTarget:(GLenum)target;
+
+- (void)createEmpty;
 - (void)createWithTexture:(EJTexture *)other;
-- (void)createWithWidth:(short)widthp height:(short)heightp pixels:(GLubyte *)pixels format:(GLenum)formatp target:(GLenum)target;
-- (void)createWithPixels:(GLubyte *)pixels format:(GLenum)format;
-- (void)createWithPixels:(GLubyte *)pixels format:(GLenum)format target:(GLenum)target;
-- (void)updateWithPixels:(GLubyte *)pixels atX:(int)x y:(int)y width:(int)subWidth height:(int)subHeight target:(GLenum)target;
-- (void)updateWithPixels:(GLubyte *)pixels atX:(int)x y:(int)y width:(int)subWidth height:(int)subHeight;
+- (void)createWithPixels:(const GLubyte *)pixels format:(GLenum)format;
+- (void)createWithPixels:(const GLubyte *)pixels format:(GLenum)formatp target:(GLenum)target;
+- (void)updateWithPixels:(const GLubyte *)pixels atX:(int)x y:(int)y width:(int)subWidth height:(int)subHeight;
 
 - (GLubyte *)loadPixelsFromPath:(NSString *)path;
 - (GLubyte *)loadPixelsWithCGImageFromPath:(NSString *)path;
@@ -69,6 +69,7 @@ typedef enum {
 + (BOOL)smoothScaling;
 + (void)setSmoothScaling:(BOOL)smoothScaling;
 
+@property (readonly, nonatomic) NSMutableData * pixels;
 @property (readonly, nonatomic)	float contentScale;
 @property (readonly, nonatomic) GLuint textureId;
 @property (readonly, nonatomic) GLenum format;

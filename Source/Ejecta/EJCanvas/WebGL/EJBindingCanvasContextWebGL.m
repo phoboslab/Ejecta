@@ -2,7 +2,7 @@
 #import "EJBindingWebGLObjects.h"
 #import "EJDrawable.h"
 #import "EJTexture.h"
-#import "EJConvertGLArray.h"
+#import "EJConvertWebGL.h"
 
 #import <JavaScriptCore/JSTypedArray.h>
 
@@ -343,7 +343,7 @@ EJ_BIND_FUNCTION(copyTexImage2D, ctx, argc, argv) {
 	}
 	
 	// We might need a new texture id, so rebind
-	[targetTexture ensureMutability];
+	[targetTexture ensureMutableKeepPixels:NO forTarget:target];
 	[targetTexture bindToTarget:target];
 	
 	glCopyTexImage2D(target, level, internalformat, x, y, width, height, 0);
@@ -362,7 +362,7 @@ EJ_BIND_FUNCTION(copyTexSubImage2D, ctx, argc, argv) {
 	}
 	
 	// We might need a new texture id, so rebind
-	[targetTexture ensureMutability];
+	[targetTexture ensureMutableKeepPixels:NO forTarget:target];
 	[targetTexture bindToTarget:target];
 	
 	glCopyTexSubImage2D(target, level, xoffset, yoffset, x, y, width, height);
@@ -492,7 +492,7 @@ EJ_BIND_FUNCTION(framebufferTexture2D, ctx, argc, argv) {
 	EJ_UNPACK_ARGV_OFFSET(4, GLint level);
 	
 	EJTexture * texture = [EJBindingWebGLTexture textureFromJSValue:argv[3]];
-	[texture ensureMutability];
+	[texture ensureMutableKeepPixels:NO forTarget:GL_TEXTURE_2D];
 	
 	glFramebufferTexture2D(target, attachment, textarget, texture.textureId, level);
 	return NULL;
@@ -1160,45 +1160,133 @@ EJ_BIND_FUNCTION_DIRECT(stencilOpSeparate, glStencilOpSeparate, face, fail, zfai
 EJ_BIND_FUNCTION(texImage2D, ctx, argc, argv) {
 	if( argc < 6 ) { return NULL; }
 	
-	// TODO
 	ejectaInstance.currentRenderingContext = renderingContext;
 	
+	
+	EJ_UNPACK_ARGV(GLenum target, GLint level, GLenum internalformat);
+	
+	
+	EJTexture * targetTexture = NULL;
+	JSObjectRef jsTargetTexture;
+	if( target == GL_TEXTURE_2D ) {
+		targetTexture = activeTexture->texture;
+		jsTargetTexture = activeTexture->jsTexture;
+	}
+	else if( target == GL_TEXTURE_CUBE_MAP ) {
+		targetTexture = activeTexture->cubeMap;
+		jsTargetTexture = activeTexture->jsCubeMap;
+	}
+	
+	
+	// If this texture already has a texture id, we have to remove it from
+	// the textures array, because it's about to get a new one
+	if( targetTexture.textureId ) {
+		[textures removeObjectForKey:[NSNumber numberWithInt:targetTexture.textureId]];
+	}
+	
+	
 	if( argc == 6) {
-		EJ_UNPACK_ARGV(GLenum target, GLint level, GLenum internalformat, GLenum format, GLenum type);
-		
-		EJTexture * targetTexture = NULL;
-		JSObjectRef jsTargetTexture;
-		if( target == GL_TEXTURE_2D ) {
-			targetTexture = activeTexture->texture;
-			jsTargetTexture = activeTexture->jsTexture;
-		}
-		else if( target == GL_TEXTURE_CUBE_MAP ) {
-			targetTexture = activeTexture->cubeMap;
-			jsTargetTexture = activeTexture->jsCubeMap;
-		}
+		EJ_UNPACK_ARGV_OFFSET(3, GLenum format, GLenum type);
 		
 		NSObject<EJDrawable> * drawable = (NSObject<EJDrawable> *)JSObjectGetPrivate((JSObjectRef)argv[5]);
-		EJTexture * image = drawable.texture;
+		EJTexture * sourceTexture = drawable.texture;		
 		
-		if(
-			targetTexture && image && level == 0 && format == GL_RGBA &&
-			internalformat == GL_RGBA && type == GL_UNSIGNED_BYTE
-		) {
-			// If this texture previously already had a texture id, we have to remove it from
-			// the textures array
-			if( targetTexture.textureId ) {
-				[textures removeObjectForKey:[NSNumber numberWithInt:targetTexture.textureId]];
+		// We don't care about internalFormat, format or type params here; the source image will
+		// always be GL_RGBA and loaded as GL_UNSIGNED_BYTE
+		// FIXME?
+		if(	targetTexture && sourceTexture && internalformat && format && type ) {
+				
+			// The fast case - no flipping, no premultiply, mip level == 0 and TEXTURE_2D target
+			// -> we can just use the source texture
+			if( !unpackFlipY && !premultiplyAlpha && level == 0 && target == GL_TEXTURE_2D ) {
+				[targetTexture createWithTexture:sourceTexture];
 			}
 			
-			[targetTexture createWithTexture:image];
-			[targetTexture bindToTarget:target];
-			
-			// Remeber the new texture id in the textures array
-			NSNumber * key = [NSNumber numberWithInt:targetTexture.textureId];
-			[textures setObject:[NSValue valueWithPointer:jsTargetTexture] forKey:key];
+			// Needs more processing; accessing .pixels attempts to reload the source texture
+			else {
+				GLubyte * pixels = sourceTexture.pixels.mutableBytes;
+				if( pixels ) {
+					short width = sourceTexture.width;
+					short height = sourceTexture.height;
+					if( unpackFlipY ) {
+						EJFlipPixelsY(width * 4, height, pixels);
+					}
+					if( premultiplyAlpha ) {
+						EJPremultiplyAlpha(width, height, GL_RGBA, pixels);
+					}
+					
+					// If we write mip level 0, there's no point in keeping pixels
+					BOOL keepPixels = (level != 0);
+					
+					[targetTexture ensureMutableKeepPixels:keepPixels forTarget:target];
+					[targetTexture bindToTarget:target];
+					glTexImage2D(target, level, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+				}
+			}
+
 		}
 	}
 	
+	else if( argc == 9 ) {
+		EJ_UNPACK_ARGV_OFFSET(3, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type);
+		
+		JSTypedArrayType arrayType = JSTypedArrayGetType(ctx, argv[8]);
+		if(
+			border == 0 && (
+				(
+					arrayType == kJSTypedArrayTypeUint8Array &&
+					type == GL_UNSIGNED_BYTE
+				) ||
+				(
+					arrayType == kJSTypedArrayTypeUint16Array && (
+						type == GL_UNSIGNED_SHORT_5_6_5 ||
+						type == GL_UNSIGNED_SHORT_4_4_4_4 ||
+						type == GL_UNSIGNED_SHORT_5_5_5_1
+					)
+				)
+			)
+		) {
+			int bytesPerPixel = 2; // For GL_UNSIGNED_SHORT_* types
+			if( type == GL_UNSIGNED_BYTE ) {
+				switch( format ) {
+					case GL_ALPHA: bytesPerPixel = 1; break;
+					case GL_RGB: bytesPerPixel = 3; break;
+					case GL_RGBA: bytesPerPixel = 4; break;
+					case GL_LUMINANCE: bytesPerPixel = 1; break;
+					case GL_LUMINANCE_ALPHA: bytesPerPixel = 2; break;
+				}
+			}
+			
+			size_t byteLength;
+			void * pixels = JSTypedArrayGetDataPtr(ctx, argv[8], &byteLength);
+			
+			if( byteLength >= width * height * bytesPerPixel ) {
+				if( unpackFlipY ) {
+					EJFlipPixelsY(width * bytesPerPixel, height, pixels);
+				}
+				if( premultiplyAlpha ) {
+					EJPremultiplyAlpha(width, height, format, pixels);
+				}
+				
+				// If we write mip level 0, there's no point in keeping pixels
+				BOOL keepPixels = (level != 0);
+				
+				[targetTexture ensureMutableKeepPixels:keepPixels forTarget:target];
+				[targetTexture bindToTarget:target];
+				glTexImage2D(target, level, format, width, height, 0, format, type, pixels);
+ 			}
+		}		
+	}
+
+	
+	if( targetTexture && targetTexture.textureId ) {
+		[targetTexture bindToTarget:target];
+		
+		// Remeber the new texture id in the textures array				
+		NSNumber * key = [NSNumber numberWithInt:targetTexture.textureId];
+		[textures setObject:[NSValue valueWithPointer:jsTargetTexture] forKey:key];
+	}
+
 	return NULL;
 }
 
