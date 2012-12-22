@@ -144,6 +144,16 @@ EJ_BIND_GET(drawinBufferHeight, ctx) {
 // ------------------------------------------------------------------------------------
 // Methods
 
+// Macro to check if a TypedArray type matches the gl element type
+#define EJ_ARRAY_MATCHES_TYPE(ARRAY, TYPE) ( \
+	(ARRAY == kJSTypedArrayTypeUint8Array && TYPE == GL_UNSIGNED_BYTE) || \
+	(ARRAY == kJSTypedArrayTypeUint16Array && ( \
+		TYPE == GL_UNSIGNED_SHORT_5_6_5 || \
+		TYPE == GL_UNSIGNED_SHORT_4_4_4_4 || \
+		TYPE == GL_UNSIGNED_SHORT_5_5_5_1 \
+	)) \
+)
+
 
 // Shorthand to directly bind a c function that only takes numbers
 #define EJ_BIND_FUNCTION_DIRECT(NAME, BINDING, ...) \
@@ -1122,6 +1132,11 @@ EJ_BIND_FUNCTION(readPixels, ctx, argc, argv) {
 	if( argc < 7 ) { return NULL; }
 	EJ_UNPACK_ARGV(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type);
 	
+	JSTypedArrayType arrayType = JSTypedArrayGetType(ctx, argv[6]);
+	if( !EJ_ARRAY_MATCHES_TYPE(arrayType, type) ) {
+		return NULL;
+	}
+	
 	ejectaInstance.currentRenderingContext = renderingContext;
 	
 	size_t size;
@@ -1231,21 +1246,7 @@ EJ_BIND_FUNCTION(texImage2D, ctx, argc, argv) {
 		EJ_UNPACK_ARGV_OFFSET(3, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type);
 		
 		JSTypedArrayType arrayType = JSTypedArrayGetType(ctx, argv[8]);
-		if(
-			border == 0 && (
-				(
-					arrayType == kJSTypedArrayTypeUint8Array &&
-					type == GL_UNSIGNED_BYTE
-				) ||
-				(
-					arrayType == kJSTypedArrayTypeUint16Array && (
-						type == GL_UNSIGNED_SHORT_5_6_5 ||
-						type == GL_UNSIGNED_SHORT_4_4_4_4 ||
-						type == GL_UNSIGNED_SHORT_5_5_5_1
-					)
-				)
-			)
-		) {
+		if( border == 0 && EJ_ARRAY_MATCHES_TYPE(arrayType, type) ) {
 			int bytesPerPixel = 2; // For GL_UNSIGNED_SHORT_* types
 			if( type == GL_UNSIGNED_BYTE ) {
 				switch( format ) {
