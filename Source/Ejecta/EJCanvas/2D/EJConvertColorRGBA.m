@@ -173,6 +173,41 @@ static inline unsigned int ColorHashForString( const JSChar * s, int length ) {
 	return (h % 498);
 };
 
+static EJColorRGBA HSLAtoColorRGBA(float h, float s, float l, float a) {
+	float r = l; // default to gray
+	float g = l;
+	float b = l;
+	float v = (l <= 0.5) ? (l * (1.0 + s)) : (l + s - l * s);
+	
+	if( v > 0 ) {
+		  float m = l + l - v;
+		  float sv = (v - m ) / v;
+		  h *= 6.0;
+		  int sextant = (int)h;
+		  float fract = h - sextant;
+		  float vsf = v * sv * fract;
+		  float mid1 = m + vsf;
+		  float mid2 = v - vsf;
+		  
+		  switch( sextant ) {
+				case 0: r = v; g = mid1; b = m; break;
+				case 1: r = mid2; g = v; b = m; break;
+				case 2: r = m; g = v; b = mid1; break;
+				case 3: r = m; g = mid2; b = v; break;
+				case 4: r = mid1; g = m; b = v; break;
+				case 5: r = v; g = m; b = mid2; break;
+		  }
+	}
+	EJColorRGBA color = {.rgba = {
+		.r = r * 255.0f,
+		.g = g * 255.0f,
+		.b = b * 255.0f,
+		.a = a * 255.0f
+	}};
+	return color;
+}
+
+extern NSString * JSValueToNSString(JSContextRef ctx, JSValueRef value);
 EJColorRGBA JSValueToColorRGBA(JSContextRef ctx, JSValueRef value) {
 	EJColorRGBA c = {.hex = 0xff000000};
 	
@@ -204,8 +239,8 @@ EJColorRGBA JSValueToColorRGBA(JSContextRef ctx, JSValueRef value) {
 		c.hex = 0xff000000 | strtol( str, NULL, 16 );
 	}
 	
-	// assume rgb(255,0,255) or rgba(255,0,255,0.5) format
-	else if( jsc[0] == 'r' && jsc[1] == 'g' ) {
+	// rgb(255,0,255) or rgba(255,0,255,0.5) format
+	else if( (jsc[0] == 'r' || jsc[0] == 'R') && (jsc[1] == 'g' || jsc[1] == 'G') ) {
 		int component = 0;
 		for( int i = 4; i < length-1 && component < 4; i++ ) {
 			if( component == 3 ) {
@@ -225,6 +260,31 @@ EJColorRGBA JSValueToColorRGBA(JSContextRef ctx, JSValueRef value) {
 				component++;
 			}
 		}
+	}
+	
+	// hsl(120,100%,50%) or hsla(120,100%,50%,0.5) format
+	else if( (jsc[0] == 'h' || jsc[0] == 'H') && (jsc[1] == 's' || jsc[1] == 'S') ) {
+		float hsla[4] = {0,0,0,1};
+		int component = 0;
+		for( int i = 4; i < length-1 && component < 4; i++ ) {
+			if( component == 3 ) {
+				// If we have an alpha component, copy the rest of the wide
+				// string into a char array and use atof() to parse it.
+				char alpha[8] = { 0,0,0,0, 0,0,0,0 };
+				for( int j = 0; i + j < length-1 && j < 7; j++ ) {
+					alpha[j] = jsc[i+j];
+				}
+				hsla[component] = atof(alpha);
+				component++;
+			}
+			else if( isdigit(jsc[i]) ) {
+				hsla[component] = hsla[component] * 10 + (jsc[i] - '0');
+			}
+			else if( jsc[i] == ',' || jsc[i] == ')' ) {
+				component++;
+			}
+		}
+		c = HSLAtoColorRGBA(hsla[0]/360.0f, hsla[1]/100.0f, hsla[2]/100.0f, hsla[3]);
 	}
 	
 	// try color name
