@@ -109,6 +109,7 @@ static NSMutableDictionary * CachedJSClasses;
 	}
 	
 	JSClassDefinition classDef = kJSClassDefinitionEmpty;
+	classDef.className = class_getName([self class]) + sizeof("EJBinding")-1;
 	classDef.finalize = _ej_class_finalize;
 	classDef.staticValues = values;
 	classDef.staticFunctions = functions;
