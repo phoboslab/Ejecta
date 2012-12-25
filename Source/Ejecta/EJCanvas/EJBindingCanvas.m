@@ -70,11 +70,15 @@ EJ_BIND_GET(width, ctx) {
 
 EJ_BIND_SET(width, ctx, value) {
 	short newWidth = JSValueToNumberFast(ctx, value);
-	if( renderingContext && newWidth != width ) {
-		NSLog(@"Warning: rendering context already created; can't change width");
+	if( renderingContext ) {
+		[EJApp instance].currentRenderingContext = renderingContext;
+		renderingContext.width = newWidth;
+		width = renderingContext.width;
 		return;
 	}
-	width = newWidth;
+	else {
+		width = newWidth;
+	}
 }
 
 EJ_BIND_GET(height, ctx) {
@@ -83,11 +87,14 @@ EJ_BIND_GET(height, ctx) {
 
 EJ_BIND_SET(height, ctx, value) {
 	short newHeight = JSValueToNumberFast(ctx, value);
-	if( renderingContext && newHeight != height ) {
-		NSLog(@"Warning: rendering context already created; can't change height");
-		return;
+	if( renderingContext ) {
+		[EJApp instance].currentRenderingContext = renderingContext;
+		renderingContext.height = newHeight;
+		height = renderingContext.height;
 	}
-	height = newHeight;
+	else {
+		height = newHeight;
+	}
 }
 
 EJ_BIND_GET(offsetLeft, ctx) {

@@ -26,6 +26,49 @@
 	[super dealloc];
 }
 
+- (void)recreate {
+	[texture release];
+	texture = [[EJTexture alloc] initAsRenderTargetWithWidth:width height:height fbo:viewFrameBuffer];
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture.textureId, 0);
+	
+	// Delete stencil buffer; it will be re-created when needed
+	if( stencilBuffer ) {
+		glDeleteRenderbuffers(1, &stencilBuffer);
+		stencilBuffer = 0;
+	}
+	
+	// Resize the MSAA buffer
+	if( msaaEnabled && msaaFrameBuffer && msaaRenderBuffer ) {
+		glBindFramebuffer(GL_FRAMEBUFFER, msaaFrameBuffer);
+		glBindRenderbuffer(GL_RENDERBUFFER, msaaRenderBuffer);
+		
+		glRenderbufferStorageMultisampleAPPLE(GL_RENDERBUFFER, msaaSamples, GL_RGBA8_OES, bufferWidth, bufferHeight);
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, msaaRenderBuffer);
+	}
+	
+	vertexScale = EJVector2Make(2.0f/width, 2.0f/height);
+	vertexTranslate = EJVector2Make(-1.0f, -1.0f);
+	
+	[self prepare];
+}
+
+
+- (void)setWidth:(short)newWidth {
+	if( newWidth == width ) { return; }
+	
+	[self flushBuffers];
+	bufferWidth = viewportWidth = width = newWidth;
+	[self recreate];
+}
+
+- (void)setHeight:(short)newHeight {
+	if( newHeight == height ) { return; }
+	
+	[self flushBuffers];
+	bufferHeight = viewportHeight = height = newHeight;
+	[self recreate];
+}
+
 - (void)prepare {
 	[super prepare];
 	

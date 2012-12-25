@@ -82,7 +82,20 @@
 	[super dealloc];
 }
 
-- (EJImageData*)getImageDataSx:(float)sx sy:(float)sy sw:(float)sw sh:(float)sh {
+
+- (void)setWidth:(short)newWidth {
+	if( newWidth != width ) {
+		NSLog(@"Warning: Can't change size of the screen rendering context");
+	}
+}
+
+- (void)setHeight:(short)newHeight {
+	if( newHeight != height ) {
+		NSLog(@"Warning: Can't change size of the screen rendering context");
+	}
+}
+
+- (EJImageData*)getImageDataSx:(short)sx sy:(short)sy sw:(short)sw sh:(short)sh {
 	// FIXME: This takes care of the flipped pixel layout and the internal scaling.
 	// The latter will mush pixels; not sure how to fix it - print warning instead.
 	
