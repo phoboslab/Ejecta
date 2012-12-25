@@ -90,7 +90,7 @@ static EJApp * ejectaInstance = NULL;
 		[displayLink setFrameInterval:1];
 		[displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 		
-				
+		
 		// Create the global JS context and attach the 'Ejecta' object
 		
 		JSClassDefinition constructorClassDef = kJSClassDefinitionEmpty;
@@ -357,6 +357,7 @@ static EJApp * ejectaInstance = NULL;
 		
 		// Switch GL Context if different
 		if( renderingContext && renderingContext.glContext != glCurrentContext ) {
+			glFlush();
 			glCurrentContext = renderingContext.glContext;
 			[EAGLContext setCurrentContext:glCurrentContext];
 		}
