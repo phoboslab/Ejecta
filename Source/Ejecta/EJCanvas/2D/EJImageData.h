@@ -3,14 +3,14 @@
 
 @interface EJImageData : NSObject {
 	int width, height;
-	GLubyte * pixels;
+	NSMutableData * pixels;
 }
 
-- (id)initWithWidth:(int)width height:(int)height pixels:(GLubyte *)pixels;
+- (id)initWithWidth:(int)width height:(int)height pixels:(NSMutableData *)pixels;
 
 @property (readonly, nonatomic) EJTexture * texture;
 @property (readonly, nonatomic) int width;
 @property (readonly, nonatomic) int height;
-@property (readonly, nonatomic) GLubyte * pixels;
+@property (readonly, nonatomic) NSMutableData * pixels;
 
 @end

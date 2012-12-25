@@ -105,7 +105,8 @@
 	glReadPixels( internalX, internalY, internalWidth, internalHeight, GL_RGBA, GL_UNSIGNED_BYTE, internalPixels );
 	
 	// Flip and scale pixels to requested size
-	EJColorRGBA * pixels = malloc( sw * sh * sizeof(EJColorRGBA));
+	int size = sw * sh * sizeof(EJColorRGBA);
+	EJColorRGBA * pixels = malloc( size );
 	int index = 0;
 	for( int y = 0; y < sh; y++ ) {
 		for( int x = 0; x < sw; x++ ) {
@@ -116,7 +117,8 @@
 	}
 	free(internalPixels);
 	
-	return [[[EJImageData alloc] initWithWidth:sw height:sh pixels:(GLubyte *)pixels] autorelease];
+	NSMutableData * data = [NSMutableData dataWithBytesNoCopy:pixels length:size];
+	return [[[EJImageData alloc] initWithWidth:sw height:sh pixels:data] autorelease];
 }
 
 - (void)finish {

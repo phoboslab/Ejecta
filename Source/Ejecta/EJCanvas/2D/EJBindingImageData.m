@@ -29,7 +29,7 @@
 		int count = imageData.width * imageData.height * 4;
 		
 		void * data = JSTypedArrayGetDataPtr(ctx, dataArray, NULL);
-		memcpy(imageData.pixels, data, count);
+		memcpy(imageData.pixels.mutableBytes, data, count);
 	}
 	
 	return imageData;
@@ -47,7 +47,7 @@ EJ_BIND_GET(data, ctx ) {
 		JSValueProtect(ctx, dataArray);
 		
 		void * data = JSTypedArrayGetDataPtr(ctx, dataArray, NULL);
-		memcpy(data, imageData.pixels, count);
+		memcpy(data, imageData.pixels.bytes, count);
 	}
 	return dataArray;
 }

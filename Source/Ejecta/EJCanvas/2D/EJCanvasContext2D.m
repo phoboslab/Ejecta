@@ -351,10 +351,7 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 }
 
 - (void)restore {
-	if( stateIndex == 0 ) {
-		NSLog(@"Warning: Can't pop stack at index 0");
-		return;
-	}
+	if( stateIndex == 0 ) {	return; }
 	
 	EJCompositeOperation oldCompositeOp = state->globalCompositeOperation;
 	EJPath * oldClipPath = state->clipPath;
@@ -456,10 +453,10 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 	self.globalCompositeOperation = oldOp;
 }
 
-- (EJImageData*)getImageDataSx:(float)sx sy:(float)sy sw:(float)sw sh:(float)sh {
+- (EJImageData*)getImageDataSx:(short)sx sy:(short)sy sw:(short)sw sh:(short)sh {
 	[self flushBuffers];
-	GLubyte * pixels = malloc( sw * sh * 4 * sizeof(GLubyte));
-	glReadPixels(sx, sy, sw, sh, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+	NSMutableData * pixels = [NSMutableData dataWithLength:sw * sh * 4 * sizeof(GLubyte)];
+	glReadPixels(sx, sy, sw, sh, GL_RGBA, GL_UNSIGNED_BYTE, pixels.mutableBytes);
 	
 	return [[[EJImageData alloc] initWithWidth:sw height:sh pixels:pixels] autorelease];
 }

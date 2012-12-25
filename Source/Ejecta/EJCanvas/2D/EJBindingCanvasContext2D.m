@@ -247,10 +247,10 @@ EJ_BIND_FUNCTION(clearRect, ctx, argc, argv) {
 }
 
 EJ_BIND_FUNCTION(getImageData, ctx, argc, argv) {
-	EJ_UNPACK_ARGV(float sx, float sy, float sw, float sh);
+	EJ_UNPACK_ARGV(short sx, short sy, short sw, short sh);
 	
-	// Get the image data
 	ejectaInstance.currentRenderingContext = renderingContext;
+	
 	EJImageData * imageData = [renderingContext getImageDataSx:sx sy:sy sw:sw sh:sh];
 	
 	EJBindingImageData * binding = [[EJBindingImageData alloc] initWithImageData:imageData];
@@ -258,9 +258,9 @@ EJ_BIND_FUNCTION(getImageData, ctx, argc, argv) {
 }
 
 EJ_BIND_FUNCTION(createImageData, ctx, argc, argv) {
-	EJ_UNPACK_ARGV(float sw, float sh);
+	EJ_UNPACK_ARGV(short sw, short sh);
 		
-	GLubyte * pixels = calloc( sw * sh * 4, sizeof(GLubyte) );
+	NSMutableData * pixels = [NSMutableData dataWithLength:sw * sh * 4];
 	EJImageData * imageData = [[[EJImageData alloc] initWithWidth:sw height:sh pixels:pixels] autorelease];
 	
 	EJBindingImageData * binding = [[EJBindingImageData alloc] initWithImageData:imageData];

@@ -4,17 +4,17 @@
 
 @synthesize width, height, pixels;
 
-- (id)initWithWidth:(int)widthp height:(int)heightp pixels:(GLubyte *)pixelsp {
+- (id)initWithWidth:(int)widthp height:(int)heightp pixels:(NSMutableData *)pixelsp {
 	if( self = [super init] ) {
 		width = widthp;
 		height = heightp;
-		pixels = pixelsp;
+		pixels = [pixelsp retain];
 	}
 	return self;
 }
 
 - (void)dealloc {
-	free(pixels);
+	[pixels release];
 	[super dealloc];
 }
 

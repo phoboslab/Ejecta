@@ -144,10 +144,9 @@ int GlyphLayoutSortByTextureIndex(const void * a, const void * b) {
 	glyphInfo->tw = (glyphInfo->w / EJ_FONT_TEXTURE_SIZE) * contentScale,
 	glyphInfo->th = (glyphInfo->h / EJ_FONT_TEXTURE_SIZE) * contentScale;
 	
+	NSMutableData * pixels = [NSMutableData dataWithLength:pxWidth * pxHeight];
 	
-	GLubyte * pixels = (GLubyte *)calloc( pxWidth * pxHeight, sizeof(GLubyte) );
-	
-	CGContextRef context = CGBitmapContextCreate(pixels, pxWidth, pxHeight, 8, pxWidth, NULL, kCGImageAlphaOnly);
+	CGContextRef context = CGBitmapContextCreate(pixels.mutableBytes, pxWidth, pxHeight, 8, pxWidth, NULL, kCGImageAlphaOnly);
 	
 	CGFontRef graphicsFont = cgMainFont;
 	if( font != ctMainFont ) {

@@ -83,9 +83,8 @@ static NSString * kEJTexturePathEmpty = @"[Empty]";
 	if( self = [super init] ) {
 		contentScale = 1;
 		fullPath = [path retain];
-		GLubyte * pixels = [self loadPixelsFromPath:path];
+		NSMutableData * pixels = [self loadPixelsFromPath:path];
 		[self createWithPixels:pixels format:GL_RGBA];
-		free(pixels);
 	}
 
 	return self;
@@ -142,7 +141,7 @@ static NSString * kEJTexturePathEmpty = @"[Empty]";
 	return [self initWithWidth:widthp height:heightp format:GL_RGBA];
 }
 
-- (id)initWithWidth:(int)widthp height:(int)heightp pixels:(const GLubyte *)pixels {
+- (id)initWithWidth:(int)widthp height:(int)heightp pixels:(NSMutableData *)pixels {
 	// Creates a texture with the given pixels
 	
 	if( self = [super init] ) {
@@ -165,7 +164,7 @@ static NSString * kEJTexturePathEmpty = @"[Empty]";
 - (void)ensureMutableKeepPixels:(BOOL)keepPixels forTarget:(GLenum)target {
 	if( textureObject && textureObject.immutable && textureObject.retainCount > 1 ) {
 		if( keepPixels ) {
-			const GLubyte * pixels = self.pixels.bytes;
+			NSMutableData * pixels = self.pixels;
 			if( pixels ) {
 				[self createWithPixels:pixels format:GL_RGBA target:target];
 			}
@@ -196,7 +195,7 @@ static NSString * kEJTexturePathEmpty = @"[Empty]";
 	height = other->height;
 }
 
-- (void)createWithPixels:(const GLubyte *)pixels format:(GLenum)formatp {
+- (void)createWithPixels:(NSMutableData *)pixels format:(GLenum)formatp {
 	[self createWithPixels:pixels format:formatp target:GL_TEXTURE_2D];
 }
 
@@ -247,8 +246,8 @@ static NSString * kEJTexturePathEmpty = @"[Empty]";
 	int boundTexture = 0;
 	glGetIntegerv(GL_TEXTURE_BINDING_2D, &boundTexture);
 	
-	glBindTexture(GL_TEXTURE_2D, textureObject.textureId);
-	glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, subWidth, subHeight, format, GL_UNSIGNED_BYTE, pixels);
+	glBindTexture(GL_TEXTURE_2D, textureStorage.textureId);
+	glTexSubImage2D(GL_TEXTURE_2D, 0, sx, sy, sw, sh, format, GL_UNSIGNED_BYTE, pixels.bytes);
 	
 	glBindTexture(GL_TEXTURE_2D, boundTexture);
 }
@@ -270,7 +269,7 @@ static NSString * kEJTexturePathEmpty = @"[Empty]";
 	}
 }
 
-- (GLubyte *)loadPixelsFromPath:(NSString *)path {
+- (NSMutableData *)loadPixelsFromPath:(NSString *)path {
 	// Try @2x texture?
 	if( [UIScreen mainScreen].scale == 2 ) {
 		NSString * path2x = [[[path stringByDeletingPathExtension]
@@ -292,15 +291,15 @@ static NSString * kEJTexturePathEmpty = @"[Empty]";
 		: [self loadPixelsWithCGImageFromPath:path];
 }
 
-- (GLubyte *)loadPixelsWithCGImageFromPath:(NSString *)path {	
+- (NSMutableData *)loadPixelsWithCGImageFromPath:(NSString *)path {	
 	UIImage * tmpImage = [[UIImage alloc] initWithContentsOfFile:path];
 	CGImageRef image = tmpImage.CGImage;
 	
 	width = CGImageGetWidth(image);
 	height = CGImageGetHeight(image);
 	
-	GLubyte * pixels = (GLubyte *)calloc( width * height * 4, sizeof(GLubyte) );
-	CGContextRef context = CGBitmapContextCreate(pixels, width, height, 8, width * 4, CGImageGetColorSpace(image), kCGImageAlphaPremultipliedLast);
+	NSMutableData * pixels = [NSMutableData dataWithLength:width*height*4];
+	CGContextRef context = CGBitmapContextCreate(pixels.mutableBytes, width, height, 8, width * 4, CGImageGetColorSpace(image), kCGImageAlphaPremultipliedLast);
 	CGContextDrawImage(context, CGRectMake(0.0, 0.0, (CGFloat)width, (CGFloat)height), image);
 	CGContextRelease(context);
 	[tmpImage release];
@@ -308,7 +307,7 @@ static NSString * kEJTexturePathEmpty = @"[Empty]";
 	return pixels;
 }
 
-- (GLubyte *)loadPixelsWithLodePNGFromPath:(NSString *)path {
+- (NSMutableData *)loadPixelsWithLodePNGFromPath:(NSString *)path {
 	unsigned int w, h;
 	unsigned char * pixels = NULL;
 	unsigned int error = lodepng_decode32_file(&pixels, &w, &h, [path UTF8String]);
@@ -319,7 +318,7 @@ static NSString * kEJTexturePathEmpty = @"[Empty]";
 	width = w;
 	height = h;
 	
-	return pixels;
+	return [NSMutableData dataWithBytesNoCopy:pixels length:w*h*4];
 }
 
 - (GLint)getParam:(GLenum)pname {
@@ -349,7 +348,7 @@ static NSString * kEJTexturePathEmpty = @"[Empty]";
 		params[kEJTextureParamMinFilter] = EJTextureGlobalFilter;
 		params[kEJTextureParamMagFilter] = EJTextureGlobalFilter;
 	}
-	[textureObject bindToTarget:target withParams:params];
+	[textureStorage bindToTarget:target withParams:params];
 }
 
 
