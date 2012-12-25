@@ -155,9 +155,7 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 	
 	
 	
-	// Create the requested CanvasContext
-	[EJApp instance].currentRenderingContext = nil;
-	
+	// Create the requested CanvasContext	
 	if( newContextMode == kEJCanvasContextMode2D ) {
 		if( isScreenCanvas ) {
 			EJCanvasContext2DScreen * sc = [[EJCanvasContext2DScreen alloc] initWithWidth:width height:height];
@@ -199,6 +197,7 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 	renderingContext.msaaEnabled = msaaEnabled;
 	renderingContext.msaaSamples = msaaSamples;
 	
+	[EAGLContext setCurrentContext:renderingContext.glContext];
 	[renderingContext create];
 	[EJApp instance].currentRenderingContext = renderingContext;
 	
