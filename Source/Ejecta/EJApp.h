@@ -4,6 +4,7 @@
 #import "EJConvert.h"
 #import "EJCanvasContext.h"
 #import "EJPresentable.h"
+#import "EJGLProgram2D.h"
 
 #define EJECTA_VERSION @"1.2"
 #define EJECTA_APP_FOLDER @"App/"
@@ -32,6 +33,7 @@
 	EAGLContext * glContext2D;
 	EAGLSharegroup * glSharegroup;
 	CADisplayLink * displayLink;
+	EJGLProgram2D * glProgram2D;
 	
 	NSOperationQueue * opQueue;
 	EJCanvasContext * currentRenderingContext;
@@ -60,6 +62,7 @@
 + (EJApp *)instance;
 
 
+@property (nonatomic, readonly) EJGLProgram2D * glProgram2D;
 @property (nonatomic, readonly) BOOL landscapeMode;
 @property (nonatomic, readonly) JSGlobalContextRef jsGlobalContext;
 @property (nonatomic, readonly) EAGLContext * glContext2D;

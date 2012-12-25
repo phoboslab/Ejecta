@@ -137,6 +137,7 @@ static EJApp * ejectaInstance = NULL;
 	[displayLink invalidate];
 	[displayLink release];
 	[timers release];
+	[glProgram2D release];
 	[glContext2D release];
 	[super dealloc];
 }
@@ -348,6 +349,13 @@ static EJApp * ejectaInstance = NULL;
 	
 	[timers cancelId:JSValueToNumberFast(ctxp, argv[0])];
 	return NULL;
+}
+
+- (EJGLProgram2D *)glProgram2D {
+	if( !glProgram2D ) {
+		glProgram2D = [[EJGLProgram2D alloc] init];
+	}
+	return glProgram2D;
 }
 
 - (void)setCurrentRenderingContext:(EJCanvasContext *)renderingContext {

@@ -18,8 +18,6 @@ enum {
 - (GLint)compileShader:(NSString *)file type:(GLenum)type;
 - (void)linkProgram;
 
-+ (id)instance;
-
 @property (nonatomic) GLuint program;
 @property (nonatomic) GLuint scale;
 @property (nonatomic) GLuint translate;

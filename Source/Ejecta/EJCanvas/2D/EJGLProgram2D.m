@@ -5,15 +5,6 @@
 
 @synthesize scale, translate, textureFormat;
 
-static EJGLProgram2D * instance = NULL;
-
-+ (id)instance {
-	if( !instance ) {
-		instance = [[[EJGLProgram2D alloc] init] autorelease];
-	}
-	return instance;
-}
-
 - (id)init {
 	if( self = [super init] ) {
 		program = glCreateProgram();

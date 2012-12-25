@@ -104,7 +104,7 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 	glGenRenderbuffers(1, &viewRenderBuffer);
 	glBindRenderbuffer(GL_RENDERBUFFER, viewRenderBuffer);
 	
-	program2D = [[EJGLProgram2D	instance] retain];
+	program2D = [EJApp instance].glProgram2D;
 }
 
 - (void)createStencilBufferOnce {
