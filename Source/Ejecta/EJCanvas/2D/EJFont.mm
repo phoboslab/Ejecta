@@ -185,7 +185,6 @@ int GlyphLayoutSortByTextureIndex(const void * a, const void * b) {
 		CGFontRelease(graphicsFont);
 	}
 	
-	free(pixels);
 	CGContextRelease(context);
 	
 	return glyphInfo->textureIndex;

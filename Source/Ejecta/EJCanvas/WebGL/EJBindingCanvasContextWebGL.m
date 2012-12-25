@@ -1201,13 +1201,18 @@ EJ_BIND_FUNCTION(texImage2D, ctx, argc, argv) {
 		// FIXME?
 		if(	targetTexture && sourceTexture && internalformat && format && type ) {
 				
-			// The fast case - no flipping, no premultiply, mip level == 0 and TEXTURE_2D target
-			// -> we can just use the source texture
-			if( !unpackFlipY && !premultiplyAlpha && level == 0 && target == GL_TEXTURE_2D ) {
+			// The fast case - no flipping, no premultiply, mip level == 0, TEXTURE_2D target
+			// and the source was loaded from a static image -> we can just use the source
+			if(
+				!unpackFlipY && !premultiplyAlpha &&
+				level == 0 && target == GL_TEXTURE_2D &&
+				!sourceTexture.isDynamic
+			) {
 				[targetTexture createWithTexture:sourceTexture];
 			}
 			
-			// Needs more processing; accessing .pixels attempts to reload the source texture
+			// Needs more processing; accessing .pixels attempts to reload the source image
+			// or uses glReadPixels to get the pixel data from the attached FBO
 			else {
 				GLubyte * pixels = sourceTexture.pixels.mutableBytes;
 				if( pixels ) {
@@ -1228,7 +1233,6 @@ EJ_BIND_FUNCTION(texImage2D, ctx, argc, argv) {
 					glTexImage2D(target, level, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
 				}
 			}
-
 		}
 	}
 	

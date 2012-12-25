@@ -14,16 +14,17 @@ typedef enum {
 typedef EJTextureParam EJTextureParams[kEJTextureParamLast];
 
 
-@interface EJTextureObject : NSObject {
+@interface EJTextureStorage : NSObject {
 	EJTextureParams params;
 	GLuint textureId;
 	BOOL immutable;
 }
+- (id)init;
+- (id)initImmutable;
 - (void)bindToTarget:(GLenum)target withParams:(EJTextureParam *)newParams;
 @property (readonly, nonatomic) GLuint textureId;
-@property (nonatomic) BOOL immutable;
+@property (readonly, nonatomic) BOOL immutable;
 @end
-
 
 
 typedef enum {
@@ -34,19 +35,24 @@ typedef enum {
 @interface EJTexture : NSObject {
 	short width, height;
 	NSString * fullPath;
-	EJTextureObject * textureObject;
+	EJTextureStorage * textureStorage;
 	GLenum format;
+	GLuint fbo;
 	float contentScale;
 	
 	EJTextureOwningContext owningContext;
 	EJTextureParams params;
+	id callbackTarget;
+	SEL callbackSelector;
 }
 - (id)initEmptyForWebGL;
 - (id)initWithPath:(NSString *)path;
-- (id)initWithPath:(NSString *)path sharegroup:(EAGLSharegroup*)sharegroup;
-- (id)initWithWidth:(int)widthp height:(int)heightp format:(GLenum) format;
+- (id)initWithPath:(NSString *)path loadOnQueue:(NSOperationQueue *)queue withTarget:(id)target selector:(SEL)selector;
+
 - (id)initWithWidth:(int)widthp height:(int)heightp;
+- (id)initWithWidth:(int)widthp height:(int)heightp format:(GLenum) format;
 - (id)initWithWidth:(int)widthp height:(int)heightp pixels:(NSMutableData *)pixels;
+- (id)initAsRenderTargetWithWidth:(int)widthp height:(int)heightp fbo:(GLuint)fbo;
 
 - (void)ensureMutableKeepPixels:(BOOL)keepPixels forTarget:(GLenum)target;
 
@@ -68,6 +74,7 @@ typedef enum {
 + (BOOL)smoothScaling;
 + (void)setSmoothScaling:(BOOL)smoothScaling;
 
+@property (readonly, nonatomic) BOOL isDynamic;
 @property (readonly, nonatomic) NSMutableData * pixels;
 @property (readonly, nonatomic)	float contentScale;
 @property (readonly, nonatomic) GLuint textureId;

@@ -3,16 +3,16 @@
 @implementation EJCanvasContext2DTexture
 
 - (void)create {
-	// Create the texture
-	texture = [[EJTexture alloc] initWithWidth:width height:height];
-	bufferWidth = texture.width;
-	bufferHeight = texture.height;
-	
 	// This creates the frame- and renderbuffers
 	[super create];
 	
+	// Create the texture
+	texture = [[EJTexture alloc] initAsRenderTargetWithWidth:width height:height fbo:viewFrameBuffer];
+	bufferWidth = texture.width;
+	bufferHeight = texture.height;
+	
 	// Set the texture and set it as the rendering target for this framebuffer
-	glFramebufferTexture2DOES(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture.textureId, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture.textureId, 0);
 	
 	[self prepare];
 	
