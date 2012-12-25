@@ -10,6 +10,8 @@
 
 @implementation EJBindingCanvas
 
+static BOOL HasScreenCanvas = NO;
+
 - (id)initWithContext:(JSContextRef)ctx argc:(size_t)argc argv:(const JSValueRef [])argv {
 	if( self = [super initWithContext:ctx argc:argc argv:argv] ) {
 		scalingMode = kEJScalingModeFitWidth;
@@ -18,8 +20,9 @@
 		msaaSamples = 2;
 		
 		// If we don't have a screen canvas yet, make it this one
-		if( ![EJApp instance].screenRenderingContext ) {
+		if( !HasScreenCanvas ) {
 			isScreenCanvas = YES;
+			HasScreenCanvas = YES;
 		}
 		
 		if( argc == 2 ) {
@@ -36,6 +39,9 @@
 }
 
 - (void)dealloc {
+	if( isScreenCanvas ) {
+		HasScreenCanvas	= NO;
+	}
 	[renderingContext release];
 	if( jsCanvasContext ) {
 		JSValueUnprotect([EJApp instance].jsGlobalContext, jsCanvasContext);
