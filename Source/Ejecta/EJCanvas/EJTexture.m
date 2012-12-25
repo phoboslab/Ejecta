@@ -289,6 +289,7 @@ static GLint EJTextureGlobalFilter = GL_LINEAR_MIPMAP_LINEAR;
 		glReadPixels(0, 0, width, height, format, GL_UNSIGNED_BYTE, data.mutableBytes);
 		
 		glBindFramebuffer(GL_FRAMEBUFFER, boundFrameBuffer);
+		return data;
 	}
 
 	NSLog(@"Warning: Can't get pixels from texture - dynamicly created but not attached to an FBO.");
