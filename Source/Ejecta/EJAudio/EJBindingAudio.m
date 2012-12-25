@@ -45,9 +45,9 @@
 	loading = YES;
 	
 	NSString * fullPath = [[EJApp instance] pathForResource:path];
-	NSInvocationOperation* loadOp = [[NSInvocationOperation alloc] initWithTarget:self
+	NSInvocationOperation * loadOp = [[NSInvocationOperation alloc] initWithTarget:self
 				selector:@selector(loadOperation:) object:fullPath];
-	[loadOp setThreadPriority:0.0];
+	loadOp.threadPriority = 0.2;
 	[[EJApp instance].opQueue addOperation:loadOp];
 	[loadOp release];
 }
