@@ -702,7 +702,7 @@ EJ_BIND_FUNCTION(getParameter, ctx, argc, argv) {
 			ret = JSValueMakeNumber(ctx, floatvalue);
 			break;
 		
-		// single int/long/bool - the whole rest
+		// single int/long/bool - everything else
 		default:
 			glGetIntegerv(pname, intbuffer);
 			ret = JSValueMakeNumber(ctx, intbuffer[0]);
@@ -1240,7 +1240,7 @@ EJ_BIND_FUNCTION(texImage2D, ctx, argc, argv) {
 	else if( argc == 9 ) {
 		EJ_UNPACK_ARGV_OFFSET(3, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type);
 		
-		JSTypedArrayType arrayType = JSTypedArrayGetType(ctx, argv[8]);
+		JSTypedArrayType arrayType = JSTypedArrayGetType(ctx, argv[8]); // TODO: handle NULL
 		if( border == 0 && EJ_ARRAY_MATCHES_TYPE(arrayType, type) ) {
 			int bytesPerPixel = EJGetBytesPerPixel(type, format);
 			

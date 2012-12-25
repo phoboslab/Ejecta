@@ -10,7 +10,6 @@
 - (id)initWithWidth:(short)widthp height:(short)heightp {
 	if( self = [super init] ) {
 		glContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2 sharegroup:[EJApp instance].glSharegroup];
-		[EAGLContext setCurrentContext:glContext];
 		
 		bufferWidth = width = widthp;
 		bufferHeight = height = heightp;
@@ -73,8 +72,8 @@
     glGenRenderbuffers(1, &depthRenderBuffer);
 	glBindRenderbuffer(GL_RENDERBUFFER, depthRenderBuffer);
     
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, bufferWidth, bufferHeight);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRenderBuffer);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, bufferWidth, bufferHeight);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRenderBuffer);
     
 	// Append the OpenGL view to Impact's main view
 	[[EJApp instance] hideLoadingScreen];
@@ -99,7 +98,7 @@
 	[super dealloc];
 }
 
-- (void)prepare {
+- (void)prepare {	
     glBindFramebuffer(GL_FRAMEBUFFER, viewFrameBuffer);
     glBindRenderbuffer(GL_RENDERBUFFER, viewRenderBuffer);
 }
