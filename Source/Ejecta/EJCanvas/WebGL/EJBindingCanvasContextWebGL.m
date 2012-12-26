@@ -242,6 +242,8 @@ EJ_BIND_FUNCTION(bindFramebuffer, ctx, argc, argv) {
 EJ_BIND_FUNCTION(bindTexture, ctx, argc, argv) {
 	if( argc < 2 ) { return NULL; }
 	
+	ejectaInstance.currentRenderingContext = renderingContext;
+	
 	GLenum target = JSValueToNumberFast(ctx, argv[0]);
 	EJTexture * texture = [EJBindingWebGLTexture textureFromJSValue:argv[1]];
 	
@@ -346,6 +348,8 @@ EJ_BIND_FUNCTION_NOT_IMPLEMENTED(compressedTexSubImage2D);
 EJ_BIND_FUNCTION(copyTexImage2D, ctx, argc, argv) {
 	EJ_UNPACK_ARGV(GLenum target, GLint level, GLenum internalformat, GLint x, GLint y, GLsizei width, GLsizei height);
 	
+	ejectaInstance.currentRenderingContext = renderingContext;
+	
 	EJTexture * targetTexture;
 	if( target == GL_TEXTURE_2D ) {
 		targetTexture = activeTexture->texture;
@@ -365,6 +369,8 @@ EJ_BIND_FUNCTION(copyTexImage2D, ctx, argc, argv) {
 EJ_BIND_FUNCTION(copyTexSubImage2D, ctx, argc, argv) {
 	EJ_UNPACK_ARGV(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint x, GLint y, GLsizei width, GLsizei height);
 	
+	ejectaInstance.currentRenderingContext = renderingContext;
+	
 	EJTexture * targetTexture;
 	if( target == GL_TEXTURE_2D ) {
 		targetTexture = activeTexture->texture;
@@ -383,6 +389,7 @@ EJ_BIND_FUNCTION(copyTexSubImage2D, ctx, argc, argv) {
 
 #define EJ_BIND_CREATE(I, NAME) \
 	EJ_BIND_FUNCTION(create##NAME, ctx, argc, argv) { \
+		ejectaInstance.currentRenderingContext = renderingContext; \
 		GLuint index; \
 		glGen##NAME##s(1, &index); \
 		JSObjectRef obj = [EJBindingWebGL##NAME createJSObjectWithContext:ctx webglContext:self index:index]; \
@@ -511,6 +518,7 @@ EJ_BIND_FUNCTION(framebufferTexture2D, ctx, argc, argv) {
 	EJ_UNPACK_ARGV_OFFSET(4, GLint level);
 	
 	[texture ensureMutableKeepPixels:NO forTarget:GL_TEXTURE_2D];
+	[texture bindToTarget:GL_TEXTURE_2D];
 	glFramebufferTexture2D(target, attachment, textarget, texture.textureId, level);
 	return NULL;
 }
@@ -882,6 +890,8 @@ EJ_BIND_FUNCTION(getShaderSource, ctx, argc, argv) {
 EJ_BIND_FUNCTION(getTexParameter, ctx, argc, argv) {
 	EJ_UNPACK_ARGV(GLenum target, GLenum pname);
 	
+	ejectaInstance.currentRenderingContext = renderingContext;
+	
 	GLint value = 0;
 	if( target == GL_TEXTURE_2D ) {
 		value = [activeTexture->texture getParam:pname];
@@ -894,6 +904,10 @@ EJ_BIND_FUNCTION(getTexParameter, ctx, argc, argv) {
 }
 
 EJ_BIND_FUNCTION(getUniform, ctx, argc, argv) {
+	if( argc < 2 ) { return NULL; }
+	
+	ejectaInstance.currentRenderingContext = renderingContext;
+	
 	GLuint program = [EJBindingWebGLProgram indexFromJSValue:argv[0]];
 	GLuint uniform = [EJBindingWebGLUniformLocation indexFromJSValue:argv[1]];
 	
@@ -1394,10 +1408,10 @@ EJ_BIND_FUNCTION(texParameteri, ctx, argc, argv) {
 #define EJ_BIND_UNIFORM_V(NAME, LENGTH, TYPE) \
 	EJ_BIND_FUNCTION(uniform##NAME, ctx, argc, argv) { \
 		if ( argc < 2 ) { return NULL; } \
-		ejectaInstance.currentRenderingContext = renderingContext; \
 		GLuint uniform = [EJBindingWebGLUniformLocation indexFromJSValue:argv[0]]; \
 		TYPE * values = JSValueTo##TYPE##Array(ctx, argv[1], LENGTH); \
 		if( values ) { \
+			ejectaInstance.currentRenderingContext = renderingContext; \
 			glUniform##NAME(uniform, 1, values); \
 		} \
 		return NULL; \
@@ -1418,11 +1432,11 @@ EJ_BIND_FUNCTION(texParameteri, ctx, argc, argv) {
 #define EJ_BIND_UNIFORM_MATRIX_V(NAME, LENGTH, TYPE) \
 	EJ_BIND_FUNCTION(uniformMatrix##NAME, ctx, argc, argv) { \
 		if ( argc < 3 ) { return NULL; } \
-		ejectaInstance.currentRenderingContext = renderingContext; \
 		GLuint uniform = [EJBindingWebGLUniformLocation indexFromJSValue:argv[0]]; \
 		GLboolean transpose = JSValueToNumberFast(ctx, argv[1]); \
 		TYPE * values = JSValueTo##TYPE##Array(ctx, argv[2], LENGTH); \
 		if( values ) { \
+			ejectaInstance.currentRenderingContext = renderingContext; \
 			glUniformMatrix##NAME(uniform, 1, transpose, values); \
 		} \
 		return NULL; \
@@ -1468,6 +1482,7 @@ EJ_BIND_FUNCTION_DIRECT(vertexAttrib4f, glVertexAttrib4f, index, x, y, z, w);
 		GLuint index = JSValueToNumberFast(ctx, argv[0]); \
 		TYPE * values = JSValueTo##TYPE##Array(ctx, argv[1], LENGTH); \
 		if( values ) { \
+			ejectaInstance.currentRenderingContext = renderingContext; \
 			glVertexAttrib##NAME(index, values); \
 		} \
 		return NULL; \
