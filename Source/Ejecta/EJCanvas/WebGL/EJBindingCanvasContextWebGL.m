@@ -1281,7 +1281,8 @@ EJ_BIND_FUNCTION(texImage2D, ctx, argc, argv) {
 	else if( argc == 9 ) {
 		EJ_UNPACK_ARGV_OFFSET(3, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type);
 		
-		JSTypedArrayType arrayType = JSTypedArrayGetType(ctx, argv[8]); // TODO: handle NULL
+		
+		JSTypedArrayType arrayType = JSTypedArrayGetType(ctx, argv[8]);
 		if( border == 0 && EJ_ARRAY_MATCHES_TYPE(arrayType, type) ) {
 			int bytesPerPixel = EJGetBytesPerPixel(type, format);
 			
@@ -1303,7 +1304,14 @@ EJ_BIND_FUNCTION(texImage2D, ctx, argc, argv) {
 				[targetTexture bindToTarget:target];
 				glTexImage2D(target, level, format, width, height, 0, format, type, pixels);
  			}
-		}		
+		}
+		else if( JSValueIsNull(ctx, argv[8]) ) {
+			[targetTexture ensureMutableKeepPixels:NO forTarget:bindTarget];
+			[targetTexture bindToTarget:bindTarget];
+			void * nulled = calloc(width * height, EJGetBytesPerPixel(type, format));
+			glTexImage2D(target, level, format, width, height, 0, format, type, nulled);
+			free(nulled);
+		}
 	}
 
 	
