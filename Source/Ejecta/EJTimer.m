@@ -15,7 +15,7 @@
 	[super dealloc];
 }
 
-- (int)scheduleCallback:(JSObjectRef)callback interval:(float)interval repeat:(BOOL)repeat {
+- (int)scheduleCallback:(JSObjectRef)callback interval:(NSTimeInterval)interval repeat:(BOOL)repeat {
 	lastId++;
 	
 	EJTimer * timer = [[EJTimer alloc] initWithCallback:callback interval:interval repeat:repeat];
@@ -46,7 +46,7 @@
 @implementation EJTimer
 @synthesize active;
 
-- (id)initWithCallback:(JSObjectRef)callbackp interval:(float)intervalp repeat:(BOOL)repeatp {
+- (id)initWithCallback:(JSObjectRef)callbackp interval:(NSTimeInterval)intervalp repeat:(BOOL)repeatp {
 	if( self = [super init] ) {
 		active = true;
 		interval = intervalp;

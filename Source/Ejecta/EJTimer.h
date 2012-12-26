@@ -6,7 +6,7 @@
 	int lastId;
 }
 
-- (int)scheduleCallback:(JSObjectRef)callback interval:(float)interval repeat:(BOOL)repeat;
+- (int)scheduleCallback:(JSObjectRef)callback interval:(NSTimeInterval)interval repeat:(BOOL)repeat;
 - (void)cancelId:(int)timerId;
 - (void)update;
 
@@ -15,12 +15,12 @@
 
 @interface EJTimer : NSObject {
 	NSTimeInterval target;
-	float interval;
+	NSTimeInterval interval;
 	JSObjectRef callback;
 	BOOL active, repeat;
 }
 
-- (id)initWithCallback:(JSObjectRef)callbackp interval:(float)intervalp repeat:(BOOL)repeatp;
+- (id)initWithCallback:(JSObjectRef)callbackp interval:(NSTimeInterval)intervalp repeat:(BOOL)repeatp;
 - (void)check;
 
 @property (readonly) BOOL active;
