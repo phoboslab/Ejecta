@@ -478,7 +478,13 @@ EJ_BIND_FUNCTION(framebufferRenderbuffer, ctx, argc, argv) {
 	EJ_UNPACK_ARGV(GLenum target, GLenum attachment, GLenum renderbuffertarget);
 	GLuint renderbuffer = [EJBindingWebGLRenderbuffer indexFromJSValue:argv[3]];
 	
-	glFramebufferRenderbuffer(target, attachment, renderbuffertarget, renderbuffer);
+	if( attachment == GL_DEPTH_STENCIL_ATTACHMENT ) {
+		glFramebufferRenderbuffer(target, GL_DEPTH_ATTACHMENT, renderbuffertarget, renderbuffer);
+		glFramebufferRenderbuffer(target, GL_STENCIL_ATTACHMENT, renderbuffertarget, renderbuffer);
+	}
+	else {
+		glFramebufferRenderbuffer(target, attachment, renderbuffertarget, renderbuffer);
+	}
 	return NULL;
 }
 
@@ -1139,7 +1145,29 @@ EJ_BIND_FUNCTION(readPixels, ctx, argc, argv) {
 	return NULL;
 }
 
-EJ_BIND_FUNCTION_DIRECT(renderbufferStorage, glRenderbufferStorage, target, internalformat, width, height);
+EJ_BIND_FUNCTION(renderbufferStorage, ctx, argc, argv) {
+	EJ_UNPACK_ARGV(GLenum target, GLenum internalformat, GLsizei width, GLsizei height);
+	
+	ejectaInstance.currentRenderingContext = renderingContext;
+	
+	EJTexture * targetTexture = NULL;
+	if( target == GL_TEXTURE_2D ) {
+		targetTexture = activeTexture->texture;
+	}
+	else if( target == GL_TEXTURE_CUBE_MAP ) {
+		targetTexture = activeTexture->cubeMap;
+	}
+	
+	if( internalformat == GL_DEPTH_STENCIL_OES ) {
+		internalformat = GL_DEPTH24_STENCIL8_OES;
+	}
+	
+	[targetTexture ensureMutableKeepPixels:NO forTarget:target];
+	[targetTexture bindToTarget:target];
+	glRenderbufferStorage(target, internalformat, width, height);
+	return NULL;
+}
+
 EJ_BIND_FUNCTION_DIRECT(sampleCoverage, glSampleCoverage, value, invert);
 EJ_BIND_FUNCTION_DIRECT(scissor, glScissor, x, y, width, height);
 
@@ -1844,6 +1872,7 @@ EJ_BIND_CONST_GL(RGB565);
 EJ_BIND_CONST_GL(DEPTH_COMPONENT16);
 EJ_BIND_CONST_GL(STENCIL_INDEX);
 EJ_BIND_CONST_GL(STENCIL_INDEX8);
+EJ_BIND_CONST(DEPTH_STENCIL, GL_DEPTH_STENCIL_OES);
 
 EJ_BIND_CONST_GL(RENDERBUFFER_WIDTH);
 EJ_BIND_CONST_GL(RENDERBUFFER_HEIGHT);
@@ -1863,6 +1892,8 @@ EJ_BIND_CONST_GL(FRAMEBUFFER_ATTACHMENT_TEXTURE_CUBE_MAP_FACE);
 EJ_BIND_CONST_GL(COLOR_ATTACHMENT0);
 EJ_BIND_CONST_GL(DEPTH_ATTACHMENT);
 EJ_BIND_CONST_GL(STENCIL_ATTACHMENT);
+EJ_BIND_CONST_GL(DEPTH_STENCIL_ATTACHMENT);
+
 
 EJ_BIND_CONST_GL(NONE);
 
