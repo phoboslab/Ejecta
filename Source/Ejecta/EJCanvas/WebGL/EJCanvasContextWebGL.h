@@ -15,6 +15,7 @@
 }
 
 - (id)initWithWidth:(short)width height:(short)height;
+- (void)bindFramebuffer;
 - (void)present;
 - (void)finish;
 - (void)create;

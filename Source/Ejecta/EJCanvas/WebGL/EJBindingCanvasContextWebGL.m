@@ -221,10 +221,23 @@ EJ_BIND_FUNCTION(bindAttribLocation, ctx, argc, argv) {
 		return NULL; \
 	}
 
-	EJ_MAP(EJ_BIND_BIND, Framebuffer, Renderbuffer, Buffer);
+	EJ_MAP(EJ_BIND_BIND, Renderbuffer, Buffer);
 
 #undef EJ_BIND_BIND
 
+EJ_BIND_FUNCTION(bindFramebuffer, ctx, argc, argv) {
+	if( argc < 2 ) { return NULL; }
+	ejectaInstance.currentRenderingContext = renderingContext;
+	GLenum target = JSValueToNumberFast(ctx, argv[0]);
+	GLuint index = [EJBindingWebGLFramebuffer indexFromJSValue:argv[1]];
+	if( index ) {
+		glBindFramebuffer(target, index);
+	}
+	else {
+		[renderingContext bindFramebuffer];
+	}
+	return NULL;
+}
 
 EJ_BIND_FUNCTION(bindTexture, ctx, argc, argv) {
 	if( argc < 2 ) { return NULL; }

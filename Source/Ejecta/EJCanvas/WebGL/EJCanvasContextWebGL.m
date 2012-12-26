@@ -101,6 +101,19 @@
 - (void)prepare {	
     glBindFramebuffer(GL_FRAMEBUFFER, viewFrameBuffer);
     glBindRenderbuffer(GL_RENDERBUFFER, viewRenderBuffer);
+	
+	// Re-bind textures; they may have been changed in a different context
+	GLint boundTexture2D;
+	glGetIntegerv(GL_TEXTURE_BINDING_2D, &boundTexture2D);
+	if( boundTexture2D ) { glBindTexture(GL_TEXTURE_2D, boundTexture2D); }
+	
+	GLint boundTextureCube;
+	glGetIntegerv(GL_TEXTURE_BINDING_CUBE_MAP, &boundTextureCube);
+	if( boundTextureCube ) { glBindTexture(GL_TEXTURE_CUBE_MAP, boundTextureCube); }
+}
+
+- (void)bindFramebuffer {
+	glBindFramebuffer(GL_FRAMEBUFFER, viewFrameBuffer);
 }
 
 - (void)finish {
