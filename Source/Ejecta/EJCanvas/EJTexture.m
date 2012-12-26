@@ -64,7 +64,7 @@
 @implementation EJTexture
 
 // Canvas2D Textures check this global filter state when binding
-static GLint EJTextureGlobalFilter = GL_LINEAR_MIPMAP_LINEAR;
+static GLint EJTextureGlobalFilter = GL_LINEAR;
 
 + (BOOL)smoothScaling {
 	return (EJTextureGlobalFilter == GL_LINEAR); 
