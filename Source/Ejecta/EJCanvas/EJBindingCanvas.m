@@ -162,7 +162,9 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 	
 	
 	
-	// Create the requested CanvasContext	
+	// Create the requested CanvasContext
+	[EJApp instance].currentRenderingContext = nil;
+	
 	if( newContextMode == kEJCanvasContextMode2D ) {
 		if( isScreenCanvas ) {
 			EJCanvasContext2DScreen * sc = [[EJCanvasContext2DScreen alloc] initWithWidth:width height:height];
