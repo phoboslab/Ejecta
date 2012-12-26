@@ -1214,13 +1214,16 @@ EJ_BIND_FUNCTION(texImage2D, ctx, argc, argv) {
 	
 	EJTexture * targetTexture = NULL;
 	JSObjectRef jsTargetTexture;
+	GLenum bindTarget;
 	if( target == GL_TEXTURE_2D ) {
 		targetTexture = activeTexture->texture;
 		jsTargetTexture = activeTexture->jsTexture;
+		bindTarget = GL_TEXTURE_2D;
 	}
-	else if( target == GL_TEXTURE_CUBE_MAP ) {
+	else if( target >= GL_TEXTURE_CUBE_MAP_POSITIVE_X && target <= GL_TEXTURE_CUBE_MAP_NEGATIVE_Z ) {
 		targetTexture = activeTexture->cubeMap;
 		jsTargetTexture = activeTexture->jsCubeMap;
+		bindTarget = GL_TEXTURE_CUBE_MAP;
 	}
 	
 	
@@ -1269,8 +1272,8 @@ EJ_BIND_FUNCTION(texImage2D, ctx, argc, argv) {
 					// If we write mip level 0, there's no point in keeping pixels
 					BOOL keepPixels = (level != 0);
 					
-					[targetTexture ensureMutableKeepPixels:keepPixels forTarget:target];
-					[targetTexture bindToTarget:target];
+					[targetTexture ensureMutableKeepPixels:keepPixels forTarget:bindTarget];
+					[targetTexture bindToTarget:bindTarget];
 					glTexImage2D(target, level, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
 				}
 			}
@@ -1300,8 +1303,8 @@ EJ_BIND_FUNCTION(texImage2D, ctx, argc, argv) {
 				// If we write mip level 0, there's no point in keeping pixels
 				BOOL keepPixels = (level != 0);
 				
-				[targetTexture ensureMutableKeepPixels:keepPixels forTarget:target];
-				[targetTexture bindToTarget:target];
+				[targetTexture ensureMutableKeepPixels:keepPixels forTarget:bindTarget];
+				[targetTexture bindToTarget:bindTarget];
 				glTexImage2D(target, level, format, width, height, 0, format, type, pixels);
  			}
 		}
@@ -1316,8 +1319,7 @@ EJ_BIND_FUNCTION(texImage2D, ctx, argc, argv) {
 
 	
 	if( targetTexture && targetTexture.textureId ) {
-		[targetTexture bindToTarget:target];
-		
+		[targetTexture bindToTarget:bindTarget];
 		// Remeber the new texture id in the textures array				
 		NSNumber * key = [NSNumber numberWithInt:targetTexture.textureId];
 		[textures setObject:[NSValue valueWithPointer:jsTargetTexture] forKey:key];
