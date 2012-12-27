@@ -1115,21 +1115,25 @@ EJ_BIND_FUNCTION(pixelStorei, ctx, argc, argv) {
 	switch( pname ) {
 		case GL_UNPACK_FLIP_Y_WEBGL:
 			unpackFlipY = param;
-			if( param ) {
+			static BOOL showedFlipYWarning;
+			if( param && !showedFlipYWarning ) {
 				NSLog(
 					@"Warning: Enabling UNPACK_FLIP_Y_WEBGL makes texture loading slow and "
 					@"memory inefficient. Leave it disabled if you can."
 				);
+				showedFlipYWarning = YES;
 			}
 			break;
 			
 		case GL_UNPACK_PREMULTIPLY_ALPHA_WEBGL:
 			premultiplyAlpha = param;
-			if( param ) {
+			static BOOL showedPremultiplyAlphaWarning;
+			if( param && !showedPremultiplyAlphaWarning ) {
 				NSLog(
 					@"Warning: Enabling UNPACK_PREMULTIPLY_ALPHA_WEBGL makes texture loading "
 					@"slow and memory inefficient. Leave it disabled if you can."
 				);
+				showedPremultiplyAlphaWarning = YES;
 			}
 			break;
 		
