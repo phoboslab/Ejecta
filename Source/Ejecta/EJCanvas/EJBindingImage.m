@@ -9,6 +9,8 @@
 	// JavaScript onload callback when done
 	loading = YES;
 	
+	NSLog(@"Loading Image: %@", path);
+	
 	NSString * fullPath = [[EJApp instance] pathForResource:path];
 	NSOperationQueue * queue = [EJApp instance].opQueue;
 	texture = [[EJTexture alloc] initWithPath:fullPath
