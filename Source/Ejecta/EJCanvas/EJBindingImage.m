@@ -9,6 +9,10 @@
 	// JavaScript onload callback when done
 	loading = YES;
 	
+	// Protect this image object from garbage collection, as its callback function
+	// may be the only thing holding on to it
+	JSValueProtect([EJApp instance].jsGlobalContext, jsObject);
+	
 	NSLog(@"Loading Image: %@", path);
 	
 	NSString * fullPath = [[EJApp instance] pathForResource:path];
@@ -19,6 +23,7 @@
 
 - (void)endLoad:(EJTexture *)tex {
 	loading = NO;
+	JSValueUnprotect([EJApp instance].jsGlobalContext, jsObject);
 	
 	if( texture.textureId ) {
 		[self triggerEvent:@"load" argc:0 argv:NULL];
