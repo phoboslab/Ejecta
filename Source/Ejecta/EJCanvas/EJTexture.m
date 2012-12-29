@@ -326,9 +326,11 @@ static GLint EJTextureGlobalFilter = GL_LINEAR;
 	height = CGImageGetHeight(image);
 	
 	NSMutableData * pixels = [NSMutableData dataWithLength:width*height*4];
-	CGContextRef context = CGBitmapContextCreate(pixels.mutableBytes, width, height, 8, width * 4, CGImageGetColorSpace(image), kCGImageAlphaPremultipliedLast);
+	CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+	CGContextRef context = CGBitmapContextCreate(pixels.mutableBytes, width, height, 8, width * 4, colorSpace, kCGImageAlphaPremultipliedLast);
 	CGContextDrawImage(context, CGRectMake(0.0, 0.0, (CGFloat)width, (CGFloat)height), image);
 	CGContextRelease(context);
+	CGColorSpaceRelease(colorSpace);
 	[tmpImage release];
 	
 	return pixels;
