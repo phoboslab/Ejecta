@@ -1,5 +1,5 @@
 #import "EJBindingHttpRequest.h"
-
+#import <JavaScriptCore/JSTypedArray.h>
 
 @implementation EJBindingHttpRequest
 
@@ -255,6 +255,15 @@ EJ_BIND_GET(readyState, ctx) {
 }
 
 EJ_BIND_GET(response, ctx) {
+	if( !response || !responseBody ) { return NULL; }
+	
+	if( type == kEJHttpRequestTypeArrayBuffer ) {
+		JSObjectRef array = JSTypedArrayMake(ctx, kJSTypedArrayTypeArrayBuffer, responseBody.length);
+		memcpy(JSTypedArrayGetDataPtr(ctx, array, NULL), responseBody.bytes, responseBody.length);
+		return array;
+	}
+	
+	
 	NSString * responseText = [self getResponseText];
 	if( !responseText ) { return NULL; }
 	
