@@ -6,7 +6,7 @@ uniform int textureFormat;
 
 void main() {
 	// Splitting this up into several different shaders doesn't seem to make
-	// any differen, performance wise.
+	// any difference, performance wise.
 	if( textureFormat == 0 ) { // No Texture
 		gl_FragColor = colorVarying;
 	}
