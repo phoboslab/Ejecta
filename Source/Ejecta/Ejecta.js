@@ -88,6 +88,7 @@ window.localStorage = new Ejecta.LocalStorage();
 HTMLElement = function( tagName ){ 
 	this.tagName = tagName;
 	this.children = [];
+	this.style = {};
 };
 
 HTMLElement.prototype.appendChild = function( element ) {
