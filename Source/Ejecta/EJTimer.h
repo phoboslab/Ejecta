@@ -14,7 +14,6 @@
 
 
 @interface EJTimer : NSObject {
-	NSTimeInterval target;
 	NSTimeInterval interval;
 	JSObjectRef callback;
 	BOOL active, repeat;

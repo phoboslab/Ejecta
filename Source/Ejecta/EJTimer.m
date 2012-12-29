@@ -43,6 +43,11 @@
 
 
 
+@interface EJTimer()
+@property (nonatomic, retain) NSDate *target;
+@end
+
+
 @implementation EJTimer
 @synthesize active;
 
@@ -51,7 +56,7 @@
 		active = true;
 		interval = intervalp;
 		repeat = repeatp;
-		target = [NSDate timeIntervalSinceReferenceDate] + interval;
+		self.target = [NSDate dateWithTimeIntervalSinceNow:interval];
 		
 		callback = callbackp;
 		JSValueProtect([EJApp instance].jsGlobalContext, callback);
@@ -64,14 +69,12 @@
 	[super dealloc];
 }
 
-- (void)check {
-	NSTimeInterval currentTime = [NSDate timeIntervalSinceReferenceDate];
-	
-	if( active && target <= currentTime ) {
+- (void)check {	
+	if( active && self.target.timeIntervalSinceNow <= 0 ) {
 		[[EJApp instance] invokeCallback:callback thisObject:NULL argc:0 argv:NULL];
 		
 		if( repeat ) {
-			target = currentTime + interval;
+			self.target = [NSDate dateWithTimeIntervalSinceNow:interval];
 		}
 		else {
 			active = false;
