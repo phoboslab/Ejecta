@@ -116,6 +116,19 @@
 	glBindFramebuffer(GL_FRAMEBUFFER, viewFrameBuffer);
 }
 
+
+- (void)setWidth:(short)newWidth {
+	if( newWidth != width ) {
+		NSLog(@"Warning: Can't change size of the screen rendering context");
+	}
+}
+
+- (void)setHeight:(short)newHeight {
+	if( newHeight != height ) {
+		NSLog(@"Warning: Can't change size of the screen rendering context");
+	}
+}
+
 - (void)finish {
 	glFinish();
 }
