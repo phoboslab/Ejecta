@@ -1260,6 +1260,10 @@ EJ_BIND_FUNCTION(texImage2D, ctx, argc, argv) {
 	ejectaInstance.currentRenderingContext = renderingContext;
 	
 	
+	// texImage2D has two signatures:
+	// texImage2D(target, level, internalformat, format, type, image);
+	// texImage2D(target, level, internalformat, width, height, border, format, type, pixels);
+	
 	EJ_UNPACK_ARGV(GLenum target, GLint level, GLenum internalformat);
 	
 	
@@ -1278,11 +1282,9 @@ EJ_BIND_FUNCTION(texImage2D, ctx, argc, argv) {
 	}
 	
 	
-	// If this texture already has a texture id, we have to remove it from
-	// the textures array, because it's about to get a new one
-	if( targetTexture.textureId ) {
-		[textures removeObjectForKey:[NSNumber numberWithInt:targetTexture.textureId]];
-	}
+	// If this texture already has a texture id remember it, so we can remove it later
+	// if it gets a new one
+	GLint oldTextureId = targetTexture.textureId;
 	
 	// With EJDrawable (Image, Canvas or ImageData)
 	if( argc == 6) {
@@ -1369,9 +1371,15 @@ EJ_BIND_FUNCTION(texImage2D, ctx, argc, argv) {
 	}
 
 	
-	if( targetTexture && targetTexture.textureId ) {
+	// Remove old texture, if different
+	if( oldTextureId && oldTextureId != targetTexture.textureId ) {
+		[textures removeObjectForKey:[NSNumber numberWithInt:oldTextureId]];
+	}
+	
+	// Bind and remember new texture id
+	if( targetTexture.textureId && targetTexture.textureId != oldTextureId ) {
 		[targetTexture bindToTarget:bindTarget];
-		// Remeber the new texture id in the textures array				
+		
 		NSNumber * key = [NSNumber numberWithInt:targetTexture.textureId];
 		[textures setObject:[NSValue valueWithPointer:jsTargetTexture] forKey:key];
 	}
@@ -1379,8 +1387,123 @@ EJ_BIND_FUNCTION(texImage2D, ctx, argc, argv) {
 	return NULL;
 }
 
+
 EJ_BIND_FUNCTION(texSubImage2D, ctx, argc, argv) {
-	// TODO
+	if( argc < 7 ) { return NULL; }
+	
+	ejectaInstance.currentRenderingContext = renderingContext;
+	
+	
+	// texSubImage2D has two signatures:
+	// texSubImage2D(target, level, xoffset, yoffset, format, type, image);
+	// texSubImage2D(target, level, xoffset, yoffset, width, height, format, type, pixels);
+	
+	EJ_UNPACK_ARGV(GLenum target, GLint level, GLint xoffset, GLint yoffset);
+	
+	
+	EJTexture * targetTexture = NULL;
+	JSObjectRef jsTargetTexture;
+	GLenum bindTarget;
+	if( target == GL_TEXTURE_2D ) {
+		targetTexture = activeTexture->texture;
+		jsTargetTexture = activeTexture->jsTexture;
+		bindTarget = GL_TEXTURE_2D;
+	}
+	else if( target >= GL_TEXTURE_CUBE_MAP_POSITIVE_X && target <= GL_TEXTURE_CUBE_MAP_NEGATIVE_Z ) {
+		targetTexture = activeTexture->cubeMap;
+		jsTargetTexture = activeTexture->jsCubeMap;
+		bindTarget = GL_TEXTURE_CUBE_MAP;
+	}
+	
+	
+	// If this texture already has a texture id remember it, so we can remove it later
+	// if it gets a new one
+	GLint oldTextureId = targetTexture.textureId;
+	
+	// With EJDrawable (Image, Canvas or ImageData)
+	if( argc == 7) {
+		EJ_UNPACK_ARGV_OFFSET(4, GLenum format, GLenum type);
+		
+		NSObject<EJDrawable> * drawable = (NSObject<EJDrawable> *)JSObjectGetPrivate((JSObjectRef)argv[5]);
+		EJTexture * sourceTexture = drawable.texture;		
+		
+		// We don't care about internalFormat, format or type params here; the source image will
+		// always be GL_RGBA and loaded as GL_UNSIGNED_BYTE
+		// FIXME?
+		if(	targetTexture && sourceTexture &&  format && type ) {
+			
+			// Load image pixels, proccess as neccessary, make sure the current texture
+			// is mutable and update
+		
+			GLubyte * pixels = sourceTexture.pixels.mutableBytes;
+			if( pixels ) {
+				short width = sourceTexture.width;
+				short height = sourceTexture.height;
+				if( unpackFlipY ) {
+					EJFlipPixelsY(width * 4, height, pixels);
+				}
+				if( premultiplyAlpha ) {
+					EJPremultiplyAlpha(width, height, GL_RGBA, pixels);
+				}
+				
+				// Always keep previous pixels when ensuring mutability, as we're just updating
+				// a portion of the texture
+				[targetTexture ensureMutableKeepPixels:YES forTarget:bindTarget];
+				[targetTexture bindToTarget:bindTarget];
+				glTexSubImage2D(target, level, xoffset, yoffset, width, height, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+			}
+		}
+	}
+	
+	// With ArrayBufferView
+	else if( argc == 9 ) {
+		EJ_UNPACK_ARGV_OFFSET(4, GLsizei width, GLsizei height, GLenum format, GLenum type);
+		
+		
+		JSTypedArrayType arrayType = JSTypedArrayGetType(ctx, argv[8]);
+		if( EJ_ARRAY_MATCHES_TYPE(arrayType, type) ) {
+			int bytesPerPixel = EJGetBytesPerPixel(type, format);
+			
+			size_t byteLength;
+			void * pixels = JSTypedArrayGetDataPtr(ctx, argv[8], &byteLength);
+			
+			if( bytesPerPixel && byteLength >= width * height * bytesPerPixel ) {
+				if( unpackFlipY ) {
+					EJFlipPixelsY(width * bytesPerPixel, height, pixels);
+				}
+				if( premultiplyAlpha ) {
+					EJPremultiplyAlpha(width, height, format, pixels);
+				}
+				
+				// Always keep previous pixels when ensuring mutability, as we're just updating
+				// a portion of the texture
+				[targetTexture ensureMutableKeepPixels:YES forTarget:bindTarget];
+				[targetTexture bindToTarget:bindTarget];
+				glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, type, pixels);
+ 			}
+		}
+		else if( JSValueIsNull(ctx, argv[8]) ) {
+			[targetTexture ensureMutableKeepPixels:YES forTarget:bindTarget];
+			[targetTexture bindToTarget:bindTarget];
+			void * nulled = calloc(width * height, EJGetBytesPerPixel(type, format));
+			glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, type, nulled);
+			free(nulled);
+		}
+	}
+
+	
+	// Remove old texture, if different
+	if( oldTextureId && oldTextureId != targetTexture.textureId ) {
+		[textures removeObjectForKey:[NSNumber numberWithInt:oldTextureId]];
+	}
+	
+	// Bind and remember new texture id
+	if( targetTexture.textureId && targetTexture.textureId != oldTextureId ) {
+		[targetTexture bindToTarget:bindTarget];
+		
+		NSNumber * key = [NSNumber numberWithInt:targetTexture.textureId];
+		[textures setObject:[NSValue valueWithPointer:jsTargetTexture] forKey:key];
+	}
 	
 	return NULL;
 }
