@@ -1570,10 +1570,11 @@ EJ_BIND_FUNCTION(texParameteri, ctx, argc, argv) {
 	EJ_BIND_FUNCTION(uniform##NAME, ctx, argc, argv) { \
 		if ( argc < 2 ) { return NULL; } \
 		GLuint uniform = [EJBindingWebGLUniformLocation indexFromJSValue:argv[0]]; \
-		TYPE * values = JSValueTo##TYPE##Array(ctx, argv[1], LENGTH); \
+		GLsizei count; \
+		TYPE * values = JSValueTo##TYPE##Array(ctx, argv[1], LENGTH, &count); \
 		if( values ) { \
 			ejectaInstance.currentRenderingContext = renderingContext; \
-			glUniform##NAME(uniform, 1, values); \
+			glUniform##NAME(uniform, count, values); \
 		} \
 		return NULL; \
 	} \
@@ -1595,10 +1596,11 @@ EJ_BIND_FUNCTION(texParameteri, ctx, argc, argv) {
 		if ( argc < 3 ) { return NULL; } \
 		GLuint uniform = [EJBindingWebGLUniformLocation indexFromJSValue:argv[0]]; \
 		GLboolean transpose = JSValueToNumberFast(ctx, argv[1]); \
-		TYPE * values = JSValueTo##TYPE##Array(ctx, argv[2], LENGTH); \
+		GLsizei count; \
+		TYPE * values = JSValueTo##TYPE##Array(ctx, argv[2], LENGTH, &count); \
 		if( values ) { \
 			ejectaInstance.currentRenderingContext = renderingContext; \
-			glUniformMatrix##NAME(uniform, 1, transpose, values); \
+			glUniformMatrix##NAME(uniform, count, transpose, values); \
 		} \
 		return NULL; \
 	} \
@@ -1641,7 +1643,8 @@ EJ_BIND_FUNCTION_DIRECT(vertexAttrib4f, glVertexAttrib4f, index, x, y, z, w);
 	EJ_BIND_FUNCTION(vertexAttrib##NAME, ctx, argc, argv) { \
 		if ( argc < 2 ) { return NULL; } \
 		GLuint index = JSValueToNumberFast(ctx, argv[0]); \
-		TYPE * values = JSValueTo##TYPE##Array(ctx, argv[1], LENGTH); \
+		GLsizei count; \
+		TYPE * values = JSValueTo##TYPE##Array(ctx, argv[1], LENGTH, &count); \
 		if( values ) { \
 			ejectaInstance.currentRenderingContext = renderingContext; \
 			glVertexAttrib##NAME(index, values); \
