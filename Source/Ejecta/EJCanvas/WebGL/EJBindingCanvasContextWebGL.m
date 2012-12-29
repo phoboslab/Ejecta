@@ -287,10 +287,10 @@ EJ_BIND_FUNCTION(bufferData, ctx, argc, argv) {
 	ejectaInstance.currentRenderingContext = renderingContext;
 	
 	GLenum target = JSValueToNumberFast(ctx, argv[0]);
-	GLenum usage = JSValueToNumberFast(ctx, argv[2]);
-
 	size_t size;
 	GLvoid * buffer = JSTypedArrayGetDataPtr(ctx, argv[1], &size);
+	GLenum usage = JSValueToNumberFast(ctx, argv[2]);
+
 	if( buffer ) {
 		glBufferData(target, size, buffer, usage);
 	}
@@ -840,6 +840,39 @@ EJ_BIND_FUNCTION(getShaderParameter, ctx, argc, argv) {
 	return JSValueMakeNumber(ctx, value);
 }
 
+EJ_BIND_FUNCTION(getShaderPrecisionFormat, ctx, argc, argv) {
+	EJ_UNPACK_ARGV(GLenum shadertype, GLenum precisiontype);
+	
+	if( shadertype != GL_VERTEX_SHADER && shadertype != GL_FRAGMENT_SHADER ) {
+		return NULL;
+	}
+	
+	GLint rangeMin, rangeMax, precision;
+	switch( precisiontype ) {
+		case GL_LOW_INT:
+		case GL_MEDIUM_INT:
+		case GL_HIGH_INT:
+			// These values are for a 32-bit twos-complement integer format.
+			rangeMin = 31;
+			rangeMax = 30;
+			precision = 0;
+			break;
+		case GL_LOW_FLOAT:
+		case GL_MEDIUM_FLOAT:
+		case GL_HIGH_FLOAT:
+			// These values are for an IEEE single-precision floating-point format.
+			rangeMin = 127;
+			rangeMax = 127;
+			precision = 23;
+			break;
+		default:
+			return NULL;
+    }
+	
+	return [EJBindingWebGLShaderPrecisionFormat
+		createJSObjectWithContext:ctx rangeMin:rangeMin rangeMax:rangeMax precision:precision];
+}
+
 EJ_BIND_FUNCTION(getShaderInfoLog, ctx, argc, argv) {
 	if( argc < 1 ) { return NULL; }
 	
@@ -1348,6 +1381,7 @@ EJ_BIND_FUNCTION(texImage2D, ctx, argc, argv) {
 
 EJ_BIND_FUNCTION(texSubImage2D, ctx, argc, argv) {
 	// TODO
+	
 	return NULL;
 }
 

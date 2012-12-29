@@ -54,6 +54,16 @@
 @end
 
 
+@interface EJBindingWebGLShaderPrecisionFormat : EJBindingBase {
+	GLint rangeMin;
+	GLint rangeMax;
+	GLint precision;
+}
+- (id)initWithRangeMin:(GLint)rangeMin rangeMax:(GLint)rangeMax precision:(GLint)precision;
++ (JSObjectRef)createJSObjectWithContext:(JSContextRef)ctx rangeMin:(GLint)rangeMin rangeMax:(GLint)rangeMax precision:(GLint)precision;
+@end
+
+
 @interface EJBindingWebGLContextAttributes : EJBindingBase
 @end
 

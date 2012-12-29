@@ -133,6 +133,30 @@ EJ_BIND_GET(name, ctx) { return NSStringToJSValue(ctx, name); }
 @end
 
 
+@implementation EJBindingWebGLShaderPrecisionFormat
+
+- (id)initWithRangeMin:(GLint)rangeMinp rangeMax:(GLint)rangeMaxp precision:(GLint)precisionp {
+	if( self = [super initWithContext:NULL argc:0 argv:NULL] ) {
+		rangeMin = rangeMinp;
+		rangeMax = rangeMaxp;
+		precision = precisionp;
+	}
+	return self;
+}
+
+EJ_BIND_GET(rangeMin, ctx) { return JSValueMakeNumber(ctx, rangeMin); }
+EJ_BIND_GET(rangeMax, ctx) { return JSValueMakeNumber(ctx, rangeMax); }
+EJ_BIND_GET(precision, ctx) { return JSValueMakeNumber(ctx, precision); }
+
++ (JSObjectRef)createJSObjectWithContext:(JSContextRef)ctx rangeMin:(GLint)rangeMin rangeMax:(GLint)rangeMax precision:(GLint)precision {
+	id native = [[self alloc] initWithRangeMin:rangeMin rangeMax:rangeMax precision:precision];
+	return [self createJSObjectWithContext:ctx instance:native];
+}
+
+@end
+
+
+
 @implementation EJBindingWebGLContextAttributes : EJBindingBase
 // FIXME: make this non-static
 EJ_BIND_CONST(alpha, true);
