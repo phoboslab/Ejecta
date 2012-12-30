@@ -308,10 +308,10 @@ EJ_BIND_FUNCTION(bufferSubData, ctx, argc, argv) {
 	ejectaInstance.currentRenderingContext = renderingContext;
 	
 	GLenum target = JSValueToNumberFast(ctx, argv[0]);
-	GLintptr offset = JSValueToNumberFast(ctx, argv[2]);
-
+	GLintptr offset = JSValueToNumberFast(ctx, argv[1]);
+	
 	size_t size;
-	GLvoid * buffer = JSTypedArrayGetDataPtr(ctx, argv[1], &size);
+	GLvoid * buffer = JSTypedArrayGetDataPtr(ctx, argv[2], &size);
 	if( buffer ) {
 		glBufferSubData(target, offset, size, buffer);
 	}
