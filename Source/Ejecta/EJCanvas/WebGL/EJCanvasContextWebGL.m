@@ -74,6 +74,8 @@
     
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, bufferWidth, bufferHeight);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRenderBuffer);
+	
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
 	// Append the OpenGL view to Impact's main view
 	[[EJApp instance] hideLoadingScreen];
@@ -135,6 +137,7 @@
 
 - (void)present {
     [glContext presentRenderbuffer:GL_RENDERBUFFER];
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 }
 
 @end
