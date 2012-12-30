@@ -294,7 +294,7 @@ EJ_BIND_FUNCTION(bufferData, ctx, argc, argv) {
 	if( buffer ) {
 		glBufferData(target, size, buffer, usage);
 	}
-	else {
+	else if( JSValueIsNumber(ctx, argv[1]) ){
 		// 2nd param is not an array? Must be the size; initialize empty
 		GLintptr psize = JSValueToNumberFast(ctx, argv[1]);
 		glBufferData(target, psize, NULL, usage);
