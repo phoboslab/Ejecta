@@ -114,7 +114,7 @@ static EJApp * ejectaInstance = NULL;
 			kJSPropertyAttributeDontDelete | kJSPropertyAttributeReadOnly, NULL
 		);
 		
-		// Create the OpenGL ES1 Context
+		// Create the OpenGL context for Canvas2D
 		glContext2D = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
 		glSharegroup = glContext2D.sharegroup;
 		glCurrentContext = glContext2D;

@@ -1112,7 +1112,7 @@ EJ_BIND_FUNCTION_DIRECT(hint, glHint, target, mode);
 		ejectaInstance.currentRenderingContext = renderingContext; \
 		GLuint index = [EJBindingWebGL##NAME indexFromJSValue:argv[0]]; \
 		return JSValueMakeBoolean(ctx, glIs##NAME(index)); \
-	} \
+	}
 
 	EJ_MAP(EJ_BIND_IS_OBJECT, Buffer, Framebuffer, Program, Renderbuffer, Shader);
 
@@ -1577,7 +1577,7 @@ EJ_BIND_FUNCTION(texParameteri, ctx, argc, argv) {
 			glUniform##NAME(uniform, count, values); \
 		} \
 		return NULL; \
-	} \
+	}
 
 	EJ_BIND_UNIFORM_V(1fv, 1, GLfloat);
 	EJ_BIND_UNIFORM_V(2fv, 2, GLfloat);
@@ -1603,7 +1603,7 @@ EJ_BIND_FUNCTION(texParameteri, ctx, argc, argv) {
 			glUniformMatrix##NAME(uniform, count, transpose, values); \
 		} \
 		return NULL; \
-	} \
+	}
 
 	EJ_BIND_UNIFORM_MATRIX_V(2fv, 4, GLfloat);
 	EJ_BIND_UNIFORM_MATRIX_V(3fv, 9, GLfloat);
