@@ -135,7 +135,7 @@ EJ_BIND_GET(drawingBufferWidth, ctx) {
 	return JSValueMakeNumber(ctx, renderingContext.width * renderingContext.backingStoreRatio);
 }
 
-EJ_BIND_GET(drawinBufferHeight, ctx) {
+EJ_BIND_GET(drawingBufferHeight, ctx) {
 	return JSValueMakeNumber(ctx, renderingContext.height * renderingContext.backingStoreRatio);
 }
 
