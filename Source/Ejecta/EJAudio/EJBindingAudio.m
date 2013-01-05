@@ -53,25 +53,24 @@
 }
 
 - (void)loadOperation:(NSString *)fullPath {
-	NSAutoreleasePool *autoreleasepool = [[NSAutoreleasePool alloc] init];
-	
-	// Decide whether to load the sound as OpenAL or AVAudioPlayer source
-	unsigned long long size = [[[NSFileManager defaultManager] attributesOfItemAtPath:fullPath error:nil] fileSize];
-	
-	NSObject<EJAudioSource> * src;
-	if( size <= EJ_AUDIO_OPENAL_MAX_SIZE ) {
-		NSLog(@"Loading Sound(OpenAL): %@", path);
-		src = [[EJAudioSourceOpenAL alloc] initWithPath:fullPath];
+	@autoreleasepool {	
+		// Decide whether to load the sound as OpenAL or AVAudioPlayer source
+		unsigned long long size = [[[NSFileManager defaultManager] attributesOfItemAtPath:fullPath error:nil] fileSize];
+		
+		NSObject<EJAudioSource> * src;
+		if( size <= EJ_AUDIO_OPENAL_MAX_SIZE ) {
+			NSLog(@"Loading Sound(OpenAL): %@", path);
+			src = [[EJAudioSourceOpenAL alloc] initWithPath:fullPath];
+		}
+		else {
+			NSLog(@"Loading Sound(AVAudio): %@", path);
+			src = [[EJAudioSourceAVAudio alloc] initWithPath:fullPath];
+			((EJAudioSourceAVAudio *)src).delegate = self;
+		}
+		[src autorelease];
+		
+		[self performSelectorOnMainThread:@selector(endLoad:) withObject:src waitUntilDone:NO];
 	}
-	else {
-		NSLog(@"Loading Sound(AVAudio): %@", path);
-		src = [[EJAudioSourceAVAudio alloc] initWithPath:fullPath];
-		((EJAudioSourceAVAudio *)src).delegate = self;
-	}
-	[src autorelease];
-	
-	[self performSelectorOnMainThread:@selector(endLoad:) withObject:src waitUntilDone:NO];
-	[autoreleasepool release];
 }
 
 - (void)endLoad:(NSObject<EJAudioSource> *)src {
