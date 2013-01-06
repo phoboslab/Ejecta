@@ -1,6 +1,7 @@
 #import <Foundation/Foundation.h>
 #import "EJTexture.h"
 #import "EJImageData.h"
+#import "EJCanvasPattern.h"
 #import "EJPath.h"
 #import "EJCanvas2DTypes.h"
 #import "EJCanvasContext.h"
@@ -56,6 +57,7 @@ typedef struct {
 	
 	EJCompositeOperation globalCompositeOperation;
 	EJColorRGBA fillColor;
+	EJCanvasPattern * fillPattern;
 	EJColorRGBA strokeColor;
 	float globalAlpha;
 	
@@ -154,6 +156,7 @@ typedef struct {
 @property (nonatomic) EJCanvasState * state;
 @property (nonatomic) EJCompositeOperation globalCompositeOperation;
 @property (nonatomic, retain) UIFont * font;
+@property (nonatomic, retain) EJCanvasPattern * fillPattern;
 @property (nonatomic, assign) float backingStoreRatio;
 @property (nonatomic) BOOL imageSmoothingEnabled;
 

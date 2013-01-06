@@ -37,16 +37,20 @@
 	
 	// Check if we have to set a param
 	if(params[kEJTextureParamMinFilter] != newParams[kEJTextureParamMinFilter]) {
-		glTexParameteri(target, GL_TEXTURE_MIN_FILTER, newParams[kEJTextureParamMinFilter]);
+		params[kEJTextureParamMinFilter] = newParams[kEJTextureParamMinFilter];
+		glTexParameteri(target, GL_TEXTURE_MIN_FILTER, params[kEJTextureParamMinFilter]);
 	}
 	if(params[kEJTextureParamMagFilter] != newParams[kEJTextureParamMagFilter]) {
-		glTexParameteri(target, GL_TEXTURE_MAG_FILTER, newParams[kEJTextureParamMagFilter]);
+		params[kEJTextureParamMagFilter] = newParams[kEJTextureParamMagFilter];
+		glTexParameteri(target, GL_TEXTURE_MAG_FILTER, params[kEJTextureParamMagFilter]);
 	}
 	if(params[kEJTextureParamWrapS] != newParams[kEJTextureParamWrapS]) {
-		glTexParameteri(target, GL_TEXTURE_WRAP_S, newParams[kEJTextureParamWrapS]);
+		params[kEJTextureParamWrapS] = newParams[kEJTextureParamWrapS];
+		glTexParameteri(target, GL_TEXTURE_WRAP_S, params[kEJTextureParamWrapS]);
 	}
 	if(params[kEJTextureParamWrapT] != newParams[kEJTextureParamWrapT]) {
-		glTexParameteri(target, GL_TEXTURE_WRAP_T, newParams[kEJTextureParamWrapT]);
+		params[kEJTextureParamWrapT] = newParams[kEJTextureParamWrapT];
+		glTexParameteri(target, GL_TEXTURE_WRAP_T, params[kEJTextureParamWrapT]);
 	}
 }
 
@@ -211,6 +215,19 @@ static GLint EJTextureGlobalFilter = GL_LINEAR;
 
 - (BOOL)isDynamic {
 	return !fullPath;
+}
+
+- (id)copyWithZone:(NSZone *)zone {
+	EJTexture * copy = [[EJTexture allocWithZone:zone] init];
+	memcpy(copy->params, params, sizeof(EJTextureParams));
+	copy->owningContext = owningContext;
+	[copy createWithTexture:self];
+	
+	if( self.isDynamic ) {
+		//[copy createWithPixels:self.pixels format:format];
+	}
+
+	return copy;
 }
 
 - (void)createWithTexture:(EJTexture *)other {

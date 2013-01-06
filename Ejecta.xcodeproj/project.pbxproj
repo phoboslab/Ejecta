@@ -52,6 +52,8 @@
 		B64CE697166682B10087CF94 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = B64CE68C166682B10087CF94 /* Icon.png */; };
 		B64CE698166682B10087CF94 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B64CE68D166682B10087CF94 /* Icon@2x.png */; };
 		B64CE699166682B10087CF94 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = B64CE68E166682B10087CF94 /* MainWindow.xib */; };
+		B664B98B1699F3380093E04E /* EJBindingCanvasPattern.m in Sources */ = {isa = PBXBuildFile; fileRef = B664B98A1699F3380093E04E /* EJBindingCanvasPattern.m */; };
+		B664B98E1699F49C0093E04E /* EJCanvasPattern.m in Sources */ = {isa = PBXBuildFile; fileRef = B664B98D1699F49B0093E04E /* EJCanvasPattern.m */; };
 		B66F1E801476B6A40090D208 /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B66F1E7F1476B6A40090D208 /* libstdc++.dylib */; };
 		B66F1E811476B6B90090D208 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B66F1E771476B3AC0090D208 /* libicucore.dylib */; };
 		B68037011682A58300833604 /* EJConvertWebGL.m in Sources */ = {isa = PBXBuildFile; fileRef = B68037001682A58200833604 /* EJConvertWebGL.m */; };
@@ -159,6 +161,10 @@
 		B64CE68C166682B10087CF94 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		B64CE68D166682B10087CF94 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
 		B64CE68E166682B10087CF94 /* MainWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
+		B664B9891699F3370093E04E /* EJBindingCanvasPattern.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingCanvasPattern.h; sourceTree = "<group>"; };
+		B664B98A1699F3380093E04E /* EJBindingCanvasPattern.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingCanvasPattern.m; sourceTree = "<group>"; };
+		B664B98C1699F49B0093E04E /* EJCanvasPattern.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJCanvasPattern.h; sourceTree = "<group>"; };
+		B664B98D1699F49B0093E04E /* EJCanvasPattern.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJCanvasPattern.m; sourceTree = "<group>"; };
 		B66F1E771476B3AC0090D208 /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = usr/lib/libicucore.dylib; sourceTree = SDKROOT; };
 		B66F1E7F1476B6A40090D208 /* libstdc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.dylib"; path = "usr/lib/libstdc++.dylib"; sourceTree = SDKROOT; };
 		B68036FF1682A58200833604 /* EJConvertWebGL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EJConvertWebGL.h; path = WebGL/EJConvertWebGL.h; sourceTree = "<group>"; };
@@ -433,6 +439,10 @@
 				B6F114F11676BD40001F1324 /* EJCanvasContext2DScreen.m */,
 				B6F114F21676BD40001F1324 /* EJCanvasContext2DTexture.h */,
 				B6F114F31676BD40001F1324 /* EJCanvasContext2DTexture.m */,
+				B664B9891699F3370093E04E /* EJBindingCanvasPattern.h */,
+				B664B98A1699F3380093E04E /* EJBindingCanvasPattern.m */,
+				B664B98C1699F49B0093E04E /* EJCanvasPattern.h */,
+				B664B98D1699F49B0093E04E /* EJCanvasPattern.m */,
 				B6F114EC1676BD40001F1324 /* EJBindingImageData.h */,
 				B6F114ED1676BD40001F1324 /* EJBindingImageData.m */,
 				B6F114F61676BD40001F1324 /* EJImageData.h */,
@@ -582,6 +592,8 @@
 				B6F11556167BD59D001F1324 /* EJBindingWebGLObjects.m in Sources */,
 				B6F115B7167E895B001F1324 /* EJGLProgram2D.m in Sources */,
 				B68037011682A58300833604 /* EJConvertWebGL.m in Sources */,
+				B664B98B1699F3380093E04E /* EJBindingCanvasPattern.m in Sources */,
+				B664B98E1699F49C0093E04E /* EJCanvasPattern.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
