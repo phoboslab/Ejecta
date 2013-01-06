@@ -37,16 +37,20 @@
 	
 	// Check if we have to set a param
 	if(params[kEJTextureParamMinFilter] != newParams[kEJTextureParamMinFilter]) {
-		glTexParameteri(target, GL_TEXTURE_MIN_FILTER, newParams[kEJTextureParamMinFilter]);
+		params[kEJTextureParamMinFilter] = newParams[kEJTextureParamMinFilter];
+		glTexParameteri(target, GL_TEXTURE_MIN_FILTER, params[kEJTextureParamMinFilter]);
 	}
 	if(params[kEJTextureParamMagFilter] != newParams[kEJTextureParamMagFilter]) {
-		glTexParameteri(target, GL_TEXTURE_MAG_FILTER, newParams[kEJTextureParamMagFilter]);
+		params[kEJTextureParamMagFilter] = newParams[kEJTextureParamMagFilter];
+		glTexParameteri(target, GL_TEXTURE_MAG_FILTER, params[kEJTextureParamMagFilter]);
 	}
 	if(params[kEJTextureParamWrapS] != newParams[kEJTextureParamWrapS]) {
-		glTexParameteri(target, GL_TEXTURE_WRAP_S, newParams[kEJTextureParamWrapS]);
+		params[kEJTextureParamWrapS] = newParams[kEJTextureParamWrapS];
+		glTexParameteri(target, GL_TEXTURE_WRAP_S, params[kEJTextureParamWrapS]);
 	}
 	if(params[kEJTextureParamWrapT] != newParams[kEJTextureParamWrapT]) {
-		glTexParameteri(target, GL_TEXTURE_WRAP_T, newParams[kEJTextureParamWrapT]);
+		params[kEJTextureParamWrapT] = newParams[kEJTextureParamWrapT];
+		glTexParameteri(target, GL_TEXTURE_WRAP_T, params[kEJTextureParamWrapT]);
 	}
 }
 
