@@ -358,7 +358,6 @@ typedef std::vector<subpath_t> path_t;
 	
 	glEnable(GL_CULL_FACE);
 	for( path_t::iterator sp = paths.begin(); sp != paths.end(); ++sp ) {
-		//glVertexPointer(2, GL_FLOAT, sizeof(EJVector2), &(sp->points).front());
 		glVertexAttribPointer(kEJGLProgram2DAttributePos, 2, GL_FLOAT, GL_FALSE, 0, &(sp->points).front());
 		
 		glCullFace(GL_BACK);
@@ -389,9 +388,33 @@ typedef std::vector<subpath_t> path_t;
 	
 	glStencilFunc(GL_NOTEQUAL, 0x00, 0xff);
     glStencilOp(GL_ZERO, GL_ZERO, GL_ZERO);
-	[context
-		pushRectX:minPos.x y:minPos.y w:maxPos.x-minPos.x h:maxPos.y-minPos.y
-		color:color	withTransform:CGAffineTransformIdentity];
+
+	if( state->fillPattern ) {
+		// If we have a fill pattern, we have to do some extra work to unproject the
+		// Quad we're drawing, so we can then project it _with_ the pattern again
+		
+		CGAffineTransform inverse = CGAffineTransformInvert(transform);
+		EJVector2 p1 = EJVector2ApplyTransform(minPos, inverse);
+		EJVector2 p2 = EJVector2ApplyTransform((EJVector2){maxPos.x, minPos.y}, inverse);
+		EJVector2 p3 = EJVector2ApplyTransform((EJVector2){minPos.x, maxPos.y}, inverse);
+		EJVector2 p4 = EJVector2ApplyTransform(maxPos, inverse);
+		
+		// Find the unprojected min/max
+		EJVector2 tmin = { MIN(p1.x, MIN(p2.x,MIN(p3.x, p4.x))), MIN(p1.y, MIN(p2.y,MIN(p3.y, p4.y))) };
+		EJVector2 tmax = { MAX(p1.x, MAX(p2.x,MAX(p3.x, p4.x))), MAX(p1.y, MAX(p2.y,MAX(p3.y, p4.y))) };
+		
+		[context setTexture:state->fillPattern.texture];
+		
+		color = (EJColorRGBA){.rgba = {255, 255, 255, 255 * state->globalAlpha}};
+		[context pushPatternedRectX:tmin.x y:tmin.y w:tmax.x-tmin.x h:tmax.y-tmin.y
+			repeat:state->fillPattern.repeat color:color withTransform:transform];
+	}
+	else {
+		[context
+			pushRectX:minPos.x y:minPos.y w:maxPos.x-minPos.x h:maxPos.y-minPos.y
+			color:color	withTransform:CGAffineTransformIdentity];
+	}
+	
 	[context flushBuffers];
 	glDisable(GL_STENCIL_TEST);
 	

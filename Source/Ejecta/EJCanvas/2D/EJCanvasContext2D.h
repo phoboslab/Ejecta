@@ -115,6 +115,10 @@ typedef struct {
 - (void)pushRectX:(float)x y:(float)y w:(float)w h:(float)h
 	color:(EJColorRGBA)color
 	withTransform:(CGAffineTransform)transform;
+- (void)pushPatternedRectX:(float)x y:(float)y w:(float)w h:(float)h
+	repeat:(EJCanvasPatternRepeat)repeat
+	color:(EJColorRGBA)color
+	withTransform:(CGAffineTransform)transform;
 - (void)pushTexturedRectX:(float)x y:(float)y w:(float)w h:(float)h
 	tx:(float)tx ty:(float)ty tw:(float)tw th:(float)th
 	color:(EJColorRGBA)color

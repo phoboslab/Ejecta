@@ -270,6 +270,46 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 	vertexBufferIndex += 6;
 }
 
+- (void)pushPatternedRectX:(float)x y:(float)y w:(float)w h:(float)h
+	repeat:(EJCanvasPatternRepeat)repeat
+	color:(EJColorRGBA)color
+	withTransform:(CGAffineTransform)transform
+{
+	// FIXME: this should probably be done in a fragment shader
+	float
+		tw = currentTexture.width,
+		th = currentTexture.height,
+		maxX = x + w,
+		maxY = y + h,
+		firstTx = fmodf(x, tw),
+		firstTy = fmodf(y, th);
+	
+	firstTx += firstTx < 0 ? tw : 0;
+	firstTy += firstTy < 0 ? th : 0;
+	
+	// X-Axis
+	float cx = x;
+	float tx = firstTx;
+	do {
+		float ctw = ((cx + tw - tx < maxX) ? tw - tx : maxX - cx);
+		
+		// Y-Axis
+		float cy = y;
+		float ty = firstTy;
+		do {
+			float cth = ((cy + th - ty < maxY) ? th - ty : maxY - cy);
+			
+			[self pushTexturedRectX:cx y:cy w:ctw h:cth tx:tx/tw ty:ty/th tw:ctw/tw th:cth/th
+				color:color withTransform:transform];
+				
+			cy += cth;
+			ty = 0;
+		} while( cy < maxY && (repeat & kEJCanvasPatternRepeatY) );
+		
+		cx += ctw;
+		tx = 0;
+	} while( cx < maxX && (repeat & kEJCanvasPatternRepeatX) );
+}
 
 - (void)pushTexturedRectX:(float)x y:(float)y w:(float)w h:(float)h
 	tx:(float)tx ty:(float)ty tw:(float)tw th:(float)th
@@ -431,14 +471,9 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 - (void)fillRectX:(float)x y:(float)y w:(float)w h:(float)h {
 	if( state->fillPattern ) {
 		[self setTexture:state->fillPattern.texture];
-		EJColorRGBA color = {.rgba = {255, 255, 255, 255 * state->globalAlpha}};
 		
-		float
-			tx = 0,
-			ty = 0,
-			tw = w / currentTexture.width,
-			th = h / currentTexture.height;
-		[self pushTexturedRectX:x y:y w:w h:h tx:tx ty:ty tw:tw th:th color:color withTransform:state->transform];
+		EJColorRGBA color = {.rgba = {255, 255, 255, 255 * state->globalAlpha}};
+		[self pushPatternedRectX:x y:y w:w h:h repeat:state->fillPattern.repeat color:color	withTransform:state->transform];
 	}
 	else {
 		[self setTexture:NULL];
