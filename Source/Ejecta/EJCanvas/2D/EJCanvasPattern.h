@@ -5,7 +5,7 @@ typedef enum {
 	kEJCanvasPatternNoRepeat = 0,
 	kEJCanvasPatternRepeatX = 1,
 	kEJCanvasPatternRepeatY = 2,
-	kEJCanvasPatternRepeat = 1 | 2,
+	kEJCanvasPatternRepeat = 1 | 2
 } EJCanvasPatternRepeat;
 
 @interface EJCanvasPattern : NSObject {

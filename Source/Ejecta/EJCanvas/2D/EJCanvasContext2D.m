@@ -272,44 +272,42 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 }
 
 - (void)pushPatternedRectX:(float)x y:(float)y w:(float)w h:(float)h
-	repeat:(EJCanvasPatternRepeat)repeat
+	pattern:(EJCanvasPattern *)pattern
 	color:(EJColorRGBA)color
 	withTransform:(CGAffineTransform)transform
 {
-	// FIXME: this should probably be done in a fragment shader
+	[self setTexture:pattern.texture];
+	
 	float
 		tw = currentTexture.width,
 		th = currentTexture.height,
-		maxX = x + w,
-		maxY = y + h,
-		firstTx = fmodf(x, tw),
-		firstTy = fmodf(y, th);
-	
-	firstTx += firstTx < 0 ? tw : 0;
-	firstTy += firstTy < 0 ? th : 0;
-	
-	// X-Axis
-	float cx = x;
-	float tx = firstTx;
-	do {
-		float ctw = ((cx + tw - tx < maxX) ? tw - tx : maxX - cx);
+		pw = w,
+		ph = h;
 		
-		// Y-Axis
-		float cy = y;
-		float ty = firstTy;
-		do {
-			float cth = ((cy + th - ty < maxY) ? th - ty : maxY - cy);
-			
-			[self pushTexturedRectX:cx y:cy w:ctw h:cth tx:tx/tw ty:ty/th tw:ctw/tw th:cth/th
-				color:color withTransform:transform];
-				
-			cy += cth;
-			ty = 0;
-		} while( cy < maxY && (repeat & kEJCanvasPatternRepeatY) );
+	if( !(pattern.repeat & kEJCanvasPatternRepeatX) ) {
+		pw = MIN(tw - x, w);
+	}
+	if( !(pattern.repeat & kEJCanvasPatternRepeatY) ) {
+		ph = MIN(th - y, h);
+	}
+
+	if( pw > 0 && ph > 0 ) { // We may have to skip entirely
+		glUniform1i(program2D.textureFormat, GL_REPEAT);
 		
-		cx += ctw;
-		tx = 0;
-	} while( cx < maxX && (repeat & kEJCanvasPatternRepeatX) );
+		[self pushTexturedRectX:x y:y w:pw h:ph tx:x/tw ty:y/th tw:pw/tw th:ph/th
+			color:color withTransform:transform];
+		[self flushBuffers];
+		
+		glUniform1i(program2D.textureFormat, currentTexture.format);
+	}
+	
+	if( pw < w || ph < h ) {
+		// Draw clearing rect for the stencil buffer if we didn't fill everything with
+		// the pattern image - happens when not repeating in both directions
+		[self setTexture:NULL];
+		EJColorRGBA transparentBlack = {.hex = 0x00000000};
+		[self pushRectX:x y:y w:w h:h color:transparentBlack withTransform:transform];
+	}
 }
 
 - (void)pushTexturedRectX:(float)x y:(float)y w:(float)w h:(float)h
@@ -470,11 +468,9 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 }
 
 - (void)fillRectX:(float)x y:(float)y w:(float)w h:(float)h {
-	if( state->fillPattern ) {
-		[self setTexture:state->fillPattern.texture];
-		
+	if( state->fillPattern ) {		
 		EJColorRGBA color = {.rgba = {255, 255, 255, 255 * state->globalAlpha}};
-		[self pushPatternedRectX:x y:y w:w h:h repeat:state->fillPattern.repeat color:color	withTransform:state->transform];
+		[self pushPatternedRectX:x y:y w:w h:h pattern:state->fillPattern color:color withTransform:state->transform];
 	}
 	else {
 		[self setTexture:NULL];

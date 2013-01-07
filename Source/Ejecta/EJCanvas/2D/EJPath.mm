@@ -403,11 +403,9 @@ typedef std::vector<subpath_t> path_t;
 		EJVector2 tmin = { MIN(p1.x, MIN(p2.x,MIN(p3.x, p4.x))), MIN(p1.y, MIN(p2.y,MIN(p3.y, p4.y))) };
 		EJVector2 tmax = { MAX(p1.x, MAX(p2.x,MAX(p3.x, p4.x))), MAX(p1.y, MAX(p2.y,MAX(p3.y, p4.y))) };
 		
-		[context setTexture:state->fillPattern.texture];
-		
 		color = (EJColorRGBA){.rgba = {255, 255, 255, 255 * state->globalAlpha}};
 		[context pushPatternedRectX:tmin.x y:tmin.y w:tmax.x-tmin.x h:tmax.y-tmin.y
-			repeat:state->fillPattern.repeat color:color withTransform:transform];
+			pattern:state->fillPattern color:color withTransform:transform];
 	}
 	else {
 		[context
