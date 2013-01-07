@@ -1,5 +1,5 @@
-varying lowp vec4 colorVarying;
-varying mediump vec2 uvVarying;
+varying lowp vec4 vColor;
+varying mediump vec2 vUv;
 
 uniform sampler2D texture;
 uniform int textureFormat;
@@ -14,15 +14,15 @@ void main() {
 	// any difference, performance wise.
 	
 	if( textureFormat == GL_NONE ) { // No texture - Used by vector functions
-		gl_FragColor = colorVarying;
+		gl_FragColor = vColor;
 	}
 	else if( textureFormat == GL_RGBA ) { // Used by drawImage
-		gl_FragColor = texture2D(texture, uvVarying) * colorVarying;
+		gl_FragColor = texture2D(texture, vUv) * vColor;
 	}
 	else if( textureFormat == GL_ALPHA ) { // Used by fonts
-		gl_FragColor = texture2D(texture, uvVarying).aaaa * colorVarying;
+		gl_FragColor = texture2D(texture, vUv).aaaa * vColor;
 	}
 	else if( textureFormat == GL_REPEAT ) { // Used by patterns; always RGBA
-		gl_FragColor = texture2D(texture, mod(uvVarying, vec2(1.0, 1.0)) ) * colorVarying;
+		gl_FragColor = texture2D(texture, mod(vUv, vec2(1.0, 1.0)) ) * vColor;
 	}
 }
