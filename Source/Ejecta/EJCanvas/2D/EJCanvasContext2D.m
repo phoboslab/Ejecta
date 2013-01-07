@@ -68,10 +68,11 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 	[program2D release];
 	[fontCache release];
 	
-	// Release all fonts and clip paths from the stack
+	// Release all fonts, clip paths and patterns from the stack
 	for( int i = 0; i < stateIndex + 1; i++ ) {
 		[stateStack[i].font release];
 		[stateStack[i].clipPath release];
+		[stateStack[i].fillPattern release];
 	}
 	
 	if( viewFrameBuffer ) { glDeleteFramebuffers( 1, &viewFrameBuffer); }
