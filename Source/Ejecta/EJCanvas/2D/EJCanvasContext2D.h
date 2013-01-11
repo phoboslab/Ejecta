@@ -1,6 +1,7 @@
 #import <Foundation/Foundation.h>
 #import "EJTexture.h"
 #import "EJImageData.h"
+#import "EJCanvasPattern.h"
 #import "EJPath.h"
 #import "EJCanvas2DTypes.h"
 #import "EJCanvasContext.h"
@@ -56,6 +57,7 @@ typedef struct {
 	
 	EJCompositeOperation globalCompositeOperation;
 	EJColorRGBA fillColor;
+	EJCanvasPattern * fillPattern;
 	EJColorRGBA strokeColor;
 	float globalAlpha;
 	
@@ -113,6 +115,10 @@ typedef struct {
 - (void)pushRectX:(float)x y:(float)y w:(float)w h:(float)h
 	color:(EJColorRGBA)color
 	withTransform:(CGAffineTransform)transform;
+- (void)pushPatternedRectX:(float)x y:(float)y w:(float)w h:(float)h
+	pattern:(EJCanvasPattern *)pattern
+	color:(EJColorRGBA)color
+	withTransform:(CGAffineTransform)transform;
 - (void)pushTexturedRectX:(float)x y:(float)y w:(float)w h:(float)h
 	tx:(float)tx ty:(float)ty tw:(float)tw th:(float)th
 	color:(EJColorRGBA)color
@@ -158,6 +164,7 @@ typedef struct {
 @property (nonatomic) EJCanvasState * state;
 @property (nonatomic) EJCompositeOperation globalCompositeOperation;
 @property (nonatomic, retain) UIFont * font;
+@property (nonatomic, retain) EJCanvasPattern * fillPattern;
 @property (nonatomic, assign) float backingStoreRatio;
 @property (nonatomic) BOOL useRetinaResolution;
 @property (nonatomic) BOOL imageSmoothingEnabled;
@@ -165,7 +172,6 @@ typedef struct {
 /* TODO: not yet implemented:
 	createLinearGradient(x0, y0, x1, y1)
 	createRadialGradient(x0, y0, r0, x1, y1, r1)
-	createPattern(image, repetition)
 	shadowOffsetX
 	shadowOffsetY
 	shadowBlur

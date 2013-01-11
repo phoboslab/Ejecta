@@ -69,10 +69,11 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 	[program2D release];
 	[fontCache release];
 	
-	// Release all fonts and clip paths from the stack
+	// Release all fonts, clip paths and patterns from the stack
 	for( int i = 0; i < stateIndex + 1; i++ ) {
 		[stateStack[i].font release];
 		[stateStack[i].clipPath release];
+		[stateStack[i].fillPattern release];
 	}
 	
 	if( viewFrameBuffer ) { glDeleteFramebuffers( 1, &viewFrameBuffer); }
@@ -271,6 +272,45 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 	vertexBufferIndex += 6;
 }
 
+- (void)pushPatternedRectX:(float)x y:(float)y w:(float)w h:(float)h
+	pattern:(EJCanvasPattern *)pattern
+	color:(EJColorRGBA)color
+	withTransform:(CGAffineTransform)transform
+{
+	[self setTexture:pattern.texture];
+	
+	float
+		tw = currentTexture.width,
+		th = currentTexture.height,
+		pw = w,
+		ph = h;
+		
+	if( !(pattern.repeat & kEJCanvasPatternRepeatX) ) {
+		pw = MIN(tw - x, w);
+	}
+	if( !(pattern.repeat & kEJCanvasPatternRepeatY) ) {
+		ph = MIN(th - y, h);
+	}
+
+	if( pw > 0 && ph > 0 ) { // We may have to skip entirely
+		glUniform1i(program2D.textureFormat, GL_REPEAT);
+		
+		[self pushTexturedRectX:x y:y w:pw h:ph tx:x/tw ty:y/th tw:pw/tw th:ph/th
+			color:color withTransform:transform];
+		[self flushBuffers];
+		
+		glUniform1i(program2D.textureFormat, currentTexture.format);
+	}
+	
+	if( pw < w || ph < h ) {
+		// Draw clearing rect for the stencil buffer if we didn't fill everything with
+		// the pattern image - happens when not repeating in both directions
+		[self setTexture:NULL];
+		EJColorRGBA transparentBlack = {.hex = 0x00000000};
+		[self pushRectX:x y:y w:w h:h color:transparentBlack withTransform:transform];
+	}
+}
+
 - (void)pushTexturedRectX:(float)x y:(float)y w:(float)w h:(float)h
 	tx:(float)tx ty:(float)ty tw:(float)tw th:(float)th
 	color:(EJColorRGBA)color
@@ -336,6 +376,15 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 	return state->font;
 }
 
+- (void)setFillPattern:(EJCanvasPattern *)fillPattern {
+	[state->fillPattern release];
+	state->fillPattern = [fillPattern retain];
+}
+
+- (EJCanvasPattern *)fillPattern {
+	return state->fillPattern;
+}
+
 
 - (void)save {
 	if( stateIndex == EJ_CANVAS_STATE_STACK_SIZE-1 ) {
@@ -347,6 +396,7 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 	stateIndex++;
 	state = &stateStack[stateIndex];
 	[state->font retain];
+	[state->fillPattern retain];
 	[state->clipPath retain];
 }
 
@@ -358,6 +408,7 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 	
 	// Clean up current state
 	[state->font release];
+	[state->fillPattern release];
 
 	if( state->clipPath && state->clipPath != stateStack[stateIndex-1].clipPath ) {
 		[self resetClip];
@@ -418,11 +469,17 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 }
 
 - (void)fillRectX:(float)x y:(float)y w:(float)w h:(float)h {
-	[self setTexture:NULL];
-	
-	EJColorRGBA color = state->fillColor;
-	color.rgba.a = (float)color.rgba.a * state->globalAlpha;
-	[self pushRectX:x y:y w:w h:h color:color withTransform:state->transform];
+	if( state->fillPattern ) {		
+		EJColorRGBA color = {.rgba = {255, 255, 255, 255 * state->globalAlpha}};
+		[self pushPatternedRectX:x y:y w:w h:h pattern:state->fillPattern color:color withTransform:state->transform];
+	}
+	else {
+		[self setTexture:NULL];
+		
+		EJColorRGBA color = state->fillColor;
+		color.rgba.a = (float)color.rgba.a * state->globalAlpha;
+		[self pushRectX:x y:y w:w h:h color:color withTransform:state->transform];
+	}
 }
 
 - (void)strokeRectX:(float)x y:(float)y w:(float)w h:(float)h {

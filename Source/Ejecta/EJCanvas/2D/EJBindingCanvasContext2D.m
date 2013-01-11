@@ -3,6 +3,7 @@
 #import "EJCanvasContext2DTexture.h"
 #import "EJCanvasContext2DScreen.h"
 #import "EJBindingImageData.h"
+#import "EJBindingCanvasPattern.h"
 
 #import "EJDrawable.h"
 #import "EJConvertColorRGBA.h"
@@ -68,11 +69,22 @@ EJ_BIND_ENUM(textBaseline, renderingContext.state->textBaseline,
 );
 
 EJ_BIND_GET(fillStyle, ctx ) {
-	return ColorRGBAToJSValue(ctx, renderingContext.state->fillColor);
+	if( renderingContext.fillPattern ) {
+		return [EJBindingCanvasPattern createJSObjectWithContext:ctx pattern:renderingContext.fillPattern];
+	}
+	else {
+		return ColorRGBAToJSValue(ctx, renderingContext.state->fillColor);
+	}
 }
 
 EJ_BIND_SET(fillStyle, ctx, value) {
-	renderingContext.state->fillColor = JSValueToColorRGBA(ctx, value);
+	if( JSValueIsObject(ctx, value) ) {
+		renderingContext.fillPattern = [EJBindingCanvasPattern patternFromJSValue:value];
+	}
+	else {
+		renderingContext.state->fillColor = JSValueToColorRGBA(ctx, value);
+		renderingContext.fillPattern = NULL;
+	}
 }
 
 EJ_BIND_GET(strokeStyle, ctx ) {
@@ -278,6 +290,30 @@ EJ_BIND_FUNCTION(putImageData, ctx, argc, argv) {
 	return NULL;
 }
 
+EJ_BIND_FUNCTION(createPattern, ctx, argc, argv) {
+	if( argc < 1 ) { return NULL; }
+	NSObject<EJDrawable> * drawable = (NSObject<EJDrawable> *)JSObjectGetPrivate((JSObjectRef)argv[0]);
+	EJTexture * image = drawable.texture;
+	
+	if( !image ) { return NULL; }
+	
+	EJCanvasPatternRepeat repeat = kEJCanvasPatternRepeat;
+	if( argc > 1 ) {
+		NSString * repeatString = JSValueToNSString(ctx, argv[1]);
+		if( [repeatString isEqualToString:@"repeat-x"] ) {
+			repeat = kEJCanvasPatternRepeatX;
+		}
+		else if( [repeatString isEqualToString:@"repeat-y"] ) {
+			repeat = kEJCanvasPatternRepeatY;
+		}
+		else if( [repeatString isEqualToString:@"no-repeat"] ) {
+			repeat = kEJCanvasPatternNoRepeat;
+		}
+	}
+	EJCanvasPattern * pattern = [[[EJCanvasPattern alloc] initWithTexture:image repeat:repeat] autorelease];
+	return [EJBindingCanvasPattern createJSObjectWithContext:ctx pattern:pattern];
+}
+
 EJ_BIND_FUNCTION( beginPath, ctx, argc, argv ) {
 	[renderingContext beginPath];
 	return NULL;
@@ -393,7 +429,6 @@ EJ_BIND_FUNCTION( resetClip, ctx, argc, argv ) {
 
 EJ_BIND_FUNCTION_NOT_IMPLEMENTED( createRadialGradient );
 EJ_BIND_FUNCTION_NOT_IMPLEMENTED( createLinearGradient );
-EJ_BIND_FUNCTION_NOT_IMPLEMENTED( createPattern );
 EJ_BIND_FUNCTION_NOT_IMPLEMENTED( isPointInPath );
 
 @end
