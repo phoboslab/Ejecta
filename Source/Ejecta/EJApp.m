@@ -51,6 +51,7 @@ JSObjectRef ej_callAsConstructor(JSContextRef ctx, JSObjectRef constructor, size
 @synthesize glContext;
 @synthesize window;
 @synthesize touchDelegate;
+@synthesize lifecycleDelegate;
 
 @synthesize opQueue;
 @synthesize currentRenderingContext;
@@ -138,6 +139,7 @@ static EJApp * ejectaInstance = NULL;
 	JSGlobalContextRelease(jsGlobalContext);
 	[currentRenderingContext release];
 	[touchDelegate release];
+	[lifecycleDelegate release];
 	[jsClasses release];
 	[opQueue release];
 	
@@ -191,6 +193,9 @@ static EJApp * ejectaInstance = NULL;
 
 
 - (void)pause {
+	if( paused ) { return; }
+	
+	[lifecycleDelegate pause];
 	[displayLink removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 	[screenRenderingContext finish];
 	paused = true;
@@ -198,6 +203,9 @@ static EJApp * ejectaInstance = NULL;
 
 
 - (void)resume {
+	if( !paused ) { return; }
+	
+	[lifecycleDelegate resume];
 	[EAGLContext setCurrentContext:glContext];
 	[displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 	paused = false;

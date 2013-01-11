@@ -256,4 +256,31 @@ window.document._eventInitializers.devicemotion = function() {
 };
 
 
+
+// Application lifecycle events (pagehide/pageshow)
+
+var lifecycle = null;
+var lifecycleEvent = {
+	type: 'pagehide',
+	target: window.document,
+	preventDefault: function(){},
+	stopPropagation: function(){}
+};
+
+window.document._eventInitializers.pagehide =
+	window.document._eventInitializers.pageshow = function() {
+	if( !lifecycle ) {
+		lifecycle = new Ejecta.Lifecycle();
+		
+		lifecycle.onpagehide = function() {
+			lifecycleEvent.type = 'pagehide';
+			document._publishEvent( 'pagehide', lifecycleEvent );
+		};
+		lifecycle.onpageshow = function() {
+			lifecycleEvent.type = 'pageshow';
+			document._publishEvent( 'pageshow', lifecycleEvent );
+		}
+	}
+};
+
 })(this);

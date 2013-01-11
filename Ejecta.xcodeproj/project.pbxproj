@@ -65,6 +65,7 @@
 		B6AC4A061359E7A5003C4982 /* iAd.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6AC4A051359E7A5003C4982 /* iAd.framework */; };
 		B6CFCCD91332F152001F17AF /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6CFCCD81332F152001F17AF /* AVFoundation.framework */; };
 		B6F463A41636C3FB00FC89C1 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6F463A31636C3FA00FC89C1 /* SystemConfiguration.framework */; };
+		B6F9AFC0169F81D400ABD91A /* EJBindingLifecycle.m in Sources */ = {isa = PBXBuildFile; fileRef = B6F9AFBF169F81D400ABD91A /* EJBindingLifecycle.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -171,6 +172,8 @@
 		B6AC4A051359E7A5003C4982 /* iAd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iAd.framework; path = System/Library/Frameworks/iAd.framework; sourceTree = SDKROOT; };
 		B6CFCCD81332F152001F17AF /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		B6F463A31636C3FA00FC89C1 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		B6F9AFBE169F81D400ABD91A /* EJBindingLifecycle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingLifecycle.h; sourceTree = "<group>"; };
+		B6F9AFBF169F81D400ABD91A /* EJBindingLifecycle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingLifecycle.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -341,6 +344,8 @@
 				B64CE64C166682700087CF94 /* EJBindingLocalStorage.m */,
 				B64CE64D166682700087CF94 /* EJBindingTouchInput.h */,
 				B64CE64E166682700087CF94 /* EJBindingTouchInput.m */,
+				B6F9AFBE169F81D400ABD91A /* EJBindingLifecycle.h */,
+				B6F9AFBF169F81D400ABD91A /* EJBindingLifecycle.m */,
 			);
 			path = EJUtils;
 			sourceTree = "<group>";
@@ -502,6 +507,7 @@
 				B64CE67F166682700087CF94 /* AppDelegate.m in Sources */,
 				B64CE681166682700087CF94 /* lodepng.c in Sources */,
 				B64CE682166682700087CF94 /* main.m in Sources */,
+				B6F9AFC0169F81D400ABD91A /* EJBindingLifecycle.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -13,6 +13,11 @@
 - (void)triggerEvent:(NSString *)name all:(NSSet *)all changed:(NSSet *)changed remaining:(NSSet *)remaining;
 @end
 
+@protocol EJLifecycleDelegate
+- (void)resume;
+- (void)pause;
+@end
+
 @class EJTimerCollection;
 @class EJCanvasContext;
 @class EJCanvasContextScreen;
@@ -25,6 +30,7 @@
 	NSMutableDictionary * jsClasses;
 	UIImageView * loadingScreen;
 	NSObject<EJTouchDelegate> * touchDelegate;
+	NSObject<EJLifecycleDelegate> * lifecycleDelegate;
 	
 	EJTimerCollection * timers;
 	NSTimeInterval currentTime;
@@ -65,6 +71,7 @@
 @property (nonatomic, readonly) EAGLContext * glContext;
 @property (nonatomic, readonly) UIWindow * window;
 @property (nonatomic, retain) NSObject<EJTouchDelegate> * touchDelegate;
+@property (nonatomic, retain) NSObject<EJLifecycleDelegate> * lifecycleDelegate;
 
 @property (nonatomic, readonly) NSOperationQueue * opQueue;
 @property (nonatomic, assign) EJCanvasContext * currentRenderingContext;
