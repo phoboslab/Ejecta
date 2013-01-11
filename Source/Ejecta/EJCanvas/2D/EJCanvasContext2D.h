@@ -167,7 +167,6 @@ typedef struct {
 /* TODO: not yet implemented:
 	createLinearGradient(x0, y0, x1, y1)
 	createRadialGradient(x0, y0, r0, x1, y1, r1)
-	createPattern(image, repetition)
 	shadowOffsetX
 	shadowOffsetY
 	shadowBlur
