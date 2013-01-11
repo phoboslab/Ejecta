@@ -175,7 +175,10 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 			renderingContext = sc;
 		}
 		else {
-			renderingContext = [[EJCanvasContext2DTexture alloc] initWithWidth:width height:height];
+			EJCanvasContext2DTexture * tc = [[EJCanvasContext2DTexture alloc] initWithWidth:width height:height];
+			tc.useRetinaResolution = useRetinaResolution;
+			
+			renderingContext = tc;
 		}
 		
 		// Create the JS object

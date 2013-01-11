@@ -19,6 +19,7 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 
 @synthesize state;
 @synthesize backingStoreRatio;
+@synthesize useRetinaResolution;
 @synthesize imageSmoothingEnabled;
 
 - (id)initWithWidth:(short)widthp height:(short)heightp {
@@ -40,8 +41,8 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 		state->font = [[UIFont fontWithName:@"Helvetica" size:10] retain];
 		state->clipPath = nil;
 		
-		bufferWidth = viewportWidth = width = widthp;
-		bufferHeight = viewportHeight = height = heightp;
+		bufferWidth = width = widthp;
+		bufferHeight = height = heightp;
 		
 		vertexScale = EJVector2Make(2.0f/width, 2.0f/height);
 		vertexTranslate = EJVector2Make(-1.0f, -1.0f);
@@ -146,7 +147,7 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 	glBindFramebuffer(GL_FRAMEBUFFER, msaaEnabled ? msaaFrameBuffer : viewFrameBuffer );
 	glBindRenderbuffer(GL_RENDERBUFFER, msaaEnabled ? msaaRenderBuffer : viewRenderBuffer );
 	
-	glViewport(0, 0, viewportWidth, viewportHeight);
+	glViewport(0, 0, bufferWidth, bufferHeight);
 	
 	EJCompositeOperation op = state->globalCompositeOperation;
 	glBlendFunc( EJCompositeOperationFuncs[op].source, EJCompositeOperationFuncs[op].destination );

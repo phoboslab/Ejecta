@@ -177,9 +177,10 @@ static GLint EJTextureGlobalFilter = GL_LINEAR;
 	return self;
 }
 
-- (id)initAsRenderTargetWithWidth:(int)widthp height:(int)heightp fbo:(GLuint)fbop {
-	if( self = [self initWithWidth:widthp height:heightp] ) {
+- (id)initAsRenderTargetWithWidth:(int)widthp height:(int)heightp fbo:(GLuint)fbop contentScale:(float)contentScalep {
+	if( self = [self initWithWidth:widthp*contentScalep height:heightp*contentScalep] ) {
 		fbo = fbop;
+		contentScale = contentScalep;
 	}
 	return self;
 }

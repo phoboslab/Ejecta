@@ -6,14 +6,12 @@
 	EAGLView * glview;
 	GLuint colorRenderbuffer;
 	
-	BOOL useRetinaResolution;
 	EJScalingMode scalingMode;
 }
 
 - (void)present;
 - (void)finish;
 
-@property (nonatomic) BOOL useRetinaResolution;
 @property (nonatomic) EJScalingMode scalingMode;
 
 @end

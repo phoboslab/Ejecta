@@ -4,7 +4,6 @@
 
 @implementation EJCanvasContext2DScreen
 
-@synthesize useRetinaResolution;
 @synthesize scalingMode;
 
 
@@ -28,10 +27,10 @@
 	float internalScaling = frame.size.width / (float)width;
 	[EJApp instance].internalScaling = internalScaling;
 	
-    backingStoreRatio = internalScaling * contentScale;
+	backingStoreRatio = internalScaling * contentScale;
 	
-	bufferWidth = viewportWidth = frame.size.width * contentScale;
-	bufferHeight = viewportHeight = frame.size.height * contentScale;
+	bufferWidth = frame.size.width * contentScale;
+	bufferHeight = frame.size.height * contentScale;
 	
 	NSLog(
 		@"Creating ScreenCanvas (2D): "

@@ -76,7 +76,6 @@ typedef struct {
 	GLuint msaaFrameBuffer, msaaRenderBuffer;
 	GLuint stencilBuffer;
 	
-	short viewportWidth, viewportHeight;
 	short bufferWidth, bufferHeight;
 	EJVector2 vertexScale, vertexTranslate;
 	
@@ -90,6 +89,7 @@ typedef struct {
 	EJCanvasState stateStack[EJ_CANVAS_STATE_STACK_SIZE];
 	EJCanvasState * state;
     
+	BOOL useRetinaResolution;
 	float backingStoreRatio;
 	
 	NSCache * fontCache;
@@ -155,6 +155,7 @@ typedef struct {
 @property (nonatomic) EJCompositeOperation globalCompositeOperation;
 @property (nonatomic, retain) UIFont * font;
 @property (nonatomic, assign) float backingStoreRatio;
+@property (nonatomic) BOOL useRetinaResolution;
 @property (nonatomic) BOOL imageSmoothingEnabled;
 
 /* TODO: not yet implemented:

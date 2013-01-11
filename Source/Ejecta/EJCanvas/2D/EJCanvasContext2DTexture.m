@@ -6,8 +6,11 @@
 	// This creates the frame- and renderbuffers
 	[super create];
 	
-	// Create the texture
-	texture = [[EJTexture alloc] initAsRenderTargetWithWidth:width height:height fbo:viewFrameBuffer];
+	// Create the texture	
+	backingStoreRatio = (useRetinaResolution && [UIScreen mainScreen].scale == 2) ? 2 : 1;
+	
+	texture = [[EJTexture alloc] initAsRenderTargetWithWidth:width height:height
+		fbo:viewFrameBuffer contentScale:backingStoreRatio];
 	bufferWidth = texture.width;
 	bufferHeight = texture.height;
 	
@@ -28,7 +31,8 @@
 
 - (void)recreate {
 	[texture release];
-	texture = [[EJTexture alloc] initAsRenderTargetWithWidth:width height:height fbo:viewFrameBuffer];
+	texture = [[EJTexture alloc] initAsRenderTargetWithWidth:width height:height
+		fbo:viewFrameBuffer contentScale:backingStoreRatio];
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture.textureId, 0);
 	
 	// Delete stencil buffer; it will be re-created when needed
@@ -57,16 +61,18 @@
 	if( newWidth == width ) { return; }
 	
 	[self flushBuffers];
-	bufferWidth = viewportWidth = width = newWidth;
+	width = newWidth;
 	[self recreate];
+	bufferWidth = texture.width;
 }
 
 - (void)setHeight:(short)newHeight {
 	if( newHeight == height ) { return; }
 	
 	[self flushBuffers];
-	bufferHeight = viewportHeight = height = newHeight;
+	height = newHeight;
 	[self recreate];
+	bufferHeight = texture.height;
 }
 
 - (void)prepare {
