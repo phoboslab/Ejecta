@@ -215,7 +215,7 @@ static inline bool JSStrIsEqualToStr( const JSChar * s1, const char * s2, int le
 
 // ------------------------------------------------------------------------------------
 // Unpack JavaScript values to numbers - use with
-// EJ_UNPACK_ARGV(float value1, int value2);
+// EJ_UNPACK_ARGV(float value1, int value2, ...);
 // or with an offset into argv
 // EJ_UNPACK_ARGV_OFFSET(OFFSET, float value1, int value2, ...);
 

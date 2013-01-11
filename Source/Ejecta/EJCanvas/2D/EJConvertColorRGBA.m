@@ -207,7 +207,6 @@ static EJColorRGBA HSLAtoColorRGBA(float h, float s, float l, float a) {
 	return color;
 }
 
-extern NSString * JSValueToNSString(JSContextRef ctx, JSValueRef value);
 EJColorRGBA JSValueToColorRGBA(JSContextRef ctx, JSValueRef value) {
 	EJColorRGBA c = {.hex = 0xff000000};
 	
