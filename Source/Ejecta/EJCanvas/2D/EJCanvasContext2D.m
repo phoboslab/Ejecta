@@ -664,7 +664,7 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 	[state->clipPath release];
 	state->clipPath = nil;
 	
-	state->clipPath = [path copy];
+	state->clipPath = path.copy;
 	[state->clipPath drawPolygonsToContext:self target:kEJPathPolygonTargetDepth];
 }
 
