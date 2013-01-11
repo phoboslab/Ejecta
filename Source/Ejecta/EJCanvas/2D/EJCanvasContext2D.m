@@ -271,7 +271,6 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 	vertexBufferIndex += 6;
 }
 
-
 - (void)pushTexturedRectX:(float)x y:(float)y w:(float)w h:(float)h
 	tx:(float)tx ty:(float)ty tw:(float)tw th:(float)th
 	color:(EJColorRGBA)color
@@ -454,25 +453,74 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 	self.globalCompositeOperation = oldOp;
 }
 
-- (EJImageData*)getImageDataSx:(short)sx sy:(short)sy sw:(short)sw sh:(short)sh {
+- (EJImageData*)getImageDataScaled:(float)scale flipped:(bool)flipped sx:(short)sx sy:(short)sy sw:(short)sw sh:(short)sh {
+	
 	[self flushBuffers];
-	NSMutableData * pixels = [NSMutableData dataWithLength:sw * sh * 4 * sizeof(GLubyte)];
-	glReadPixels(sx, sy, sw, sh, GL_RGBA, GL_UNSIGNED_BYTE, pixels.mutableBytes);
+	
+	NSMutableData * pixels;
+	
+	// Fast case - no scaling, no flipping
+	if( scale == 1 && !flipped ) {
+		pixels = [NSMutableData dataWithLength:sw * sh * 4 * sizeof(GLubyte)];
+		glReadPixels(sx, sy, sw, sh, GL_RGBA, GL_UNSIGNED_BYTE, pixels.mutableBytes);
+	}
+	
+	// More processing needed - take care of the flipped screen layout and the scaling
+	else {
+		int internalWidth = sw * scale;
+		int internalHeight = sh * scale;
+		int internalX = sx * scale;
+		int internalY = (height-sy-sh) * scale;
+		
+		EJColorRGBA * internalPixels = malloc( internalWidth * internalHeight * sizeof(EJColorRGBA));
+		glReadPixels( internalX, internalY, internalWidth, internalHeight, GL_RGBA, GL_UNSIGNED_BYTE, internalPixels );
+		
+		int size = sw * sh * sizeof(EJColorRGBA);
+		EJColorRGBA * scaledPixels = malloc( size );
+		int index = 0;
+		for( int y = 0; y < sh; y++ ) {
+			int rowIndex = (int)((flipped ? sh-y-1 : y) * scale) * internalWidth;
+			for( int x = 0; x < sw; x++ ) {
+				int internalIndex = rowIndex + (int)(x * scale);
+				scaledPixels[ index ] = internalPixels[ internalIndex ];
+				index++;
+			}
+		}
+		free(internalPixels);
+	
+		pixels = [NSMutableData dataWithBytesNoCopy:scaledPixels length:size];
+	}
 	
 	return [[[EJImageData alloc] initWithWidth:sw height:sh pixels:pixels] autorelease];
 }
 
-- (void)putImageData:(EJImageData*)imageData dx:(float)dx dy:(float)dy {
+- (EJImageData*)getImageDataSx:(short)sx sy:(short)sy sw:(short)sw sh:(short)sh {
+	return [self getImageDataScaled:backingStoreRatio flipped:NO sx:sx sy:sy sw:sw sh:sh];
+}
+
+- (EJImageData*)getImageDataHDSx:(short)sx sy:(short)sy sw:(short)sw sh:(short)sh {
+	return [self getImageDataScaled:1 flipped:NO sx:sx sy:sy sw:sw sh:sh];
+}
+
+- (void)putImageData:(EJImageData*)imageData scaled:(float)scale dx:(float)dx dy:(float)dy {
 	EJTexture * texture = imageData.texture;
 	[self setTexture:texture];
 	
-	short tw = texture.width;
-	short th = texture.height;
+	short tw = texture.width / scale;
+	short th = texture.height / scale;
 	
 	static EJColorRGBA white = {.hex = 0xffffffff};
 	
 	[self pushTexturedRectX:dx y:dy w:tw h:th tx:0 ty:0 tw:1 th:1 color:white withTransform:CGAffineTransformIdentity];
 	[self flushBuffers];
+}
+
+- (void)putImageData:(EJImageData*)imageData dx:(float)dx dy:(float)dy {
+	[self putImageData:imageData scaled:1 dx:dx dy:dy];
+}
+
+- (void)putImageDataHD:(EJImageData*)imageData dx:(float)dx dy:(float)dy {
+	[self putImageData:imageData scaled:backingStoreRatio dx:dx dy:dy];
 }
 
 - (void)beginPath {

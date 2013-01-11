@@ -95,42 +95,13 @@
 }
 
 - (EJImageData*)getImageDataSx:(short)sx sy:(short)sy sw:(short)sw sh:(short)sh {
-	// FIXME: This takes care of the flipped pixel layout and the internal scaling.
-	// The latter will mush pixels; not sure how to fix it - print warning instead.
-	
-	if( backingStoreRatio != 1 && [EJTexture smoothScaling] ) {
-		NSLog(
-			@"Warning: The screen canvas has been scaled; getImageData() may not work as expected. "
-			@"Set ctx.imageSmoothingEnabled=false or use an off-screen Canvas for more accurate results."
-		);
-	}
-	
-	[self flushBuffers];
-	
-	// Read pixels; take care of the upside down screen layout and the backingStoreRatio
-	int internalWidth = sw * backingStoreRatio;
-	int internalHeight = sh * backingStoreRatio;
-	int internalX = sx * backingStoreRatio;
-	int internalY = (height-sy-sh) * backingStoreRatio;
-	
-	EJColorRGBA * internalPixels = malloc( internalWidth * internalHeight * sizeof(EJColorRGBA));
-	glReadPixels( internalX, internalY, internalWidth, internalHeight, GL_RGBA, GL_UNSIGNED_BYTE, internalPixels );
-	
-	// Flip and scale pixels to requested size
-	int size = sw * sh * sizeof(EJColorRGBA);
-	EJColorRGBA * pixels = malloc( size );
-	int index = 0;
-	for( int y = 0; y < sh; y++ ) {
-		for( int x = 0; x < sw; x++ ) {
-			int internalIndex = (int)((sh-y-1) * backingStoreRatio) * internalWidth + (int)(x * backingStoreRatio);
-			pixels[ index ] = internalPixels[ internalIndex ];
-			index++;
-		}
-	}
-	free(internalPixels);
-	
-	NSMutableData * data = [NSMutableData dataWithBytesNoCopy:pixels length:size];
-	return [[[EJImageData alloc] initWithWidth:sw height:sh pixels:data] autorelease];
+	// Take care of the flipped screen layout
+	return [self getImageDataScaled:backingStoreRatio flipped:YES sx:sx sy:sy sw:sw sh:sh];
+}
+
+- (EJImageData*)getImageDataHDSx:(short)sx sy:(short)sy sw:(short)sw sh:(short)sh {
+	// Take care of the flipped screen layout
+	return [self getImageDataScaled:1 flipped:YES sx:sx sy:sy sw:sw sh:sh];
 }
 
 - (void)finish {

@@ -130,8 +130,12 @@ typedef struct {
 - (void)fillRectX:(float)x y:(float)y w:(float)w h:(float)h;
 - (void)strokeRectX:(float)x y:(float)y w:(float)w h:(float)h;
 - (void)clearRectX:(float)x y:(float)y w:(float)w h:(float)h;
+- (EJImageData*)getImageDataScaled:(float)scale flipped:(bool)flipped sx:(short)sx sy:(short)sy sw:(short)sw sh:(short)sh;
 - (EJImageData*)getImageDataSx:(short)sx sy:(short)sy sw:(short)sw sh:(short)sh;
+- (EJImageData*)getImageDataHDSx:(short)sx sy:(short)sy sw:(short)sw sh:(short)sh;
 - (void)putImageData:(EJImageData*)imageData dx:(float)dx dy:(float)dy;
+- (void)putImageDataHD:(EJImageData*)imageData dx:(float)dx dy:(float)dy;
+- (void)putImageData:(EJImageData*)imageData scaled:(float)scale dx:(float)dx dy:(float)dy;
 - (void)beginPath;
 - (void)closePath;
 - (void)fill;
