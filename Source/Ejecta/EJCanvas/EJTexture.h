@@ -32,7 +32,7 @@ typedef enum {
 	kEJTextureOwningContextWebGL
 } EJTextureOwningContext;
 
-@interface EJTexture : NSObject {
+@interface EJTexture : NSObject <NSCopying> {
 	short width, height;
 	NSString * fullPath;
 	EJTextureStorage * textureStorage;

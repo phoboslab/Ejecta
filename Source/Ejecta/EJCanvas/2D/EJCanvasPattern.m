@@ -7,7 +7,7 @@
 
 - (id)initWithTexture:(EJTexture *)texturep repeat:(EJCanvasPatternRepeat)repeatp {
 	if( self = [super init] ) {
-		texture = [texturep retain];
+		texture = texturep.copy;
 		repeat = repeatp;
 	}
 	return self;

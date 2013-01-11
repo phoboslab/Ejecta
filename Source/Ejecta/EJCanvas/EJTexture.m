@@ -218,6 +218,26 @@ static GLint EJTextureGlobalFilter = GL_LINEAR;
 	return !fullPath;
 }
 
+- (id)copyWithZone:(NSZone *)zone {
+	EJTexture * copy = [[EJTexture allocWithZone:zone] init];
+	
+	// This retains the textureStorage object and sets the associated properties
+	[copy createWithTexture:self];
+	
+	// Copy texture parameters and owningContext, not handled
+	// by createWithTexture
+	memcpy(copy->params, params, sizeof(EJTextureParams));
+	copy->owningContext = owningContext;
+	
+	if( self.isDynamic ) {
+		// We want a static copy. So if this texture is used by an FBO, we have to
+		// re-create the texture from pixels again
+		[copy createWithPixels:self.pixels format:format];
+	}
+
+	return copy;
+}
+
 - (void)createWithTexture:(EJTexture *)other {
 	[textureStorage release];
 	[fullPath release];
