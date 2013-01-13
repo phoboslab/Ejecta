@@ -33,6 +33,9 @@
 	[texture release];
 	texture = [[EJTexture alloc] initAsRenderTargetWithWidth:width height:height
 		fbo:viewFrameBuffer contentScale:backingStoreRatio];
+	bufferWidth = texture.width;
+	bufferHeight = texture.height;
+	
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture.textureId, 0);
 	
 	// Delete stencil buffer; it will be re-created when needed
