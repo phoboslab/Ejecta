@@ -290,6 +290,38 @@ EJ_BIND_FUNCTION(putImageData, ctx, argc, argv) {
 	return NULL;
 }
 
+EJ_BIND_FUNCTION(getImageDataHD, ctx, argc, argv) {
+	EJ_UNPACK_ARGV(short sx, short sy, short sw, short sh);
+	
+	ejectaInstance.currentRenderingContext = renderingContext;
+	
+	EJImageData * imageData = [renderingContext getImageDataHDSx:sx sy:sy sw:sw sh:sh];
+	
+	EJBindingImageData * binding = [[EJBindingImageData alloc] initWithImageData:imageData];
+	return [EJBindingImageData createJSObjectWithContext:ctx instance:binding];
+}
+
+EJ_BIND_FUNCTION(createImageDataHD, ctx, argc, argv) {
+	EJ_UNPACK_ARGV(short sw, short sh);
+		
+	NSMutableData * pixels = [NSMutableData dataWithLength:sw * sh * 4];
+	EJImageData * imageData = [[[EJImageData alloc] initWithWidth:sw height:sh pixels:pixels] autorelease];
+	
+	EJBindingImageData * binding = [[EJBindingImageData alloc] initWithImageData:imageData];
+	return [EJBindingImageData createJSObjectWithContext:ctx instance:binding];
+}
+
+EJ_BIND_FUNCTION(putImageDataHD, ctx, argc, argv) {
+	if( argc < 3 ) { return NULL; }
+	
+	EJBindingImageData * jsImageData = (EJBindingImageData *)JSObjectGetPrivate((JSObjectRef)argv[0]);
+	EJ_UNPACK_ARGV_OFFSET(1, float dx, float dy);
+	
+	ejectaInstance.currentRenderingContext = renderingContext;
+	[renderingContext putImageDataHD:jsImageData.imageData dx:dx dy:dy];
+	return NULL;
+}
+
 EJ_BIND_FUNCTION(createPattern, ctx, argc, argv) {
 	if( argc < 1 ) { return NULL; }
 	NSObject<EJDrawable> * drawable = (NSObject<EJDrawable> *)JSObjectGetPrivate((JSObjectRef)argv[0]);
