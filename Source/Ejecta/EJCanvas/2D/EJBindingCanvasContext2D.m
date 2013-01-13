@@ -223,6 +223,10 @@ EJ_BIND_FUNCTION(drawImage, ctx, argc, argv) {
 	else if( argc >= 9 ) {
 		// drawImage(image, sx, sy, sw, sh, dx, dy, dw, dh)
 		EJ_UNPACK_ARGV_OFFSET(1, sx, sy, sw, sh, dx, dy, dw, dh);
+		sx *= scale;
+		sy *= scale;
+		sw *= scale;
+		sh *= scale;
 	}
 	else {
 		return NULL;
