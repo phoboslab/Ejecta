@@ -306,13 +306,13 @@ typedef std::vector<subpath_t> path_t;
 	float stepSize = span / (float)steps;
 	float angle = startAngle;
 	for( int i = 0; i < steps; i++, angle += stepSize ) {
-		currentPos = EJVector2ApplyTransform( EJVector2Make( x + cosf(angle) * radius, y + sinf(angle) * radius ), transform);
+		currentPos = EJVector2ApplyTransform( EJVector2Make(x + cosf(angle) * radius, y + sinf(angle) * radius), transform);
 		[self push:currentPos];
 	}
 	
 	// Add the final step or close the path if it's a full circle. FIXME, maybe?
 	if( fabsf(span) < 2 * M_PI - FLT_EPSILON ) {
-		currentPos = EJVector2ApplyTransform( EJVector2Make( x + cosf(angle) * radius, y + sinf(angle) * radius ), transform);
+		currentPos = EJVector2ApplyTransform( EJVector2Make(x + cosf(angle) * radius, y + sinf(angle) * radius), transform);
 		[self push:currentPos];
 	}
 	else {
