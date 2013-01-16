@@ -4,7 +4,8 @@
 #define EJ_PATH_RECURSION_LIMIT 8
 #define EJ_PATH_DISTANCE_EPSILON 1.0f
 #define EJ_PATH_COLLINEARITY_EPSILON FLT_EPSILON
-#define EJ_PATH_STEPS_FOR_CIRCLE 48.0f
+#define EJ_PATH_MIN_STEPS_FOR_CIRCLE 20.0f
+#define EJ_PATH_MAX_STEPS_FOR_CIRCLE 64.0f
 
 typedef enum {
 	kEJPathPolygonTargetColor,
@@ -14,7 +15,7 @@ typedef enum {
 @class EJCanvasContext2D;
 
 @interface EJPath : NSObject <NSCopying> {
-	EJVector2 currentPos, startPos, lastPushed;
+	EJVector2 currentPos, lastPushed;
 	EJVector2 minPos, maxPos;
 	int longestSubpath;
 	

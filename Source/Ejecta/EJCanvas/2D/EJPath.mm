@@ -36,7 +36,6 @@ typedef std::vector<subpath_t> path_t;
 - (id)copyWithZone:(NSZone *)zone {
 	EJPath * copy = [[EJPath allocWithZone:zone] init];
 	copy->currentPos = currentPos;
-	copy->startPos = startPos;
 	copy->minPos = minPos;
 	copy->maxPos = maxPos;
 	copy->longestSubpath = longestSubpath;
@@ -49,7 +48,7 @@ typedef std::vector<subpath_t> path_t;
 
 - (void)push:(EJVector2)v {
 	// Ignore this point if it's identical to the last
-	if( v.x == lastPushed.x && v.y == lastPushed.y && currentPath.points.size() > 0 ) {
+	if( v.x == lastPushed.x && v.y == lastPushed.y && !currentPath.points.empty() ) {
 		return;
 	}
 	lastPushed = v;
@@ -68,7 +67,6 @@ typedef std::vector<subpath_t> path_t;
 	currentPath.points.clear();
 	
 	currentPos = EJVector2Make( 0, 0 );
-	startPos = EJVector2Make( 0, 0 );
 	
 	minPos = EJVector2Make(INFINITY, INFINITY);
 	maxPos = EJVector2Make(-INFINITY, -INFINITY);
@@ -76,8 +74,8 @@ typedef std::vector<subpath_t> path_t;
 
 - (void)close {
 	currentPath.isClosed = true;
-	[self push:startPos];
-	currentPos = startPos;
+	currentPos = currentPath.points.front();
+	[self push:currentPos];
 	[self endSubPath];
 }
 
@@ -88,12 +86,11 @@ typedef std::vector<subpath_t> path_t;
 	}
 	currentPath.points.clear();
 	currentPath.isClosed = false;
-	startPos = currentPos;
 }
 
 - (void)moveToX:(float)x y:(float)y {
 	[self endSubPath];
-	currentPos = startPos = EJVector2ApplyTransform( EJVector2Make( x, y ), transform);
+	currentPos = EJVector2ApplyTransform( EJVector2Make( x, y ), transform);
 	[self push:currentPos];
 }
 
@@ -301,13 +298,25 @@ typedef std::vector<subpath_t> path_t;
         ? (startAngle - endAngle) *-1
         : (endAngle - startAngle);
 	
-	int steps = ceil(fabsf(span) * (EJ_PATH_STEPS_FOR_CIRCLE / (2 * M_PI)) );
-	float stepSize = span / (float)steps;
+	// Calculate the number of steps, based on the radius, scaling and the span
+	float size = radius * CGAffineTransformGetScale(transform) * 5;
+	float maxSteps = EJ_PATH_MAX_STEPS_FOR_CIRCLE * fabsf(span)/(2 * M_PI);
+	int steps = MAX(EJ_PATH_MIN_STEPS_FOR_CIRCLE, (size / (200+size)) * maxSteps);
 	
+	float stepSize = span / (float)steps;
 	float angle = startAngle;
-	for( int i = 0; i <= steps; i++, angle += stepSize ) {
+	for( int i = 0; i < steps; i++, angle += stepSize ) {
 		currentPos = EJVector2ApplyTransform( EJVector2Make( x + cosf(angle) * radius, y + sinf(angle) * radius ), transform);
 		[self push:currentPos];
+	}
+	
+	// Add the final step or close the path if it's a full circle. FIXME, maybe?
+	if( fabsf(span) < 2 * M_PI - FLT_EPSILON ) {
+		currentPos = EJVector2ApplyTransform( EJVector2Make( x + cosf(angle) * radius, y + sinf(angle) * radius ), transform);
+		[self push:currentPos];
+	}
+	else {
+		[self close];
 	}
 }
 
@@ -395,8 +404,8 @@ typedef std::vector<subpath_t> path_t;
 		
 		CGAffineTransform inverse = CGAffineTransformInvert(transform);
 		EJVector2 p1 = EJVector2ApplyTransform(minPos, inverse);
-		EJVector2 p2 = EJVector2ApplyTransform((EJVector2){maxPos.x, minPos.y}, inverse);
-		EJVector2 p3 = EJVector2ApplyTransform((EJVector2){minPos.x, maxPos.y}, inverse);
+		EJVector2 p2 = EJVector2ApplyTransform(EJVector2Make(maxPos.x, minPos.y), inverse);
+		EJVector2 p3 = EJVector2ApplyTransform(EJVector2Make(minPos.x, maxPos.y), inverse);
 		EJVector2 p4 = EJVector2ApplyTransform(maxPos, inverse);
 		
 		// Find the unprojected min/max
