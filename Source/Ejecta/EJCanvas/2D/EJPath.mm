@@ -458,13 +458,17 @@ typedef std::vector<subpath_t> path_t;
 	
 	// 1 step per 5 pixel
 	float pxScale = CGAffineTransformGetScale(state->transform);
-	int numSteps = MAX( 1, (angle2 * width2 * pxScale) / 5.0f );
+	int numSteps = ceilf( (angle2 * width2 * pxScale) / 5.0f );
 	
-	if(numSteps==1) {
+	if( numSteps == 1 ) {
 		[context
 			pushTriX1:p1.x	y1:p1.y x2:point.x y2:point.y x3:p2.x y3:p2.y
 			color:color withTransform:transform];
 		return;
+	}
+	// avoid "triangular" look
+	else if( numSteps == 3 && fabsf(angle2) > M_PI_2 ) {
+		numSteps = 4;
 	}
 	
 	// calculate direction
