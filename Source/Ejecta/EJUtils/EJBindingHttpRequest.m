@@ -1,9 +1,10 @@
 #import "EJBindingHttpRequest.h"
+#import <JavaScriptCore/JSTypedArray.h>
 
 @implementation EJBindingHttpRequest
 
-- (id)initWithContext:(JSContextRef)ctxp object:(JSObjectRef)obj argc:(size_t)argc argv:(const JSValueRef [])argv {
-	if( self  = [super initWithContext:ctxp object:obj argc:argc argv:argv] ) {
+- (id)initWithContext:(JSContextRef)ctxp argc:(size_t)argc argv:(const JSValueRef [])argv {
+	if( self  = [super initWithContext:ctxp argc:argc argv:argv] ) {
 		requestHeaders = [[NSMutableDictionary alloc] init];
 	}
 	return self;
@@ -254,6 +255,15 @@ EJ_BIND_GET(readyState, ctx) {
 }
 
 EJ_BIND_GET(response, ctx) {
+	if( !response || !responseBody ) { return NULL; }
+	
+	if( type == kEJHttpRequestTypeArrayBuffer ) {
+		JSObjectRef array = JSTypedArrayMake(ctx, kJSTypedArrayTypeArrayBuffer, responseBody.length);
+		memcpy(JSTypedArrayGetDataPtr(ctx, array, NULL), responseBody.bytes, responseBody.length);
+		return array;
+	}
+	
+	
 	NSString * responseText = [self getResponseText];
 	if( !responseText ) { return NULL; }
 	
@@ -291,7 +301,14 @@ EJ_BIND_SET(timeout, ctx, value) {
 	timeout = JSValueToNumberFast( ctx, value );
 }
 
-EJ_BIND_ENUM(responseType, EJHttpRequestTypeNames, type);
+EJ_BIND_ENUM(responseType, type,
+	"",				// kEJHttpRequestTypeString
+	"arraybuffer",	// kEJHttpRequestTypeArrayBuffer
+	"blob",			// kEJHttpRequestTypeBlob
+	"document",		// kEJHttpRequestTypeDocument
+	"json",			// kEJHttpRequestTypeJSON
+	"text"			// kEJHttpRequestTypeText
+);
 
 EJ_BIND_CONST(UNSENT, kEJHttpRequestStateUnsent);
 EJ_BIND_CONST(OPENED, kEJHttpRequestStateOpened);

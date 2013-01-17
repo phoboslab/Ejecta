@@ -2,10 +2,72 @@
 #import <OpenGLES/EAGLDrawable.h>
 #import "EJTexture.h"
 #import "lodepng/lodepng.h"
+#import "EJConvertWebGL.h"
+
+
+@implementation EJTextureStorage
+@synthesize textureId;
+@synthesize immutable;
+
+- (id)init {
+	if( self = [super init] ) {
+		glGenTextures(1, &textureId);
+		immutable = NO;
+	}
+	return self;
+}
+
+- (id)initImmutable {
+	if( self = [super init] ) {
+		glGenTextures(1, &textureId);
+		immutable = YES;
+	}
+	return self;
+}
+
+- (void)dealloc {
+	if( textureId ) {
+		glDeleteTextures(1, &textureId);
+	}
+	[super dealloc];
+}
+
+- (void)bindToTarget:(GLenum)target withParams:(EJTextureParam *)newParams {
+	glBindTexture(target, textureId);
+	
+	// Check if we have to set a param
+	if(params[kEJTextureParamMinFilter] != newParams[kEJTextureParamMinFilter]) {
+		params[kEJTextureParamMinFilter] = newParams[kEJTextureParamMinFilter];
+		glTexParameteri(target, GL_TEXTURE_MIN_FILTER, params[kEJTextureParamMinFilter]);
+	}
+	if(params[kEJTextureParamMagFilter] != newParams[kEJTextureParamMagFilter]) {
+		params[kEJTextureParamMagFilter] = newParams[kEJTextureParamMagFilter];
+		glTexParameteri(target, GL_TEXTURE_MAG_FILTER, params[kEJTextureParamMagFilter]);
+	}
+	if(params[kEJTextureParamWrapS] != newParams[kEJTextureParamWrapS]) {
+		params[kEJTextureParamWrapS] = newParams[kEJTextureParamWrapS];
+		glTexParameteri(target, GL_TEXTURE_WRAP_S, params[kEJTextureParamWrapS]);
+	}
+	if(params[kEJTextureParamWrapT] != newParams[kEJTextureParamWrapT]) {
+		params[kEJTextureParamWrapT] = newParams[kEJTextureParamWrapT];
+		glTexParameteri(target, GL_TEXTURE_WRAP_T, params[kEJTextureParamWrapT]);
+	}
+}
+
+- (NSMutableData *)pixels {
+	NSLog(@"Warning: No way to get pixel data for texture %@", self); // FIXME!
+	return NULL;
+}
+
+@end
+
+
+
+
 
 @implementation EJTexture
 
-// Textures check this global filter state when binding
+// Canvas2D Textures check this global filter state when binding
 static GLint EJTextureGlobalFilter = GL_LINEAR;
 
 + (BOOL)smoothScaling {
@@ -17,10 +79,24 @@ static GLint EJTextureGlobalFilter = GL_LINEAR;
 }
 
 
-
 @synthesize contentScale;
-@synthesize textureId;
-@synthesize width, height, realWidth, realHeight;
+@synthesize format;
+@synthesize width, height;
+
+- (id)initEmptyForWebGL {
+	// For WebGL textures; this will not create a textureStorage
+	
+	if( self = [super init] ) {
+		contentScale = 1;
+		owningContext = kEJTextureOwningContextWebGL;
+		
+		params[kEJTextureParamMinFilter] = GL_LINEAR;
+		params[kEJTextureParamMagFilter] = GL_LINEAR;
+		params[kEJTextureParamWrapS] = GL_REPEAT;
+		params[kEJTextureParamWrapT] = GL_REPEAT;
+	}
+	return self;
+}
 
 - (id)initWithPath:(NSString *)path {
 	// For loading on the main thread (blocking)
@@ -28,57 +104,44 @@ static GLint EJTextureGlobalFilter = GL_LINEAR;
 	if( self = [super init] ) {
 		contentScale = 1;
 		fullPath = [path retain];
-		GLubyte * pixels = [self loadPixelsFromPath:path];
-		[self createTextureWithPixels:pixels format:GL_RGBA];
-		free(pixels);
+		owningContext = kEJTextureOwningContextCanvas2D;
+		
+		NSMutableData * pixels = [self loadPixelsFromPath:path];
+		[self createWithPixels:pixels format:GL_RGBA];
 	}
 
 	return self;
 }
 
-- (id)initWithPath:(NSString *)path sharegroup:(EAGLSharegroup*)sharegroup {
-	// For loading in a background thread
-	
+- (id)initWithPath:(NSString *)path loadOnQueue:(NSOperationQueue *)queue withTarget:(id)target selector:(SEL)selector {
+	// For loading on a background thread (non-blocking)
 	if( self = [super init] ) {
-		// If we're running on the main thread for some reason, take care
-		// to not corrupt the current EAGLContext
-		BOOL isMainThread = [NSThread isMainThread];
-	
 		contentScale = 1;
 		fullPath = [path retain];
-		GLubyte * pixels = [self loadPixelsFromPath:path];
+		owningContext = kEJTextureOwningContextCanvas2D;
 		
-		if( pixels ) {
-			EAGLContext * context;
-			if( !isMainThread ) {
-				context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES1 sharegroup:sharegroup];
-				[EAGLContext setCurrentContext:context];
-			}
-			
-			[self createTextureWithPixels:pixels format:GL_RGBA];
-			
-			if( !isMainThread ) {
-				glFlush();
-				[context release];
-			}
-			
-			free(pixels);
-		}
+		callbackTarget = [target retain];
+		callbackSelector = selector;
+		
+		NSInvocationOperation* loadOp = [[NSInvocationOperation alloc] initWithTarget:self
+				selector:@selector(backgroundLoadPixelsFromPath:) object:path];
+		loadOp.threadPriority = 0.2;
+		[queue addOperation:loadOp];
+		[loadOp release];
 	}
-
 	return self;
 }
 
-- (id)initWithWidth:(int)widthp height:(int)heightp format:(GLenum)formatp {
-	// Create an empty texture
-	
-	if( self = [super init] ) {
-		contentScale = 1;
-		fullPath = [@"[Empty]" retain];
-		[self setWidth:widthp height:heightp];
-		[self createTextureWithPixels:NULL format:formatp];
+- (void)backgroundLoadPixelsFromPath:(NSString *)path {
+	NSMutableData * pixels = [self loadPixelsFromPath:path];
+	[self performSelectorOnMainThread:@selector(backgroundEndLoad:) withObject:pixels waitUntilDone:NO];
+}
+
+- (void)backgroundEndLoad:(NSMutableData *)pixels {
+	[self createWithPixels:pixels format:GL_RGBA];
+	if( callbackTarget && callbackSelector ) {
+		[callbackTarget performSelector:callbackSelector withObject:self];
 	}
-	return self;
 }
 
 - (id)initWithWidth:(int)widthp height:(int)heightp {
@@ -86,97 +149,179 @@ static GLint EJTextureGlobalFilter = GL_LINEAR;
 	return [self initWithWidth:widthp height:heightp format:GL_RGBA];
 }
 
-- (id)initWithWidth:(int)widthp height:(int)heightp pixels:(GLubyte *)pixels {
+- (id)initWithWidth:(int)widthp height:(int)heightp format:(GLenum)formatp {
+	// Create an empty texture
+	
+	if( self = [super init] ) {
+		contentScale = 1;
+		owningContext = kEJTextureOwningContextCanvas2D;
+		
+		width = widthp;
+		height = heightp;
+		[self createWithPixels:NULL format:formatp];
+	}
+	return self;
+}
+
+- (id)initWithWidth:(int)widthp height:(int)heightp pixels:(NSMutableData *)pixels {
 	// Creates a texture with the given pixels
 	
 	if( self = [super init] ) {
 		contentScale = 1;
-		fullPath = [@"[From Pixels]" retain];
-		[self setWidth:widthp height:heightp];
+		owningContext = kEJTextureOwningContextCanvas2D;
 		
-		if( width != realWidth || height != realHeight ) {
-			GLubyte * pixelsPow2 = (GLubyte *)calloc( realWidth * realHeight * 4, sizeof(GLubyte) );
-			for( int y = 0; y < height; y++ ) {
-				memcpy( &pixelsPow2[y*realWidth*4], &pixels[y*width*4], width * 4 );
-			}
-			[self createTextureWithPixels:pixelsPow2 format:GL_RGBA];
-			free(pixelsPow2);
-		}
-		else {
-			[self createTextureWithPixels:pixels format:GL_RGBA];
-		}
+		width = widthp;
+		height = heightp;
+		[self createWithPixels:pixels format:GL_RGBA];
+	}
+	return self;
+}
+
+- (id)initAsRenderTargetWithWidth:(int)widthp height:(int)heightp fbo:(GLuint)fbop contentScale:(float)contentScalep {
+	if( self = [self initWithWidth:widthp*contentScalep height:heightp*contentScalep] ) {
+		fbo = fbop;
+		contentScale = contentScalep;
 	}
 	return self;
 }
 
 - (void)dealloc {
 	[fullPath release];
-	glDeleteTextures( 1, &textureId );
+	[textureStorage release];
 	[super dealloc];
 }
 
-- (void)setWidth:(int)widthp height:(int)heightp {
-	width = widthp;
-	height = heightp;
+- (void)ensureMutableKeepPixels:(BOOL)keepPixels forTarget:(GLenum)target {
+	if( textureStorage && textureStorage.immutable && textureStorage.retainCount > 1 ) {
+		if( keepPixels ) {
+			NSMutableData * pixels = self.pixels;
+			if( pixels ) {
+				[self createWithPixels:pixels format:GL_RGBA target:target];
+			}
+		}
+		else {
+			[textureStorage release];
+			textureStorage = NULL;
+		}
+	}
 	
-	// The internal (real) size of the texture needs to be a power of two
-	realWidth = pow(2, ceil(log2( width )));
-	realHeight = pow(2, ceil(log2( height )));
+	if( !textureStorage ) {
+		textureStorage = [[EJTextureStorage alloc] init];
+	}
 }
 
-- (void)createTextureWithPixels:(GLubyte *)pixels format:(GLenum)formatp {
-	// Release previous texture if we had one
-	if( textureId ) {
-		glDeleteTextures( 1, &textureId );
-		textureId = 0;
+- (GLuint)textureId {
+	return textureStorage.textureId;
+}
+
+- (BOOL)isDynamic {
+	return !fullPath;
+}
+
+- (id)copyWithZone:(NSZone *)zone {
+	EJTexture * copy = [[EJTexture allocWithZone:zone] init];
+	
+	// This retains the textureStorage object and sets the associated properties
+	[copy createWithTexture:self];
+	
+	// Copy texture parameters and owningContext, not handled
+	// by createWithTexture
+	memcpy(copy->params, params, sizeof(EJTextureParams));
+	copy->owningContext = owningContext;
+	
+	if( self.isDynamic ) {
+		// We want a static copy. So if this texture is used by an FBO, we have to
+		// re-create the texture from pixels again
+		[copy createWithPixels:self.pixels format:format];
 	}
+
+	return copy;
+}
+
+- (void)createWithTexture:(EJTexture *)other {
+	[textureStorage release];
+	[fullPath release];
+	
+	format = other->format;
+	contentScale = other->contentScale;
+	fullPath = [other->fullPath retain];
+	
+	width = other->width;
+	height = other->height;
+	
+	textureStorage = [other->textureStorage retain];
+}
+
+- (void)createWithPixels:(NSMutableData *)pixels format:(GLenum)formatp {
+	[self createWithPixels:pixels format:formatp target:GL_TEXTURE_2D];
+}
+
+- (void)createWithPixels:(NSMutableData *)pixels format:(GLenum)formatp target:(GLenum)target {
+	// Release previous texture if we had one
+	if( textureStorage ) {
+		[textureStorage release];
+		textureStorage = NULL;
+	}
+	
+	// Set the default texture params for Canvas2D
+	params[kEJTextureParamMinFilter] = EJTextureGlobalFilter;
+	params[kEJTextureParamMagFilter] = EJTextureGlobalFilter;
+	params[kEJTextureParamWrapS] = GL_CLAMP_TO_EDGE;
+	params[kEJTextureParamWrapT] = GL_CLAMP_TO_EDGE;
 
 	GLint maxTextureSize;
-	glGetIntegerv( GL_MAX_TEXTURE_SIZE, &maxTextureSize );
+	glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
 	
-	if( realWidth > maxTextureSize || realHeight > maxTextureSize ) {
-		NSLog(@"Warning: Image %@ larger than MAX_TEXTURE_SIZE (%d)", fullPath, maxTextureSize);
+	if( width > maxTextureSize || height > maxTextureSize ) {
+		NSLog(@"Warning: Image %@ larger than MAX_TEXTURE_SIZE (%d)", fullPath ? fullPath : @"[Dynamic]", maxTextureSize);
 	}
 	format = formatp;
+	
+	GLint boundTexture = 0;
+	GLenum bindingName = (target == GL_TEXTURE_2D)
+		? GL_TEXTURE_BINDING_2D
+		: GL_TEXTURE_BINDING_CUBE_MAP;
+	glGetIntegerv(bindingName, &boundTexture);
+	
+	textureStorage = [[EJTextureStorage alloc] initImmutable];
+	[textureStorage bindToTarget:target withParams:params];
+	glTexImage2D(target, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, pixels.bytes);
+	glBindTexture(target, boundTexture);
+}
+
+- (void)updateWithPixels:(NSData *)pixels atX:(int)sx y:(int)sy width:(int)sw height:(int)sh {	
+	int boundTexture = 0;
+	glGetIntegerv(GL_TEXTURE_BINDING_2D, &boundTexture);
+	
+	glBindTexture(GL_TEXTURE_2D, textureStorage.textureId);
+	glTexSubImage2D(GL_TEXTURE_2D, 0, sx, sy, sw, sh, format, GL_UNSIGNED_BYTE, pixels.bytes);
+	
+	glBindTexture(GL_TEXTURE_2D, boundTexture);
+}
+
+- (NSMutableData *)pixels {
+	if( fullPath ) {
+		return [self loadPixelsFromPath:fullPath];
+	}
+	else if( fbo ) {
+		GLint boundFrameBuffer;
+		glGetIntegerv( GL_FRAMEBUFFER_BINDING, &boundFrameBuffer );
 		
-	bool wasEnabled = glIsEnabled(GL_TEXTURE_2D);
-	int boundTexture = 0;
-	glGetIntegerv(GL_TEXTURE_BINDING_2D, &boundTexture);
-	
-	glEnable(GL_TEXTURE_2D);
-	glGenTextures(1, &textureId);
-	glBindTexture(GL_TEXTURE_2D, textureId);
-	glTexImage2D(GL_TEXTURE_2D, 0, format, realWidth, realHeight, 0, format, GL_UNSIGNED_BYTE, pixels);
-	
-	[self setFilter:EJTextureGlobalFilter];
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	
-	glBindTexture(GL_TEXTURE_2D, boundTexture);
-	if( !wasEnabled ) {	glDisable(GL_TEXTURE_2D); }
+		glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+		
+		int size = width * height * EJGetBytesPerPixel(GL_UNSIGNED_BYTE, format);
+		NSMutableData * data = [NSMutableData dataWithLength:size];
+		glReadPixels(0, 0, width, height, format, GL_UNSIGNED_BYTE, data.mutableBytes);
+		
+		glBindFramebuffer(GL_FRAMEBUFFER, boundFrameBuffer);
+		return data;
+	}
+
+	NSLog(@"Warning: Can't get pixels from texture - dynamicly created but not attached to an FBO.");
+	return NULL;
 }
 
-- (void)setFilter:(GLint)filter {
-	textureFilter = filter;
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, textureFilter);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, textureFilter);
-}
-
-- (void)updateTextureWithPixels:(GLubyte *)pixels atX:(int)x y:(int)y width:(int)subWidth height:(int)subHeight {
-	if( !textureId ) { NSLog(@"No texture to update. Call createTexture... first");	return; }
-	
-	bool wasEnabled = glIsEnabled(GL_TEXTURE_2D);
-	int boundTexture = 0;
-	glGetIntegerv(GL_TEXTURE_BINDING_2D, &boundTexture);
-	
-	glBindTexture(GL_TEXTURE_2D, textureId);
-	glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, subWidth, subHeight, format, GL_UNSIGNED_BYTE, pixels);
-	
-	glBindTexture(GL_TEXTURE_2D, boundTexture);
-	if( !wasEnabled ) {	glDisable(GL_TEXTURE_2D); }
-}
-
-- (GLubyte *)loadPixelsFromPath:(NSString *)path {
+- (NSMutableData *)loadPixelsFromPath:(NSString *)path {
 	// Try @2x texture?
 	if( [UIScreen mainScreen].scale == 2 ) {
 		NSString * path2x = [[[path stringByDeletingPathExtension]
@@ -198,59 +343,66 @@ static GLint EJTextureGlobalFilter = GL_LINEAR;
 		: [self loadPixelsWithCGImageFromPath:path];
 }
 
-- (GLubyte *)loadPixelsWithCGImageFromPath:(NSString *)path {	
+- (NSMutableData *)loadPixelsWithCGImageFromPath:(NSString *)path {	
 	UIImage * tmpImage = [[UIImage alloc] initWithContentsOfFile:path];
 	CGImageRef image = tmpImage.CGImage;
-		
-	[self setWidth:CGImageGetWidth(image) height:CGImageGetHeight(image)];
 	
-	GLubyte * pixels = (GLubyte *)calloc( realWidth * realHeight * 4, sizeof(GLubyte) );
-	CGContextRef context = CGBitmapContextCreate(pixels, realWidth, realHeight, 8, realWidth * 4, CGImageGetColorSpace(image), kCGImageAlphaPremultipliedLast);
-	CGContextDrawImage(context, CGRectMake(0.0, realHeight - height, (CGFloat)width, (CGFloat)height), image);
+	width = CGImageGetWidth(image);
+	height = CGImageGetHeight(image);
+	
+	NSMutableData * pixels = [NSMutableData dataWithLength:width*height*4];
+	CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+	CGContextRef context = CGBitmapContextCreate(pixels.mutableBytes, width, height, 8, width * 4, colorSpace, kCGImageAlphaPremultipliedLast);
+	CGContextDrawImage(context, CGRectMake(0.0, 0.0, (CGFloat)width, (CGFloat)height), image);
 	CGContextRelease(context);
+	CGColorSpaceRelease(colorSpace);
 	[tmpImage release];
 	
 	return pixels;
 }
 
-- (GLubyte *)loadPixelsWithLodePNGFromPath:(NSString *)path {
+- (NSMutableData *)loadPixelsWithLodePNGFromPath:(NSString *)path {
 	unsigned int w, h;
-	unsigned char * origPixels = NULL;
-	unsigned int error = lodepng_decode32_file(&origPixels, &w, &h, [path UTF8String]);
+	unsigned char * pixels = NULL;
+	unsigned int error = lodepng_decode32_file(&pixels, &w, &h, [path UTF8String]);
 	
 	if( error ) {
 		NSLog(@"Error Loading image %@ - %u: %s", path, error, lodepng_error_text(error));
-		return origPixels;
 	}
+	width = w;
+	height = h;
 	
-	[self setWidth:w height:h];
-	
-	// If the image is already in the correct (power of 2) size, just return
-	// the original pixels unmodified
-	if( width == realWidth && height == realHeight ) {
-		return origPixels;
-	}
-	
-	// Copy the original pixels into the upper left corner of a larger
-	// (power of 2) pixel buffer, free the original pixels and return
-	// the larger buffer
-	else {
-		GLubyte * pixels = (GLubyte *)calloc( realWidth * realHeight * 4, sizeof(GLubyte) );
-		
-		for( int y = 0; y < height; y++ ) {
-			memcpy( &pixels[y*realWidth*4], &origPixels[y*width*4], width*4 );
-		}
-		
-		free( origPixels );
-		return pixels;
-	}
+	return [NSMutableData dataWithBytesNoCopy:pixels length:w*h*4];
+}
+
+- (GLint)getParam:(GLenum)pname {
+	if(pname == GL_TEXTURE_MIN_FILTER) return params[kEJTextureParamMinFilter];
+	if(pname == GL_TEXTURE_MAG_FILTER) return params[kEJTextureParamMagFilter];
+	if(pname == GL_TEXTURE_WRAP_S) return params[kEJTextureParamWrapS];
+	if(pname == GL_TEXTURE_WRAP_T) return params[kEJTextureParamWrapT];
+	return 0;
+}
+
+- (void)setParam:(GLenum)pname param:(GLenum)param {
+	if(pname == GL_TEXTURE_MIN_FILTER) params[kEJTextureParamMinFilter] = param;
+	else if(pname == GL_TEXTURE_MAG_FILTER) params[kEJTextureParamMagFilter] = param;
+	else if(pname == GL_TEXTURE_WRAP_S) params[kEJTextureParamWrapS] = param;
+	else if(pname == GL_TEXTURE_WRAP_T) params[kEJTextureParamWrapT] = param;
 }
 
 - (void)bind {
-	glBindTexture(GL_TEXTURE_2D, textureId);
-	if( EJTextureGlobalFilter != textureFilter ) {
-		[self setFilter:EJTextureGlobalFilter];
+	[self bindToTarget:GL_TEXTURE_2D];
+}
+
+- (void)bindToTarget:(GLenum)target {
+	if(
+		owningContext == kEJTextureOwningContextCanvas2D &&
+		EJTextureGlobalFilter != params[kEJTextureParamMagFilter]
+	) {
+		params[kEJTextureParamMinFilter] = EJTextureGlobalFilter;
+		params[kEJTextureParamMagFilter] = EJTextureGlobalFilter;
 	}
+	[textureStorage bindToTarget:target withParams:params];
 }
 
 

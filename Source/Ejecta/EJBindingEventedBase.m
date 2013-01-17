@@ -2,8 +2,8 @@
 
 @implementation EJBindingEventedBase
 
-- (id)initWithContext:(JSContextRef)ctxp object:(JSObjectRef)obj argc:(size_t)argc argv:(const JSValueRef [])argv {
-	if( self  = [super initWithContext:ctxp object:obj argc:argc argv:argv] ) {
+- (id)initWithContext:(JSContextRef)ctxp argc:(size_t)argc argv:(const JSValueRef [])argv {
+	if( self  = [super initWithContext:ctxp argc:argc argv:argv] ) {
 		eventListeners = [[NSMutableDictionary alloc] init];
 		onCallbacks = [[NSMutableDictionary alloc] init];
 	}

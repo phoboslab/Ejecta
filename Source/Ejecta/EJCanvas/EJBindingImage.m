@@ -9,26 +9,23 @@
 	// JavaScript onload callback when done
 	loading = YES;
 	
-	NSInvocationOperation* loadOp = [[NSInvocationOperation alloc] initWithTarget:self
-				selector:@selector(load:) object:[EJApp instance].glContext.sharegroup];
-	[loadOp setThreadPriority:0.0];
-	[[EJApp instance].opQueue addOperation:loadOp];
-	[loadOp release];
-}
-
-- (void)load:(EAGLSharegroup *)sharegroup {
-	@autoreleasepool {	
-		NSLog(@"Loading Image: %@", path );
-		NSString * fullPath = [[EJApp instance] pathForResource:path];
-		EJTexture * tempTex = [[[EJTexture alloc] initWithPath:fullPath sharegroup:sharegroup] autorelease];
-		[self performSelectorOnMainThread:@selector(endLoad:) withObject:tempTex waitUntilDone:NO];
-	}
+	// Protect this image object from garbage collection, as its callback function
+	// may be the only thing holding on to it
+	JSValueProtect([EJApp instance].jsGlobalContext, jsObject);
+	
+	NSLog(@"Loading Image: %@", path);
+	
+	NSString * fullPath = [[EJApp instance] pathForResource:path];
+	NSOperationQueue * queue = [EJApp instance].opQueue;
+	texture = [[EJTexture alloc] initWithPath:fullPath
+		loadOnQueue:queue withTarget:self selector:@selector(endLoad:)];
 }
 
 - (void)endLoad:(EJTexture *)tex {
 	loading = NO;
-	texture = [tex retain];
-	if( tex.textureId ) {
+	JSValueUnprotect([EJApp instance].jsGlobalContext, jsObject);
+	
+	if( texture.textureId ) {
 		[self triggerEvent:@"load" argc:0 argv:NULL];
 	}
 	else {

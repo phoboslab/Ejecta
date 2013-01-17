@@ -10,21 +10,41 @@ void _ej_class_finalize(JSObjectRef object) {
 NSData * NSDataFromString( NSString *str ) {
 	int len = [str length] + 1;
 	NSMutableData * d = [NSMutableData dataWithLength:len];
-	strlcpy([d mutableBytes], [str UTF8String], len);
+	strlcpy(d.mutableBytes, [str UTF8String], len);
 	return d;
 }
+
+static NSMutableDictionary * CachedJSClasses;
 
 
 @implementation EJBindingBase
 
-- (id)initWithContext:(JSContextRef)ctxp object:(JSObjectRef)obj argc:(size_t)argc argv:(const JSValueRef [])argv {
+- (id)initWithContext:(JSContextRef)ctxp argc:(size_t)argc argv:(const JSValueRef [])argv {
 	if( self  = [super init] ) {
-		jsObject = obj;
 	}
 	return self;
 }
 
 + (JSClassRef)getJSClass {
+	id ownClass = [self class];
+	
+	// Try the cache first
+	if( !CachedJSClasses ) {
+		CachedJSClasses = [[NSMutableDictionary alloc] initWithCapacity:16];
+	}
+	
+	JSClassRef jsClass = [[CachedJSClasses objectForKey:ownClass] pointerValue];
+	if( jsClass ) {
+		return jsClass;
+	}
+	
+	// Still here? Create and insert into cache
+	jsClass = [self createJSClass];
+	[CachedJSClasses setObject:[NSValue valueWithPointer:jsClass] forKey:ownClass];
+	return jsClass;
+}
+
++ (JSClassRef)createJSClass {
 	// Gather all class methods that return C callbacks for this class or it's parents
 	NSMutableArray * methods = [[NSMutableArray alloc] init];
 	NSMutableArray * properties = [[NSMutableArray alloc] init];
@@ -89,6 +109,7 @@ NSData * NSDataFromString( NSString *str ) {
 	}
 	
 	JSClassDefinition classDef = kJSClassDefinitionEmpty;
+	classDef.className = class_getName([self class]) + sizeof("EJBinding")-1;
 	classDef.finalize = _ej_class_finalize;
 	classDef.staticValues = values;
 	classDef.staticFunctions = functions;
@@ -101,6 +122,16 @@ NSData * NSDataFromString( NSString *str ) {
 	[methods release];
 	
 	return class;
+}
+
++ (JSObjectRef)createJSObjectWithContext:(JSContextRef)ctx instance:(EJBindingBase *)instance {
+	JSClassRef jsClass = [self getJSClass];
+	
+	JSObjectRef obj = JSObjectMake( ctx, jsClass, NULL );
+	JSObjectSetPrivate( obj, (void *)instance );
+	instance->jsObject = obj;
+	
+	return obj;
 }
 
 @end

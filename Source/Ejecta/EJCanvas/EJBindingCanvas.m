@@ -1,24 +1,28 @@
 #import "EJBindingCanvas.h"
-#import "EJBindingImageData.h"
+
+#import "EJCanvasContext2DScreen.h"
+#import "EJCanvasContext2DTexture.h"
+#import "EJBindingCanvasContext2D.h"
+
+#import "EJCanvasContextWebGL.h"
+#import "EJBindingCanvasContextWebGL.h"
 
 
 @implementation EJBindingCanvas
 
-static int firstCanvasInstance = YES;
+static BOOL HasScreenCanvas = NO;
 
-- (id)initWithContext:(JSContextRef)ctx object:(JSObjectRef)obj argc:(size_t)argc argv:(const JSValueRef [])argv {
-	if( self = [super initWithContext:ctx object:obj argc:argc argv:argv] ) {
-	
-		ejectaInstance = [EJApp instance]; // Keep a local copy - may be faster?
+- (id)initWithContext:(JSContextRef)ctx argc:(size_t)argc argv:(const JSValueRef [])argv {
+	if( self = [super initWithContext:ctx argc:argc argv:argv] ) {
 		scalingMode = kEJScalingModeFitWidth;
 		useRetinaResolution = true;
 		msaaEnabled = false;
 		msaaSamples = 2;
 		
-		// If this is the first canvas instance we created, make it the screen canvas
-		if( firstCanvasInstance ) {
+		// If we don't have a screen canvas yet, make it this one
+		if( !HasScreenCanvas ) {
 			isScreenCanvas = YES;
-			firstCanvasInstance = NO;
+			HasScreenCanvas = YES;
 		}
 		
 		if( argc == 2 ) {
@@ -34,90 +38,31 @@ static int firstCanvasInstance = YES;
 	return self;
 }
 
-- (void)dealloc {	
+- (void)dealloc {
+	if( isScreenCanvas ) {
+		HasScreenCanvas	= NO;
+	}
 	[renderingContext release];
+	if( jsCanvasContext ) {
+		JSValueUnprotect([EJApp instance].jsGlobalContext, jsCanvasContext);
+	}
 	[super dealloc];
 }
 
 - (EJTexture *)texture {
-	if( [renderingContext isKindOfClass:[EJCanvasContextTexture class]] ) {
-		return ((EJCanvasContextTexture *)renderingContext).texture;
+	if( [renderingContext isKindOfClass:[EJCanvasContext2DTexture class]] ) {
+		return ((EJCanvasContext2DTexture *)renderingContext).texture;
 	}
 	else {
 		return nil;
 	}
 }
 
-EJ_BIND_ENUM(globalCompositeOperation, EJCompositeOperationNames, renderingContext.globalCompositeOperation);
-EJ_BIND_ENUM(lineCap, EJLineCapNames, renderingContext.state->lineCap);
-EJ_BIND_ENUM(lineJoin, EJLineJoinNames, renderingContext.state->lineJoin);
-EJ_BIND_ENUM(textAlign, EJTextAlignNames, renderingContext.state->textAlign);
-EJ_BIND_ENUM(textBaseline, EJTextBaselineNames, renderingContext.state->textBaseline);
-EJ_BIND_ENUM(scalingMode, EJScalingModeNames, scalingMode);
-
-EJ_BIND_GET(fillStyle, ctx ) {
-	return ColorRGBAToJSValue(ctx, renderingContext.state->fillColor);
-}
-
-EJ_BIND_SET(fillStyle, ctx, value) {
-	renderingContext.state->fillColor = JSValueToColorRGBA(ctx, value);
-}
-
-EJ_BIND_GET(strokeStyle, ctx ) {
-	return ColorRGBAToJSValue(ctx, renderingContext.state->strokeColor);
-}
-
-EJ_BIND_SET(strokeStyle, ctx, value) {
-	renderingContext.state->strokeColor = JSValueToColorRGBA(ctx, value);
-}
-
-EJ_BIND_GET(globalAlpha, ctx ) {
-	return JSValueMakeNumber(ctx, renderingContext.state->globalAlpha );
-}
-
-EJ_BIND_SET(globalAlpha, ctx, value) {
-	renderingContext.state->globalAlpha = MIN(1,MAX(JSValueToNumberFast(ctx, value),0));
-}
-
-EJ_BIND_GET(lineWidth, ctx) {
-	return JSValueMakeNumber(ctx, renderingContext.state->lineWidth);
-}
-
-EJ_BIND_SET(lineWidth, ctx, value) {
-	renderingContext.state->lineWidth = JSValueToNumberFast(ctx, value);
-}
-
-EJ_BIND_GET(miterLimit, ctx) {
-	return JSValueMakeNumber(ctx, renderingContext.state->miterLimit);
-}
-
-EJ_BIND_SET(miterLimit, ctx, value) {
-	renderingContext.state->miterLimit = JSValueToNumberFast(ctx, value);
-}
-
-EJ_BIND_GET(font, ctx) {
-	UIFont * font = renderingContext.state->font;
-	NSString * name = [NSString stringWithFormat:@"%dpt %@", (int)font.pointSize, font.fontName];
-	return NSStringToJSValue(ctx, name);
-}
-
-EJ_BIND_SET(font, ctx, value) {
-	char string[64]; // Long font names are long
-	JSStringRef jsString = JSValueToStringCopy( ctx, value, NULL );
-	JSStringGetUTF8CString(jsString, string, 64);
-	
-	// Yeah, oldschool!
-	float size = 0;
-	char name[64];
-	sscanf( string, "%fp%*[tx\"' ]%63[^\"']", &size, name); // matches: 10.5p[tx] helvetica
-	UIFont * newFont = [UIFont fontWithName:[NSString stringWithUTF8String:name] size:size];
-	
-	if( newFont ) {
-		renderingContext.font = newFont;
-	}
-	
-	JSStringRelease(jsString);
-}
+EJ_BIND_ENUM(scalingMode, scalingMode,
+	"none",			// kEJScalingModeNone
+	"fit-width",	// kEJScalingModeFitWidth
+	"fit-height"	// FitHeight
+);
 
 EJ_BIND_GET(width, ctx) {
 	return JSValueMakeNumber(ctx, width);
@@ -125,11 +70,15 @@ EJ_BIND_GET(width, ctx) {
 
 EJ_BIND_SET(width, ctx, value) {
 	short newWidth = JSValueToNumberFast(ctx, value);
-	if( renderingContext && newWidth != width ) {
-		NSLog(@"Warning: rendering context already created; can't change width");
+	if( renderingContext ) {
+		[EJApp instance].currentRenderingContext = renderingContext;
+		renderingContext.width = newWidth;
+		width = renderingContext.width;
 		return;
 	}
-	width = newWidth;
+	else {
+		width = newWidth;
+	}
 }
 
 EJ_BIND_GET(height, ctx) {
@@ -138,11 +87,14 @@ EJ_BIND_GET(height, ctx) {
 
 EJ_BIND_SET(height, ctx, value) {
 	short newHeight = JSValueToNumberFast(ctx, value);
-	if( renderingContext && newHeight != height ) {
-		NSLog(@"Warning: rendering context already created; can't change height");
-		return;
+	if( renderingContext ) {
+		[EJApp instance].currentRenderingContext = renderingContext;
+		renderingContext.height = newHeight;
+		height = renderingContext.height;
 	}
-	height = newHeight;
+	else {
+		height = newHeight;
+	}
 }
 
 EJ_BIND_GET(offsetLeft, ctx) {
@@ -159,19 +111,6 @@ EJ_BIND_SET(retinaResolutionEnabled, ctx, value) {
 
 EJ_BIND_GET(retinaResolutionEnabled, ctx) {
 	return JSValueMakeBoolean(ctx, useRetinaResolution);
-}
-
-EJ_BIND_SET(imageSmoothingEnabled, ctx, value) {
-	ejectaInstance.currentRenderingContext = renderingContext;
-	renderingContext.imageSmoothingEnabled = JSValueToBoolean(ctx, value);
-}
-
-EJ_BIND_GET(imageSmoothingEnabled, ctx) {
-	return JSValueMakeBoolean(ctx, renderingContext.imageSmoothingEnabled);
-}
-
-EJ_BIND_GET(backingStorePixelRatio, ctx) {
-	return JSValueMakeNumber(ctx, renderingContext.backingStoreRatio);
 }
 
 EJ_BIND_SET(MSAAEnabled, ctx, value) {
@@ -193,414 +132,89 @@ EJ_BIND_GET(MSAASamples, ctx) {
 	return JSValueMakeNumber(ctx, msaaSamples);
 }
 
-
-
 EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
-	if( argc < 1 || ![JSValueToNSString(ctx, argv[0]) isEqualToString:@"2d"] ) { 
-		return NULL; 
-	};
+	if( argc < 1 ) { return NULL; };
 	
-	if( renderingContext ) { return jsObject; }
-	ejectaInstance.currentRenderingContext = nil;
+	NSString * type = JSValueToNSString(ctx, argv[0]);
+	EJCanvasContextMode newContextMode = kEJCanvasContextModeInvalid;
+	
+	if( [type isEqualToString:@"2d"] ) {
+		newContextMode = kEJCanvasContextMode2D;
+	}
+	else if( [type rangeOfString:@"webgl"].location != NSNotFound ) {
+		newContextMode = kEJCanvasContextModeWebGL;
+	}
+	
+	
+	if( contextMode != kEJCanvasContextModeInvalid ) {
+	
+		// Nothing changed? - just return the already created context
+		if( contextMode == newContextMode ) {
+			return jsCanvasContext;
+		}
 		
-	if( isScreenCanvas ) {
-		EJCanvasContextScreen * sc = [[EJCanvasContextScreen alloc] initWithWidth:width height:height];
+		// New mode is different from current? - we can't do that
+		else {
+			NSLog(@"Warning: CanvasContext already created. Can't change 2d/webgl mode.");
+			return NULL;
+		}
+	}
+	
+	
+	
+	// Create the requested CanvasContext
+	[EJApp instance].currentRenderingContext = nil;
+	
+	if( newContextMode == kEJCanvasContextMode2D ) {
+		if( isScreenCanvas ) {
+			EJCanvasContext2DScreen * sc = [[EJCanvasContext2DScreen alloc] initWithWidth:width height:height];
+			sc.useRetinaResolution = useRetinaResolution;
+			sc.scalingMode = scalingMode;
+			
+			[EJApp instance].screenRenderingContext = sc;		
+			renderingContext = sc;
+		}
+		else {
+			EJCanvasContext2DTexture * tc = [[EJCanvasContext2DTexture alloc] initWithWidth:width height:height];
+			tc.useRetinaResolution = useRetinaResolution;
+			
+			renderingContext = tc;
+		}
+		
+		// Create the JS object
+		EJBindingCanvasContext2D * binding = [[EJBindingCanvasContext2D alloc]
+			initWithCanvas:jsObject renderingContext:(EJCanvasContext2D *)renderingContext];
+		jsCanvasContext = [EJBindingCanvasContext2D createJSObjectWithContext:ctx instance:binding];
+		JSValueProtect(ctx, jsCanvasContext);
+	}
+	
+	else if( newContextMode == kEJCanvasContextModeWebGL ) {
+		EJCanvasContextWebGL * sc = [[EJCanvasContextWebGL alloc] initWithWidth:width height:height];
 		sc.useRetinaResolution = useRetinaResolution;
 		sc.scalingMode = scalingMode;
 		
-		ejectaInstance.screenRenderingContext = sc;		
+		[EJApp instance].screenRenderingContext = sc;		
 		renderingContext = sc;
+		
+		// Create the JS object
+		EJBindingCanvasContextWebGL * binding = [[EJBindingCanvasContextWebGL alloc]
+			initWithCanvas:jsObject renderingContext:(EJCanvasContextWebGL *)renderingContext];
+		jsCanvasContext = [EJBindingCanvasContextWebGL createJSObjectWithContext:ctx instance:binding];
+		JSValueProtect(ctx, jsCanvasContext);
 	}
-	else {
-		renderingContext = [[EJCanvasContextTexture alloc] initWithWidth:width height:height];
-	}
+	
+	
+	contextMode = newContextMode;
 	
 	renderingContext.msaaEnabled = msaaEnabled;
 	renderingContext.msaaSamples = msaaSamples;
 	
+	[EAGLContext setCurrentContext:renderingContext.glContext];
 	[renderingContext create];
-	ejectaInstance.currentRenderingContext = renderingContext;
-
-	// Context and canvas are one and the same object, so getContext just
-	// returns itself
-	return jsObject;
+	[EJApp instance].currentRenderingContext = renderingContext;
+	
+	
+	return jsCanvasContext;
 }
-
-EJ_BIND_FUNCTION(save, ctx, argc, argv) {
-	[renderingContext save];
-	return NULL;
-}
-
-EJ_BIND_FUNCTION(restore, ctx, argc, argv) {
-	[renderingContext restore];
-	return NULL;
-}
-
-EJ_BIND_FUNCTION(rotate, ctx, argc, argv) {
-	if( argc < 1 ) { return NULL; }
-	[renderingContext rotate:JSValueToNumberFast(ctx, argv[0])];
-	return NULL;
-}
-
-EJ_BIND_FUNCTION(translate, ctx, argc, argv) {
-	if( argc < 2 ) { return NULL; }
-	[renderingContext translateX:JSValueToNumberFast(ctx, argv[0]) y:JSValueToNumberFast(ctx, argv[1])];
-	return NULL;
-}
-
-EJ_BIND_FUNCTION(scale, ctx, argc, argv) {
-	if( argc < 2 ) { return NULL; }
-	[renderingContext scaleX:JSValueToNumberFast(ctx, argv[0]) y:JSValueToNumberFast(ctx, argv[1])];
-	return NULL;
-}
-
-EJ_BIND_FUNCTION(transform, ctx, argc, argv) {
-	if( argc < 6 ) { return NULL; }
-	
-	float
-		m11 = JSValueToNumberFast(ctx, argv[0]),
-		m12 = JSValueToNumberFast(ctx, argv[1]),
-		m21 = JSValueToNumberFast(ctx, argv[2]),
-		m22 = JSValueToNumberFast(ctx, argv[3]),
-		dx = JSValueToNumberFast(ctx, argv[4]),
-		dy = JSValueToNumberFast(ctx, argv[5]);
-	[renderingContext transformM11:m11 m12:m12 m21:m21 m22:m22 dx:dx dy:dy];
-	return NULL;
-}
-
-EJ_BIND_FUNCTION(setTransform, ctx, argc, argv) {
-	if( argc < 6 ) { return NULL; }
-	
-	float
-		m11 = JSValueToNumberFast(ctx, argv[0]),
-		m12 = JSValueToNumberFast(ctx, argv[1]),
-		m21 = JSValueToNumberFast(ctx, argv[2]),
-		m22 = JSValueToNumberFast(ctx, argv[3]),
-		dx = JSValueToNumberFast(ctx, argv[4]),
-		dy = JSValueToNumberFast(ctx, argv[5]);
-	[renderingContext setTransformM11:m11 m12:m12 m21:m21 m22:m22 dx:dx dy:dy];
-	return NULL;
-}
-
-EJ_BIND_FUNCTION(drawImage, ctx, argc, argv) {
-	if( argc < 3 || !JSValueIsObject(ctx, argv[0]) ) return NULL;
-	
-	NSObject<EJDrawable> * drawable = (NSObject<EJDrawable> *)JSObjectGetPrivate((JSObjectRef)argv[0]);
-	EJTexture * image = drawable.texture;
-	float scale = image.contentScale;
-	
-	short sx = 0, sy = 0, sw = 0, sh = 0;
-	float dx = 0, dy = 0, dw = sw, dh = sh;	
-	
-	if( argc == 3 ) {
-		// drawImage(image, dx, dy)
-		dx = JSValueToNumberFast(ctx, argv[1]);
-		dy = JSValueToNumberFast(ctx, argv[2]);
-		sw = image.width;
-		sh = image.height;
-		dw = sw / scale;
-		dh = sh / scale;
-	}
-	else if( argc == 5 ) {
-		// drawImage(image, dx, dy, dw, dh)
-		dx = JSValueToNumberFast(ctx, argv[1]);
-		dy = JSValueToNumberFast(ctx, argv[2]);
-		dw = JSValueToNumberFast(ctx, argv[3]);
-		dh = JSValueToNumberFast(ctx, argv[4]);
-		sw = image.width;
-		sh = image.height;
-	}
-	else if( argc >= 9 ) {
-		// drawImage(image, sx, sy, sw, sh, dx, dy, dw, dh)
-		sx = JSValueToNumberFast(ctx, argv[1]) * scale;
-		sy = JSValueToNumberFast(ctx, argv[2]) * scale;
-		sw = JSValueToNumberFast(ctx, argv[3]) * scale;
-		sh = JSValueToNumberFast(ctx, argv[4]) * scale;
-		
-		dx = JSValueToNumberFast(ctx, argv[5]);
-		dy = JSValueToNumberFast(ctx, argv[6]);
-		dw = JSValueToNumberFast(ctx, argv[7]);
-		dh = JSValueToNumberFast(ctx, argv[8]);
-	}
-	else {
-		return NULL;
-	}
-	
-	ejectaInstance.currentRenderingContext = renderingContext;
-	[renderingContext drawImage:image sx:sx sy:sy sw:sw sh:sh dx:dx dy:dy dw:dw dh:dh];
-	
-	return NULL;
-}
-
-EJ_BIND_FUNCTION(fillRect, ctx, argc, argv) {
-	if( argc < 4 ) { return NULL; }
-	
-	float
-		dx = JSValueToNumberFast(ctx, argv[0]),
-		dy = JSValueToNumberFast(ctx, argv[1]),
-		w = JSValueToNumberFast(ctx, argv[2]),
-		h = JSValueToNumberFast(ctx, argv[3]);
-		
-	ejectaInstance.currentRenderingContext = renderingContext;
-	[renderingContext fillRectX:dx y:dy w:w h:h];
-	return NULL;
-}
-
-EJ_BIND_FUNCTION(strokeRect, ctx, argc, argv) {
-	if( argc < 4 ) { return NULL; }
-	
-	float
-		dx = JSValueToNumberFast(ctx, argv[0]),
-		dy = JSValueToNumberFast(ctx, argv[1]),
-		w = JSValueToNumberFast(ctx, argv[2]),
-		h = JSValueToNumberFast(ctx, argv[3]);
-	
-	ejectaInstance.currentRenderingContext = renderingContext;
-	[renderingContext strokeRectX:dx y:dy w:w h:h];
-	return NULL;
-}
-
-EJ_BIND_FUNCTION(clearRect, ctx, argc, argv) {
-	if( argc < 4 ) { return NULL; }
-	
-	float
-		dx = JSValueToNumberFast(ctx, argv[0]),
-		dy = JSValueToNumberFast(ctx, argv[1]),
-		w = JSValueToNumberFast(ctx, argv[2]),
-		h = JSValueToNumberFast(ctx, argv[3]);
-	
-	ejectaInstance.currentRenderingContext = renderingContext;
-	[renderingContext clearRectX:dx y:dy w:w h:h];
-	return NULL;
-}
-
-EJ_BIND_FUNCTION(getImageData, ctx, argc, argv) {
-	if( argc < 4 ) { return NULL; }
-	
-	float
-		sx = JSValueToNumberFast(ctx, argv[0]),
-		sy = JSValueToNumberFast(ctx, argv[1]),
-		sw = JSValueToNumberFast(ctx, argv[2]),
-		sh = JSValueToNumberFast(ctx, argv[3]);
-		
-	// Get the image data
-	ejectaInstance.currentRenderingContext = renderingContext;
-	EJImageData * imageData = [renderingContext getImageDataSx:sx sy:sy sw:sw sh:sh];
-	
-	// Create the JS object
-	JSClassRef imageDataClass = [[EJApp instance] getJSClassForClass:[EJBindingImageData class]];
-	JSObjectRef obj = JSObjectMake( ctx, imageDataClass, NULL );
-	JSValueProtect(ctx, obj);
-	
-	// Create the native instance
-	EJBindingImageData * jsImageData = [[EJBindingImageData alloc] initWithContext:ctx object:obj imageData:imageData];
-	
-	// Attach the native instance to the js object
-	JSObjectSetPrivate( obj, (void *)jsImageData );
-	JSValueUnprotect(ctx, obj);
-	return obj; 
-}
-
-EJ_BIND_FUNCTION(createImageData, ctx, argc, argv) {
-	if( argc < 2 ) { return NULL; }
-	
-	float
-		sw = JSValueToNumberFast(ctx, argv[0]),
-		sh = JSValueToNumberFast(ctx, argv[1]);
-		
-	GLubyte * pixels = calloc( sw * sh * 4, sizeof(GLubyte) );
-	EJImageData * imageData = [[[EJImageData alloc] initWithWidth:sw height:sh pixels:pixels] autorelease];
-	
-	// Create the JS object
-	JSClassRef imageDataClass = [[EJApp instance] getJSClassForClass:[EJBindingImageData class]];
-	JSObjectRef obj = JSObjectMake( ctx, imageDataClass, NULL );
-	JSValueProtect(ctx, obj);
-	
-	// Create the native instance
-	EJBindingImageData * jsImageData = [[EJBindingImageData alloc] initWithContext:ctx object:obj imageData:imageData];
-	
-	// Attach the native instance to the js object
-	JSObjectSetPrivate( obj, (void *)jsImageData );
-	JSValueUnprotect(ctx, obj);
-	return obj;
-}
-
-EJ_BIND_FUNCTION(putImageData, ctx, argc, argv) {
-	if( argc < 3 ) { return NULL; }
-	
-	EJBindingImageData * jsImageData = (EJBindingImageData *)JSObjectGetPrivate((JSObjectRef)argv[0]);
-	float
-		dx = JSValueToNumberFast(ctx, argv[1]),
-		dy = JSValueToNumberFast(ctx, argv[2]);
-	
-	ejectaInstance.currentRenderingContext = renderingContext;
-	[renderingContext putImageData:jsImageData.imageData dx:dx dy:dy];
-	return NULL;
-}
-
-EJ_BIND_FUNCTION( beginPath, ctx, argc, argv ) {
-	[renderingContext beginPath];
-	return NULL;
-}
-
-EJ_BIND_FUNCTION( closePath, ctx, argc, argv ) {
-	[renderingContext closePath];
-	return NULL;
-}
-
-EJ_BIND_FUNCTION( fill, ctx, argc, argv ) {
-	ejectaInstance.currentRenderingContext = renderingContext;
-	[renderingContext fill];
-	return NULL;
-}
-
-EJ_BIND_FUNCTION( stroke, ctx, argc, argv ) {
-	ejectaInstance.currentRenderingContext = renderingContext;
-	[renderingContext stroke];
-	return NULL;
-}
-
-EJ_BIND_FUNCTION( moveTo, ctx, argc, argv ) {
-	if( argc < 2 ) { return NULL; }
-	
-	float
-		x = JSValueToNumberFast(ctx, argv[0]),
-		y = JSValueToNumberFast(ctx, argv[1]);
-	[renderingContext moveToX:x y:y];
-	
-	return NULL;
-}
-
-EJ_BIND_FUNCTION( lineTo, ctx, argc, argv ) {
-	if( argc < 2 ) { return NULL; }
-	
-	float
-		x = JSValueToNumberFast(ctx, argv[0]),
-		y = JSValueToNumberFast(ctx, argv[1]);
-	[renderingContext lineToX:x y:y];
-	return NULL;
-}
-
-EJ_BIND_FUNCTION( rect, ctx, argc, argv ) {
-	if( argc < 4 ) { return NULL; }
-	
-	float
-		x = JSValueToNumberFast(ctx, argv[0]),
-		y = JSValueToNumberFast(ctx, argv[1]),
-		w = JSValueToNumberFast(ctx, argv[2]),
-		h = JSValueToNumberFast(ctx, argv[3]);
-	[renderingContext rectX:x y:y w:w h:h];
-	return NULL;
-}
-
-EJ_BIND_FUNCTION( bezierCurveTo, ctx, argc, argv ) {
-	if( argc < 6 ) { return NULL; }
-	
-	float
-		cpx1 = JSValueToNumberFast(ctx, argv[0]),
-		cpy1 = JSValueToNumberFast(ctx, argv[1]),
-		cpx2 = JSValueToNumberFast(ctx, argv[2]),
-		cpy2 = JSValueToNumberFast(ctx, argv[3]),
-		x = JSValueToNumberFast(ctx, argv[4]),
-		y = JSValueToNumberFast(ctx, argv[5]);
-	[renderingContext bezierCurveToCpx1:cpx1 cpy1:cpy1 cpx2:cpx2 cpy2:cpy2 x:x y:y];
-	return NULL;
-}
-
-EJ_BIND_FUNCTION( quadraticCurveTo, ctx, argc, argv ) {
-	if( argc < 4 ) { return NULL; }
-	
-	float
-		cpx = JSValueToNumberFast(ctx, argv[0]),
-		cpy = JSValueToNumberFast(ctx, argv[1]),
-		x = JSValueToNumberFast(ctx, argv[2]),
-		y = JSValueToNumberFast(ctx, argv[3]);
-	[renderingContext quadraticCurveToCpx:cpx cpy:cpy x:x y:y];
-	return NULL;
-}
-
-EJ_BIND_FUNCTION( arcTo, ctx, argc, argv ) {
-	if( argc < 5 ) { return NULL; }
-	
-	float
-		x1 = JSValueToNumberFast(ctx, argv[0]),
-		y1 = JSValueToNumberFast(ctx, argv[1]),
-		x2 = JSValueToNumberFast(ctx, argv[2]),
-		y2 = JSValueToNumberFast(ctx, argv[3]),
-		radius = JSValueToNumberFast(ctx, argv[4]);
-	[renderingContext arcToX1:x1 y1:y1 x2:x2 y2:y2 radius:radius];
-	return NULL;
-}
-
-EJ_BIND_FUNCTION( arc, ctx, argc, argv ) {
-	if( argc < 5 ) { return NULL; }
-	
-	float
-		x = JSValueToNumberFast(ctx, argv[0]),
-		y = JSValueToNumberFast(ctx, argv[1]),
-		radius = JSValueToNumberFast(ctx, argv[2]),
-		startAngle = JSValueToNumberFast(ctx, argv[3]),
-		endAngle = JSValueToNumberFast(ctx, argv[4]);
-	BOOL antiClockwise = argc < 6 ? false : JSValueToBoolean(ctx, argv[5]);
-	[renderingContext arcX:x y:y radius:radius startAngle:startAngle endAngle:endAngle antiClockwise:antiClockwise];
-	return NULL;
-}
-
-EJ_BIND_FUNCTION( measureText, ctx, argc, argv ) {
-	if( argc < 1 ) { return NULL; }
-	
-	NSString * string = JSValueToNSString(ctx, argv[0]);
-	float stringWidth = [renderingContext measureText:string];
-	
-	JSObjectRef objRef = JSObjectMake(ctx, NULL, NULL);
-	JSStringRef stringRef = JSStringCreateWithUTF8CString("width");
-	JSObjectSetProperty(ctx, objRef, stringRef, JSValueMakeNumber(ctx, stringWidth), kJSPropertyAttributeNone, nil);
-	JSStringRelease(stringRef);
-	
-	return objRef;
-}
-
-EJ_BIND_FUNCTION( fillText, ctx, argc, argv ) {
-	if( argc < 3 ) { return NULL; }
-	
-	NSString * string = JSValueToNSString(ctx, argv[0]);
-	float
-		x = JSValueToNumberFast(ctx, argv[1]),
-		y = JSValueToNumberFast(ctx, argv[2]);
-	
-	ejectaInstance.currentRenderingContext = renderingContext;
-	[renderingContext fillText:string x:x y:y];
-	return NULL;
-}
-
-EJ_BIND_FUNCTION( strokeText, ctx, argc, argv ) {
-	if( argc < 3 ) { return NULL; }
-	
-	NSString * string = JSValueToNSString(ctx, argv[0]);
-	float
-		x = JSValueToNumberFast(ctx, argv[1]),
-		y = JSValueToNumberFast(ctx, argv[2]);
-	
-	ejectaInstance.currentRenderingContext = renderingContext;
-	[renderingContext strokeText:string x:x y:y];
-	return NULL;
-}
-
-EJ_BIND_FUNCTION( clip, ctx, argc, argv ) {
-	ejectaInstance.currentRenderingContext = renderingContext;
-	[renderingContext clip];
-	return NULL;
-}
-
-EJ_BIND_FUNCTION( resetClip, ctx, argc, argv ) {
-	ejectaInstance.currentRenderingContext = renderingContext;
-	[renderingContext resetClip];
-	return NULL;
-}
-
-EJ_BIND_FUNCTION_NOT_IMPLEMENTED( createRadialGradient );
-EJ_BIND_FUNCTION_NOT_IMPLEMENTED( createLinearGradient );
-EJ_BIND_FUNCTION_NOT_IMPLEMENTED( createPattern );
-EJ_BIND_FUNCTION_NOT_IMPLEMENTED( isPointInPath );
 
 @end

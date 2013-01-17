@@ -88,6 +88,7 @@ window.localStorage = new Ejecta.LocalStorage();
 HTMLElement = function( tagName ){ 
 	this.tagName = tagName;
 	this.children = [];
+	this.style = {};
 };
 
 HTMLElement.prototype.appendChild = function( element ) {
@@ -176,8 +177,8 @@ window.document = {
 	},
 	
 	_eventInitializers: {},
-	_publishEvent: function( type, event ) {
-		var listeners = this.events[ type ];
+	_publishEvent: function( event ) {
+		var listeners = this.events[ event.type ];
 		if( !listeners ) { return; }
 		
 		for( var i = 0; i < listeners.length; i++ ) {
@@ -191,6 +192,8 @@ window.canvas.addEventListener = window.addEventListener = function( type, callb
 window.canvas.removeEventListener = window.removeEventListener = function( type, callback ) { 
 	window.document.removeEventListener(type,callback); 
 };
+
+var eventInit = document._eventInitializers;
 
 
 
@@ -216,42 +219,84 @@ var publishTouchEvent = function( type, all, changed ) {
 	touchEvent.changedTouches = changed;
 	touchEvent.type = type;
 	
-	document._publishEvent( type, touchEvent );
+	document._publishEvent( touchEvent );
 };
-window.document._eventInitializers.touchstart =
-	window.document._eventInitializers.touchend =
-	window.document._eventInitializers.touchmove = function() {
-	if( !touchInput ) {
-		touchInput = new Ejecta.TouchInput();
-		touchInput.ontouchstart = function( all, changed ){ publishTouchEvent( 'touchstart', all, changed ); };
-		touchInput.ontouchend = function( all, changed ){ publishTouchEvent( 'touchend', all, changed ); };
-		touchInput.ontouchmove = function( all, changed ){ publishTouchEvent( 'touchmove', all, changed ); };
-	}
+eventInit.touchstart = eventInit.touchend = eventInit.touchmove = function() {
+	if( touchInput ) { return; }
+
+	touchInput = new Ejecta.TouchInput();
+	touchInput.ontouchstart = function( all, changed ){ publishTouchEvent( 'touchstart', all, changed ); };
+	touchInput.ontouchend = function( all, changed ){ publishTouchEvent( 'touchend', all, changed ); };
+	touchInput.ontouchmove = function( all, changed ){ publishTouchEvent( 'touchmove', all, changed ); };
 };
 
 
 
-// Devicemotion events
+// DeviceMotion and DeviceOrientation events
 
-var accelerometer = null;
+var deviceMotion = null;
 var deviceMotionEvent = {
 	type: 'devicemotion', 
 	target: canvas,
+	interval: 16,
 	acceleration: {x: 0, y: 0, z: 0},
 	accelerationIncludingGravity: {x: 0, y: 0, z: 0},
+	rotationRate: {alpha: 0, beta: 0, gamma: 0},
 	preventDefault: function(){},
 	stopPropagation: function(){}
 };
 
-window.document._eventInitializers.devicemotion = function() {
-	if( !accelerometer ) {
-		accelerometer = new Ejecta.Accelerometer();
-		accelerometer.ondevicemotion = function( x, y, z ){
-			deviceMotionEvent.accelerationIncludingGravity.x = x;
-			deviceMotionEvent.accelerationIncludingGravity.y = y;
-			deviceMotionEvent.accelerationIncludingGravity.z = z;
-			document._publishEvent( 'devicemotion', deviceMotionEvent );
-		};
+var deviceOrientationEvent = {
+	type: 'deviceorientation', 
+	target: canvas,
+	alpha: null,
+	beta: null,
+	gamma: null,
+	absolute: true,
+	preventDefault: function(){},
+	stopPropagation: function(){}
+};
+
+eventInit.deviceorientation = eventInit.devicemotion = function() {
+	if( deviceMotion ) { return; }
+	
+	deviceMotion = new Ejecta.DeviceMotion();
+	deviceMotionEvent.interval = deviceMotion.interval;
+	
+	// Callback for Devices that have a Gyro
+	deviceMotion.ondevicemotion = function( agx, agy, agz, ax, ay, az, rx, ry, rz, ox, oy, oz ) {
+		deviceMotionEvent.accelerationIncludingGravity.x = agx;
+		deviceMotionEvent.accelerationIncludingGravity.y = agy;
+		deviceMotionEvent.accelerationIncludingGravity.z = agz;
+	
+		deviceMotionEvent.acceleration.x = ax;
+		deviceMotionEvent.acceleration.y = ay;
+		deviceMotionEvent.acceleration.z = az;
+
+		deviceMotionEvent.rotationRate.alpha = rx;
+		deviceMotionEvent.rotationRate.beta = ry;
+		deviceMotionEvent.rotationRate.gamma = rz;
+
+		document._publishEvent( deviceMotionEvent );
+
+
+		deviceOrientationEvent.alpha = ox;
+		deviceOrientationEvent.beta = oy;
+		deviceOrientationEvent.gamma = oz;
+
+		document._publishEvent( deviceOrientationEvent );
+	};
+	
+	// Callback for Devices that only have an accelerometer
+	deviceMotion.onacceleration = function( agx, agy, agz ) {
+		deviceMotionEvent.accelerationIncludingGravity.x = agx;
+		deviceMotionEvent.accelerationIncludingGravity.y = agy;
+		deviceMotionEvent.accelerationIncludingGravity.z = agz;
+	
+		deviceMotionEvent.acceleration = null;
+		deviceMotionEvent.rotationRate = null;
+	
+		document._publishEvent( deviceMotionEvent );
 	}
 };
 
@@ -267,18 +312,17 @@ var lifecycleEvent = {
 	stopPropagation: function(){}
 };
 
-window.document._eventInitializers.pagehide =
-	window.document._eventInitializers.pageshow = function() {
+eventInit.pagehide = eventInit.pageshow = function() {
 	if( !lifecycle ) {
 		lifecycle = new Ejecta.Lifecycle();
 		
 		lifecycle.onpagehide = function() {
 			lifecycleEvent.type = 'pagehide';
-			document._publishEvent( 'pagehide', lifecycleEvent );
+			document._publishEvent( lifecycleEvent );
 		};
 		lifecycle.onpageshow = function() {
 			lifecycleEvent.type = 'pageshow';
-			document._publishEvent( 'pageshow', lifecycleEvent );
+			document._publishEvent( lifecycleEvent );
 		}
 	}
 };
