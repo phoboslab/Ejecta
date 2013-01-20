@@ -133,7 +133,7 @@ EJ_BIND_SET(font, ctx, value) {
 	// Yeah, oldschool!
 	float size = 0;
 	char name[64];
-	sscanf( string, "%fp%*[tx] %63s", &size, name); // matches: 10.5p[tx] helvetica
+	sscanf( string, "%fp%*[tx\"' ]%63[^\"']", &size, name); // matches: 10.5p[tx] helvetica
 	UIFont * newFont = [UIFont fontWithName:[NSString stringWithUTF8String:name] size:size];
 	
 	if( newFont ) {
