@@ -211,33 +211,34 @@ EJ_BIND_FUNCTION(bindAttribLocation, ctx, argc, argv) {
 }
 
 
+EJ_BIND_FUNCTION(bindBuffer, ctx, argc, argv) {
+		if( argc < 2 ) { return NULL; }
+		ejectaInstance.currentRenderingContext = renderingContext;
+		GLenum target = JSValueToNumberFast(ctx, argv[0]);
+		GLuint index = [EJBindingWebGLBuffer indexFromJSValue:argv[1]];
+		glBindBuffer(target, index);
+		return NULL;
+	}
+
 #define EJ_BIND_BIND(I, NAME) \
 	EJ_BIND_FUNCTION(bind##NAME, ctx, argc, argv) { \
 		if( argc < 2 ) { return NULL; } \
 		ejectaInstance.currentRenderingContext = renderingContext; \
 		GLenum target = JSValueToNumberFast(ctx, argv[0]); \
 		GLuint index = [EJBindingWebGL##NAME indexFromJSValue:argv[1]]; \
-		glBind##NAME(target, index); \
+		if( index ) { \
+			glBind##NAME(target, index); \
+		} \
+		else { \
+			[renderingContext bind##NAME]; \
+		} \
 		return NULL; \
 	}
 
-	EJ_MAP(EJ_BIND_BIND, Renderbuffer, Buffer);
+	EJ_MAP(EJ_BIND_BIND, Renderbuffer, Framebuffer);
 
 #undef EJ_BIND_BIND
 
-EJ_BIND_FUNCTION(bindFramebuffer, ctx, argc, argv) {
-	if( argc < 2 ) { return NULL; }
-	ejectaInstance.currentRenderingContext = renderingContext;
-	GLenum target = JSValueToNumberFast(ctx, argv[0]);
-	GLuint index = [EJBindingWebGLFramebuffer indexFromJSValue:argv[1]];
-	if( index ) {
-		glBindFramebuffer(target, index);
-	}
-	else {
-		[renderingContext bindFramebuffer];
-	}
-	return NULL;
-}
 
 EJ_BIND_FUNCTION(bindTexture, ctx, argc, argv) {
 	if( argc < 2 ) { return NULL; }

@@ -114,6 +114,10 @@
 	if( boundTextureCube ) { glBindTexture(GL_TEXTURE_CUBE_MAP, boundTextureCube); }
 }
 
+- (void)bindRenderbuffer {
+	glBindRenderbuffer(GL_RENDERBUFFER, viewRenderBuffer);
+}
+
 - (void)bindFramebuffer {
 	glBindFramebuffer(GL_FRAMEBUFFER, viewFrameBuffer);
 }
