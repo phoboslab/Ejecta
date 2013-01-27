@@ -51,14 +51,14 @@ typedef enum {
 
 - (id)initWithWidth:(int)widthp height:(int)heightp;
 - (id)initWithWidth:(int)widthp height:(int)heightp format:(GLenum) format;
-- (id)initWithWidth:(int)widthp height:(int)heightp pixels:(NSMutableData *)pixels;
+- (id)initWithWidth:(int)widthp height:(int)heightp pixels:(NSData *)pixels;
 - (id)initAsRenderTargetWithWidth:(int)widthp height:(int)heightp fbo:(GLuint)fbo contentScale:(float)contentScalep;
 
 - (void)ensureMutableKeepPixels:(BOOL)keepPixels forTarget:(GLenum)target;
 
 - (void)createWithTexture:(EJTexture *)other;
-- (void)createWithPixels:(NSMutableData *)pixels format:(GLenum)format;
-- (void)createWithPixels:(NSMutableData *)pixels format:(GLenum)formatp target:(GLenum)target;
+- (void)createWithPixels:(NSData *)pixels format:(GLenum)format;
+- (void)createWithPixels:(NSData *)pixels format:(GLenum)formatp target:(GLenum)target;
 - (void)updateWithPixels:(NSData *)pixels atX:(int)x y:(int)y width:(int)subWidth height:(int)subHeight;
 
 - (NSMutableData *)loadPixelsFromPath:(NSString *)path;

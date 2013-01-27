@@ -163,7 +163,7 @@ static GLint EJTextureGlobalFilter = GL_LINEAR;
 	return self;
 }
 
-- (id)initWithWidth:(int)widthp height:(int)heightp pixels:(NSMutableData *)pixels {
+- (id)initWithWidth:(int)widthp height:(int)heightp pixels:(NSData *)pixels {
 	// Creates a texture with the given pixels
 	
 	if( self = [super init] ) {
@@ -252,11 +252,11 @@ static GLint EJTextureGlobalFilter = GL_LINEAR;
 	textureStorage = [other->textureStorage retain];
 }
 
-- (void)createWithPixels:(NSMutableData *)pixels format:(GLenum)formatp {
+- (void)createWithPixels:(NSData *)pixels format:(GLenum)formatp {
 	[self createWithPixels:pixels format:formatp target:GL_TEXTURE_2D];
 }
 
-- (void)createWithPixels:(NSMutableData *)pixels format:(GLenum)formatp target:(GLenum)target {
+- (void)createWithPixels:(NSData *)pixels format:(GLenum)formatp target:(GLenum)target {
 	// Release previous texture if we had one
 	if( textureStorage ) {
 		[textureStorage release];
