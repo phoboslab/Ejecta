@@ -8,7 +8,7 @@ EJ_BIND_FUNCTION(getItem, ctx, argc, argv ) {
 	
 	NSString * key = JSValueToNSString( ctx, argv[0] );
 	NSString * value = [[NSUserDefaults standardUserDefaults] objectForKey:key];
-	return value ? NSStringToJSValue( ctx, value ) : NULL;
+	return value ? NSStringToJSValue( ctx, value ) : JSValueMakeNull(ctx);
 }
 
 EJ_BIND_FUNCTION(setItem, ctx, argc, argv ) {
