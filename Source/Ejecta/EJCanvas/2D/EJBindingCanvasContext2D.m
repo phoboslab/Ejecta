@@ -4,6 +4,7 @@
 #import "EJCanvasContext2DScreen.h"
 #import "EJBindingImageData.h"
 #import "EJBindingCanvasPattern.h"
+#import "EJBindingCanvasGradient.h"
 
 #import "EJDrawable.h"
 #import "EJConvertColorRGBA.h"
@@ -69,21 +70,39 @@ EJ_BIND_ENUM(textBaseline, renderingContext.state->textBaseline,
 );
 
 EJ_BIND_GET(fillStyle, ctx ) {
-	if( renderingContext.fillPattern ) {
-		return [EJBindingCanvasPattern createJSObjectWithContext:ctx pattern:renderingContext.fillPattern];
+	if( renderingContext.fillObject ) {
+		if( [renderingContext.fillObject isKindOfClass:[EJCanvasPattern class]] ) {
+			EJCanvasPattern * pattern = (EJCanvasPattern *)renderingContext.fillObject;
+			return [EJBindingCanvasPattern createJSObjectWithContext:ctx pattern:pattern];
+		}
+		else if( [renderingContext.fillObject isKindOfClass:[EJCanvasGradient class]] ) {
+			EJCanvasGradient * gradient = (EJCanvasGradient *)renderingContext.fillObject;
+			return [EJBindingCanvasGradient createJSObjectWithContext:ctx gradient:gradient];
+		}
 	}
 	else {
 		return ColorRGBAToJSValue(ctx, renderingContext.state->fillColor);
 	}
+	
+	return NULL;
 }
 
 EJ_BIND_SET(fillStyle, ctx, value) {
 	if( JSValueIsObject(ctx, value) ) {
-		renderingContext.fillPattern = [EJBindingCanvasPattern patternFromJSValue:value];
+		// Try CanvasPattern or CanvasGradient
+		
+		NSObject<EJFillable> * fillable;
+		if( (fillable = [EJBindingCanvasPattern patternFromJSValue:value]) ) {
+			renderingContext.fillObject = fillable;
+		}
+		else if( (fillable = [EJBindingCanvasGradient gradientFromJSValue:value]) ) {
+			renderingContext.fillObject = fillable;
+		}
 	}
 	else {
+		// Should be a color string
 		renderingContext.state->fillColor = JSValueToColorRGBA(ctx, value);
-		renderingContext.fillPattern = NULL;
+		renderingContext.fillObject = NULL;
 	}
 }
 
@@ -326,6 +345,23 @@ EJ_BIND_FUNCTION(putImageDataHD, ctx, argc, argv) {
 	return NULL;
 }
 
+EJ_BIND_FUNCTION(createLinearGradient, ctx, argc, argv) {
+	EJVector2 p1, p2;
+	EJ_UNPACK_ARGV(p1.x, p1.y, p2.x, p2.y);
+	
+	EJCanvasGradient * gradient = [[[EJCanvasGradient alloc] initLinearGradientWithP1:p1 p2:p2] autorelease];
+	return [EJBindingCanvasGradient createJSObjectWithContext:ctx gradient:gradient];
+}
+
+EJ_BIND_FUNCTION(createRadialGradient, ctx, argc, argv) {
+	EJVector2 p1, p2;
+	float r1, r2;
+	EJ_UNPACK_ARGV(p1.x, p1.y, r1, p2.x, p2.y, r2);
+	
+	EJCanvasGradient * gradient = [[[EJCanvasGradient alloc] initRadialGradientWithP1:p1 r1:r1 p2:p2 r2:r2] autorelease];
+	return [EJBindingCanvasGradient createJSObjectWithContext:ctx gradient:gradient];
+}
+
 EJ_BIND_FUNCTION(createPattern, ctx, argc, argv) {
 	if( argc < 1 ) { return NULL; }
 	NSObject<EJDrawable> * drawable = (NSObject<EJDrawable> *)JSObjectGetPrivate((JSObjectRef)argv[0]);
@@ -463,8 +499,6 @@ EJ_BIND_FUNCTION( resetClip, ctx, argc, argv ) {
 	return NULL;
 }
 
-EJ_BIND_FUNCTION_NOT_IMPLEMENTED( createRadialGradient );
-EJ_BIND_FUNCTION_NOT_IMPLEMENTED( createLinearGradient );
 EJ_BIND_FUNCTION_NOT_IMPLEMENTED( isPointInPath );
 
 @end

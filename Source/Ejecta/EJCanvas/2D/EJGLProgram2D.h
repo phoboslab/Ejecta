@@ -15,12 +15,16 @@ enum {
 	GLuint scale, translate, textureFormat;
 }
 
-- (GLint)compileShader:(NSString *)file type:(GLenum)type;
-- (void)linkProgram;
+- (void)createProgram;
 
-@property (nonatomic) GLuint program;
-@property (nonatomic) GLuint scale;
-@property (nonatomic) GLuint translate;
-@property (nonatomic) GLuint textureFormat;
++ (GLint)compileShaderFile:(NSString *)file type:(GLenum)type;
++ (GLint)compileShaderSource:(NSString *)source type:(GLenum)type;
++ (void)linkProgram:(GLuint)program;
+
+@property (nonatomic, readonly) GLuint program;
+
+@property (nonatomic, readonly) GLuint scale;
+@property (nonatomic, readonly) GLuint translate;
+@property (nonatomic, readonly) GLuint textureFormat;
 
 @end

@@ -5,6 +5,7 @@
 #import "EJCanvasContext.h"
 #import "EJPresentable.h"
 #import "EJGLProgram2D.h"
+#import "EJGLProgram2DRadialGradient.h"
 
 #define EJECTA_VERSION @"1.2"
 #define EJECTA_APP_FOLDER @"App/"
@@ -40,6 +41,7 @@
 	EAGLSharegroup * glSharegroup;
 	CADisplayLink * displayLink;
 	EJGLProgram2D * glProgram2D;
+	EJGLProgram2DRadialGradient * glProgram2DRadialGradient;
 	
 	NSOperationQueue * opQueue;
 	EJCanvasContext * currentRenderingContext;
@@ -69,6 +71,7 @@
 
 
 @property (nonatomic, readonly) EJGLProgram2D * glProgram2D;
+@property (nonatomic, readonly) EJGLProgram2DRadialGradient * glProgram2DRadialGradient;
 @property (nonatomic, readonly) BOOL landscapeMode;
 @property (nonatomic, readonly) JSGlobalContextRef jsGlobalContext;
 @property (nonatomic, readonly) EAGLContext * glContext2D;

@@ -1,7 +1,6 @@
 #import <Foundation/Foundation.h>
 #import "EJTexture.h"
 #import "EJImageData.h"
-#import "EJCanvasPattern.h"
 #import "EJPath.h"
 #import "EJCanvas2DTypes.h"
 #import "EJCanvasContext.h"
@@ -51,13 +50,18 @@ typedef enum {
 	kEJCompositeOperationXOR
 } EJCompositeOperation;
 
+@class EJCanvasPattern;
+@class EJCanvasGradient;
+
+@protocol EJFillable
+@end
 
 typedef struct {
 	CGAffineTransform transform;
 	
 	EJCompositeOperation globalCompositeOperation;
 	EJColorRGBA fillColor;
-	EJCanvasPattern * fillPattern;
+	NSObject<EJFillable> * fillObject;
 	EJColorRGBA strokeColor;
 	float globalAlpha;
 	
@@ -115,6 +119,14 @@ typedef struct {
 - (void)pushRectX:(float)x y:(float)y w:(float)w h:(float)h
 	color:(EJColorRGBA)color
 	withTransform:(CGAffineTransform)transform;
+- (void)pushFilledRectX:(float)x y:(float)y w:(float)w h:(float)h
+	fillable:(NSObject<EJFillable> *)fillable
+	color:(EJColorRGBA)color
+	withTransform:(CGAffineTransform)transform;
+- (void)pushGradientRectX:(float)x y:(float)y w:(float)w h:(float)h
+	gradient:(EJCanvasGradient *)gradient
+	color:(EJColorRGBA)color
+	withTransform:(CGAffineTransform)transform;
 - (void)pushPatternedRectX:(float)x y:(float)y w:(float)w h:(float)h
 	pattern:(EJCanvasPattern *)pattern
 	color:(EJColorRGBA)color
@@ -164,7 +176,7 @@ typedef struct {
 @property (nonatomic) EJCanvasState * state;
 @property (nonatomic) EJCompositeOperation globalCompositeOperation;
 @property (nonatomic, retain) UIFont * font;
-@property (nonatomic, retain) EJCanvasPattern * fillPattern;
+@property (nonatomic, retain) NSObject<EJFillable> * fillObject;
 @property (nonatomic, assign) float backingStoreRatio;
 @property (nonatomic) BOOL useRetinaResolution;
 @property (nonatomic) BOOL imageSmoothingEnabled;

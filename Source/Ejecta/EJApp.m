@@ -140,6 +140,7 @@ static EJApp * ejectaInstance = NULL;
 	[displayLink release];
 	[timers release];
 	[glProgram2D release];
+	[glProgram2DRadialGradient release];
 	[glContext2D release];
 	[super dealloc];
 }
@@ -364,6 +365,13 @@ static EJApp * ejectaInstance = NULL;
 		glProgram2D = [[EJGLProgram2D alloc] init];
 	}
 	return glProgram2D;
+}
+
+- (EJGLProgram2DRadialGradient *)glProgram2DRadialGradient {
+	if( !glProgram2DRadialGradient ) {
+		glProgram2DRadialGradient = [[EJGLProgram2DRadialGradient alloc] init];
+	}
+	return glProgram2DRadialGradient;
 }
 
 - (void)setCurrentRenderingContext:(EJCanvasContext *)renderingContext {

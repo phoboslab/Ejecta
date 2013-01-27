@@ -398,9 +398,9 @@ typedef std::vector<subpath_t> path_t;
 	glStencilFunc(GL_NOTEQUAL, 0x00, 0xff);
     glStencilOp(GL_ZERO, GL_ZERO, GL_ZERO);
 
-	if( state->fillPattern ) {
+	if( state->fillObject ) {
 		// If we have a fill pattern, we have to do some extra work to unproject the
-		// Quad we're drawing, so we can then project it _with_ the pattern again
+		// Quad we're drawing, so we can then project it _with_ the pattern/gradient again
 		
 		CGAffineTransform inverse = CGAffineTransformInvert(transform);
 		EJVector2 p1 = EJVector2ApplyTransform(minPos, inverse);
@@ -413,8 +413,9 @@ typedef std::vector<subpath_t> path_t;
 		EJVector2 tmax = { MAX(p1.x, MAX(p2.x,MAX(p3.x, p4.x))), MAX(p1.y, MAX(p2.y,MAX(p3.y, p4.y))) };
 		
 		color = (EJColorRGBA){.rgba = {255, 255, 255, 255 * state->globalAlpha}};
-		[context pushPatternedRectX:tmin.x y:tmin.y w:tmax.x-tmin.x h:tmax.y-tmin.y
-			pattern:state->fillPattern color:color withTransform:transform];
+		[context
+			pushFilledRectX:tmin.x y:tmin.y w:tmax.x-tmin.x h:tmax.y-tmin.y
+			fillable:state->fillObject color:color withTransform:transform];
 	}
 	else {
 		[context

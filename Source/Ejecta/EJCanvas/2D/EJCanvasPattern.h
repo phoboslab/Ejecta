@@ -1,5 +1,6 @@
 #import <Foundation/Foundation.h>
 #import "EJTexture.h"
+#import "EJCanvasContext2D.h"
 
 typedef enum {
 	kEJCanvasPatternNoRepeat = 0,
@@ -8,7 +9,7 @@ typedef enum {
 	kEJCanvasPatternRepeat = 1 | 2
 } EJCanvasPatternRepeat;
 
-@interface EJCanvasPattern : NSObject {
+@interface EJCanvasPattern : NSObject <EJFillable> {
 	EJTexture * texture;
 	EJCanvasPatternRepeat repeat;
 }

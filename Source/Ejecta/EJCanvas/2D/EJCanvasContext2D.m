@@ -2,6 +2,9 @@
 #import "EJFont.h"
 #import "EJApp.h"
 
+#import "EJCanvasPattern.h"
+#import "EJCanvasGradient.h"
+
 @implementation EJCanvasContext2D
 
 EJVertex EJCanvasVertexBuffer[EJ_CANVAS_VERTEX_BUFFER_SIZE];
@@ -73,7 +76,7 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 	for( int i = 0; i < stateIndex + 1; i++ ) {
 		[stateStack[i].font release];
 		[stateStack[i].clipPath release];
-		[stateStack[i].fillPattern release];
+		[stateStack[i].fillObject release];
 	}
 	
 	if( viewFrameBuffer ) { glDeleteFramebuffers( 1, &viewFrameBuffer); }
@@ -272,6 +275,111 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 	vertexBufferIndex += 6;
 }
 
+- (void)pushFilledRectX:(float)x y:(float)y w:(float)w h:(float)h
+	fillable:(NSObject<EJFillable> *)fillable
+	color:(EJColorRGBA)color
+	withTransform:(CGAffineTransform)transform
+{
+	if( [fillable isKindOfClass:[EJCanvasPattern class]] ) {
+		EJCanvasPattern * pattern = (EJCanvasPattern *)fillable;
+		[self pushPatternedRectX:x y:y w:w h:h pattern:pattern color:color withTransform:transform];
+	}
+	else if( [fillable isKindOfClass:[EJCanvasGradient class]] ) {
+		EJCanvasGradient * gradient = (EJCanvasGradient *)fillable;
+		[self pushGradientRectX:x y:y w:w h:h gradient:gradient color:color withTransform:transform];
+	}
+}
+
+- (void)pushGradientRectX:(float)x y:(float)y w:(float)w h:(float)h
+	gradient:(EJCanvasGradient *)gradient
+	color:(EJColorRGBA)color
+	withTransform:(CGAffineTransform)transform
+{	
+	if( gradient.type == kEJCanvasGradientTypeLinear ) {
+		// Local positions inside the quad
+		EJVector2 p1 = {(gradient.p1.x-x)/w, (gradient.p1.y-y)/h};
+		EJVector2 p2 = {(gradient.p2.x-x)/w, (gradient.p2.y-y)/h};
+		
+		// Calculate the slope of (p1,p2) and the line orthogonal to it
+		float aspect = w/h;
+		EJVector2 slope = EJVector2Sub(p2, p1);
+		EJVector2 ortho = {slope.y/aspect, -slope.x*aspect};
+		
+		// Calculate the intersection points of the slope (starting at p1)
+		// and the orthogonal starting at each corner of the quad - these
+		// points are the final texture coordinates.
+		float d = 1/(slope.y * ortho.x - slope.x * ortho.y);
+		
+		EJVector2
+			ot = {ortho.x * d, ortho.y * d},
+			st = {slope.x * d, slope.y * d};
+		
+		EJVector2
+			a11 = {ot.x * -p1.y, st.x * -p1.y},
+			a12 = {ot.y * p1.x, st.y * p1.x},
+			a21 = {ot.x * (1 - p1.y), st.x * (1 - p1.y)},
+			a22 = {ot.y * (p1.x - 1), st.y * (p1.x - 1)};
+			
+		EJVector2
+			t11 = {a11.x + a12.x, a11.y + a12.y},
+			t21 = {a11.x + a22.x, a11.y + a22.y},
+			t12 = {a21.x + a12.x, a21.y + a12.y},
+			t22 = {a21.x + a22.x, a21.y + a22.y};
+		
+		
+		[self setTexture:gradient.texture];
+		if( vertexBufferIndex >= EJ_CANVAS_VERTEX_BUFFER_SIZE - 6 ) {
+			[self flushBuffers];
+		}
+		
+		// Vertex coordinates
+		EJVector2 d11 = {x, y};
+		EJVector2 d21 = {x+w, y};
+		EJVector2 d12 = {x, y+h};
+		EJVector2 d22 = {x+w, y+h};
+		
+		if( !CGAffineTransformIsIdentity(transform) ) {
+			d11 = EJVector2ApplyTransform( d11, transform );
+			d21 = EJVector2ApplyTransform( d21, transform );
+			d12 = EJVector2ApplyTransform( d12, transform );
+			d22 = EJVector2ApplyTransform( d22, transform );
+		}
+
+		EJVertex * vb = &EJCanvasVertexBuffer[vertexBufferIndex];
+		vb[0] = (EJVertex) { d11, t11, color };	// top left
+		vb[1] = (EJVertex) { d21, t21, color };	// top right
+		vb[2] = (EJVertex) { d12, t12, color };	// bottom left
+			
+		vb[3] = (EJVertex) { d21, t21, color };	// top right
+		vb[4] = (EJVertex) { d12, t12, color };	// bottom left
+		vb[5] = (EJVertex) { d22, t22, color };	// bottom right
+		
+		vertexBufferIndex += 6;
+	}
+	
+	else if( gradient.type == kEJCanvasGradientTypeRadial ) {
+		[self flushBuffers];
+		
+		EJGLProgram2DRadialGradient * gradientProgram = [EJApp instance].glProgram2DRadialGradient;
+		
+		glUseProgram(gradientProgram.program);
+		glUniform2f(gradientProgram.scale, vertexScale.x, vertexScale.y);
+		glUniform2f(gradientProgram.translate, vertexTranslate.x, vertexTranslate.y);
+		
+		glUniform3f(gradientProgram.inner, gradient.p1.x, gradient.p1.y, gradient.r1);
+		
+		EJVector2 dp = EJVector2Sub(gradient.p2, gradient.p1);
+		float dr = gradient.r2 - gradient.r1;
+		glUniform3f(gradientProgram.diff, dp.x, dp.y, dr);
+		
+		[self setTexture:gradient.texture];
+		[self pushTexturedRectX:x y:y w:w h:h tx:x ty:y tw:w th:h color:color withTransform:transform];
+		
+		[self flushBuffers];
+		glUseProgram(program2D.program);
+	}
+}
+
 - (void)pushPatternedRectX:(float)x y:(float)y w:(float)w h:(float)h
 	pattern:(EJCanvasPattern *)pattern
 	color:(EJColorRGBA)color
@@ -376,13 +484,13 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 	return state->font;
 }
 
-- (void)setFillPattern:(EJCanvasPattern *)fillPattern {
-	[state->fillPattern release];
-	state->fillPattern = [fillPattern retain];
+- (void)setFillObject:(NSObject<EJFillable> *)fillObject {
+	[state->fillObject release];
+	state->fillObject = [fillObject retain];
 }
 
-- (EJCanvasPattern *)fillPattern {
-	return state->fillPattern;
+- (NSObject<EJFillable> *)fillObject {
+	return state->fillObject;
 }
 
 
@@ -396,7 +504,7 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 	stateIndex++;
 	state = &stateStack[stateIndex];
 	[state->font retain];
-	[state->fillPattern retain];
+	[state->fillObject retain];
 	[state->clipPath retain];
 }
 
@@ -408,7 +516,7 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 	
 	// Clean up current state
 	[state->font release];
-	[state->fillPattern release];
+	[state->fillObject release];
 
 	if( state->clipPath && state->clipPath != stateStack[stateIndex-1].clipPath ) {
 		[self resetClip];
@@ -469,9 +577,9 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 }
 
 - (void)fillRectX:(float)x y:(float)y w:(float)w h:(float)h {
-	if( state->fillPattern ) {		
+	if( state->fillObject ) {
 		EJColorRGBA color = {.rgba = {255, 255, 255, 255 * state->globalAlpha}};
-		[self pushPatternedRectX:x y:y w:w h:h pattern:state->fillPattern color:color withTransform:state->transform];
+		[self pushFilledRectX:x y:y w:w h:h fillable:state->fillObject color:color withTransform:state->transform];
 	}
 	else {
 		[self setTexture:NULL];
