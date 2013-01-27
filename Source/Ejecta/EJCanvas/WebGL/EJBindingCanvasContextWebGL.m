@@ -387,20 +387,32 @@ EJ_BIND_FUNCTION(copyTexSubImage2D, ctx, argc, argv) {
 	return NULL;
 }
 
-#define EJ_BIND_CREATE(I, NAME) \
-	EJ_BIND_FUNCTION(create##NAME, ctx, argc, argv) { \
-		ejectaInstance.currentRenderingContext = renderingContext; \
-		GLuint index; \
-		glGen##NAME##s(1, &index); \
-		JSObjectRef obj = [EJBindingWebGL##NAME createJSObjectWithContext:ctx webglContext:self index:index]; \
-		[buffers setObject:[NSValue valueWithPointer:obj] forKey:[NSNumber numberWithInt:index]]; \
-		return obj; \
-	}
+EJ_BIND_FUNCTION(createBuffer, ctx, argc, argv) {
+	ejectaInstance.currentRenderingContext = renderingContext;
+	GLuint index;
+	glGenBuffers(1, &index);
+	JSObjectRef obj = [EJBindingWebGLBuffer createJSObjectWithContext:ctx webglContext:self index:index];
+	[buffers setObject:[NSValue valueWithPointer:obj] forKey:[NSNumber numberWithInt:index]];
+	return obj;
+}
 
-	EJ_MAP(EJ_BIND_CREATE, Framebuffer, Renderbuffer, Buffer);
+EJ_BIND_FUNCTION(createFramebuffer, ctx, argc, argv) {
+	ejectaInstance.currentRenderingContext = renderingContext;
+	GLuint index;
+	glGenFramebuffers(1, &index);
+	JSObjectRef obj = [EJBindingWebGLFramebuffer createJSObjectWithContext:ctx webglContext:self index:index];
+	[framebuffers setObject:[NSValue valueWithPointer:obj] forKey:[NSNumber numberWithInt:index]];
+	return obj;
+}
 
-#undef EJ_BIND_CREATE
-
+EJ_BIND_FUNCTION(createRenderbuffer, ctx, argc, argv) {
+	ejectaInstance.currentRenderingContext = renderingContext;
+	GLuint index;
+	glGenRenderbuffers(1, &index);
+	JSObjectRef obj = [EJBindingWebGLRenderbuffer createJSObjectWithContext:ctx webglContext:self index:index];
+	[renderbuffers setObject:[NSValue valueWithPointer:obj] forKey:[NSNumber numberWithInt:index]];
+	return obj;
+}
 
 EJ_BIND_FUNCTION(createTexture, ctx, argc, argv) {
 	ejectaInstance.currentRenderingContext = renderingContext;
