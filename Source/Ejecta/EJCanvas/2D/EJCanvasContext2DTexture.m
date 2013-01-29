@@ -3,18 +3,17 @@
 @implementation EJCanvasContext2DTexture
 
 - (void)create {
+	backingStoreRatio = (useRetinaResolution && [UIScreen mainScreen].scale == 2) ? 2 : 1;
+	bufferWidth = width * backingStoreRatio;
+	bufferHeight = height * backingStoreRatio;
+	
 	// This creates the frame- and renderbuffers
 	[super create];
 	
-	// Create the texture	
-	backingStoreRatio = (useRetinaResolution && [UIScreen mainScreen].scale == 2) ? 2 : 1;
-	
+	// Create the texture and set it as the rendering target for this framebuffer
 	texture = [[EJTexture alloc] initAsRenderTargetWithWidth:width height:height
 		fbo:viewFrameBuffer contentScale:backingStoreRatio];
-	bufferWidth = texture.width;
-	bufferHeight = texture.height;
-	
-	// Set the texture and set it as the rendering target for this framebuffer
+
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture.textureId, 0);
 	
 	[self prepare];
@@ -90,7 +89,7 @@
 
 	// If this texture Canvas uses MSAA, we need to resolve the MSAA first,
 	// before we can use the texture for drawing.
-	if( msaaNeedsResolving ) {	
+	if( msaaNeedsResolving ) {
 		GLint boundFrameBuffer;
 		glGetIntegerv( GL_FRAMEBUFFER_BINDING, &boundFrameBuffer );
 		
