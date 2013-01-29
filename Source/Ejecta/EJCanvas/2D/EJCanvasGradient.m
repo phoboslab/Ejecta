@@ -136,7 +136,7 @@
 		currentStop = nextStop;
 	}
 	
-	// Fill the remaining pixels, if the last stop was no at 1.0
+	// Fill the remaining pixels if the last stop was not at 1.0
 	for( ; index < byteSize; index += 4 ) {
 		*(EJColorRGBA*)&bytes[index] = nextStop.color;
 	}
