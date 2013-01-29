@@ -324,8 +324,6 @@ typedef std::vector<subpath_t> path_t;
 	[self endSubPath];
 	if( longestSubpath < 3 ) { return; }
 	
-	[context setTexture:NULL];
-	
 	EJCanvasState * state = context.state;
 	EJColorRGBA color = state->fillColor;
 	color.rgba.a = (float)color.rgba.a * state->globalAlpha;
@@ -503,7 +501,6 @@ typedef std::vector<subpath_t> path_t;
 	
 	// Find the width of the line as it is projected onto the screen.
 	float projectedLineWidth = CGAffineTransformGetScale( state->transform ) * state->lineWidth;
-	[context setTexture:NULL];
 	
 	// Figure out if we need to add line caps and set the cap texture coord for square or round caps.
 	// For thin lines we disable texturing and line caps.

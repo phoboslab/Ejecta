@@ -12,10 +12,12 @@ enum {
 
 @interface EJGLProgram2D : NSObject {
 	GLuint program;
-	GLuint scale, translate, textureFormat;
+	GLuint scale, translate;
 }
 
-- (void)createProgram;
+- (id)initWithVertexShader:(NSString *)vertexShaderFile fragmentShader:(NSString *)fragmentShaderFile;
+- (void)bindAttributeLocations;
+- (void)getUniforms;
 
 + (GLint)compileShaderFile:(NSString *)file type:(GLenum)type;
 + (GLint)compileShaderSource:(NSString *)source type:(GLenum)type;
@@ -25,6 +27,5 @@ enum {
 
 @property (nonatomic, readonly) GLuint scale;
 @property (nonatomic, readonly) GLuint translate;
-@property (nonatomic, readonly) GLuint textureFormat;
 
 @end

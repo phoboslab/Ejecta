@@ -12,7 +12,7 @@
 	// screen size and retina properties into account
 	
 	CGRect frame = CGRectMake(0, 0, width, height);
-	CGSize screen = [EJApp instance].view.bounds.size;
+	CGSize screen = app.view.bounds.size;
     float contentScale = (useRetinaResolution && [UIScreen mainScreen].scale == 2) ? 2 : 1;
 	float aspect = frame.size.width / frame.size.height;
 	
@@ -25,7 +25,7 @@
 		frame.size.height = screen.height;
 	}
 	float internalScaling = frame.size.width / (float)width;
-	[EJApp instance].internalScaling = internalScaling;
+	app.internalScaling = internalScaling;
 	
 	backingStoreRatio = internalScaling * contentScale;
 	
@@ -72,8 +72,8 @@
     glClear(GL_COLOR_BUFFER_BIT);
 
 	// Append the OpenGL view to Impact's main view
-	[[EJApp instance] hideLoadingScreen];
-	[[EJApp instance].view addSubview:glview];
+	[app hideLoadingScreen];
+	[app.view addSubview:glview];
 }
 
 - (void)dealloc {

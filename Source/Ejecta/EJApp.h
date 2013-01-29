@@ -40,7 +40,10 @@
 	EAGLContext * glContext2D;
 	EAGLSharegroup * glSharegroup;
 	CADisplayLink * displayLink;
-	EJGLProgram2D * glProgram2D;
+	EJGLProgram2D * glProgram2DFlat;
+	EJGLProgram2D * glProgram2DTexture;
+	EJGLProgram2D * glProgram2DAlphaTexture;
+	EJGLProgram2D * glProgram2DPattern;
 	EJGLProgram2DRadialGradient * glProgram2DRadialGradient;
 	
 	NSOperationQueue * opQueue;
@@ -69,9 +72,13 @@
 
 + (EJApp *)instance;
 
-
-@property (nonatomic, readonly) EJGLProgram2D * glProgram2D;
+// Todo: clean this up somehow?
+@property (nonatomic, readonly) EJGLProgram2D * glProgram2DFlat;
+@property (nonatomic, readonly) EJGLProgram2D * glProgram2DTexture;
+@property (nonatomic, readonly) EJGLProgram2D * glProgram2DAlphaTexture;
+@property (nonatomic, readonly) EJGLProgram2D * glProgram2DPattern;
 @property (nonatomic, readonly) EJGLProgram2DRadialGradient * glProgram2DRadialGradient;
+
 @property (nonatomic, readonly) BOOL landscapeMode;
 @property (nonatomic, readonly) JSGlobalContextRef jsGlobalContext;
 @property (nonatomic, readonly) EAGLContext * glContext2D;

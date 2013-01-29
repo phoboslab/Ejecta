@@ -1,48 +1,48 @@
 #import "EJGLProgram2D.h"
 
 @implementation EJGLProgram2D
+
 @synthesize program;
+@synthesize scale, translate;
 
-@synthesize scale, translate, textureFormat;
-
-- (id)init {
+- (id)initWithVertexShader:(NSString *)vertexShaderFile fragmentShader:(NSString *)fragmentShaderFile {
 	if( self = [super init] ) {
-		[self createProgram];
-	}
-	return self;
-}
+		program = glCreateProgram();
+		GLuint vertexShader = [EJGLProgram2D compileShaderFile:vertexShaderFile type:GL_VERTEX_SHADER];
+		GLuint fragmentShader = [EJGLProgram2D compileShaderFile:fragmentShaderFile type:GL_FRAGMENT_SHADER];
 
-- (void)createProgram {
-	program = glCreateProgram();
-	GLuint vertexShader = [EJGLProgram2D compileShaderFile:@"Default.vsh" type:GL_VERTEX_SHADER];
-	GLuint fragmentShader = [EJGLProgram2D compileShaderFile:@"Default.fsh" type:GL_FRAGMENT_SHADER];
+		glAttachShader(program, vertexShader);
+		glAttachShader(program, fragmentShader);
+		
+		[self bindAttributeLocations];
+		
+		[EJGLProgram2D linkProgram:program];
 
-	glAttachShader(program, vertexShader);
-	glAttachShader(program, fragmentShader);
-	
-	glBindAttribLocation(program, kEJGLProgram2DAttributePos, "pos");
-	glBindAttribLocation(program, kEJGLProgram2DAttributeUV, "uv");
-	glBindAttribLocation(program, kEJGLProgram2DAttributeColor, "color");
-	
-	[EJGLProgram2D linkProgram:program];
-	
-	scale = glGetUniformLocation(program, "scale");
-	translate = glGetUniformLocation(program, "translate");
-	textureFormat = glGetUniformLocation(program, "textureFormat");
-	
-	if( vertexShader ) {
+		[self getUniforms];
+		
 		glDetachShader(program, vertexShader);
 		glDeleteShader(vertexShader);
-	}
-	if( fragmentShader ) {
+		
 		glDetachShader(program, fragmentShader);
 		glDeleteShader(fragmentShader);
 	}
+	return self;
 }
 
 - (void)dealloc {
 	if( program ) { glDeleteProgram(program); }
 	[super dealloc];
+}
+
+- (void)bindAttributeLocations {
+	glBindAttribLocation(program, kEJGLProgram2DAttributePos, "pos");
+	glBindAttribLocation(program, kEJGLProgram2DAttributeUV, "uv");
+	glBindAttribLocation(program, kEJGLProgram2DAttributeColor, "color");
+}
+
+- (void)getUniforms {
+	scale = glGetUniformLocation(program, "scale");
+	translate = glGetUniformLocation(program, "translate");
 }
 
 + (GLint)compileShaderFile:(NSString *)file type:(GLenum)type {

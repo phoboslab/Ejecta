@@ -77,6 +77,7 @@ typedef struct {
 	EJPath * clipPath;
 } EJCanvasState;
 
+@class EJApp;
 @interface EJCanvasContext2D : EJCanvasContext {
 	GLuint viewFrameBuffer, viewRenderBuffer;
 	GLuint msaaFrameBuffer, msaaRenderBuffer;
@@ -100,7 +101,8 @@ typedef struct {
 	
 	NSCache * fontCache;
 	
-	EJGLProgram2D * program2D;
+	EJApp * app;
+	EJGLProgram2D * currentProgram;
 }
 
 - (id)initWithWidth:(short)width height:(short)height;
@@ -109,6 +111,7 @@ typedef struct {
 - (void)bindVertexBuffer;
 - (void)prepare;
 - (void)setTexture:(EJTexture *)newTexture;
+- (void)setProgram:(EJGLProgram2D *)program;
 - (void)pushTriX1:(float)x1 y1:(float)y1 x2:(float)x2 y2:(float)y2
 			   x3:(float)x3 y3:(float)y3
 			 color:(EJColorRGBA)color

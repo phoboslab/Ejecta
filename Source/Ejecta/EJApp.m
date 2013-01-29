@@ -139,7 +139,10 @@ static EJApp * ejectaInstance = NULL;
 	[displayLink invalidate];
 	[displayLink release];
 	[timers release];
-	[glProgram2D release];
+	[glProgram2DFlat release];
+	[glProgram2DTexture release];
+	[glProgram2DAlphaTexture release];
+	[glProgram2DPattern release];
 	[glProgram2DRadialGradient release];
 	[glContext2D release];
 	[super dealloc];
@@ -360,19 +363,22 @@ static EJApp * ejectaInstance = NULL;
 	return NULL;
 }
 
-- (EJGLProgram2D *)glProgram2D {
-	if( !glProgram2D ) {
-		glProgram2D = [[EJGLProgram2D alloc] init];
-	}
-	return glProgram2D;
+#define EJ_GL_PROGRAM_GETTER(TYPE, NAME) \
+- (TYPE *)glProgram2D##NAME { \
+	if( !glProgram2D##NAME ) { \
+		glProgram2D##NAME = [[TYPE alloc] initWithVertexShader:@"Vertex.vsh" fragmentShader: @ #NAME @".fsh"]; \
+	} \
+	return glProgram2D##NAME; \
 }
 
-- (EJGLProgram2DRadialGradient *)glProgram2DRadialGradient {
-	if( !glProgram2DRadialGradient ) {
-		glProgram2DRadialGradient = [[EJGLProgram2DRadialGradient alloc] init];
-	}
-	return glProgram2DRadialGradient;
-}
+EJ_GL_PROGRAM_GETTER(EJGLProgram2D, Flat);
+EJ_GL_PROGRAM_GETTER(EJGLProgram2D, Texture);
+EJ_GL_PROGRAM_GETTER(EJGLProgram2D, AlphaTexture);
+EJ_GL_PROGRAM_GETTER(EJGLProgram2D, Pattern);
+EJ_GL_PROGRAM_GETTER(EJGLProgram2DRadialGradient, RadialGradient);
+
+#undef EJ_GL_PROGRAM_GETTER
+
 
 - (void)setCurrentRenderingContext:(EJCanvasContext *)renderingContext {
 	if( renderingContext != currentRenderingContext ) {
