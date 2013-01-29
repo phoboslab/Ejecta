@@ -14,7 +14,7 @@
 
 - (id)initWithCanvas:(JSObjectRef)canvas renderingContext:(EJCanvasContext2D *)renderingContextp {
 	if( self = [super initWithContext:NULL argc:0 argv:NULL] ) {
-		ejectaInstance = [EJApp instance]; // Keep a local copy - may be faster?
+		app = [EJApp instance]; // Keep a local copy - may be faster?
 		renderingContext = [renderingContextp retain];
 		jsCanvas = canvas;
 	}
@@ -163,7 +163,7 @@ EJ_BIND_SET(font, ctx, value) {
 }
 
 EJ_BIND_SET(imageSmoothingEnabled, ctx, value) {
-	ejectaInstance.currentRenderingContext = renderingContext;
+	app.currentRenderingContext = renderingContext;
 	renderingContext.imageSmoothingEnabled = JSValueToBoolean(ctx, value);
 }
 
@@ -251,7 +251,7 @@ EJ_BIND_FUNCTION(drawImage, ctx, argc, argv) {
 		return NULL;
 	}
 	
-	ejectaInstance.currentRenderingContext = renderingContext;
+	app.currentRenderingContext = renderingContext;
 	[renderingContext drawImage:image sx:sx sy:sy sw:sw sh:sh dx:dx dy:dy dw:dw dh:dh];
 	
 	return NULL;
@@ -260,7 +260,7 @@ EJ_BIND_FUNCTION(drawImage, ctx, argc, argv) {
 EJ_BIND_FUNCTION(fillRect, ctx, argc, argv) {
 	EJ_UNPACK_ARGV(float dx, float dy, float w, float h);
 			
-	ejectaInstance.currentRenderingContext = renderingContext;
+	app.currentRenderingContext = renderingContext;
 	[renderingContext fillRectX:dx y:dy w:w h:h];
 	return NULL;
 }
@@ -268,7 +268,7 @@ EJ_BIND_FUNCTION(fillRect, ctx, argc, argv) {
 EJ_BIND_FUNCTION(strokeRect, ctx, argc, argv) {
 	EJ_UNPACK_ARGV(float dx, float dy, float w, float h);
 	
-	ejectaInstance.currentRenderingContext = renderingContext;
+	app.currentRenderingContext = renderingContext;
 	[renderingContext strokeRectX:dx y:dy w:w h:h];
 	return NULL;
 }
@@ -276,7 +276,7 @@ EJ_BIND_FUNCTION(strokeRect, ctx, argc, argv) {
 EJ_BIND_FUNCTION(clearRect, ctx, argc, argv) {
 	EJ_UNPACK_ARGV(float dx, float dy, float w, float h);
 	
-	ejectaInstance.currentRenderingContext = renderingContext;
+	app.currentRenderingContext = renderingContext;
 	[renderingContext clearRectX:dx y:dy w:w h:h];
 	return NULL;
 }
@@ -284,7 +284,7 @@ EJ_BIND_FUNCTION(clearRect, ctx, argc, argv) {
 EJ_BIND_FUNCTION(getImageData, ctx, argc, argv) {
 	EJ_UNPACK_ARGV(short sx, short sy, short sw, short sh);
 	
-	ejectaInstance.currentRenderingContext = renderingContext;
+	app.currentRenderingContext = renderingContext;
 	
 	EJImageData * imageData = [renderingContext getImageDataSx:sx sy:sy sw:sw sh:sh];
 	
@@ -308,7 +308,7 @@ EJ_BIND_FUNCTION(putImageData, ctx, argc, argv) {
 	EJBindingImageData * jsImageData = (EJBindingImageData *)JSObjectGetPrivate((JSObjectRef)argv[0]);
 	EJ_UNPACK_ARGV_OFFSET(1, float dx, float dy);
 	
-	ejectaInstance.currentRenderingContext = renderingContext;
+	app.currentRenderingContext = renderingContext;
 	[renderingContext putImageData:jsImageData.imageData dx:dx dy:dy];
 	return NULL;
 }
@@ -316,7 +316,7 @@ EJ_BIND_FUNCTION(putImageData, ctx, argc, argv) {
 EJ_BIND_FUNCTION(getImageDataHD, ctx, argc, argv) {
 	EJ_UNPACK_ARGV(short sx, short sy, short sw, short sh);
 	
-	ejectaInstance.currentRenderingContext = renderingContext;
+	app.currentRenderingContext = renderingContext;
 	
 	EJImageData * imageData = [renderingContext getImageDataHDSx:sx sy:sy sw:sw sh:sh];
 	
@@ -340,7 +340,7 @@ EJ_BIND_FUNCTION(putImageDataHD, ctx, argc, argv) {
 	EJBindingImageData * jsImageData = (EJBindingImageData *)JSObjectGetPrivate((JSObjectRef)argv[0]);
 	EJ_UNPACK_ARGV_OFFSET(1, float dx, float dy);
 	
-	ejectaInstance.currentRenderingContext = renderingContext;
+	app.currentRenderingContext = renderingContext;
 	[renderingContext putImageDataHD:jsImageData.imageData dx:dx dy:dy];
 	return NULL;
 }
@@ -397,13 +397,13 @@ EJ_BIND_FUNCTION( closePath, ctx, argc, argv ) {
 }
 
 EJ_BIND_FUNCTION( fill, ctx, argc, argv ) {
-	ejectaInstance.currentRenderingContext = renderingContext;
+	app.currentRenderingContext = renderingContext;
 	[renderingContext fill];
 	return NULL;
 }
 
 EJ_BIND_FUNCTION( stroke, ctx, argc, argv ) {
-	ejectaInstance.currentRenderingContext = renderingContext;
+	app.currentRenderingContext = renderingContext;
 	[renderingContext stroke];
 	return NULL;
 }
@@ -471,7 +471,7 @@ EJ_BIND_FUNCTION( fillText, ctx, argc, argv ) {
 	NSString * string = JSValueToNSString(ctx, argv[0]);
 	EJ_UNPACK_ARGV_OFFSET(1, float x, float y);
 	
-	ejectaInstance.currentRenderingContext = renderingContext;
+	app.currentRenderingContext = renderingContext;
 	[renderingContext fillText:string x:x y:y];
 	return NULL;
 }
@@ -482,19 +482,19 @@ EJ_BIND_FUNCTION( strokeText, ctx, argc, argv ) {
 	NSString * string = JSValueToNSString(ctx, argv[0]);
 	EJ_UNPACK_ARGV_OFFSET(1, float x, float y);
 	
-	ejectaInstance.currentRenderingContext = renderingContext;
+	app.currentRenderingContext = renderingContext;
 	[renderingContext strokeText:string x:x y:y];
 	return NULL;
 }
 
 EJ_BIND_FUNCTION( clip, ctx, argc, argv ) {
-	ejectaInstance.currentRenderingContext = renderingContext;
+	app.currentRenderingContext = renderingContext;
 	[renderingContext clip];
 	return NULL;
 }
 
 EJ_BIND_FUNCTION( resetClip, ctx, argc, argv ) {
-	ejectaInstance.currentRenderingContext = renderingContext;
+	app.currentRenderingContext = renderingContext;
 	[renderingContext resetClip];
 	return NULL;
 }
