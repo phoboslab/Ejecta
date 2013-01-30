@@ -23,14 +23,14 @@
 
 - (void)endLoad:(EJTexture *)tex {
 	loading = NO;
-	JSValueUnprotect([EJApp instance].jsGlobalContext, jsObject);
-	
 	if( texture.textureId ) {
 		[self triggerEvent:@"load" argc:0 argv:NULL];
 	}
 	else {
 		[self triggerEvent:@"error" argc:0 argv:NULL];
 	}
+	
+	JSValueUnprotect([EJApp instance].jsGlobalContext, jsObject);
 }
 
 - (void)dealloc {
