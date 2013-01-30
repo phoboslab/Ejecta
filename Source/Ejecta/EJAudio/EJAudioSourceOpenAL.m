@@ -3,6 +3,7 @@
 
 @implementation EJAudioSourceOpenAL
 
+@synthesize delegate;
 
 - (id)initWithPath:(NSString *)pathp {
 	if( self = [super init] ) {
@@ -37,19 +38,29 @@
 	}
 	[buffer release];
 	[path release];
+	[endTimer invalidate];
 	
 	[super dealloc];
 }
 
 - (void)play {
 	alSourcePlay( sourceId );
+	
+	[endTimer invalidate];
+	
+	float targetTime = buffer.duration - self.currentTime;
+	endTimer = [NSTimer scheduledTimerWithTimeInterval:targetTime
+		target:self selector:@selector(ended:) userInfo:nil repeats:NO];
 }
 
 - (void)pause {
 	alSourceStop( sourceId );
+	[endTimer invalidate];
+	endTimer = nil;
 }
 
 - (void)setLooping:(BOOL)loop {
+	looping = loop;
 	alSourcei( sourceId, AL_LOOPING, loop ? AL_TRUE : AL_FALSE );
 }
 
@@ -57,7 +68,7 @@
 	alSourcef( sourceId, AL_GAIN, volume );
 }
 
-- (float)getCurrentTime {
+- (float)currentTime {
 	float time;
 	alGetSourcef( sourceId, AL_SEC_OFFSET,  &time );
 	return time;
@@ -65,6 +76,17 @@
 
 - (void)setCurrentTime:(float)time {
 	alSourcef( sourceId, AL_SEC_OFFSET,  time );
+}
+
+- (float)duration {
+	return buffer.duration;
+}
+
+- (void)ended:(NSTimer *)timer {
+	endTimer = nil;
+	if( !looping ) {
+		[delegate sourceDidFinishPlaying:self];
+	}
 }
 
 @end

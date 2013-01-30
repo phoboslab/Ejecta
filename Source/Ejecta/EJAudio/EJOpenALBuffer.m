@@ -4,8 +4,8 @@
 #import <AudioToolbox/ExtendedAudioFile.h>
 
 @implementation EJOpenALBuffer
-
 @synthesize bufferId;
+@synthesize duration;
 
 - (id)initWithPath:(NSString *)pathp {
 	if( self = [super init] ) {
@@ -52,6 +52,7 @@
 		NSLog(@"OpenALSource: Unsupported Format, channel count is greater than stereo"); 
 		goto Exit;
 	}
+	
 
 	// Set the client format to 16 bit signed integer (native-endian) data
 	// Maintain the channel count and sample rate of the original source format
@@ -99,6 +100,8 @@
 		size = (ALsizei)dataSize;
 		format = (outputFormat.mChannelsPerFrame > 1) ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16;
 		sampleRate = (ALsizei)outputFormat.mSampleRate;
+		
+		duration = (float)frameCount / sampleRate;
 	}
 	else { 
 		// failure

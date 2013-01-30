@@ -9,6 +9,7 @@
 	if( self = [super init] ) {
 		path = [pathp retain];
 		player = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:path] error:nil];
+		player.delegate = self;
 	}
 	return self;
 }
@@ -18,14 +19,6 @@
 	[player release];
 	
 	[super dealloc];
-}
-
-- (void)setDelegate:(NSObject<AVAudioPlayerDelegate> *)delegatep {
-	player.delegate = delegatep;
-}
-
-- (NSObject<AVAudioPlayerDelegate> *)delegate {
-	return player.delegate;
 }
 
 - (void)play {
@@ -44,12 +37,20 @@
 	player.volume = volume;
 }
 
-- (float)getCurrentTime {
+- (float)currentTime {
 	return player.currentTime;
 }
 
 - (void)setCurrentTime:(float)time {
 	player.currentTime = time;
+}
+
+- (float)duration {
+	return player.duration;
+}
+
+- (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag {
+	[delegate sourceDidFinishPlaying:self];
 }
 
 @end

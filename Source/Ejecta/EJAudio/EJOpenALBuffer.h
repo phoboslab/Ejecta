@@ -8,11 +8,14 @@
 	ALenum format;
 	ALsizei size;
 	ALsizei sampleRate;
+	
+	float duration;
 }
 
 - (id)initWithPath:(NSString *)pathp;
 - (void*)getAudioDataWithURL:(NSURL *)url;
 
 @property (readonly) unsigned int bufferId;
+@property (readonly) float duration;
 
 @end

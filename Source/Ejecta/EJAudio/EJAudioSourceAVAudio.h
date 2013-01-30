@@ -3,11 +3,14 @@
 
 #import "EJAudioSource.h"
 
-@interface EJAudioSourceAVAudio : NSObject <EJAudioSource> {
+@interface EJAudioSourceAVAudio : NSObject <EJAudioSource, AVAudioPlayerDelegate> {
 	NSString * path;
 	AVAudioPlayer * player;
+	NSObject<EJAudioSourceDelegate> * delegate;
 }
 
-@property (nonatomic, assign) NSObject<AVAudioPlayerDelegate> * delegate; 
+@property (nonatomic) float currentTime;
+@property (nonatomic) float duration;
+@property (nonatomic, assign) NSObject<EJAudioSourceDelegate> * delegate;
 
 @end

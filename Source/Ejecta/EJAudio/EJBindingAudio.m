@@ -10,6 +10,7 @@
 - (id)initWithContext:(JSContextRef)ctx argc:(size_t)argc argv:(const JSValueRef [])argv {
 	if( self = [super initWithContext:ctx argc:argc argv:argv] ) {
 		volume = 1;
+		paused = true;
 		preload = kEJAudioPreloadNone;
 		
 		if( argc > 0 ) {
@@ -69,8 +70,8 @@
 		else {
 			NSLog(@"Loading Sound(AVAudio): %@", path);
 			src = [[EJAudioSourceAVAudio alloc] initWithPath:fullPath];
-			((EJAudioSourceAVAudio *)src).delegate = self;
 		}
+		src.delegate = self;
 		[src autorelease];
 		
 		[self performSelectorOnMainThread:@selector(endLoad:) withObject:src waitUntilDone:NO];
@@ -88,11 +89,12 @@
 	
 	loading = NO;
 	[self triggerEvent:@"canplaythrough" argc:0 argv:NULL];
+	[self triggerEvent:@"loadedmetadata" argc:0 argv:NULL];
 	
 	JSValueUnprotect([EJApp instance].jsGlobalContext, jsObject);
 }
 
-- (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag {
+- (void)sourceDidFinishPlaying:(NSObject<EJAudioSource> *)source {
 	ended = true;
 	[self triggerEvent:@"ended" argc:0 argv:NULL];
 }
@@ -112,6 +114,7 @@ EJ_BIND_FUNCTION(play, ctx, argc, argv) {
 	}
 	else {
 		[source play];
+		paused = false;
 		ended = false;
 	}
 	return NULL;
@@ -122,6 +125,7 @@ EJ_BIND_FUNCTION(pause, ctx, argc, argv) {
 		playAfterLoad = NO;
 	}
 	else {
+		paused = true;
 		[source pause];
 	}
 	return NULL;
@@ -164,6 +168,10 @@ EJ_BIND_FUNCTION(cloneNode, ctx, argc, argv) {
 	return clone;
 }
 
+EJ_BIND_GET(duration, ctx) {
+	return JSValueMakeNumber(ctx, source.duration);
+}
+
 EJ_BIND_GET(loop, ctx) {
 	return JSValueMakeBoolean( ctx, loop );
 }
@@ -183,12 +191,12 @@ EJ_BIND_SET(volume, ctx, value) {
 }
 
 EJ_BIND_GET(currentTime, ctx) {
-	return JSValueMakeNumber( ctx, source ? [source getCurrentTime] : 0 );
+	return JSValueMakeNumber( ctx, source ? source.currentTime : 0 );
 }
 
 EJ_BIND_SET(currentTime, ctx, value) {
 	[self load];
-	[source setCurrentTime:JSValueToNumberFast(ctx, value)];
+	source.currentTime = JSValueToNumberFast(ctx, value);
 }
 
 EJ_BIND_GET(src, ctx) {
@@ -206,12 +214,17 @@ EJ_BIND_GET(ended, ctx) {
 	return JSValueMakeBoolean(ctx, ended);
 }
 
+EJ_BIND_GET(paused, ctx) {
+	return JSValueMakeBoolean(ctx, paused);
+}
+
 EJ_BIND_ENUM(preload, self.preload,
 	"none",		// kEJAudioPreloadNone
 	"metadata", // kEJAudioPreloadMetadata
 	"auto"		// kEJAudioPreloadAuto
 );
 
+EJ_BIND_EVENT(loadedmetadata);
 EJ_BIND_EVENT(canplaythrough);
 EJ_BIND_EVENT(ended);
 

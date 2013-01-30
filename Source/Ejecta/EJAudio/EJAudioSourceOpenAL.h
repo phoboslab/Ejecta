@@ -11,6 +11,14 @@
 	NSString * path;
 	unsigned int sourceId;
 	EJOpenALBuffer * buffer;
+	BOOL looping;
+	
+	NSTimer * endTimer;
+	NSObject<EJAudioSourceDelegate> * delegate;
 }
+
+@property (nonatomic) float currentTime;
+@property (nonatomic) float duration;
+@property (nonatomic, assign) NSObject<EJAudioSourceDelegate> * delegate;
 
 @end
