@@ -10,7 +10,7 @@ void _ej_class_finalize(JSObjectRef object) {
 NSData * NSDataFromString( NSString *str ) {
 	int len = [str length] + 1;
 	NSMutableData * d = [NSMutableData dataWithLength:len];
-	strlcpy(d.mutableBytes, [str UTF8String], len);
+	strlcpy(d.mutableBytes, str.UTF8String, len);
 	return d;
 }
 
@@ -42,6 +42,11 @@ static NSMutableDictionary * CachedJSClasses;
 	jsClass = [self createJSClass];
 	[CachedJSClasses setObject:[NSValue valueWithPointer:jsClass] forKey:ownClass];
 	return jsClass;
+}
+
++ (void)clearJSClassCache {
+	[CachedJSClasses release];
+	CachedJSClasses = NULL;
 }
 
 + (JSClassRef)createJSClass {
@@ -109,7 +114,7 @@ static NSMutableDictionary * CachedJSClasses;
 	}
 	
 	JSClassDefinition classDef = kJSClassDefinitionEmpty;
-	classDef.className = class_getName([self class]) + sizeof("EJBinding")-1;
+	classDef.className = class_getName(self.class) + sizeof("EJBinding")-1;
 	classDef.finalize = _ej_class_finalize;
 	classDef.staticValues = values;
 	classDef.staticFunctions = functions;

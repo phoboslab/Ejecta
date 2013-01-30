@@ -235,6 +235,7 @@ static inline bool JSStrIsEqualToStr( const JSChar * s1, const char * s2, int le
 
 - (id)initWithContext:(JSContextRef)ctxp argc:(size_t)argc argv:(const JSValueRef [])argv;
 + (JSClassRef)getJSClass;
++ (void)clearJSClassCache;
 + (JSClassRef)createJSClass;
 + (JSObjectRef)createJSObjectWithContext:(JSContextRef)ctx instance:(EJBindingBase *)instance;
 
