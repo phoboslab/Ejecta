@@ -6,6 +6,7 @@
 #import "EJPresentable.h"
 #import "EJGLProgram2D.h"
 #import "EJGLProgram2DRadialGradient.h"
+#import "EJOpenALManager.h"
 
 #define EJECTA_VERSION @"1.2"
 #define EJECTA_APP_FOLDER @"App/"
@@ -40,6 +41,8 @@
 	EAGLContext * glContext2D;
 	EAGLSharegroup * glSharegroup;
 	CADisplayLink * displayLink;
+	
+	EJOpenALManager * openALManager;
 	EJGLProgram2D * glProgram2DFlat;
 	EJGLProgram2D * glProgram2DTexture;
 	EJGLProgram2D * glProgram2DAlphaTexture;
@@ -73,6 +76,7 @@
 + (EJApp *)instance;
 
 // Todo: clean this up somehow?
+@property (nonatomic, readonly) EJOpenALManager * openALManager;
 @property (nonatomic, readonly) EJGLProgram2D * glProgram2DFlat;
 @property (nonatomic, readonly) EJGLProgram2D * glProgram2DTexture;
 @property (nonatomic, readonly) EJGLProgram2D * glProgram2DAlphaTexture;

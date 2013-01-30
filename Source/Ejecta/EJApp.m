@@ -66,7 +66,7 @@ static EJApp * ejectaInstance = NULL;
 	
 		ejectaInstance = self;
 		window = windowp;
-		[window setRootViewController:self];
+		window.rootViewController = self;
 		[UIApplication sharedApplication].idleTimerDisabled = YES;
 		
 		
@@ -139,6 +139,8 @@ static EJApp * ejectaInstance = NULL;
 	[displayLink invalidate];
 	[displayLink release];
 	[timers release];
+	
+	[openALManager release];
 	[glProgram2DFlat release];
 	[glProgram2DTexture release];
 	[glProgram2DAlphaTexture release];
@@ -379,6 +381,12 @@ EJ_GL_PROGRAM_GETTER(EJGLProgram2DRadialGradient, RadialGradient);
 
 #undef EJ_GL_PROGRAM_GETTER
 
+- (EJOpenALManager *)openALManager {
+	if( !openALManager ) {
+		openALManager = [[EJOpenALManager alloc] init];
+	}
+	return openALManager;
+}
 
 - (void)setCurrentRenderingContext:(EJCanvasContext *)renderingContext {
 	if( renderingContext != currentRenderingContext ) {

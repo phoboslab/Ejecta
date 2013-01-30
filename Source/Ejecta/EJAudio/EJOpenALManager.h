@@ -9,8 +9,6 @@
 	NSMutableDictionary *buffers;
 }
 
-+ (EJOpenALManager *)instance;
-
 @property (readonly, nonatomic) NSMutableDictionary * buffers;
 
 @end
