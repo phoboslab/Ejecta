@@ -310,14 +310,10 @@ typedef std::vector<subpath_t> path_t;
 		[self push:currentPos];
 	}
 	
-	// Add the final step or close the path if it's a full circle. FIXME, maybe?
-	if( fabsf(span) < 2 * M_PI - FLT_EPSILON ) {
-		currentPos = EJVector2ApplyTransform( EJVector2Make(x + cosf(angle) * radius, y + sinf(angle) * radius), transform);
-		[self push:currentPos];
-	}
-	else {
-		[self close];
-	}
+	// Add the final step or close to the first one if it's a full circle
+	float lastAngle = (fabsf(span) < 2 * M_PI - FLT_EPSILON) ? angle : startAngle;
+	currentPos = EJVector2ApplyTransform( EJVector2Make(x + cosf(lastAngle) * radius, y + sinf(lastAngle) * radius), transform);
+	[self push:currentPos];
 }
 
 - (void)drawPolygonsToContext:(EJCanvasContext2D *)context target:(EJPathPolygonTarget)target {
