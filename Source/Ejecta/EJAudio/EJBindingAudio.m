@@ -44,6 +44,10 @@
 	// This will begin loading the sound in a background thread
 	loading = YES;
 	
+	// Protect this Audio object from garbage collection, as its callback function
+	// may be the only thing holding on to it
+	JSValueProtect([EJApp instance].jsGlobalContext, jsObject);
+	
 	NSString * fullPath = [[EJApp instance] pathForResource:path];
 	NSInvocationOperation * loadOp = [[NSInvocationOperation alloc] initWithTarget:self
 				selector:@selector(loadOperation:) object:fullPath];
@@ -81,9 +85,11 @@
 	if( playAfterLoad ) {
 		[source play];
 	}
-	loading = NO;
 	
+	loading = NO;
 	[self triggerEvent:@"canplaythrough" argc:0 argv:NULL];
+	
+	JSValueUnprotect([EJApp instance].jsGlobalContext, jsObject);
 }
 
 - (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag {
