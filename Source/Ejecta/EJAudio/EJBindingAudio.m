@@ -33,7 +33,7 @@
 		source = NULL;
 		
 		path = [pathp retain];
-		if( preload == kEJAudioPreloadAuto ) {
+		if( preload != kEJAudioPreloadNone ) {
 			[self load];
 		}
 	}
@@ -101,7 +101,7 @@
 
 - (void)setPreload:(EJAudioPreload)preloadp {
 	preload = preloadp;
-	if( preload == kEJAudioPreloadAuto ) {
+	if( preload != kEJAudioPreloadNone ) {
 		[self load];
 	}
 }
@@ -205,7 +205,7 @@ EJ_BIND_GET(src, ctx) {
 
 EJ_BIND_SET(src, ctx, value) {
 	[self setSourcePath:JSValueToNSString(ctx, value)];
-	if( preload == kEJAudioPreloadAuto ) {
+	if( preload != kEJAudioPreloadNone ) {
 		[self load];
 	}
 }
