@@ -1,5 +1,6 @@
 #import <Foundation/Foundation.h>
 #import "EJBindingBase.h"
+#import "EJFont.h"
 
 enum {
 	kEJCoreAlertViewOpenURL = 1,

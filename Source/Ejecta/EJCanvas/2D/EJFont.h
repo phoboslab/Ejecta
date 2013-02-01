@@ -7,6 +7,7 @@
 @interface EJFont : NSObject
 
 - (id)initWithFont:(NSString*)font size:(NSInteger)size fill:(BOOL)fill contentScale:(float)contentScale;
++ (void)loadFontAtPath:(NSString*)path;
 - (void)drawString:(NSString*)string toContext:(EJCanvasContext2D*)context x:(float)x y:(float)y;
 - (float)measureString:(NSString*)string;
 
