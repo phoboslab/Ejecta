@@ -29,10 +29,10 @@ EJ_BIND_FUNCTION(include, ctx, argc, argv ) {
 
 EJ_BIND_FUNCTION(loadFont, ctx, argc, argv ) {
 	if( argc < 1 ) { return NULL; }
-    
-    NSString *path = JSValueToNSString(ctx, argv[0]);
-    NSString *fullPath = [[EJApp instance] pathForResource:path];
-    [EJFont loadFontAtPath:fullPath];
+
+	NSString * path = JSValueToNSString(ctx, argv[0]);
+	NSString * fullPath = [[EJApp instance] pathForResource:path];
+	[EJFont loadFontAtPath:fullPath];
 	return NULL;
 }
 

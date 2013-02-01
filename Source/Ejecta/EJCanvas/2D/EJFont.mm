@@ -82,21 +82,21 @@ int GlyphLayoutSortByTextureIndex(const void * a, const void * b) {
 }
 
 + (void)loadFontAtPath:(NSString*)path{
-    NSData *inData = [[NSFileManager defaultManager] contentsAtPath:path];
-    if(inData == nil){
-        NSLog(@"Failed to load font. Data at path is null");
-        return;
-    }
-    CFErrorRef error;
-    CGDataProviderRef provider = CGDataProviderCreateWithCFData((CFDataRef)inData);
-    CGFontRef font = CGFontCreateWithDataProvider(provider);
-    if(!CTFontManagerRegisterGraphicsFont(font, &error)){
-        CFStringRef errorDescription = CFErrorCopyDescription(error);
-        NSLog(@"Failed to load font: %@", errorDescription);
-        CFRelease(errorDescription);
-    }
-    CFRelease(font);
-    CFRelease(provider);
+	NSData *inData = [[NSFileManager defaultManager] contentsAtPath:path];
+	if(inData == nil){
+		NSLog(@"Failed to load font. Data at path is null");
+		return;
+	}
+	CFErrorRef error;
+	CGDataProviderRef provider = CGDataProviderCreateWithCFData((CFDataRef)inData);
+	CGFontRef font = CGFontCreateWithDataProvider(provider);
+	if( !CTFontManagerRegisterGraphicsFont(font, &error) ){
+		CFStringRef errorDescription = CFErrorCopyDescription(error);
+		NSLog(@"Failed to load font: %@", errorDescription);
+		CFRelease(errorDescription);
+	}
+	CFRelease(font);
+	CFRelease(provider);
 }
 
 - (void)dealloc {
