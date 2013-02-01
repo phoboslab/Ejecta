@@ -461,6 +461,8 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 }
 
 - (void)setGlobalCompositeOperation:(EJCompositeOperation)op {
+	if( op == state->globalCompositeOperation ) { return; }
+	
 	[self flushBuffers];
 	glBlendFunc( EJCompositeOperationFuncs[op].source, EJCompositeOperationFuncs[op].destination );
 	state->globalCompositeOperation = op;
