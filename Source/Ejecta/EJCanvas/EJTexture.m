@@ -141,6 +141,7 @@ static GLint EJTextureGlobalFilter = GL_LINEAR;
 	[self createWithPixels:pixels format:GL_RGBA];
 	if( callbackTarget && callbackSelector ) {
 		[callbackTarget performSelector:callbackSelector withObject:self];
+		[callbackTarget release];
 	}
 }
 
