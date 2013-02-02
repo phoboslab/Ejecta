@@ -86,7 +86,7 @@ typedef struct {
 	short bufferWidth, bufferHeight;
 	EJVector2 vertexScale, vertexTranslate;
 	
-	BOOL imageSmoothingEnabled;
+	GLenum textureFilter;
 	EJTexture * currentTexture;
 	EJPath * path;
 	

@@ -64,18 +64,6 @@
 
 @implementation EJTexture
 
-// Canvas2D Textures check this global filter state when binding
-static GLint EJTextureGlobalFilter = GL_LINEAR;
-
-+ (BOOL)smoothScaling {
-	return (EJTextureGlobalFilter == GL_LINEAR); 
-}
-
-+ (void)setSmoothScaling:(BOOL)smoothScaling {
-	EJTextureGlobalFilter = smoothScaling ? GL_LINEAR : GL_NEAREST; 
-}
-
-
 @synthesize contentScale;
 @synthesize format;
 @synthesize width, height;
@@ -291,8 +279,8 @@ static GLint EJTextureGlobalFilter = GL_LINEAR;
 	}
 	
 	// Set the default texture params for Canvas2D
-	params[kEJTextureParamMinFilter] = EJTextureGlobalFilter;
-	params[kEJTextureParamMagFilter] = EJTextureGlobalFilter;
+	params[kEJTextureParamMinFilter] = GL_LINEAR;
+	params[kEJTextureParamMagFilter] = GL_LINEAR;
 	params[kEJTextureParamWrapS] = GL_CLAMP_TO_EDGE;
 	params[kEJTextureParamWrapT] = GL_CLAMP_TO_EDGE;
 
@@ -417,18 +405,13 @@ static GLint EJTextureGlobalFilter = GL_LINEAR;
 	else if(pname == GL_TEXTURE_WRAP_T) params[kEJTextureParamWrapT] = param;
 }
 
-- (void)bind {
-	[self bindToTarget:GL_TEXTURE_2D];
+- (void)bindWithFilter:(GLenum)filter {
+	params[kEJTextureParamMinFilter] = filter;
+	params[kEJTextureParamMagFilter] = filter;
+	[textureStorage bindToTarget:GL_TEXTURE_2D withParams:params];
 }
 
 - (void)bindToTarget:(GLenum)target {
-	if(
-		owningContext == kEJTextureOwningContextCanvas2D &&
-		EJTextureGlobalFilter != params[kEJTextureParamMagFilter]
-	) {
-		params[kEJTextureParamMinFilter] = EJTextureGlobalFilter;
-		params[kEJTextureParamMagFilter] = EJTextureGlobalFilter;
-	}
 	[textureStorage bindToTarget:target withParams:params];
 }
 

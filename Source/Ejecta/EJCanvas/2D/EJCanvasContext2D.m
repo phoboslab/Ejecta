@@ -57,7 +57,7 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 		fontCache = [[NSCache alloc] init];
 		fontCache.countLimit = 8;
 		
-		imageSmoothingEnabled = YES;
+		textureFilter = GL_LINEAR;
 		msaaEnabled = NO;
 		msaaSamples = 2;
 	}
@@ -155,7 +155,6 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 	glBlendFunc( EJCompositeOperationFuncs[op].source, EJCompositeOperationFuncs[op].destination );
 	currentTexture = nil;
 	currentProgram = nil;
-	[EJTexture setSmoothScaling:imageSmoothingEnabled];
 	
 	[self bindVertexBuffer];
 	
@@ -180,7 +179,7 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 	[self flushBuffers];
 	
 	currentTexture = newTexture;
-	[currentTexture bind];
+	[currentTexture bindWithFilter:textureFilter];
 }
 
 - (void)setProgram:(EJGLProgram2D *)newProgram {
@@ -454,10 +453,13 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 	vertexBufferIndex = 0;
 }
 
+- (BOOL)imageSmoothingEnabled {
+	return (textureFilter == GL_LINEAR);
+}
+
 - (void)setImageSmoothingEnabled:(BOOL)enabled {
 	[self setTexture:NULL]; // force rebind for next texture
-	imageSmoothingEnabled = enabled;
-	[EJTexture setSmoothScaling:enabled];
+	textureFilter = (enabled ? GL_LINEAR : GL_NEAREST);
 }
 
 - (void)setGlobalCompositeOperation:(EJCompositeOperation)op {

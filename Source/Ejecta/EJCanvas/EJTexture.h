@@ -69,11 +69,8 @@ typedef enum {
 - (GLint)getParam:(GLenum)pname;
 - (void)setParam:(GLenum)pname param:(GLenum)param;
 
-- (void)bind;
+- (void)bindWithFilter:(GLenum)filter;
 - (void)bindToTarget:(GLenum)target;
-
-+ (BOOL)smoothScaling;
-+ (void)setSmoothScaling:(BOOL)smoothScaling;
 
 @property (readonly, nonatomic) BOOL isDynamic;
 @property (readonly, nonatomic) NSMutableData * pixels;
