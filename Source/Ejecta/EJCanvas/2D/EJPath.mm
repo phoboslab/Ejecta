@@ -392,8 +392,8 @@ typedef std::vector<subpath_t> path_t;
 	glStencilFunc(GL_NOTEQUAL, 0x00, 0xff);
     glStencilOp(GL_ZERO, GL_ZERO, GL_ZERO);
 
-	if( state->fillObject ) {
-		// If we have a fill pattern, we have to do some extra work to unproject the
+	if( state->fillObject && target == kEJPathPolygonTargetColor ) {
+		// If we have a fill pattern or gradient, we have to do some extra work to unproject the
 		// Quad we're drawing, so we can then project it _with_ the pattern/gradient again
 		
 		CGAffineTransform inverse = CGAffineTransformInvert(transform);
