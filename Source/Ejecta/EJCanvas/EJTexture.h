@@ -33,6 +33,7 @@ typedef enum {
 } EJTextureOwningContext;
 
 @interface EJTexture : NSObject <NSCopying> {
+	BOOL cached;
 	short width, height;
 	NSString * fullPath;
 	EJTextureStorage * textureStorage;
@@ -42,12 +43,12 @@ typedef enum {
 	
 	EJTextureOwningContext owningContext;
 	EJTextureParams params;
-	id callbackTarget;
-	SEL callbackSelector;
+	NSOperation * loadCallback;
 }
 - (id)initEmptyForWebGL;
 - (id)initWithPath:(NSString *)path;
-- (id)initWithPath:(NSString *)path loadOnQueue:(NSOperationQueue *)queue withTarget:(id)target selector:(SEL)selector;
++ (id)cachedTextureWithPath:(NSString *)path callback:(void (^)(void))callback;
+- (id)initWithPath:(NSString *)path callback:(void (^)(void))callback;
 
 - (id)initWithWidth:(int)widthp height:(int)heightp;
 - (id)initWithWidth:(int)widthp height:(int)heightp format:(GLenum) format;

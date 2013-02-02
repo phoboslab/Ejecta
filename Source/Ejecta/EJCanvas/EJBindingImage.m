@@ -14,23 +14,13 @@
 	JSValueProtect([EJApp instance].jsGlobalContext, jsObject);
 	
 	NSLog(@"Loading Image: %@", path);
-	
 	NSString * fullPath = [[EJApp instance] pathForResource:path];
-	NSOperationQueue * queue = [EJApp instance].opQueue;
-	texture = [[EJTexture alloc] initWithPath:fullPath
-		loadOnQueue:queue withTarget:self selector:@selector(endLoad:)];
-}
-
-- (void)endLoad:(EJTexture *)tex {
-	loading = NO;
-	if( texture.textureId ) {
-		[self triggerEvent:@"load" argc:0 argv:NULL];
-	}
-	else {
-		[self triggerEvent:@"error" argc:0 argv:NULL];
-	}
 	
-	JSValueUnprotect([EJApp instance].jsGlobalContext, jsObject);
+	texture = [[EJTexture cachedTextureWithPath:fullPath callback:^{
+		loading = NO;
+		[self triggerEvent:(texture.textureId ? @"load" : @"error") argc:0 argv:NULL];		
+		JSValueUnprotect([EJApp instance].jsGlobalContext, jsObject);
+	}] retain];
 }
 
 - (void)dealloc {

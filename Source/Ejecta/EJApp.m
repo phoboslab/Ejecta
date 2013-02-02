@@ -140,6 +140,7 @@ static EJApp * ejectaInstance = NULL;
 	[displayLink release];
 	[timers release];
 	
+	[textureCache release];
 	[openALManager release];
 	[glProgram2DFlat release];
 	[glProgram2DTexture release];
@@ -386,6 +387,14 @@ EJ_GL_PROGRAM_GETTER(EJGLProgram2DRadialGradient, RadialGradient);
 		openALManager = [[EJOpenALManager alloc] init];
 	}
 	return openALManager;
+}
+
+- (NSMutableDictionary *)textureCache {
+	if( !textureCache ) {
+		// Create a non-retaining Dictionary to hold the cached textures
+		textureCache = (NSMutableDictionary*)CFDictionaryCreateMutable(NULL, 8, &kCFCopyStringDictionaryKeyCallBacks, NULL);
+	}
+	return textureCache;
 }
 
 - (void)setCurrentRenderingContext:(EJCanvasContext *)renderingContext {

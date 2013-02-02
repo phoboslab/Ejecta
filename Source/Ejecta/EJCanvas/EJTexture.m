@@ -4,6 +4,8 @@
 #import "lodepng/lodepng.h"
 #import "EJConvertWebGL.h"
 
+#import "EJApp.h"
+
 
 @implementation EJTextureStorage
 @synthesize textureId;
@@ -52,11 +54,6 @@
 		params[kEJTextureParamWrapT] = newParams[kEJTextureParamWrapT];
 		glTexParameteri(target, GL_TEXTURE_WRAP_T, params[kEJTextureParamWrapT]);
 	}
-}
-
-- (NSMutableData *)pixels {
-	NSLog(@"Warning: No way to get pixel data for texture %@", self); // FIXME!
-	return NULL;
 }
 
 @end
@@ -113,36 +110,57 @@ static GLint EJTextureGlobalFilter = GL_LINEAR;
 	return self;
 }
 
-- (id)initWithPath:(NSString *)path loadOnQueue:(NSOperationQueue *)queue withTarget:(id)target selector:(SEL)selector {
++ (id)cachedTextureWithPath:(NSString *)path callback:(void (^)(void))callback {
+	// For loading on a background thread (non-blocking), but tries the cache first
+	
+	EJTexture * texture = [[EJApp instance].textureCache objectForKey:path];
+	if( texture ) {
+		// We already have a texture, but it may hasn't finished loading yet. If
+		// the texture's loadCallback is still present, add it as an dependency
+		// for the current callback.
+		
+		NSBlockOperation * callbackOp = [NSBlockOperation blockOperationWithBlock:callback];
+		if( texture->loadCallback ) {
+			[callbackOp addDependency:texture->loadCallback];
+		}
+		[[NSOperationQueue mainQueue] addOperation:callbackOp];
+	}
+	else {
+		// Create a new texture and add it to the cache
+		texture = [[EJTexture alloc] initWithPath:path callback:callback];
+		
+		[[EJApp instance].textureCache setObject:texture forKey:path];
+		[texture autorelease];
+		texture->cached = true;
+	}
+	return texture;
+}
+
+- (id)initWithPath:(NSString *)path callback:(void (^)(void))callback {
 	// For loading on a background thread (non-blocking)
 	if( self = [super init] ) {
 		contentScale = 1;
 		fullPath = [path retain];
 		owningContext = kEJTextureOwningContextCanvas2D;
 		
-		callbackTarget = [target retain];
-		callbackSelector = selector;
-		
-		NSInvocationOperation* loadOp = [[NSInvocationOperation alloc] initWithTarget:self
-				selector:@selector(backgroundLoadPixelsFromPath:) object:path];
-		loadOp.threadPriority = 0.2;
-		[queue addOperation:loadOp];
-		[loadOp release];
+		// Load the image file in a background thread
+		loadCallback = [[NSBlockOperation blockOperationWithBlock:callback] retain];
+		[[EJApp instance].opQueue addOperationWithBlock:^{
+			NSMutableData * pixels = [self loadPixelsFromPath:path];
+			
+			// Upload the pixel data in the main thread, otherwise the GLContext gets confused.	
+			// We could use a sharegroup here, but it turned out quite buggy and has little
+			// benefits - the main bottleneck is loading the image file.
+			[[NSOperationQueue mainQueue] addOperation:[NSBlockOperation blockOperationWithBlock:^{
+				[self createWithPixels:pixels format:GL_RGBA];
+				[loadCallback start];
+				[loadCallback release];
+				loadCallback = NULL;
+			}]];
+			
+		}];
 	}
 	return self;
-}
-
-- (void)backgroundLoadPixelsFromPath:(NSString *)path {
-	NSMutableData * pixels = [self loadPixelsFromPath:path];
-	[self performSelectorOnMainThread:@selector(backgroundEndLoad:) withObject:pixels waitUntilDone:NO];
-}
-
-- (void)backgroundEndLoad:(NSMutableData *)pixels {
-	[self createWithPixels:pixels format:GL_RGBA];
-	if( callbackTarget && callbackSelector ) {
-		[callbackTarget performSelector:callbackSelector withObject:self];
-		[callbackTarget release];
-	}
 }
 
 - (id)initWithWidth:(int)widthp height:(int)heightp {
@@ -187,13 +205,21 @@ static GLint EJTextureGlobalFilter = GL_LINEAR;
 }
 
 - (void)dealloc {
+	if( cached ) {
+		[[EJApp instance].textureCache removeObjectForKey:fullPath];
+	}
 	[fullPath release];
 	[textureStorage release];
 	[super dealloc];
 }
 
 - (void)ensureMutableKeepPixels:(BOOL)keepPixels forTarget:(GLenum)target {
+
+	// If we have a TextureStorage but it's not mutable (i.e. created by Canvas2D) and
+	// we're not the only owner of it, we have to create a new TextureStorage
 	if( textureStorage && textureStorage.immutable && textureStorage.retainCount > 1 ) {
+	
+		// Keep pixel data of the old TextureStorage when creating the new?
 		if( keepPixels ) {
 			NSMutableData * pixels = self.pixels;
 			if( pixels ) {

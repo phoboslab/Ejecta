@@ -42,6 +42,7 @@
 	EAGLSharegroup * glSharegroup;
 	CADisplayLink * displayLink;
 	
+	NSMutableDictionary * textureCache;
 	EJOpenALManager * openALManager;
 	EJGLProgram2D * glProgram2DFlat;
 	EJGLProgram2D * glProgram2DTexture;
@@ -76,6 +77,7 @@
 + (EJApp *)instance;
 
 // Todo: clean this up somehow?
+@property (nonatomic, readonly) NSMutableDictionary * textureCache;
 @property (nonatomic, readonly) EJOpenALManager * openALManager;
 @property (nonatomic, readonly) EJGLProgram2D * glProgram2DFlat;
 @property (nonatomic, readonly) EJGLProgram2D * glProgram2DTexture;
