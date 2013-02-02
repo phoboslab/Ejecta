@@ -55,13 +55,6 @@
 	[glContext renderbufferStorage:GL_RENDERBUFFER fromDrawable:(CAEAGLLayer *)glview.layer];
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, viewRenderBuffer);
 	
-
-	glDisable(GL_CULL_FACE);
-	glDisable(GL_DITHER);
-	
-	glEnable(GL_BLEND);
-	glDepthFunc(GL_ALWAYS);
-	
 	// Flip the screen - OpenGL has the origin in the bottom left corner. We want the top left.
 	vertexScale = EJVector2Make(2.0f/width, 2.0f/-height);
 	vertexTranslate = EJVector2Make(-1.0f, 1.0f);

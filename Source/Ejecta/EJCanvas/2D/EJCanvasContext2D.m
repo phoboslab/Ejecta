@@ -108,6 +108,12 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 	
 	glGenRenderbuffers(1, &viewRenderBuffer);
 	glBindRenderbuffer(GL_RENDERBUFFER, viewRenderBuffer);
+	
+	glDisable(GL_CULL_FACE);
+	glDisable(GL_DITHER);
+	
+	glEnable(GL_BLEND);
+	glDepthFunc(GL_ALWAYS);
 }
 
 - (void)createStencilBufferOnce {
