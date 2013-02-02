@@ -2,13 +2,24 @@
 
 #import <AudioToolbox/AudioToolbox.h>
 #import <AudioToolbox/ExtendedAudioFile.h>
+#import "EJApp.h"
 
 @implementation EJOpenALBuffer
 @synthesize bufferId;
 @synthesize duration;
 
++ (id)cachedBufferWithPath:(NSString *)path {
+	EJOpenALBuffer * buffer = [[[EJApp instance].openALManager.buffers objectForKey:path] retain];
+	if( !buffer ) {
+		buffer = [[EJOpenALBuffer alloc] initWithPath:path];
+		[[EJApp instance].openALManager.buffers setObject:buffer forKey:path];
+	}
+	return buffer;
+}
+
 - (id)initWithPath:(NSString *)pathp {
 	if( self = [super init] ) {
+		path = [pathp retain];
 		NSURL * url = [NSURL fileURLWithPath:pathp];
 		void * data = [self getAudioDataWithURL:url];
 
@@ -22,6 +33,9 @@
 }
 
 - (void)dealloc {
+	[[EJApp instance].openALManager.buffers removeObjectForKey:path];
+	[path release];
+	
 	if( bufferId ) {
 		alDeleteBuffers(1, &bufferId);
 	}

@@ -9,14 +9,7 @@
 	if( self = [super init] ) {
 		path = [pathp retain];
 		
-		buffer = [[EJApp instance].openALManager.buffers objectForKey:path];
-		if( buffer ) {
-			[buffer retain];
-		}
-		else {
-			buffer = [[EJOpenALBuffer alloc] initWithPath:path];
-			[[EJApp instance].openALManager.buffers setObject:buffer forKey:path];
-		}
+		buffer = [[EJOpenALBuffer cachedBufferWithPath:pathp] retain];
 		
 		alGenSources(1, &sourceId); 
 		alSourcei(sourceId, AL_BUFFER, buffer.bufferId);
@@ -31,11 +24,6 @@
 		alDeleteSources(1, &sourceId);
 	}
 	
-	// If the retainCount is 2, only this instance and the .buffers dictionary
-	// still retain the source - so remove it from the dict and delete it completely
-	if( buffer.retainCount == 2 ) {
-		[[EJApp instance].openALManager.buffers removeObjectForKey:path];
-	}
 	[buffer release];
 	[path release];
 	[endTimer invalidate];
