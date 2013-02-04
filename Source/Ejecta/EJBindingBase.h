@@ -7,7 +7,7 @@ extern JSValueRef ej_global_undefined;
 
 // (Not sure if clever hack or really stupid...)
 
-// All classes derived from this JS_BaseClass will return a JSClassRef through the 
+// All classes derived from this EJBindingBase will return a JSClassRef through the 
 // 'getJSClass' class method. The properties and functions that are exposed to 
 // JavaScript are defined through the 'staticFunctions' and 'staticValues' in this 
 // JSClassRef.
