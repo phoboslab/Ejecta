@@ -7,7 +7,6 @@
 
 #define PT_TO_PX(pt) ceilf((pt)*(1.0f+(1.0f/3.0f)))
 
-
 typedef struct {
 	float x, y, w, h;
 	unsigned short textureIndex;
@@ -21,6 +20,45 @@ typedef struct {
 	GlyphInfo * info;
 } GlyphLayout;
 
+
+
+
+@interface EJFontLayout : NSObject {
+	NSData * glyphLayout;
+	float width;
+	int glyphCount;
+}
+
+- (id)initWithGlyphLayout:(NSData *)layoutp glyphCount:(int)count width:(float)width;
+@property (readonly, nonatomic) GlyphLayout * layout;
+@property (readonly, nonatomic) int glyphCount;
+@property (readonly, nonatomic) float width;
+@end
+
+@implementation EJFontLayout
+@synthesize width, glyphCount;
+- (id)initWithGlyphLayout:(NSData *)layout glyphCount:(int)count width:(float)widthp {
+	if( self = [super init] ) {
+		glyphLayout = [layout retain];
+		glyphCount = count;
+		width = widthp;
+	}
+	return self;
+}
+
+- (void)dealloc {
+	[glyphLayout release];
+	[super dealloc];
+}
+
+- (GlyphLayout *)glyphLayout {
+	return (GlyphLayout *)glyphLayout.bytes;
+}
+@end
+
+
+
+
 int GlyphLayoutSortByTextureIndex(const void * a, const void * b) {
 	return ( ((GlyphLayout*)a)->textureIndex - ((GlyphLayout*)b)->textureIndex );
 }
@@ -31,7 +69,7 @@ int GlyphLayoutSortByTextureIndex(const void * a, const void * b) {
 	__gnu_cxx::hash_map<int, GlyphInfo> glyphInfoMap;
 	float txLineX, txLineY, txLineH;
 	
-	GlyphLayout * layoutBuffer;
+	NSCache * layoutCache;
 	
 	// Font preferences
 	float pointSize, ascent, ascentDelta, descent, leading, lineHeight, contentScale;
@@ -76,6 +114,8 @@ int GlyphLayoutSortByTextureIndex(const void * a, const void * b) {
 			}
 			
 			textures = [[NSMutableArray alloc] initWithCapacity:1];
+			layoutCache = [[NSCache alloc] init];
+			layoutCache.countLimit = 128;
 		}
 	}
 	return self;
@@ -104,8 +144,8 @@ int GlyphLayoutSortByTextureIndex(const void * a, const void * b) {
 	CFRelease(ctMainFont);
 	
 	[textures release];
+	[layoutCache release];
 	
-	free(layoutBuffer);
 	free(glyphsBuffer);
 	free(positionsBuffer);
 	
@@ -113,7 +153,6 @@ int GlyphLayoutSortByTextureIndex(const void * a, const void * b) {
 }
 
 - (unsigned short)createGlyph:(CGGlyph)glyph withFont:(CTFontRef)font {
-	
 	// Get glyph information
 	GlyphInfo * glyphInfo = &glyphInfoMap[glyph];
 	
@@ -208,10 +247,16 @@ int GlyphLayoutSortByTextureIndex(const void * a, const void * b) {
 	return glyphInfo->textureIndex;
 }
 
-- (void)drawString:(NSString*)string toContext:(EJCanvasContext2D*)context x:(float)x y:(float)y {
-	if( string.length == 0 ) { return; }
+- (EJFontLayout *)getLayoutForString:(NSString *)string {
+
+	// Try Cache first
+	EJFontLayout * cached = [layoutCache objectForKey:string];
+	if( cached ) {
+		return cached;
+	}
+
 	
-	
+	// Create attributed line
 	NSAttributedString * attributes = [[NSAttributedString alloc]
 		initWithString:string
 		attributes:@{ (id)kCTFontAttributeName: (id)ctMainFont }];
@@ -221,13 +266,12 @@ int GlyphLayoutSortByTextureIndex(const void * a, const void * b) {
 	[attributes release];
 	
 	
-	// Make sure the layout buffer is large enough to hold all glyphs for this line
+	// Create a layout buffer large enough to hold all glyphs for this line
 	int lineGlyphCount = CTLineGetGlyphCount(line);
 	int layoutBufferSize = sizeof(GlyphLayout) * lineGlyphCount;
-	if( malloc_size(layoutBuffer) < layoutBufferSize ) {
-		layoutBuffer = (GlyphLayout *)realloc(layoutBuffer, layoutBufferSize);
-	}
-	
+	NSMutableData * layoutData = [NSMutableData dataWithLength:layoutBufferSize];
+	GlyphLayout * layoutBuffer = (GlyphLayout *)layoutData.mutableBytes;
+		
 	
 	// Go through all runs for this line
 	CFArrayRef runs = CTLineGetGlyphRuns(line);
@@ -279,14 +323,36 @@ int GlyphLayoutSortByTextureIndex(const void * a, const void * b) {
 		}		
 	}
 	
+	float width = PT_TO_PX(CTLineGetTypographicBounds(line, NULL, NULL, NULL));
+	CFRelease(line);
+	
+	// Sort glyphs by texture index. This way we can loop through the all glyphs while
+	// minimizing the amount of texture binds needed. Skip this if we only have
+	// one texture anyway
+	if( textures.count > 1 ) {
+		qsort( layoutBuffer, lineGlyphCount, sizeof(GlyphLayout), GlyphLayoutSortByTextureIndex);
+	}
+	
+	
+	// Create the layout object and add it to the cache
+	EJFontLayout * layout = [[EJFontLayout alloc] initWithGlyphLayout:layoutData glyphCount:lineGlyphCount width:width];
+	[layoutCache setObject:layout forKey:string];
+	
+	return [layout autorelease];
+}
+
+- (void)drawString:(NSString *)string toContext:(EJCanvasContext2D*)context x:(float)x y:(float)y {
+	if( string.length == 0 ) { return; }
+	
+	EJFontLayout * layout = [self getLayoutForString:string];
+	
 	// Figure out the x position with the current textAlign.
 	if(context.state->textAlign != kEJTextAlignLeft) {
-		float w = PT_TO_PX(CTLineGetTypographicBounds(line, NULL, NULL, NULL));
 		if( context.state->textAlign == kEJTextAlignRight || context.state->textAlign == kEJTextAlignEnd ) {
-			x -= w;
+			x -= layout.width;
 		}
 		else if( context.state->textAlign == kEJTextAlignCenter ) {
-			x -= w/2.0f;
+			x -= layout.width/2.0f;
 		}
 	}
 
@@ -316,23 +382,16 @@ int GlyphLayoutSortByTextureIndex(const void * a, const void * b) {
 	EJColorRGBA color = fill ? state->fillColor : state->strokeColor;
 	color.rgba.a = (float)color.rgba.a * state->globalAlpha;
 	
-		
-	// Sort glyphs by texture index. This way we can loop through the all glyphs while
-	// minimizing the amount of texture binds needed. Skip this if we only have
-	// one texture anyway
-	if( textures.count > 1 ) {
-		qsort( layoutBuffer, lineGlyphCount, sizeof(GlyphLayout), GlyphLayoutSortByTextureIndex);
-	}
-
-	
 	// Go through all glyphs - bind textures as needed - and draw
+	GlyphLayout * layoutBuffer = layout.glyphLayout;
+	int glyphCount = layout.glyphCount;
 	int i = 0;
-	while( i < lineGlyphCount ) {
+	while( i < glyphCount ) {
 		int textureIndex = layoutBuffer[i].textureIndex;
 		[context setTexture:[textures objectAtIndex:textureIndex-1]];
 		
 		// Go through glyphs while the texture stays the same
-		while( i < lineGlyphCount && textureIndex == layoutBuffer[i].textureIndex ) {
+		while( i < glyphCount && textureIndex == layoutBuffer[i].textureIndex ) {
 			GlyphInfo * glyphInfo = layoutBuffer[i].info;
 			
 			float gx = x + PT_TO_PX(layoutBuffer[i].xpos) + glyphInfo->x;
@@ -345,27 +404,14 @@ int GlyphLayoutSortByTextureIndex(const void * a, const void * b) {
 			i++;
 		}
 	}
-	
-	CFRelease(line);
 }
 
 - (float)measureString:(NSString*)string {
 	if( string.length == 0 ) { return 0; }
 	
-	float width;
+	EJFontLayout * layout = [self getLayoutForString:string];
 	
-	NSAttributedString * attributes = [[NSAttributedString alloc]
-		initWithString:string
-		attributes:@{ (id)kCTFontAttributeName: (id)ctMainFont }];
-		
-	CTLineRef line = CTLineCreateWithAttributedString((CFAttributedStringRef)attributes);
-	
-	[attributes release];
-	
-	width = PT_TO_PX(CTLineGetTypographicBounds(line, NULL, NULL, NULL));
-	CFRelease(line);
-	
-	return width;
+	return layout.width;
 }
 
 @end
