@@ -453,7 +453,9 @@ EJ_BIND_FUNCTION( arcTo, ctx, argc, argv ) {
 }
 
 EJ_BIND_FUNCTION( arc, ctx, argc, argv ) {
-	EJ_UNPACK_ARGV(float x, float y, float radius, float startAngle, float endAngle, BOOL antiClockwise);
+	EJ_UNPACK_ARGV(float x, float y, float radius, float startAngle, float endAngle);
+	BOOL antiClockwise = (argc > 5 ? JSValueToNumberFast(ctx, argv[5]) : NO);
+	
 	[renderingContext arcX:x y:y radius:radius startAngle:startAngle endAngle:endAngle antiClockwise:antiClockwise];
 	return NULL;
 }
