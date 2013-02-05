@@ -2,11 +2,26 @@
 
 #define EJ_FONT_TEXTURE_SIZE 1024
 
+@interface EJFontDescriptor : NSObject {
+	NSString * identFilled;
+	NSString * identOutlined;
+	NSString * name;
+	float size, contentScale;
+}
++ (id)descriptorWithName:(NSString *)name size:(float)size;
+
+@property (readonly, nonatomic) NSString * identFilled;
+@property (readonly, nonatomic) NSString * identOutlined;
+@property (readonly, nonatomic) NSString * name;
+@property (readonly, nonatomic) float size;
+@end
+
+
 @class EJCanvasContext2D;
 
 @interface EJFont : NSObject
 
-- (id)initWithFont:(NSString*)font size:(NSInteger)size fill:(BOOL)fill contentScale:(float)contentScale;
+- (id)initWithDescriptor:(EJFontDescriptor *)desc fill:(BOOL)fill contentScale:(float)contentScale;
 + (void)loadFontAtPath:(NSString*)path;
 - (void)drawString:(NSString*)string toContext:(EJCanvasContext2D*)context x:(float)x y:(float)y;
 - (float)measureString:(NSString*)string;

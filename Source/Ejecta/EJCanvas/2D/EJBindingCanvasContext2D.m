@@ -5,6 +5,7 @@
 #import "EJBindingImageData.h"
 #import "EJBindingCanvasPattern.h"
 #import "EJBindingCanvasGradient.h"
+#import "EJFont.h"
 
 #import "EJDrawable.h"
 #import "EJConvertColorRGBA.h"
@@ -139,8 +140,8 @@ EJ_BIND_SET(miterLimit, ctx, value) {
 }
 
 EJ_BIND_GET(font, ctx) {
-	UIFont * font = renderingContext.state->font;
-	NSString * name = [NSString stringWithFormat:@"%dpt %@", (int)font.pointSize, font.fontName];
+	EJFontDescriptor * font = renderingContext.state->font;
+	NSString * name = [NSString stringWithFormat:@"%dpt %@", (int)font.size, font.name];
 	return NSStringToJSValue(ctx, name);
 }
 
@@ -153,10 +154,10 @@ EJ_BIND_SET(font, ctx, value) {
 	float size = 0;
 	char name[64];
 	sscanf( string, "%fp%*[tx\"' ]%63[^\"']", &size, name); // matches: 10.5p[tx] helvetica
-	UIFont * newFont = [UIFont fontWithName:[NSString stringWithUTF8String:name] size:size];
+	EJFontDescriptor * font = [EJFontDescriptor descriptorWithName:[NSString stringWithUTF8String:name] size:size];
 	
-	if( newFont ) {
-		renderingContext.font = newFont;
+	if( font ) {
+		renderingContext.font = font;
 	}
 	
 	JSStringRelease(jsString);

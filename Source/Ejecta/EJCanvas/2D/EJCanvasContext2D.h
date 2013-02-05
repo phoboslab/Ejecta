@@ -52,6 +52,7 @@ typedef enum {
 
 @class EJCanvasPattern;
 @class EJCanvasGradient;
+@class EJFontDescriptor;
 
 @protocol EJFillable
 @end
@@ -72,7 +73,7 @@ typedef struct {
 	
 	EJTextAlign textAlign;
 	EJTextBaseline textBaseline;
-	UIFont * font;
+	EJFontDescriptor * font;
 	
 	EJPath * clipPath;
 } EJCanvasState;
@@ -178,7 +179,7 @@ typedef struct {
 
 @property (nonatomic) EJCanvasState * state;
 @property (nonatomic) EJCompositeOperation globalCompositeOperation;
-@property (nonatomic, retain) UIFont * font;
+@property (nonatomic, retain) EJFontDescriptor * font;
 @property (nonatomic, retain) NSObject<EJFillable> * fillObject;
 @property (nonatomic, assign) float backingStoreRatio;
 @property (nonatomic) BOOL useRetinaResolution;

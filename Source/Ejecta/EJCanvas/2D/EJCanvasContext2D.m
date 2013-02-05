@@ -42,7 +42,7 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 		state->miterLimit = 10;
 		state->textBaseline = kEJTextBaselineAlphabetic;
 		state->textAlign = kEJTextAlignStart;
-		state->font = [[UIFont fontWithName:@"Helvetica" size:10] retain];
+		state->font = [[EJFontDescriptor descriptorWithName:@"Helvetica" size:10] retain];
 		state->clipPath = nil;
 		
 		bufferWidth = width = widthp;
@@ -480,12 +480,12 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 	return state->globalCompositeOperation;
 }
 
-- (void)setFont:(UIFont *)font {
+- (void)setFont:(EJFontDescriptor *)font {
 	[state->font release];
 	state->font = [font retain];
 }
 
-- (UIFont *)font {
+- (EJFontDescriptor *)font {
 	return state->font;
 }
 
@@ -752,11 +752,11 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 	[path arcX:x y:y radius:radius startAngle:startAngle endAngle:endAngle antiClockwise:antiClockwise];
 }
 
-- (EJFont*)acquireFont:(NSString*)fontName size:(float)pointSize fill:(BOOL)fill contentScale:(float)contentScale {
-	NSString * cacheKey = [NSString stringWithFormat:@"%@_%.2f_%d_%.2f", fontName, pointSize, fill, contentScale];
+- (EJFont *)getFontWithDescriptor:(EJFontDescriptor *)desc filled:(BOOL)filled {
+	NSString * cacheKey = (filled ? desc.identFilled : desc.identOutlined);
 	EJFont * font = [fontCache objectForKey:cacheKey];
 	if( !font ) {
-		font = [[EJFont alloc] initWithFont:fontName size:pointSize fill:fill contentScale:contentScale];
+		font = [[EJFont alloc] initWithDescriptor:desc fill:filled contentScale:backingStoreRatio];
 		[fontCache setObject:font forKey:cacheKey];
 		[font autorelease];
 	}
@@ -764,21 +764,21 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 }
 
 - (void)fillText:(NSString *)text x:(float)x y:(float)y {
-	EJFont *font = [self acquireFont:state->font.fontName size:state->font.pointSize fill:YES contentScale:backingStoreRatio];
+	EJFont * font = [self getFontWithDescriptor:state->font filled:YES];
 	
 	[self setProgram:app.glProgram2DAlphaTexture];
 	[font drawString:text toContext:self x:x y:y];
 }
 
 - (void)strokeText:(NSString *)text x:(float)x y:(float)y {
-	EJFont *font = [self acquireFont:state->font.fontName size:state->font.pointSize fill:NO contentScale:backingStoreRatio];
+	EJFont * font = [self getFontWithDescriptor:state->font filled:NO];
 	
 	[self setProgram:app.glProgram2DAlphaTexture];
 	[font drawString:text toContext:self x:x y:y];
 }
 
 - (float)measureText:(NSString *)text {
-	EJFont *font = [self acquireFont:state->font.fontName size:state->font.pointSize fill:YES contentScale:backingStoreRatio];
+	EJFont * font = [self getFontWithDescriptor:state->font filled:YES];
 	return [font measureString:text];
 }
 

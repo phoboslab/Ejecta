@@ -5,6 +5,35 @@
 #include <malloc/malloc.h>
 #include <ext/hash_map>
 
+@implementation EJFontDescriptor
+@synthesize identFilled, identOutlined, name, size;
+
++ (id)descriptorWithName:(NSString *)name size:(float)size {
+	// Check if the font exists
+	if( ![UIFont fontWithName:name size:size] ) {
+		return NULL;
+	}
+	
+	EJFontDescriptor * descriptor = [[EJFontDescriptor alloc] init];
+	descriptor->name = [name retain];
+	descriptor->size = size;
+	
+	descriptor->identFilled = [[NSString stringWithFormat:@"%@:F:%.2f", name, size] retain];
+	descriptor->identOutlined = [[NSString stringWithFormat:@"%@:O:%.2f", name, size] retain];
+	
+	return [descriptor autorelease];
+}
+
+- (void)dealloc {
+	[identFilled release];
+	[identOutlined release];
+	[name release];
+	[super dealloc];
+}
+
+@end
+
+
 #define PT_TO_PX(pt) ceilf((pt)*(1.0f+(1.0f/3.0f)))
 
 typedef struct {
@@ -87,20 +116,20 @@ int GlyphLayoutSortByTextureIndex(const void * a, const void * b) {
 
 @implementation EJFont
 
-- (id)initWithFont:(NSString *)fontName size:(NSInteger)ptSize fill:(BOOL)useFill contentScale:(float)cs {
+- (id)initWithDescriptor:(EJFontDescriptor *)desc fill:(BOOL)fillp contentScale:(float)contentScale {
 	self = [super init];
 	if(self) {
 		positionsBuffer = NULL;
 		glyphsBuffer = NULL;
 		
-		contentScale = cs;
-		fill = useFill;
+		contentScale = contentScale;
+		fill = fillp;
 		
-		ctMainFont = CTFontCreateWithName((CFStringRef)fontName, ptSize, NULL);
+		ctMainFont = CTFontCreateWithName((CFStringRef)desc.name, desc.size, NULL);
 		cgMainFont = CTFontCopyGraphicsFont(ctMainFont, NULL);
 		
 		if( ctMainFont ) {
-			pointSize = ptSize;
+			pointSize = desc.size;
 			leading	= CTFontGetLeading(ctMainFont);
 			ascent = CTFontGetAscent(ctMainFont);
 			descent = CTFontGetDescent(ctMainFont);
