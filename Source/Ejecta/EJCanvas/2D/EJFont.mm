@@ -1,9 +1,8 @@
 #import "EJFont.h"
-#import <CoreText/CoreText.h>
-#import <QuartzCore/QuartzCore.h>
 #import "EJCanvasContext2D.h"
 #include <malloc/malloc.h>
 #include <ext/hash_map>
+
 
 @implementation EJFontDescriptor
 @synthesize identFilled, identOutlined, name, size;
@@ -34,38 +33,10 @@
 @end
 
 
-#define EJ_FONT_GLYPH_PADDING 2
-
-typedef struct {
-	float x, y, w, h;
-	unsigned short textureIndex;
-	float tx, ty, tw, th;
-} GlyphInfo;
-
-typedef struct {
-	unsigned short textureIndex;
-	CGGlyph glyph;
-	float xpos;
-	GlyphInfo * info;
-} GlyphLayout;
-
-
-
-
-@interface EJFontLayout : NSObject {
-	NSData * glyphLayout;
-	EJTextMetrics metrics;
-	int glyphCount;
-}
-
-- (id)initWithGlyphLayout:(NSData *)layoutp glyphCount:(int)count metrics:(EJTextMetrics)metrics;
-@property (readonly, nonatomic) GlyphLayout * layout;
-@property (readonly, nonatomic) int glyphCount;
-@property (readonly, nonatomic) EJTextMetrics metrics;
-@end
 
 @implementation EJFontLayout
 @synthesize metrics, glyphCount;
+
 - (id)initWithGlyphLayout:(NSData *)layout glyphCount:(int)count metrics:(EJTextMetrics)metricsp {
 	if( self = [super init] ) {
 		glyphLayout = [layout retain];
@@ -80,39 +51,25 @@ typedef struct {
 	[super dealloc];
 }
 
-- (GlyphLayout *)glyphLayout {
-	return (GlyphLayout *)glyphLayout.bytes;
+- (EJFontGlyphLayout *)glyphLayout {
+	return (EJFontGlyphLayout *)glyphLayout.bytes;
 }
+
 @end
 
 
 
-
-int GlyphLayoutSortByTextureIndex(const void * a, const void * b) {
-	return ( ((GlyphLayout*)a)->textureIndex - ((GlyphLayout*)b)->textureIndex );
+int EJFontGlyphLayoutSortByTextureIndex(const void * a, const void * b) {
+	return ( ((EJFontGlyphLayout*)a)->textureIndex - ((EJFontGlyphLayout*)b)->textureIndex );
 }
+
 
 @interface EJFont () {
 	// Glyph information
-	NSMutableArray * textures;
-	__gnu_cxx::hash_map<int, GlyphInfo> glyphInfoMap;
-	float txLineX, txLineY, txLineH;
-	
-	NSCache * layoutCache;
-	
-	// Font preferences
-	float pointSize, ascent, ascentDelta, descent, leading, lineHeight, contentScale;
-	BOOL fill;
-	
-	// Font references
-	CTFontRef ctMainFont;
-	CGFontRef cgMainFont;
-	
-	// Core text variables for line layout
-	CGGlyph * glyphsBuffer;
-	CGPoint * positionsBuffer;
+	__gnu_cxx::hash_map<int, EJFontGlyphInfo> glyphInfoMap;
 }
 @end
+
 
 @implementation EJFont
 
@@ -183,7 +140,7 @@ int GlyphLayoutSortByTextureIndex(const void * a, const void * b) {
 
 - (unsigned short)createGlyph:(CGGlyph)glyph withFont:(CTFontRef)font {
 	// Get glyph information
-	GlyphInfo * glyphInfo = &glyphInfoMap[glyph];
+	EJFontGlyphInfo * glyphInfo = &glyphInfoMap[glyph];
 	
 	CGRect bbRect;
 	CTFontGetBoundingRectsForGlyphs(font, kCTFontDefaultOrientation, &glyph, &bbRect, 1);
@@ -308,9 +265,9 @@ int GlyphLayoutSortByTextureIndex(const void * a, const void * b) {
 	
 	// Create a layout buffer large enough to hold all glyphs for this line
 	int lineGlyphCount = CTLineGetGlyphCount(line);
-	int layoutBufferSize = sizeof(GlyphLayout) * lineGlyphCount;
+	int layoutBufferSize = sizeof(EJFontGlyphLayout) * lineGlyphCount;
 	NSMutableData * layoutData = [NSMutableData dataWithLength:layoutBufferSize];
-	GlyphLayout * layoutBuffer = (GlyphLayout *)layoutData.mutableBytes;
+	EJFontGlyphLayout * layoutBuffer = (EJFontGlyphLayout *)layoutData.mutableBytes;
 		
 	
 	// Go through all runs for this line
@@ -349,7 +306,7 @@ int GlyphLayoutSortByTextureIndex(const void * a, const void * b) {
 		// Go through all glyphs for this run, create the textures and collect the glyph
 		// info and positions as well as the max ascent and descent
 		for( int g = 0; g < runGlyphCount; g++ ) {
-			GlyphLayout * gl = &layoutBuffer[layoutIndex];
+			EJFontGlyphLayout * gl = &layoutBuffer[layoutIndex];
 			gl->glyph = glyphs[g];
 			gl->xpos = positions[g].x;
 			gl->info = &glyphInfoMap[gl->glyph];
@@ -369,7 +326,7 @@ int GlyphLayoutSortByTextureIndex(const void * a, const void * b) {
 	// minimizing the amount of texture binds needed. Skip this if we only have
 	// one texture anyway
 	if( textures.count > 1 ) {
-		qsort( layoutBuffer, lineGlyphCount, sizeof(GlyphLayout), GlyphLayoutSortByTextureIndex);
+		qsort( layoutBuffer, lineGlyphCount, sizeof(EJFontGlyphLayout), EJFontGlyphLayoutSortByTextureIndex);
 	}
 	
 	
@@ -428,7 +385,7 @@ int GlyphLayoutSortByTextureIndex(const void * a, const void * b) {
 	color.rgba.a = (float)color.rgba.a * state->globalAlpha;
 	
 	// Go through all glyphs - bind textures as needed - and draw
-	GlyphLayout * layoutBuffer = layout.glyphLayout;
+	EJFontGlyphLayout * layoutBuffer = layout.glyphLayout;
 	int glyphCount = layout.glyphCount;
 	int i = 0;
 	while( i < glyphCount ) {
@@ -437,7 +394,7 @@ int GlyphLayoutSortByTextureIndex(const void * a, const void * b) {
 		
 		// Go through glyphs while the texture stays the same
 		while( i < glyphCount && textureIndex == layoutBuffer[i].textureIndex ) {
-			GlyphInfo * glyphInfo = layoutBuffer[i].info;
+			EJFontGlyphInfo * glyphInfo = layoutBuffer[i].info;
 			
 			float gx = x + layoutBuffer[i].xpos + glyphInfo->x;
 			float gy = y - (glyphInfo->h + glyphInfo->y);
@@ -457,6 +414,7 @@ int GlyphLayoutSortByTextureIndex(const void * a, const void * b) {
 	float yOffset = [self getYOffsetForBaseline:context.state->textBaseline];
 	EJTextMetrics metrics = [self getLayoutForString:string].metrics;
 	
+	metrics.width = ceilf(metrics.width);
 	metrics.ascent += yOffset;
 	metrics.descent += yOffset;
 	
