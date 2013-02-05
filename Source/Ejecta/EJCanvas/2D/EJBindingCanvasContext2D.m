@@ -142,7 +142,7 @@ EJ_BIND_SET(miterLimit, ctx, value) {
 
 EJ_BIND_GET(font, ctx) {
 	EJFontDescriptor * font = renderingContext.state->font;
-	NSString * name = [NSString stringWithFormat:@"%dpt %@", (int)font.size, font.name];
+	NSString * name = [NSString stringWithFormat:@"%dpx %@", (int)font.size, font.name];
 	return NSStringToJSValue(ctx, name);
 }
 
@@ -154,9 +154,14 @@ EJ_BIND_SET(font, ctx, value) {
 	// Yeah, oldschool!
 	float size = 0;
 	char name[64];
-	sscanf( string, "%fp%*[tx\"' ]%63[^\"']", &size, name); // matches: 10.5p[tx] helvetica
-	EJFontDescriptor * font = [EJFontDescriptor descriptorWithName:[NSString stringWithUTF8String:name] size:size];
+	char ptx;
+	sscanf( string, "%fp%1[tx]%*[\"' ]%63[^\"']", &size, &ptx, name); // matches: 10.5p[tx] 'some font'
 	
+	if( ptx == 't' ) { // pt or px?
+		size = ceilf(size*4.0/3.0);
+	}
+	
+	EJFontDescriptor * font = [EJFontDescriptor descriptorWithName:[NSString stringWithUTF8String:name] size:size];
 	if( font ) {
 		renderingContext.font = font;
 	}
