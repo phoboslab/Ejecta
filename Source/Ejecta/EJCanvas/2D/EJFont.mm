@@ -34,7 +34,7 @@
 @end
 
 
-#define PT_TO_PX(pt) ceilf((pt)*(1.0f+(1.0f/3.0f)))
+#define EJ_FONT_GLYPH_PADDING 2
 
 typedef struct {
 	float x, y, w, h;
@@ -188,11 +188,11 @@ int GlyphLayoutSortByTextureIndex(const void * a, const void * b) {
 	CGRect bbRect;
 	CTFontGetBoundingRectsForGlyphs(font, kCTFontDefaultOrientation, &glyph, &bbRect, 1);
 	
-	// Add some padding around the glyphs because PT_TO_PX is just an approximization
-	glyphInfo->y = PT_TO_PX(bbRect.origin.y) - 3;
-	glyphInfo->x = PT_TO_PX(bbRect.origin.x) - 3;
-	glyphInfo->w = PT_TO_PX(bbRect.size.width) + 6;
-	glyphInfo->h = PT_TO_PX(bbRect.size.height) + 6;
+	// Add some padding around the glyphs
+	glyphInfo->y = bbRect.origin.y - EJ_FONT_GLYPH_PADDING;
+	glyphInfo->x = bbRect.origin.x - EJ_FONT_GLYPH_PADDING;
+	glyphInfo->w = bbRect.size.width + EJ_FONT_GLYPH_PADDING * 2;
+	glyphInfo->h = bbRect.size.height + EJ_FONT_GLYPH_PADDING * 2;
 	
 	// Size needed for this glyph in pixels; must be a multiple of 8 for CG
 	int pxWidth = floorf((glyphInfo->w * contentScale) / 8 + 1) * 8;
@@ -242,7 +242,7 @@ int GlyphLayoutSortByTextureIndex(const void * a, const void * b) {
 	
 	
 	CGContextSetFont(context, graphicsFont);
-	CGContextSetFontSize(context, PT_TO_PX(pointSize));
+	CGContextSetFontSize(context, pointSize);
 	
 	CGContextTranslateCTM(context, 0.0, pxHeight);
 	CGContextScaleCTM(context, contentScale, -1.0*contentScale);
@@ -300,7 +300,7 @@ int GlyphLayoutSortByTextureIndex(const void * a, const void * b) {
 	// descending characters or not.
 	// So, we have to collect those infos ourselfs from the glyphs.
 	EJTextMetrics metrics = {
-		.width = PT_TO_PX(CTLineGetTypographicBounds(line, NULL, NULL, NULL)),
+		.width = CTLineGetTypographicBounds(line, NULL, NULL, NULL),
 		.ascent = 0,
 		.descent = 0,
 	};
@@ -359,8 +359,8 @@ int GlyphLayoutSortByTextureIndex(const void * a, const void * b) {
 				gl->textureIndex = [self createGlyph:gl->glyph withFont:runFont];
 			}
 			
-			metrics.ascent = MAX(metrics.ascent, (gl->info->h-6) + (gl->info->y+3));
-			metrics.descent = MAX(metrics.descent, -(gl->info->y+3) );
+			metrics.ascent = MAX(metrics.ascent, gl->info->h + gl->info->y - EJ_FONT_GLYPH_PADDING);
+			metrics.descent = MAX(metrics.descent, -gl->info->y - EJ_FONT_GLYPH_PADDING);
 			layoutIndex++;
 		}		
 	}	
@@ -392,11 +392,11 @@ int GlyphLayoutSortByTextureIndex(const void * a, const void * b) {
 			return 0;
 		case kEJTextBaselineTop:
 		case kEJTextBaselineHanging:
-			return PT_TO_PX(ascent+ascentDelta);
+			return (ascent + ascentDelta);
 		case kEJTextBaselineMiddle:
-			return PT_TO_PX(ascent-0.5*pointSize);
+			return (ascent - 0.5 * pointSize);
 		case kEJTextBaselineBottom:
-			return -PT_TO_PX(descent);
+			return -descent;
 	}
 	return 0;
 }
@@ -439,7 +439,7 @@ int GlyphLayoutSortByTextureIndex(const void * a, const void * b) {
 		while( i < glyphCount && textureIndex == layoutBuffer[i].textureIndex ) {
 			GlyphInfo * glyphInfo = layoutBuffer[i].info;
 			
-			float gx = x + PT_TO_PX(layoutBuffer[i].xpos) + glyphInfo->x;
+			float gx = x + layoutBuffer[i].xpos + glyphInfo->x;
 			float gy = y - (glyphInfo->h + glyphInfo->y);
 			
 			[context pushTexturedRectX:gx y:gy w:glyphInfo->w h:glyphInfo->h
