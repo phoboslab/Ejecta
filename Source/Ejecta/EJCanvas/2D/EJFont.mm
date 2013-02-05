@@ -54,23 +54,23 @@ typedef struct {
 
 @interface EJFontLayout : NSObject {
 	NSData * glyphLayout;
-	float width;
+	EJTextMetrics metrics;
 	int glyphCount;
 }
 
-- (id)initWithGlyphLayout:(NSData *)layoutp glyphCount:(int)count width:(float)width;
+- (id)initWithGlyphLayout:(NSData *)layoutp glyphCount:(int)count metrics:(EJTextMetrics)metrics;
 @property (readonly, nonatomic) GlyphLayout * layout;
 @property (readonly, nonatomic) int glyphCount;
-@property (readonly, nonatomic) float width;
+@property (readonly, nonatomic) EJTextMetrics metrics;
 @end
 
 @implementation EJFontLayout
-@synthesize width, glyphCount;
-- (id)initWithGlyphLayout:(NSData *)layout glyphCount:(int)count width:(float)widthp {
+@synthesize metrics, glyphCount;
+- (id)initWithGlyphLayout:(NSData *)layout glyphCount:(int)count metrics:(EJTextMetrics)metricsp {
 	if( self = [super init] ) {
 		glyphLayout = [layout retain];
 		glyphCount = count;
-		width = widthp;
+		metrics = metricsp;
 	}
 	return self;
 }
@@ -116,13 +116,13 @@ int GlyphLayoutSortByTextureIndex(const void * a, const void * b) {
 
 @implementation EJFont
 
-- (id)initWithDescriptor:(EJFontDescriptor *)desc fill:(BOOL)fillp contentScale:(float)contentScale {
+- (id)initWithDescriptor:(EJFontDescriptor *)desc fill:(BOOL)fillp contentScale:(float)contentScalep {
 	self = [super init];
 	if(self) {
 		positionsBuffer = NULL;
 		glyphsBuffer = NULL;
 		
-		contentScale = contentScale;
+		contentScale = contentScalep;
 		fill = fillp;
 		
 		ctMainFont = CTFontCreateWithName((CFStringRef)desc.name, desc.size, NULL);
@@ -294,6 +294,17 @@ int GlyphLayoutSortByTextureIndex(const void * a, const void * b) {
 	
 	[attributes release];
 	
+	// Get line metrics; sadly, ascent and descent are broken: 'ascent' equals
+	// the total height (i.e. what should be ascent + descent) and 'descent'
+	// is always the maximum descent of the font - no matter if you have
+	// descending characters or not.
+	// So, we have to collect those infos ourselfs from the glyphs.
+	EJTextMetrics metrics = {
+		.width = PT_TO_PX(CTLineGetTypographicBounds(line, NULL, NULL, NULL)),
+		.ascent = 0,
+		.descent = 0,
+	};
+	
 	
 	// Create a layout buffer large enough to hold all glyphs for this line
 	int lineGlyphCount = CTLineGetGlyphCount(line);
@@ -336,7 +347,7 @@ int GlyphLayoutSortByTextureIndex(const void * a, const void * b) {
 		
 		
 		// Go through all glyphs for this run, create the textures and collect the glyph
-		// info and positions
+		// info and positions as well as the max ascent and descent
 		for( int g = 0; g < runGlyphCount; g++ ) {
 			GlyphLayout * gl = &layoutBuffer[layoutIndex];
 			gl->glyph = glyphs[g];
@@ -348,12 +359,11 @@ int GlyphLayoutSortByTextureIndex(const void * a, const void * b) {
 				gl->textureIndex = [self createGlyph:gl->glyph withFont:runFont];
 			}
 			
+			metrics.ascent = MAX(metrics.ascent, (gl->info->h-6) + (gl->info->y+3));
+			metrics.descent = MAX(metrics.descent, -(gl->info->y+3) );
 			layoutIndex++;
 		}		
-	}
-	
-	float width = PT_TO_PX(CTLineGetTypographicBounds(line, NULL, NULL, NULL));
-	CFRelease(line);
+	}	
 	
 	// Sort glyphs by texture index. This way we can loop through the all glyphs while
 	// minimizing the amount of texture binds needed. Skip this if we only have
@@ -363,14 +373,35 @@ int GlyphLayoutSortByTextureIndex(const void * a, const void * b) {
 	}
 	
 	
-	// Create the layout object and add it to the cache
-	EJFontLayout * layout = [[EJFontLayout alloc] initWithGlyphLayout:layoutData glyphCount:lineGlyphCount width:width];
+	// Create the layout object and add it to the cache	
+	EJFontLayout * layout = [[EJFontLayout alloc] initWithGlyphLayout:layoutData
+		glyphCount:lineGlyphCount metrics:metrics];
+		
 	[layoutCache setObject:layout forKey:string];
+	
+	CFRelease(line);
 	
 	return [layout autorelease];
 }
 
-- (void)drawString:(NSString *)string toContext:(EJCanvasContext2D*)context x:(float)x y:(float)y {
+- (float)getYOffsetForBaseline:(EJTextBaseline)baseline {
+	// Figure out the y position with the given textBaseline
+	switch( baseline ) {
+		case kEJTextBaselineAlphabetic:
+		case kEJTextBaselineIdeographic:
+			return 0;
+		case kEJTextBaselineTop:
+		case kEJTextBaselineHanging:
+			return PT_TO_PX(ascent+ascentDelta);
+		case kEJTextBaselineMiddle:
+			return PT_TO_PX(ascent-0.5*pointSize);
+		case kEJTextBaselineBottom:
+			return -PT_TO_PX(descent);
+	}
+	return 0;
+}
+
+- (void)drawString:(NSString *)string toContext:(EJCanvasContext2D *)context x:(float)x y:(float)y {
 	if( string.length == 0 ) { return; }
 	
 	EJFontLayout * layout = [self getLayoutForString:string];
@@ -378,29 +409,14 @@ int GlyphLayoutSortByTextureIndex(const void * a, const void * b) {
 	// Figure out the x position with the current textAlign.
 	if(context.state->textAlign != kEJTextAlignLeft) {
 		if( context.state->textAlign == kEJTextAlignRight || context.state->textAlign == kEJTextAlignEnd ) {
-			x -= layout.width;
+			x -= layout.metrics.width;
 		}
 		else if( context.state->textAlign == kEJTextAlignCenter ) {
-			x -= layout.width/2.0f;
+			x -= layout.metrics.width/2.0f;
 		}
 	}
 
-	// Figure out the y position with the current textBaseline
-	switch( context.state->textBaseline ) {
-		case kEJTextBaselineAlphabetic:
-		case kEJTextBaselineIdeographic:
-			break;
-		case kEJTextBaselineTop:
-		case kEJTextBaselineHanging:
-			y += PT_TO_PX(ascent+ascentDelta);
-			break;
-		case kEJTextBaselineMiddle:
-			y += PT_TO_PX(ascent-0.5*pointSize);
-			break;
-		case kEJTextBaselineBottom:
-			y -= PT_TO_PX(descent);
-			break;
-	}
+	y += [self getYOffsetForBaseline:context.state->textBaseline];
 	
 	x = roundf(x);
 	y = roundf(y);
@@ -435,12 +451,16 @@ int GlyphLayoutSortByTextureIndex(const void * a, const void * b) {
 	}
 }
 
-- (float)measureString:(NSString*)string {
-	if( string.length == 0 ) { return 0; }
+- (EJTextMetrics)measureString:(NSString*)string forContext:(EJCanvasContext2D *)context {
+	if( string.length == 0 ) { return {0}; }
 	
-	EJFontLayout * layout = [self getLayoutForString:string];
+	float yOffset = [self getYOffsetForBaseline:context.state->textBaseline];
+	EJTextMetrics metrics = [self getLayoutForString:string].metrics;
 	
-	return layout.width;
+	metrics.ascent += yOffset;
+	metrics.descent += yOffset;
+	
+	return metrics;
 }
 
 @end

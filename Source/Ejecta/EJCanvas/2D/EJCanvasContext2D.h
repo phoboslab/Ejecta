@@ -4,6 +4,7 @@
 #import "EJPath.h"
 #import "EJCanvas2DTypes.h"
 #import "EJCanvasContext.h"
+#import "EJFont.h"
 #import "EJGLProgram2D.h"
 
 #define EJ_CANVAS_STATE_STACK_SIZE 16
@@ -52,7 +53,6 @@ typedef enum {
 
 @class EJCanvasPattern;
 @class EJCanvasGradient;
-@class EJFontDescriptor;
 
 @protocol EJFillable
 @end
@@ -172,7 +172,7 @@ typedef struct {
 
 - (void)fillText:(NSString *)text x:(float)x y:(float)y;
 - (void)strokeText:(NSString *)text x:(float)x y:(float)y;
-- (float)measureText:(NSString *)text;
+- (EJTextMetrics)measureText:(NSString *)text;
 
 - (void)clip;
 - (void)resetClip;

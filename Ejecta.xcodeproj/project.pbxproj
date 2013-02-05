@@ -19,6 +19,7 @@
 		B609F2D416AD877E00A3B2B9 /* RadialGradient.fsh in Resources */ = {isa = PBXBuildFile; fileRef = B609F2CE16AD873A00A3B2B9 /* RadialGradient.fsh */; };
 		B6243666166684420046B8C7 /* libJavaScriptCore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B64CE60C1666825F0087CF94 /* libJavaScriptCore.a */; };
 		B62436681666851E0046B8C7 /* Ejecta.js in Resources */ = {isa = PBXBuildFile; fileRef = B64CE63F166682700087CF94 /* Ejecta.js */; };
+		B630048916C1A2390036D8D4 /* EJBindingTextMetrics.m in Sources */ = {isa = PBXBuildFile; fileRef = B630048816C1A1960036D8D4 /* EJBindingTextMetrics.m */; };
 		B64C878A16B800DA0097CD5B /* AlphaTexture.fsh in Resources */ = {isa = PBXBuildFile; fileRef = B64C878016B800C10097CD5B /* AlphaTexture.fsh */; };
 		B64C878B16B800DA0097CD5B /* Flat.fsh in Resources */ = {isa = PBXBuildFile; fileRef = B64C878116B800C10097CD5B /* Flat.fsh */; };
 		B64C878C16B800DA0097CD5B /* Pattern.fsh in Resources */ = {isa = PBXBuildFile; fileRef = B64C878216B800C10097CD5B /* Pattern.fsh */; };
@@ -100,6 +101,8 @@
 		B607AD09132EB51000D7C3EA /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		B607AD0F132EB52400D7C3EA /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		B609F2CE16AD873A00A3B2B9 /* RadialGradient.fsh */ = {isa = PBXFileReference; explicitFileType = sourcecode.glsl; fileEncoding = 4; path = RadialGradient.fsh; sourceTree = "<group>"; };
+		B630048716C1A1960036D8D4 /* EJBindingTextMetrics.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EJBindingTextMetrics.h; sourceTree = "<group>"; };
+		B630048816C1A1960036D8D4 /* EJBindingTextMetrics.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EJBindingTextMetrics.m; sourceTree = "<group>"; };
 		B64C878016B800C10097CD5B /* AlphaTexture.fsh */ = {isa = PBXFileReference; explicitFileType = sourcecode.glsl; fileEncoding = 4; path = AlphaTexture.fsh; sourceTree = "<group>"; };
 		B64C878116B800C10097CD5B /* Flat.fsh */ = {isa = PBXFileReference; explicitFileType = sourcecode.glsl; fileEncoding = 4; path = Flat.fsh; sourceTree = "<group>"; };
 		B64C878216B800C10097CD5B /* Pattern.fsh */ = {isa = PBXFileReference; explicitFileType = sourcecode.glsl; fileEncoding = 4; path = Pattern.fsh; sourceTree = "<group>"; };
@@ -489,6 +492,8 @@
 				B6F114F71676BD40001F1324 /* EJImageData.m */,
 				B6F114F41676BD40001F1324 /* EJFont.h */,
 				B6F114F51676BD40001F1324 /* EJFont.mm */,
+				B630048716C1A1960036D8D4 /* EJBindingTextMetrics.h */,
+				B630048816C1A1960036D8D4 /* EJBindingTextMetrics.m */,
 				B6F114F81676BD40001F1324 /* EJPath.h */,
 				B6F114F91676BD40001F1324 /* EJPath.mm */,
 				B6F115021676BDB3001F1324 /* EJCanvas2DTypes.h */,
@@ -597,6 +602,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B630048916C1A2390036D8D4 /* EJBindingTextMetrics.m in Sources */,
 				B64C87AC16B81BAA0097CD5B /* EJGLProgram2D.m in Sources */,
 				B64C87AE16B81BAA0097CD5B /* EJGLProgram2DRadialGradient.m in Sources */,
 				B64CE662166682700087CF94 /* EJApp.m in Sources */,

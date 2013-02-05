@@ -5,6 +5,7 @@
 #import "EJBindingImageData.h"
 #import "EJBindingCanvasPattern.h"
 #import "EJBindingCanvasGradient.h"
+#import "EJBindingTextMetrics.h"
 #import "EJFont.h"
 
 #import "EJDrawable.h"
@@ -456,14 +457,9 @@ EJ_BIND_FUNCTION( measureText, ctx, argc, argv ) {
 	if( argc < 1 ) { return NULL; }
 	
 	NSString * string = JSValueToNSString(ctx, argv[0]);
-	float stringWidth = [renderingContext measureText:string];
+	EJTextMetrics metrics = [renderingContext measureText:string];
 	
-	JSObjectRef objRef = JSObjectMake(ctx, NULL, NULL);
-	JSStringRef stringRef = JSStringCreateWithUTF8CString("width");
-	JSObjectSetProperty(ctx, objRef, stringRef, JSValueMakeNumber(ctx, stringWidth), kJSPropertyAttributeNone, nil);
-	JSStringRelease(stringRef);
-	
-	return objRef;
+	return [EJBindingTextMetrics createJSObjectWithContext:ctx metrics:metrics];
 }
 
 EJ_BIND_FUNCTION( fillText, ctx, argc, argv ) {

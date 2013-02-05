@@ -777,9 +777,9 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 	[font drawString:text toContext:self x:x y:y];
 }
 
-- (float)measureText:(NSString *)text {
+- (EJTextMetrics)measureText:(NSString *)text {
 	EJFont * font = [self getFontWithDescriptor:state->font filled:YES];
-	return [font measureString:text];
+	return [font measureString:text forContext:self];
 }
 
 - (void)clip {
