@@ -310,7 +310,7 @@ EJ_BIND_FUNCTION(putImageData, ctx, argc, argv) {
 	EJBindingImageData * jsImageData = (EJBindingImageData *)JSObjectGetPrivate((JSObjectRef)argv[0]);
 	EJ_UNPACK_ARGV_OFFSET(1, float dx, float dy);
 	
-	app.currentRenderingContext = renderingContext;
+	jsView.currentRenderingContext = renderingContext;
 	[renderingContext putImageData:jsImageData.imageData dx:dx dy:dy];
 	return NULL;
 }
@@ -342,7 +342,7 @@ EJ_BIND_FUNCTION(putImageDataHD, ctx, argc, argv) {
 	EJBindingImageData * jsImageData = (EJBindingImageData *)JSObjectGetPrivate((JSObjectRef)argv[0]);
 	EJ_UNPACK_ARGV_OFFSET(1, float dx, float dy);
 	
-	app.currentRenderingContext = renderingContext;
+	jsView.currentRenderingContext = renderingContext;
 	[renderingContext putImageDataHD:jsImageData.imageData dx:dx dy:dy];
 	return NULL;
 }
@@ -473,7 +473,7 @@ EJ_BIND_FUNCTION( fillText, ctx, argc, argv ) {
 	NSString * string = JSValueToNSString(ctx, argv[0]);
 	EJ_UNPACK_ARGV_OFFSET(1, float x, float y);
 	
-	app.currentRenderingContext = renderingContext;
+	jsView.currentRenderingContext = renderingContext;
 	[renderingContext fillText:string x:x y:y];
 	return NULL;
 }
@@ -484,7 +484,7 @@ EJ_BIND_FUNCTION( strokeText, ctx, argc, argv ) {
 	NSString * string = JSValueToNSString(ctx, argv[0]);
 	EJ_UNPACK_ARGV_OFFSET(1, float x, float y);
 	
-	app.currentRenderingContext = renderingContext;
+	jsView.currentRenderingContext = renderingContext;
 	[renderingContext strokeText:string x:x y:y];
 	return NULL;
 }
