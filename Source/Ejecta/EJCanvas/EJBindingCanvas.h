@@ -27,6 +27,4 @@ typedef enum {
 
 @property (readonly, nonatomic) EJTexture * texture;
 
-@property (nonatomic, strong) EJJavaScriptView *jsView;
-
 @end

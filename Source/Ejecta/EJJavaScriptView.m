@@ -20,20 +20,20 @@
 
 @property (nonatomic, strong) EJTimerCollection *timers;
 @property (nonatomic, strong) CADisplayLink *displayLink;
+
 @property (nonatomic, assign, readwrite) JSGlobalContextRef jsGlobalContext;
-@property (nonatomic, strong) EAGLContext *glContext2D;
-@property (nonatomic, strong) EAGLSharegroup *glSharegroup;
-@property (nonatomic, strong) EAGLContext *glCurrentContext;
 
+@property (nonatomic, assign) NSMutableDictionary * textureCache;
 @property (nonatomic, strong) EJOpenALManager * openALManager;
-
 @property (nonatomic, strong) EJGLProgram2D * glProgram2DFlat;
 @property (nonatomic, strong) EJGLProgram2D * glProgram2DTexture;
 @property (nonatomic, strong) EJGLProgram2D * glProgram2DAlphaTexture;
 @property (nonatomic, strong) EJGLProgram2D * glProgram2DPattern;
 @property (nonatomic, strong) EJGLProgram2DRadialGradient * glProgram2DRadialGradient;
+@property (nonatomic, strong) EAGLContext *glContext2D;
+@property (nonatomic, strong) EAGLSharegroup *glSharegroup;
+@property (nonatomic, strong) EAGLContext *glCurrentContext;
 
-@property (nonatomic, assign) NSMutableDictionary * textureCache;
 @end
 
 @implementation EJJavaScriptView
@@ -302,7 +302,7 @@ static EJJavaScriptView *_sharedView = nil;
 	[self.touchDelegate triggerEvent:@"touchmove" all:event.allTouches changed:touches remaining:event.allTouches];
 }
 
-//TODO: Does not belong here?
+//TODO: Does this belong in this class?
 #pragma mark
 #pragma mark Timers
 

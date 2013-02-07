@@ -16,7 +16,7 @@
 
 - (id)initWithCanvas:(JSObjectRef)canvas renderingContext:(EJCanvasContext2D *)renderingContextp {
 	if( self = [super initWithContext:NULL argc:0 argv:NULL] ) {
-		app = [EJJavaScriptView sharedView]; // Keep a local copy - may be faster?
+		jsView = [EJJavaScriptView sharedView]; // Keep a local copy - may be faster?
 		renderingContext = [renderingContextp retain];
 		jsCanvas = canvas;
 	}
@@ -165,7 +165,7 @@ EJ_BIND_SET(font, ctx, value) {
 }
 
 EJ_BIND_SET(imageSmoothingEnabled, ctx, value) {
-	app.currentRenderingContext = renderingContext;
+	jsView.currentRenderingContext = renderingContext;
 	renderingContext.imageSmoothingEnabled = JSValueToBoolean(ctx, value);
 }
 
@@ -253,7 +253,7 @@ EJ_BIND_FUNCTION(drawImage, ctx, argc, argv) {
 		return NULL;
 	}
 	
-	app.currentRenderingContext = renderingContext;
+	jsView.currentRenderingContext = renderingContext;
 	[renderingContext drawImage:image sx:sx sy:sy sw:sw sh:sh dx:dx dy:dy dw:dw dh:dh];
 	
 	return NULL;
@@ -262,7 +262,7 @@ EJ_BIND_FUNCTION(drawImage, ctx, argc, argv) {
 EJ_BIND_FUNCTION(fillRect, ctx, argc, argv) {
 	EJ_UNPACK_ARGV(float dx, float dy, float w, float h);
 			
-	app.currentRenderingContext = renderingContext;
+	jsView.currentRenderingContext = renderingContext;
 	[renderingContext fillRectX:dx y:dy w:w h:h];
 	return NULL;
 }
@@ -270,7 +270,7 @@ EJ_BIND_FUNCTION(fillRect, ctx, argc, argv) {
 EJ_BIND_FUNCTION(strokeRect, ctx, argc, argv) {
 	EJ_UNPACK_ARGV(float dx, float dy, float w, float h);
 	
-	app.currentRenderingContext = renderingContext;
+	jsView.currentRenderingContext = renderingContext;
 	[renderingContext strokeRectX:dx y:dy w:w h:h];
 	return NULL;
 }
@@ -278,7 +278,7 @@ EJ_BIND_FUNCTION(strokeRect, ctx, argc, argv) {
 EJ_BIND_FUNCTION(clearRect, ctx, argc, argv) {
 	EJ_UNPACK_ARGV(float dx, float dy, float w, float h);
 	
-	app.currentRenderingContext = renderingContext;
+	jsView.currentRenderingContext = renderingContext;
 	[renderingContext clearRectX:dx y:dy w:w h:h];
 	return NULL;
 }
@@ -286,7 +286,7 @@ EJ_BIND_FUNCTION(clearRect, ctx, argc, argv) {
 EJ_BIND_FUNCTION(getImageData, ctx, argc, argv) {
 	EJ_UNPACK_ARGV(short sx, short sy, short sw, short sh);
 	
-	app.currentRenderingContext = renderingContext;
+	jsView.currentRenderingContext = renderingContext;
 	
 	EJImageData * imageData = [renderingContext getImageDataSx:sx sy:sy sw:sw sh:sh];
 	
@@ -318,7 +318,7 @@ EJ_BIND_FUNCTION(putImageData, ctx, argc, argv) {
 EJ_BIND_FUNCTION(getImageDataHD, ctx, argc, argv) {
 	EJ_UNPACK_ARGV(short sx, short sy, short sw, short sh);
 	
-	app.currentRenderingContext = renderingContext;
+	jsView.currentRenderingContext = renderingContext;
 	
 	EJImageData * imageData = [renderingContext getImageDataHDSx:sx sy:sy sw:sw sh:sh];
 	
@@ -399,13 +399,13 @@ EJ_BIND_FUNCTION( closePath, ctx, argc, argv ) {
 }
 
 EJ_BIND_FUNCTION( fill, ctx, argc, argv ) {
-	app.currentRenderingContext = renderingContext;
+	jsView.currentRenderingContext = renderingContext;
 	[renderingContext fill];
 	return NULL;
 }
 
 EJ_BIND_FUNCTION( stroke, ctx, argc, argv ) {
-	app.currentRenderingContext = renderingContext;
+	jsView.currentRenderingContext = renderingContext;
 	[renderingContext stroke];
 	return NULL;
 }
@@ -490,13 +490,13 @@ EJ_BIND_FUNCTION( strokeText, ctx, argc, argv ) {
 }
 
 EJ_BIND_FUNCTION( clip, ctx, argc, argv ) {
-	app.currentRenderingContext = renderingContext;
+	jsView.currentRenderingContext = renderingContext;
 	[renderingContext clip];
 	return NULL;
 }
 
 EJ_BIND_FUNCTION( resetClip, ctx, argc, argv ) {
-	app.currentRenderingContext = renderingContext;
+	jsView.currentRenderingContext = renderingContext;
 	[renderingContext resetClip];
 	return NULL;
 }
