@@ -1,4 +1,5 @@
 #import "EJBindingGameCenter.h"
+#import "EJJavaScriptView.h"
 
 @implementation EJBindingGameCenter
 
@@ -25,11 +26,11 @@
 }
 
 - (void)leaderboardViewControllerDidFinish:(GKLeaderboardViewController *)viewController {
-	[[EJApp instance] dismissModalViewControllerAnimated:YES];
+	[[EJAppViewController instance] dismissModalViewControllerAnimated:YES];
 }
 
 - (void)achievementViewControllerDidFinish:(GKAchievementViewController *)viewController {
-	[[EJApp instance] dismissModalViewControllerAnimated:YES];
+	[[EJAppViewController instance] dismissModalViewControllerAnimated:YES];
 }
 
 
@@ -55,9 +56,9 @@ EJ_BIND_FUNCTION( authenticate, ctx, argc, argv ) {
 		[[NSUserDefaults standardUserDefaults] synchronize];
 		
 		if( callback ) {
-			JSContextRef gctx = [EJApp instance].jsGlobalContext;
+			JSContextRef gctx = [EJJavaScriptView sharedView].jsGlobalContext;
 			JSValueRef params[] = { JSValueMakeBoolean(gctx, error) };
-			[[EJApp instance] invokeCallback:callback thisObject:NULL argc:1 argv:params];
+			[[EJJavaScriptView sharedView] invokeCallback:callback thisObject:NULL argc:1 argv:params];
 			JSValueUnprotect(gctx, callback);
 		}
 	}];
@@ -95,9 +96,9 @@ EJ_BIND_FUNCTION( reportScore, ctx, argc, argv ) {
 
 		[scoreReporter reportScoreWithCompletionHandler:^(NSError *error) {
 			if( callback ) {
-				JSContextRef gctx = [EJApp instance].jsGlobalContext;
+				JSContextRef gctx = [EJJavaScriptView sharedView].jsGlobalContext;
 				JSValueRef params[] = { JSValueMakeBoolean(gctx, error) };
-				[[EJApp instance] invokeCallback:callback thisObject:NULL argc:1 argv:params];
+				[[EJJavaScriptView sharedView] invokeCallback:callback thisObject:NULL argc:1 argv:params];
 				JSValueUnprotect(gctx, callback);
 			}
 		}];
@@ -114,7 +115,7 @@ EJ_BIND_FUNCTION( showLeaderboard, ctx, argc, argv ) {
     if( leaderboard ) {
         leaderboard.leaderboardDelegate = self;
 		leaderboard.category = JSValueToNSString(ctx, argv[0]);
-		[[EJApp instance] presentModalViewController:leaderboard animated:YES];
+		[[EJAppViewController instance] presentModalViewController:leaderboard animated:YES];
     }
 	
 	return NULL;
@@ -155,9 +156,9 @@ EJ_BIND_FUNCTION( showLeaderboard, ctx, argc, argv ) {
 		[achievements setObject:achievement forKey:identifier];
 		
 		if( callback ) {
-			JSContextRef gctx = [EJApp instance].jsGlobalContext;
+			JSContextRef gctx = [EJJavaScriptView sharedView].jsGlobalContext;
 			JSValueRef params[] = { JSValueMakeBoolean(gctx, error) };
-			[[EJApp instance] invokeCallback:callback thisObject:NULL argc:1 argv:params];
+			[[EJJavaScriptView sharedView] invokeCallback:callback thisObject:NULL argc:1 argv:params];
 			JSValueUnprotect(gctx, callback);
 		}
 	}];
@@ -199,7 +200,7 @@ EJ_BIND_FUNCTION( showAchievements, ctx, argc, argv ) {
 	GKAchievementViewController *achievementView = [[[GKAchievementViewController alloc] init] autorelease];
     if( achievementView ) {
 		achievementView.achievementDelegate = self;
-		[[EJApp instance] presentModalViewController:achievementView animated:YES];
+		[[EJAppViewController instance] presentModalViewController:achievementView animated:YES];
     }
 	return NULL;
 }

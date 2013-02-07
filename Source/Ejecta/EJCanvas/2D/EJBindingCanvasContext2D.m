@@ -9,12 +9,14 @@
 #import "EJDrawable.h"
 #import "EJConvertColorRGBA.h"
 
+#import "EJJavaScriptView.h"
+
 
 @implementation EJBindingCanvasContext2D
 
 - (id)initWithCanvas:(JSObjectRef)canvas renderingContext:(EJCanvasContext2D *)renderingContextp {
 	if( self = [super initWithContext:NULL argc:0 argv:NULL] ) {
-		app = [EJApp instance]; // Keep a local copy - may be faster?
+		app = [EJJavaScriptView sharedView]; // Keep a local copy - may be faster?
 		renderingContext = [renderingContextp retain];
 		jsCanvas = canvas;
 	}

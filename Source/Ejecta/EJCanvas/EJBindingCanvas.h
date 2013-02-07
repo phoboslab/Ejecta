@@ -3,6 +3,8 @@
 #import "EJDrawable.h"
 #import "EJCanvasContext.h"
 
+@class EJJavaScriptView;
+
 typedef enum {
 	kEJCanvasContextModeInvalid,
 	kEJCanvasContextMode2D,
@@ -24,5 +26,7 @@ typedef enum {
 }
 
 @property (readonly, nonatomic) EJTexture * texture;
+
+@property (nonatomic, strong) EJJavaScriptView *jsView;
 
 @end

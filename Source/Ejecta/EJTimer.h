@@ -1,5 +1,7 @@
 #import <Foundation/Foundation.h>
-#import "EJApp.h"
+#import "EJAppViewController.h"
+
+@class EJJavaScriptView;
 
 @interface EJTimerCollection : NSObject {
 	NSMutableDictionary * timers;

@@ -7,13 +7,18 @@
 #import "EJCanvasContextWebGL.h"
 #import "EJBindingCanvasContextWebGL.h"
 
+#import "EJJavaScriptView.h"
 
 @implementation EJBindingCanvas
 
 static BOOL HasScreenCanvas = NO;
 
 - (id)initWithContext:(JSContextRef)ctx argc:(size_t)argc argv:(const JSValueRef [])argv {
+    
 	if( self = [super initWithContext:ctx argc:argc argv:argv] ) {
+        
+        self.jsView = [EJJavaScriptView sharedView];
+        
 		scalingMode = kEJScalingModeFitWidth;
 		useRetinaResolution = true;
 		msaaEnabled = false;
@@ -30,12 +35,12 @@ static BOOL HasScreenCanvas = NO;
 			height = JSValueToNumberFast(ctx, argv[1]);
 		}
 		else {
-			CGSize screen = [EJApp instance].view.bounds.size;
+			CGSize screen = self.jsView.bounds.size;
 			width = screen.width;
 			height = screen.height;
 		}
 	}
-	return self;
+    return self;
 }
 
 - (void)dealloc {
@@ -44,7 +49,7 @@ static BOOL HasScreenCanvas = NO;
 	}
 	[renderingContext release];
 	if( jsCanvasContext ) {
-		JSValueUnprotect([EJApp instance].jsGlobalContext, jsCanvasContext);
+		JSValueUnprotect(self.jsView.jsGlobalContext, jsCanvasContext);
 	}
 	[super dealloc];
 }
@@ -71,7 +76,7 @@ EJ_BIND_GET(width, ctx) {
 EJ_BIND_SET(width, ctx, value) {
 	short newWidth = JSValueToNumberFast(ctx, value);
 	if( renderingContext ) {
-		[EJApp instance].currentRenderingContext = renderingContext;
+		self.jsView.currentRenderingContext = renderingContext;
 		renderingContext.width = newWidth;
 		width = renderingContext.width;
 		return;
@@ -88,7 +93,7 @@ EJ_BIND_GET(height, ctx) {
 EJ_BIND_SET(height, ctx, value) {
 	short newHeight = JSValueToNumberFast(ctx, value);
 	if( renderingContext ) {
-		[EJApp instance].currentRenderingContext = renderingContext;
+		self.jsView.currentRenderingContext = renderingContext;
 		renderingContext.height = newHeight;
 		height = renderingContext.height;
 	}
@@ -163,7 +168,7 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 	
 	
 	// Create the requested CanvasContext
-	[EJApp instance].currentRenderingContext = nil;
+	self.jsView.currentRenderingContext = nil;
 	
 	if( newContextMode == kEJCanvasContextMode2D ) {
 		if( isScreenCanvas ) {
@@ -171,7 +176,7 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 			sc.useRetinaResolution = useRetinaResolution;
 			sc.scalingMode = scalingMode;
 			
-			[EJApp instance].screenRenderingContext = sc;		
+			self.jsView.screenRenderingContext = sc;
 			renderingContext = sc;
 		}
 		else {
@@ -193,7 +198,7 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 		sc.useRetinaResolution = useRetinaResolution;
 		sc.scalingMode = scalingMode;
 		
-		[EJApp instance].screenRenderingContext = sc;		
+		self.jsView.screenRenderingContext = sc;
 		renderingContext = sc;
 		
 		// Create the JS object
@@ -211,7 +216,7 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 	
 	[EAGLContext setCurrentContext:renderingContext.glContext];
 	[renderingContext create];
-	[EJApp instance].currentRenderingContext = renderingContext;
+	self.jsView.currentRenderingContext = renderingContext;
 	
 	
 	return jsCanvasContext;

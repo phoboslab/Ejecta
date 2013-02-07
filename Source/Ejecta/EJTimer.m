@@ -1,10 +1,13 @@
 #import "EJTimer.h"
+#import "EJJavaScriptView.h"
 
 
 @implementation EJTimerCollection
 
-- (id)init {
-	if( self = [super init] ) {
+
+- (id)init
+{
+    if (self = [super init]) {
 		timers = [[NSMutableDictionary alloc] init];
 	}
 	return self;
@@ -59,19 +62,19 @@
 		self.target = [NSDate dateWithTimeIntervalSinceNow:interval];
 		
 		callback = callbackp;
-		JSValueProtect([EJApp instance].jsGlobalContext, callback);
+		JSValueProtect([EJJavaScriptView sharedView].jsGlobalContext, callback);
 	}
 	return self;
 }
 
 - (void)dealloc {
-	JSValueUnprotect([EJApp instance].jsGlobalContext, callback);
+	JSValueUnprotect([EJJavaScriptView sharedView].jsGlobalContext, callback);
 	[super dealloc];
 }
 
 - (void)check {	
 	if( active && self.target.timeIntervalSinceNow <= 0 ) {
-		[[EJApp instance] invokeCallback:callback thisObject:NULL argc:0 argv:NULL];
+		[[EJJavaScriptView sharedView] invokeCallback:callback thisObject:NULL argc:0 argv:NULL];
 		
 		if( repeat ) {
 			self.target = [NSDate dateWithTimeIntervalSinceNow:interval];

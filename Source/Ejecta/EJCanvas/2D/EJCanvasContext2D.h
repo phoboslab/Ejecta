@@ -77,7 +77,7 @@ typedef struct {
 	EJPath * clipPath;
 } EJCanvasState;
 
-@class EJApp;
+@class EJJavaScriptView;
 @interface EJCanvasContext2D : EJCanvasContext {
 	GLuint viewFrameBuffer, viewRenderBuffer;
 	GLuint msaaFrameBuffer, msaaRenderBuffer;
@@ -101,7 +101,7 @@ typedef struct {
 	
 	NSCache * fontCache;
 	
-	EJApp * app;
+	EJJavaScriptView * app;
 	EJGLProgram2D * currentProgram;
 }
 

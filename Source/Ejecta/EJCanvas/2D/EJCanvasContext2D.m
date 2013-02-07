@@ -1,6 +1,6 @@
 #import "EJCanvasContext2D.h"
 #import "EJFont.h"
-#import "EJApp.h"
+#import "EJJavaScriptView.h"
 
 #import "EJCanvasPattern.h"
 #import "EJCanvasGradient.h"
@@ -27,7 +27,7 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 
 - (id)initWithWidth:(short)widthp height:(short)heightp {
 	if( self = [super init] ) {
-		app = [EJApp instance];
+		app = [EJJavaScriptView sharedView];
 		glContext = app.glContext2D;
 	
 		memset(stateStack, 0, sizeof(stateStack));

@@ -1,6 +1,6 @@
 #import <QuartzCore/QuartzCore.h>
 #import "EJCanvasContext2DScreen.h"
-#import "EJApp.h"
+#import "EJJavaScriptView.h"
 
 @implementation EJCanvasContext2DScreen
 
@@ -12,7 +12,7 @@
 	// screen size and retina properties into account
 	
 	CGRect frame = CGRectMake(0, 0, width, height);
-	CGSize screen = app.view.bounds.size;
+	CGSize screen = app.bounds.size;
     float contentScale = (useRetinaResolution && [UIScreen mainScreen].scale == 2) ? 2 : 1;
 	float aspect = frame.size.width / frame.size.height;
 	
@@ -65,8 +65,7 @@
     glClear(GL_COLOR_BUFFER_BIT);
 
 	// Append the OpenGL view to Impact's main view
-	[app hideLoadingScreen];
-	[app.view addSubview:glview];
+	[app addSubview:glview];
 }
 
 - (void)dealloc {

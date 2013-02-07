@@ -3,6 +3,7 @@
 #import "EJDrawable.h"
 #import "EJTexture.h"
 #import "EJConvertWebGL.h"
+#import "EJJavaScriptView.h"
 
 #import <JavaScriptCore/JSTypedArray.h>
 
@@ -11,7 +12,7 @@
 
 - (id)initWithCanvas:(JSObjectRef)canvas renderingContext:(EJCanvasContextWebGL *)renderingContextp {
 	if( self = [super initWithContext:NULL argc:0 argv:NULL] ) {
-		ejectaInstance = [EJApp instance]; // Keep a local copy - may be faster?
+		ejectaInstance = [EJJavaScriptView sharedView]; // Keep a local copy - may be faster?
 		renderingContext = [renderingContextp retain];
 		jsCanvas = canvas;
 		
