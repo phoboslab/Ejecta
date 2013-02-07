@@ -1,5 +1,5 @@
 #import <Foundation/Foundation.h>
-#import "EJApp.h"
+#import "EJAppViewController.h"
 
 #include <objc/message.h>
 

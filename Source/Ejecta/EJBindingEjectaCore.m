@@ -3,12 +3,14 @@
 #import <netinet/in.h>
 #import <SystemConfiguration/SystemConfiguration.h>
 
+#import "EJJavaScriptView.h"
+
 @implementation EJBindingEjectaCore
 
 - (void)dealloc {
 	[urlToOpen release];
 	if( getTextCallback ) {
-		JSValueUnprotect([EJApp instance].jsGlobalContext, getTextCallback);
+		JSValueUnprotect([EJJavaScriptView sharedView].jsGlobalContext, getTextCallback);
 	}
 	[super dealloc];
 }
@@ -23,7 +25,7 @@ EJ_BIND_FUNCTION(log, ctx, argc, argv ) {
 EJ_BIND_FUNCTION(include, ctx, argc, argv ) {
 	if( argc < 1 ) { return NULL; }
 
-	[[EJApp instance] loadScriptAtPath:JSValueToNSString(ctx, argv[0])];
+	[[EJJavaScriptView sharedView] loadScriptAtPath:JSValueToNSString(ctx, argv[0])];
 	return NULL;
 }
 
@@ -31,7 +33,7 @@ EJ_BIND_FUNCTION(loadFont, ctx, argc, argv ) {
 	if( argc < 1 ) { return NULL; }
 
 	NSString * path = JSValueToNSString(ctx, argv[0]);
-	NSString * fullPath = [[EJApp instance] pathForResource:path];
+	NSString * fullPath = [[EJJavaScriptView sharedView] pathForResource:path];
 	[EJFont loadFontAtPath:fullPath];
 	return NULL;
 }
@@ -39,7 +41,7 @@ EJ_BIND_FUNCTION(loadFont, ctx, argc, argv ) {
 EJ_BIND_FUNCTION(requireModule, ctx, argc, argv ) {
 	if( argc < 3 ) { return NULL; }
 	
-	return [[EJApp instance] loadModuleWithId:JSValueToNSString(ctx, argv[0]) module:argv[1] exports:argv[2]];
+	return [[EJJavaScriptView sharedView] loadModuleWithId:JSValueToNSString(ctx, argv[0]) module:argv[1] exports:argv[2]];
 }
 
 EJ_BIND_FUNCTION(require, ctx, argc, argv ) {
@@ -47,7 +49,7 @@ EJ_BIND_FUNCTION(require, ctx, argc, argv ) {
 	if( argc < 1 ) { return NULL; }
 	NSLog(@"Warning: ejecta.require() is deprecated. Use ejecta.include() instead.");
 	
-	[[EJApp instance] loadScriptAtPath:JSValueToNSString(ctx, argv[0])];
+	[[EJJavaScriptView sharedView] loadScriptAtPath:JSValueToNSString(ctx, argv[0])];
 	return NULL;
 }
 
@@ -106,31 +108,30 @@ EJ_BIND_FUNCTION(getText, ctx, argc, argv) {
 		if( index == 1 ) {
 			text = [[alertView textFieldAtIndex:0] text];
 		}
-		JSValueRef params[] = { NSStringToJSValue([EJApp instance].jsGlobalContext, text) };
-		[[EJApp instance] invokeCallback:getTextCallback thisObject:NULL argc:1 argv:params];
+		JSValueRef params[] = { NSStringToJSValue([EJJavaScriptView sharedView].jsGlobalContext, text) };
+		[[EJJavaScriptView sharedView] invokeCallback:getTextCallback thisObject:NULL argc:1 argv:params];
 		
-		JSValueUnprotect([EJApp instance].jsGlobalContext, getTextCallback);
+		JSValueUnprotect([EJJavaScriptView sharedView].jsGlobalContext, getTextCallback);
 		getTextCallback = NULL;
 	}
 }
 
 
 EJ_BIND_FUNCTION(setTimeout, ctx, argc, argv ) {
-	return [[EJApp instance] createTimer:ctx argc:argc argv:argv repeat:NO];
+	return [[EJJavaScriptView sharedView] createTimer:ctx argc:argc argv:argv repeat:NO];
 }
 
 EJ_BIND_FUNCTION(setInterval, ctx, argc, argv ) {
-	return [[EJApp instance] createTimer:ctx argc:argc argv:argv repeat:YES];
+	return [[EJJavaScriptView sharedView] createTimer:ctx argc:argc argv:argv repeat:YES];
 }
 
 EJ_BIND_FUNCTION(clearTimeout, ctx, argc, argv ) {
-	return [[EJApp instance] deleteTimer:ctx argc:argc argv:argv];
+	return [[EJJavaScriptView sharedView] deleteTimer:ctx argc:argc argv:argv];
 }
 
 EJ_BIND_FUNCTION(clearInterval, ctx, argc, argv ) {
-	return [[EJApp instance] deleteTimer:ctx argc:argc argv:argv];
+	return [[EJJavaScriptView sharedView] deleteTimer:ctx argc:argc argv:argv];
 }
-
 
 
 EJ_BIND_GET(devicePixelRatio, ctx ) {
@@ -138,15 +139,15 @@ EJ_BIND_GET(devicePixelRatio, ctx ) {
 }
 
 EJ_BIND_GET(screenWidth, ctx ) {
-	return JSValueMakeNumber( ctx, [EJApp instance].view.bounds.size.width );
+	return JSValueMakeNumber( ctx, [EJJavaScriptView sharedView].bounds.size.width );
 }
 
 EJ_BIND_GET(screenHeight, ctx ) {
-	return JSValueMakeNumber( ctx, [EJApp instance].view.bounds.size.height );
+	return JSValueMakeNumber( ctx, [EJJavaScriptView sharedView].bounds.size.height );
 }
 
 EJ_BIND_GET(landscapeMode, ctx ) {
-	return JSValueMakeBoolean( ctx, [EJApp instance].landscapeMode );
+	return JSValueMakeBoolean( ctx, [[EJAppViewController instance] landscapeMode] );
 }
 
 EJ_BIND_GET(userAgent, ctx ) {

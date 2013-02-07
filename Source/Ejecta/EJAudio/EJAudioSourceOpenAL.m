@@ -1,5 +1,5 @@
 #import "EJAudioSourceOpenAL.h"
-#import "EJApp.h"
+#import "EJAppViewController.h"
 
 @implementation EJAudioSourceOpenAL
 

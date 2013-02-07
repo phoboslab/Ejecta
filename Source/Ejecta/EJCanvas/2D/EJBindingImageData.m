@@ -1,4 +1,5 @@
 #import "EJBindingImageData.h"
+#import "EJJavaScriptView.h"
 #import <JavaScriptCore/JSTypedArray.h>
 
 @implementation EJBindingImageData
@@ -13,7 +14,7 @@
 }
 
 - (void)dealloc {
-	JSContextRef ctx = [EJApp instance].jsGlobalContext;
+	JSContextRef ctx = [EJJavaScriptView sharedView].jsGlobalContext;
 	if( dataArray ) {
 		JSValueUnprotect(ctx, dataArray);
 	}
@@ -25,7 +26,7 @@
 - (EJImageData *)imageData {
 	if( dataArray ) {
 		// Copy values from the JSArray back into the imageData
-		JSContextRef ctx = [EJApp instance].jsGlobalContext;
+		JSContextRef ctx = [EJJavaScriptView sharedView].jsGlobalContext;
 		int count = imageData.width * imageData.height * 4;
 		
 		void * data = JSTypedArrayGetDataPtr(ctx, dataArray, NULL);

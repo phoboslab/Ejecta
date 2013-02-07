@@ -2,17 +2,18 @@
 
 #import <AudioToolbox/AudioToolbox.h>
 #import <AudioToolbox/ExtendedAudioFile.h>
-#import "EJApp.h"
+#import "EJAppViewController.h"
+#import "EJJavaScriptView.h"
 
 @implementation EJOpenALBuffer
 @synthesize bufferId;
 @synthesize duration;
 
 + (id)cachedBufferWithPath:(NSString *)path {
-	EJOpenALBuffer * buffer = [[[EJApp instance].openALManager.buffers objectForKey:path] retain];
+	EJOpenALBuffer * buffer = [[[EJJavaScriptView sharedView].openALManager.buffers objectForKey:path] retain];
 	if( !buffer ) {
 		buffer = [[EJOpenALBuffer alloc] initWithPath:path];
-		[[EJApp instance].openALManager.buffers setObject:buffer forKey:path];
+		[[EJJavaScriptView sharedView].openALManager.buffers setObject:buffer forKey:path];
 	}
 	return buffer;
 }
@@ -33,7 +34,7 @@
 }
 
 - (void)dealloc {
-	[[EJApp instance].openALManager.buffers removeObjectForKey:path];
+	[[EJJavaScriptView sharedView].openALManager.buffers removeObjectForKey:path];
 	[path release];
 	
 	if( bufferId ) {

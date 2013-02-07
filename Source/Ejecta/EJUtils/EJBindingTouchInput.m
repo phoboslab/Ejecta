@@ -1,6 +1,5 @@
 #import "EJBindingTouchInput.h"
 
-
 @implementation EJBindingTouchInput
 
 - (id)initWithContext:(JSContextRef)ctx argc:(size_t)argc argv:(const JSValueRef [])argv {
@@ -28,13 +27,13 @@
 			JSValueProtect( ctx, jsTouchesPool[i] );
 		}
 		
-		[EJApp instance].touchDelegate = self;
+		[EJJavaScriptView sharedView].touchDelegate = self;
 	}
 	return self;
 }
 
 - (void)dealloc {
-	JSContextRef ctx = [EJApp instance].jsGlobalContext;
+	JSContextRef ctx = [EJJavaScriptView sharedView].jsGlobalContext;
 	
 	JSValueUnprotect( ctx, jsRemainingTouches );
 	JSValueUnprotect( ctx, jsChangedTouches );
@@ -54,7 +53,7 @@
 }
 
 - (void)triggerEvent:(NSString *)name all:(NSSet *)all changed:(NSSet *)changed remaining:(NSSet *)remaining {
-	EJApp * ejecta = [EJApp instance];
+	EJJavaScriptView * ejecta = [EJJavaScriptView sharedView];
 	JSContextRef ctx = ejecta.jsGlobalContext;
 	float scale = ejecta.internalScaling;
 	

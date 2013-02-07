@@ -1,4 +1,5 @@
 #import "EJBindingDeviceMotion.h"
+#import "EJJavaScriptView.h"
 
 @implementation EJBindingDeviceMotion
 
@@ -7,7 +8,7 @@
 		
 		interval = 1.0f/60.0f;
 		motionManager = [[CMMotionManager alloc] init];
-		NSOperationQueue * queue = [EJApp instance].opQueue;
+		NSOperationQueue * queue = [EJJavaScriptView sharedView].opQueue;
 		
 		// Has Gyro? (iPhone4 and newer)
 		if( motionManager.isDeviceMotionAvailable ) {
@@ -35,7 +36,7 @@ static const float g = 9.80665;
 static const float radToDeg = (180/M_PI);
 
 - (void)triggerEventWithMotion:(CMDeviceMotion *)motion {
-	JSContextRef ctx = [EJApp instance].jsGlobalContext;
+	JSContextRef ctx = [EJJavaScriptView sharedView].jsGlobalContext;
 	
 	// accelerationIncludingGravity {x, y, z}
 	params[0] = JSValueMakeNumber(ctx, (motion.userAcceleration.x + motion.gravity.x) * g);
@@ -61,7 +62,7 @@ static const float radToDeg = (180/M_PI);
 }
 
 - (void)triggerEventWithAccelerometerData:(CMAccelerometerData *)accel {
-	JSContextRef ctx = [EJApp instance].jsGlobalContext;
+	JSContextRef ctx = [EJJavaScriptView sharedView].jsGlobalContext;
 	
 	// accelerationIncludingGravity {x, y, z}
 	params[0] = JSValueMakeNumber(ctx, accel.acceleration.x * g);

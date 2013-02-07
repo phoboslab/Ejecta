@@ -1,5 +1,5 @@
 #import "EJBindingAudio.h"
-
+#import "EJJavaScriptView.h"
 
 @implementation EJBindingAudio
 
@@ -47,13 +47,13 @@
 	
 	// Protect this Audio object from garbage collection, as its callback function
 	// may be the only thing holding on to it
-	JSValueProtect([EJApp instance].jsGlobalContext, jsObject);
+	JSValueProtect([EJJavaScriptView sharedView].jsGlobalContext, jsObject);
 	
-	NSString * fullPath = [[EJApp instance] pathForResource:path];
+	NSString * fullPath = [[EJJavaScriptView sharedView] pathForResource:path];
 	NSInvocationOperation * loadOp = [[NSInvocationOperation alloc] initWithTarget:self
 				selector:@selector(loadOperation:) object:fullPath];
 	loadOp.threadPriority = 0.2;
-	[[EJApp instance].opQueue addOperation:loadOp];
+	[[EJJavaScriptView sharedView].opQueue addOperation:loadOp];
 	[loadOp release];
 }
 
@@ -91,7 +91,7 @@
 	[self triggerEvent:@"canplaythrough" argc:0 argv:NULL];
 	[self triggerEvent:@"loadedmetadata" argc:0 argv:NULL];
 	
-	JSValueUnprotect([EJApp instance].jsGlobalContext, jsObject);
+	JSValueUnprotect([EJJavaScriptView sharedView].jsGlobalContext, jsObject);
 }
 
 - (void)sourceDidFinishPlaying:(NSObject<EJAudioSource> *)source {
