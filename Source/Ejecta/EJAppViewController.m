@@ -8,21 +8,34 @@
 
 @implementation EJAppViewController
 
-static EJAppViewController * ejectaInstance = NULL;
+static EJAppViewController * _ejectaInstance = NULL;
 
 + (EJAppViewController *)instance {
-	return ejectaInstance;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _ejectaInstance = [[EJAppViewController alloc] init];
+    });
+	return _ejectaInstance;
 }
 
 - (id)init{
 	if( self = [super init] ) {
-		
 		_landscapeMode = [[[[NSBundle mainBundle] infoDictionary]
 			objectForKey:@"UIInterfaceOrientation"] hasPrefix:@"UIInterfaceOrientationLandscape"];
-		ejectaInstance = self;
+		_ejectaInstance = self;
         [[EJJavaScriptView sharedView] loadDefaultScripts];
     }
 	return self;
+}
+
++(id)alloc
+{
+    @synchronized([EJAppViewController class]){
+        NSAssert(_ejectaInstance == nil, @"Attempt to allocate a second instance of singleton EJAppViewController");
+        _ejectaInstance = [super alloc];
+        return _ejectaInstance;
+    }
+    return nil;
 }
 
 - (void)dealloc {

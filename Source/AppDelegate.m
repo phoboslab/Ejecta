@@ -10,11 +10,9 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 	[application setIdleTimerDisabled:YES];
-    
-    app = [[EJAppViewController alloc] init];
+    app = [EJAppViewController instance];
     window.rootViewController = app;
     [self.window makeKeyAndVisible];
-    
     return YES;
 }
 
