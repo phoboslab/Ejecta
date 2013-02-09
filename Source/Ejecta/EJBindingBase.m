@@ -20,7 +20,7 @@ static NSMutableDictionary * CachedJSClasses;
 @implementation EJBindingBase
 
 - (id)initWithContext:(JSContextRef)ctxp argc:(size_t)argc argv:(const JSValueRef [])argv {
-	if( self  = [super init] ) {
+	if( self = [super init] ) {
 	}
 	return self;
 }

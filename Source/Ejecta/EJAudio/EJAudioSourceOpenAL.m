@@ -58,12 +58,12 @@
 
 - (float)currentTime {
 	float time;
-	alGetSourcef( sourceId, AL_SEC_OFFSET,  &time );
+	alGetSourcef( sourceId, AL_SEC_OFFSET, &time );
 	return time;
 }
 
 - (void)setCurrentTime:(float)time {
-	alSourcef( sourceId, AL_SEC_OFFSET,  time );
+	alSourcef( sourceId, AL_SEC_OFFSET, time );
 }
 
 - (float)duration {

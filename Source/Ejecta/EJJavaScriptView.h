@@ -26,7 +26,7 @@
 @end
 
 @interface EJJavaScriptView : UIView {
-    
+	
 }
 
 + (EJJavaScriptView*)sharedView;

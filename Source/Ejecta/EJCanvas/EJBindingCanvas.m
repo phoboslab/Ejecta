@@ -14,9 +14,9 @@
 static BOOL HasScreenCanvas = NO;
 
 - (id)initWithContext:(JSContextRef)ctx argc:(size_t)argc argv:(const JSValueRef [])argv {
-    
+	
 	if( self = [super initWithContext:ctx argc:argc argv:argv] ) {
-                
+				
 		scalingMode = kEJScalingModeFitWidth;
 		useRetinaResolution = true;
 		msaaEnabled = false;
@@ -38,7 +38,7 @@ static BOOL HasScreenCanvas = NO;
 			height = screen.height;
 		}
 	}
-    return self;
+	return self;
 }
 
 - (void)dealloc {

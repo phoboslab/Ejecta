@@ -7,7 +7,7 @@
 
 - (id)init
 {
-    if (self = [super init]) {
+	if (self = [super init]) {
 		timers = [[NSMutableDictionary alloc] init];
 	}
 	return self;

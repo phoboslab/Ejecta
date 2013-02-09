@@ -200,8 +200,8 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 }
 
 - (void)pushTriX1:(float)x1 y1:(float)y1 x2:(float)x2 y2:(float)y2
-			   x3:(float)x3 y3:(float)y3
-			color:(EJColorRGBA)color
+	x3:(float)x3 y3:(float)y3
+	color:(EJColorRGBA)color
 	withTransform:(CGAffineTransform)transform
 {
 	if( vertexBufferIndex >= EJ_CANVAS_VERTEX_BUFFER_SIZE - 3 ) {
@@ -532,8 +532,8 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 	stateIndex--;
 	state = &stateStack[stateIndex];
 	
-    path.transform = state->transform;
-    
+	path.transform = state->transform;
+	
 	// Set Composite op, if different
 	if( state->globalCompositeOperation != oldCompositeOp ) {
 		self.globalCompositeOperation = state->globalCompositeOperation;
@@ -548,12 +548,12 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 
 - (void)rotate:(float)angle {
 	state->transform = CGAffineTransformRotate( state->transform, angle );
-    path.transform = state->transform;
+	path.transform = state->transform;
 }
 
 - (void)translateX:(float)x y:(float)y {
 	state->transform = CGAffineTransformTranslate( state->transform, x, y );
-    path.transform = state->transform;
+	path.transform = state->transform;
 }
 
 - (void)scaleX:(float)x y:(float)y {

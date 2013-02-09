@@ -113,24 +113,24 @@ typedef std::vector<subpath_t> path_t;
 }
 
 - (void)recursiveBezierX1:(float)x1 y1:(float)y1
-					   x2:(float)x2 y2:(float)y2
-					   x3:(float)x3 y3:(float)y3
-					   x4:(float)x4 y4:(float)y4
-					level:(int)level
+	x2:(float)x2 y2:(float)y2
+	x3:(float)x3 y3:(float)y3
+	x4:(float)x4 y4:(float)y4
+	level:(int)level
 {
 	// Based on http://www.antigrain.com/research/adaptive_bezier/index.html
 	
 	// Calculate all the mid-points of the line segments
-	float x12   = (x1 + x2) / 2;
-	float y12   = (y1 + y2) / 2;
-	float x23   = (x2 + x3) / 2;
-	float y23   = (y2 + y3) / 2;
-	float x34   = (x3 + x4) / 2;
-	float y34   = (y3 + y4) / 2;
-	float x123  = (x12 + x23) / 2;
-	float y123  = (y12 + y23) / 2;
-	float x234  = (x23 + x34) / 2;
-	float y234  = (y23 + y34) / 2;
+	float x12 = (x1 + x2) / 2;
+	float y12 = (y1 + y2) / 2;
+	float x23 = (x2 + x3) / 2;
+	float y23 = (y2 + y3) / 2;
+	float x34 = (x3 + x4) / 2;
+	float y34 = (y3 + y4) / 2;
+	float x123 = (x12 + x23) / 2;
+	float y123 = (y12 + y23) / 2;
+	float x234 = (x23 + x34) / 2;
+	float y234 = (y23 + y34) / 2;
 	float x1234 = (x123 + x234) / 2;
 	float y1234 = (y123 + y234) / 2;
 	
@@ -199,19 +199,19 @@ typedef std::vector<subpath_t> path_t;
 }
 
 - (void)recursiveQuadraticX1:(float)x1 y1:(float)y1
-						  x2:(float)x2 y2:(float)y2
-						  x3:(float)x3 y3:(float)y3
-					   level:(int)level
+	x2:(float)x2 y2:(float)y2
+	x3:(float)x3 y3:(float)y3
+	level:(int)level
 {
 	// Based on http://www.antigrain.com/research/adaptive_bezier/index.html
 	
 	// Calculate all the mid-points of the line segments
-	float x12   = (x1 + x2) / 2;
-	float y12   = (y1 + y2) / 2;
-	float x23   = (x2 + x3) / 2;
-	float y23   = (y2 + y3) / 2;
-	float x123  = (x12 + x23) / 2;
-	float y123  = (y12 + y23) / 2;
+	float x12 = (x1 + x2) / 2;
+	float y12 = (y1 + y2) / 2;
+	float x23 = (x2 + x3) / 2;
+	float y23 = (y2 + y3) / 2;
+	float x123 = (x12 + x23) / 2;
+	float y123 = (y12 + y23) / 2;
 	
 	float dx = x3-x1;
 	float dy = y3-y1;
@@ -251,8 +251,8 @@ typedef std::vector<subpath_t> path_t;
 	
 	float a1 = cp.y - y1;
 	float b1 = cp.x - x1;
-	float a2 = y2   - y1;
-	float b2 = x2   - x1;
+	float a2 = y2 - y1;
+	float b2 = x2 - x1;
 	float mm = fabsf(a1 * b2 - b1 * a2);
 
 	if( mm < 1.0e-8 || radius == 0 ) {
@@ -285,7 +285,7 @@ typedef std::vector<subpath_t> path_t;
 	antiClockwise:(BOOL)antiClockwise
 {
 	startAngle = fmodf(startAngle, 2 * M_PI);
-    endAngle = fmodf(endAngle, 2 * M_PI);
+	endAngle = fmodf(endAngle, 2 * M_PI);
 
 	if( !antiClockwise && endAngle <= startAngle ) {
 		endAngle += 2 * M_PI;
@@ -294,9 +294,9 @@ typedef std::vector<subpath_t> path_t;
 		startAngle += 2 * M_PI;
 	}
 
-    float span = antiClockwise
-        ? (startAngle - endAngle) *-1
-        : (endAngle - startAngle);
+	float span = antiClockwise
+		? (startAngle - endAngle) *-1
+		: (endAngle - startAngle);
 	
 	// Calculate the number of steps, based on the radius, scaling and the span
 	float size = radius * CGAffineTransformGetScale(transform) * 5;
@@ -390,7 +390,7 @@ typedef std::vector<subpath_t> path_t;
 	}
 	
 	glStencilFunc(GL_NOTEQUAL, 0x00, 0xff);
-    glStencilOp(GL_ZERO, GL_ZERO, GL_ZERO);
+	glStencilOp(GL_ZERO, GL_ZERO, GL_ZERO);
 
 	if( state->fillObject && target == kEJPathPolygonTargetColor ) {
 		// If we have a fill pattern or gradient, we have to do some extra work to unproject the

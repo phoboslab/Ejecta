@@ -96,7 +96,7 @@ typedef struct {
 	int stateIndex;
 	EJCanvasState stateStack[EJ_CANVAS_STATE_STACK_SIZE];
 	EJCanvasState * state;
-    
+	
 	BOOL useRetinaResolution;
 	float backingStoreRatio;
 	
@@ -114,9 +114,9 @@ typedef struct {
 - (void)setTexture:(EJTexture *)newTexture;
 - (void)setProgram:(EJGLProgram2D *)program;
 - (void)pushTriX1:(float)x1 y1:(float)y1 x2:(float)x2 y2:(float)y2
-			   x3:(float)x3 y3:(float)y3
-			 color:(EJColorRGBA)color
-	 withTransform:(CGAffineTransform)transform;
+	x3:(float)x3 y3:(float)y3
+	color:(EJColorRGBA)color
+	withTransform:(CGAffineTransform)transform;
 - (void)pushQuadV1:(EJVector2)v1 v2:(EJVector2)v2 v3:(EJVector2)v3 v4:(EJVector2)v4
 	color:(EJColorRGBA)color
 	withTransform:(CGAffineTransform)transform;

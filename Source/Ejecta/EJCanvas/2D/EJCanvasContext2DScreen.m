@@ -13,7 +13,7 @@
 	
 	CGRect frame = CGRectMake(0, 0, width, height);
 	CGSize screen = app.bounds.size;
-    float contentScale = (useRetinaResolution && [UIScreen mainScreen].scale == 2) ? 2 : 1;
+	float contentScale = (useRetinaResolution && [UIScreen mainScreen].scale == 2) ? 2 : 1;
 	float aspect = frame.size.width / frame.size.height;
 	
 	if( scalingMode == kEJScalingModeFitWidth ) {
@@ -62,7 +62,7 @@
 	[self prepare];
 	
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT);
 
 	// Append the OpenGL view to Impact's main view
 	[app addSubview:glview];

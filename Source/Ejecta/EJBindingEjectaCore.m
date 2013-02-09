@@ -167,9 +167,9 @@ EJ_BIND_GET(appVersion, ctx ) {
 
 EJ_BIND_GET(onLine, ctx) {
 	struct sockaddr_in zeroAddress;
-    bzero(&zeroAddress, sizeof(zeroAddress));
-    zeroAddress.sin_len = sizeof(zeroAddress);
-    zeroAddress.sin_family = AF_INET;
+	bzero(&zeroAddress, sizeof(zeroAddress));
+	zeroAddress.sin_len = sizeof(zeroAddress);
+	zeroAddress.sin_family = AF_INET;
 	
 	SCNetworkReachabilityRef reachability = SCNetworkReachabilityCreateWithAddress(
 		kCFAllocatorDefault,

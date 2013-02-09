@@ -881,7 +881,7 @@ EJ_BIND_FUNCTION(getShaderPrecisionFormat, ctx, argc, argv) {
 			break;
 		default:
 			return NULL;
-    }
+	}
 	
 	return [EJBindingWebGLShaderPrecisionFormat
 		createJSObjectWithContext:ctx rangeMin:rangeMin rangeMax:rangeMax precision:precision];
@@ -1444,7 +1444,7 @@ EJ_BIND_FUNCTION(texSubImage2D, ctx, argc, argv) {
 		// We don't care about internalFormat, format or type params here; the source image will
 		// always be GL_RGBA and loaded as GL_UNSIGNED_BYTE
 		// FIXME?
-		if(	targetTexture && sourceTexture &&  format && type ) {
+		if(	targetTexture && sourceTexture && format && type ) {
 			
 			// Load image pixels, proccess as neccessary, make sure the current texture
 			// is mutable and update

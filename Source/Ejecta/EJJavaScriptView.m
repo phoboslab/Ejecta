@@ -39,38 +39,35 @@
 @implementation EJJavaScriptView
 static EJJavaScriptView *_sharedView = nil;
 
-+ (EJJavaScriptView*)sharedView
-{
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        _sharedView = [[EJJavaScriptView alloc] initWithFrame:[[UIScreen mainScreen]bounds]];
-    });
-    return _sharedView;
++ (EJJavaScriptView*)sharedView {
+	static dispatch_once_t onceToken;
+	dispatch_once(&onceToken, ^{
+		_sharedView = [[EJJavaScriptView alloc] initWithFrame:[[UIScreen mainScreen]bounds]];
+	});
+	return _sharedView;
 }
 
-+(id)alloc
-{
-    @synchronized([EJJavaScriptView class]){
-        NSAssert(_sharedView == nil, @"Attempt to allocate a second instance of singleton EJJavaScriptView");
-        _sharedView = [super alloc];
-        return _sharedView;
-    }
-    return nil;
++(id)alloc {
+	@synchronized([EJJavaScriptView class]){
+		NSAssert(_sharedView == nil, @"Attempt to allocate a second instance of singleton EJJavaScriptView");
+		_sharedView = [super alloc];
+		return _sharedView;
+	}
+	return nil;
 }
 
-- (id)initWithFrame:(CGRect)frame
-{
-    self = [super initWithFrame:frame];
-    if (self) {
+- (id)initWithFrame:(CGRect)frame {
+	self = [super initWithFrame:frame];
+	if (self) {
 		
 		self.isPaused = false;
 		self.internalScaling = 1;
-        
-        self.pausesAutomaticallyWhenBackgrounded = YES;
+		
+		self.pausesAutomaticallyWhenBackgrounded = YES;
 		
 		// Limit all background operations (image & sound loading) to one thread
-        self.opQueue = [[NSOperationQueue alloc] init];
-        self.opQueue.maxConcurrentOperationCount = 1;
+		self.opQueue = [[NSOperationQueue alloc] init];
+		self.opQueue.maxConcurrentOperationCount = 1;
 		
 		self.timers = [[EJTimerCollection alloc] init];
 		
@@ -96,53 +93,50 @@ static EJJavaScriptView *_sharedView = nil;
 		
 		JSObjectRef iosObject = JSObjectMake(self.jsGlobalContext, globalClass, NULL );
 		JSObjectSetProperty(
-                            self.jsGlobalContext, globalObject,
-                            JSStringCreateWithUTF8CString("Ejecta"), iosObject,
-                            kJSPropertyAttributeDontDelete | kJSPropertyAttributeReadOnly, NULL
-                            );
+			self.jsGlobalContext, globalObject,
+			JSStringCreateWithUTF8CString("Ejecta"), iosObject,
+			kJSPropertyAttributeDontDelete | kJSPropertyAttributeReadOnly, NULL
+		);
 		
 		// Create the OpenGL context for Canvas2D
 		self.glContext2D = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
 		self.glSharegroup = self.glContext2D.sharegroup;
 		self.glCurrentContext = self.glContext2D;
 		[EAGLContext setCurrentContext:self.glCurrentContext];
-    }
-    return self;
+	}
+	return self;
 }
 
-- (void)setPausesAutomaticallyWhenBackgrounded:(BOOL)pausesAutomaticallyWhenBackgrounded
-{
-    NSArray *pauseN = @[UIApplicationWillResignActiveNotification,
-                        UIApplicationDidEnterBackgroundNotification,
-                        UIApplicationWillTerminateNotification];
-    NSArray *resumeN = @[UIApplicationWillEnterForegroundNotification,
-                         UIApplicationDidBecomeActiveNotification];
-    if (pausesAutomaticallyWhenBackgrounded) {
-        [self observeKeyPaths:pauseN selector:@selector(pause)];
-        [self observeKeyPaths:resumeN selector:@selector(resume)];
-    } else {
-        [self removeObserver:self forKeyPaths:pauseN];
-        [self removeObserver:self forKeyPaths:resumeN];
-    }
-    _pausesAutomaticallyWhenBackgrounded = pausesAutomaticallyWhenBackgrounded;
+- (void)setPausesAutomaticallyWhenBackgrounded:(BOOL)pausesAutomaticallyWhenBackgrounded {
+	NSArray *pauseN = @[UIApplicationWillResignActiveNotification,
+		UIApplicationDidEnterBackgroundNotification,
+		UIApplicationWillTerminateNotification];
+	NSArray *resumeN = @[UIApplicationWillEnterForegroundNotification,
+		UIApplicationDidBecomeActiveNotification];
+	
+	if (pausesAutomaticallyWhenBackgrounded) {
+		[self observeKeyPaths:pauseN selector:@selector(pause)];
+		[self observeKeyPaths:resumeN selector:@selector(resume)];
+	} 
+	else {
+		[self removeObserver:self forKeyPaths:pauseN];
+		[self removeObserver:self forKeyPaths:resumeN];
+	}
+	_pausesAutomaticallyWhenBackgrounded = pausesAutomaticallyWhenBackgrounded;
 }
 
-- (void)removeObserver:(id)observer forKeyPaths:(NSArray*)keyPaths
-{
-    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-    for (NSString *name in keyPaths) {
-        [nc removeObserver:observer name:name object:nil];
-    }
+- (void)removeObserver:(id)observer forKeyPaths:(NSArray*)keyPaths {
+	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+	for (NSString *name in keyPaths) {
+		[nc removeObserver:observer name:name object:nil];
+	}
 }
 
-- (void)observeKeyPaths:(NSArray*)keyPaths selector:(SEL)selector
-{
-    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-    for (NSString *name in keyPaths) {
-        [nc addObserver:self
-               selector:selector
-                   name:name object:nil];
-    }
+- (void)observeKeyPaths:(NSArray*)keyPaths selector:(SEL)selector {
+	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+	for (NSString *name in keyPaths) {
+		[nc addObserver:self selector:selector name:name object:nil];
+	}
 }
 
 #pragma mark -
@@ -153,11 +147,10 @@ static EJJavaScriptView *_sharedView = nil;
 	return [NSString stringWithFormat:@"%@/" EJECTA_APP_FOLDER "%@", [[NSBundle mainBundle] resourcePath], path];
 }
 
-- (void)loadDefaultScripts
-{
-    // Load the initial JavaScript source files
-    [self loadScriptAtPath:EJECTA_BOOT_JS];
-    [self loadScriptAtPath:EJECTA_MAIN_JS];
+- (void)loadDefaultScripts {
+	// Load the initial JavaScript source files
+	[self loadScriptAtPath:EJECTA_BOOT_JS];
+	[self loadScriptAtPath:EJECTA_MAIN_JS];
 }
 
 - (void)loadScriptAtPath:(NSString *)path {
@@ -175,7 +168,7 @@ static EJJavaScriptView *_sharedView = nil;
 	JSValueRef exception = NULL;
 	JSEvaluateScript(self.jsGlobalContext, scriptJS, NULL, pathJS, 0, &exception );
 	[self logException:exception ctx:self.jsGlobalContext];
-    
+	
 	JSStringRelease( scriptJS );
 	JSStringRelease( pathJS );
 }
@@ -233,11 +226,11 @@ static EJJavaScriptView *_sharedView = nil;
 	JSValueRef file = JSObjectGetProperty( ctxp, exObject, jsFilePropertyName, NULL );
 	
 	NSLog(
-          @"%@ at line %@ in %@",
-          JSValueToNSString( ctxp, exception ),
-          JSValueToNSString( ctxp, line ),
-          JSValueToNSString( ctxp, file )
-          );
+		@"%@ at line %@ in %@",
+		JSValueToNSString( ctxp, exception ),
+		JSValueToNSString( ctxp, line ),
+		JSValueToNSString( ctxp, file )
+	);
 	
 	JSStringRelease( jsLinePropertyName );
 	JSStringRelease( jsFilePropertyName );
@@ -248,7 +241,7 @@ static EJJavaScriptView *_sharedView = nil;
 
 - (void)run:(CADisplayLink *)sender {
 	if(self.isPaused) { return; }
-    
+	
 	// Check all timers
 	[self.timers update];
 	
@@ -331,12 +324,12 @@ static EJJavaScriptView *_sharedView = nil;
 }
 
 #define EJ_GL_PROGRAM_GETTER(TYPE, NAME) \
-- (TYPE *)glProgram2D##NAME { \
-if( !_glProgram2D##NAME ) { \
-_glProgram2D##NAME = [[TYPE alloc] initWithVertexShader:@"Vertex.vsh" fragmentShader: @ #NAME @".fsh"]; \
-} \
-return _glProgram2D##NAME; \
-}
+	- (TYPE *)glProgram2D##NAME { \
+		if( !_glProgram2D##NAME ) { \
+			_glProgram2D##NAME = [[TYPE alloc] initWithVertexShader:@"Vertex.vsh" fragmentShader: @ #NAME @".fsh"]; \
+		} \
+	return _glProgram2D##NAME; \
+	}
 
 EJ_GL_PROGRAM_GETTER(EJGLProgram2D, Flat);
 EJ_GL_PROGRAM_GETTER(EJGLProgram2D, Texture);

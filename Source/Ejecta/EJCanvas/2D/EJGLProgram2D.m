@@ -82,11 +82,11 @@
 }
 
 + (void)linkProgram:(GLuint)program {
-    GLint status;
-    glLinkProgram(program);
+	GLint status;
+	glLinkProgram(program);
 
-    glGetProgramiv(program, GL_LINK_STATUS, &status);
-    if( status == 0 ) {
+	glGetProgramiv(program, GL_LINK_STATUS, &status);
+	if( status == 0 ) {
 		GLint logLength;
 		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &logLength);
 		if( logLength > 0 ) {
@@ -95,7 +95,7 @@
 			NSLog(@"Program link log:\n%s", log);
 			free(log);
 		}
-    }
+	}
 }
 
 @end

@@ -5,7 +5,7 @@
 @implementation EJBindingHttpRequest
 
 - (id)initWithContext:(JSContextRef)ctxp argc:(size_t)argc argv:(const JSValueRef [])argv {
-	if( self  = [super initWithContext:ctxp argc:argc argv:argv] ) {
+	if( self = [super initWithContext:ctxp argc:argc argv:argv] ) {
 		requestHeaders = [[NSMutableDictionary alloc] init];
 	}
 	return self;
@@ -61,12 +61,12 @@
 
 - (void)connection:(NSURLConnection *)connection willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {
 	if( user && password && [challenge previousFailureCount] == 0 ) {
-        NSURLCredential * credentials = [NSURLCredential
+		NSURLCredential * credentials = [NSURLCredential
 			credentialWithUser:user
 			password:password
 			persistence:NSURLCredentialPersistenceNone];
 		[[challenge sender] useCredential:credentials forAuthenticationChallenge:challenge];
-    }
+	}
 	else if( [challenge previousFailureCount] == 0 ) {
 		[[challenge sender] continueWithoutCredentialForAuthenticationChallenge:challenge];
 	}
@@ -75,7 +75,7 @@
 		state = kEJHttpRequestStateDone;
 		[self triggerEvent:@"abort" argc:0 argv:NULL];
 		NSLog(@"XHR: Aborting Request %@ - wrong credentials", url);
-    }
+	}
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connectionp {

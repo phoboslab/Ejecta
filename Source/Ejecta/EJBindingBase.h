@@ -193,7 +193,7 @@ static inline bool JSStrIsEqualToStr( const JSChar * s1, const char * s2, int le
 #define _EJ_EVAL0(...) __VA_ARGS__
 #define _EJ_EVAL1(...) _EJ_EVAL0( _EJ_EVAL0(__VA_ARGS__) )
 #define _EJ_EVAL2(...) _EJ_EVAL1( _EJ_EVAL1(__VA_ARGS__) )
-#define _EJ_EVAL(...)  _EJ_EVAL2( _EJ_EVAL2(__VA_ARGS__) )
+#define _EJ_EVAL(...) _EJ_EVAL2( _EJ_EVAL2(__VA_ARGS__) )
 
 #define _EJ_MAP_END(...)
 #define _EJ_MAP_OUT

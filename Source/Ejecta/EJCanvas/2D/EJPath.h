@@ -22,8 +22,8 @@ typedef enum {
 	GLubyte stencilMask;
 	
 	float distanceTolerance;
-    
-    CGAffineTransform transform;
+	
+	CGAffineTransform transform;
 }
 
 @property (nonatomic,assign) CGAffineTransform transform;;

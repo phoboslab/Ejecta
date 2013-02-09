@@ -4,13 +4,13 @@
 @implementation EAGLView
 
 + (Class)layerClass {
-    return [CAEAGLLayer class];
+	return [CAEAGLLayer class];
 }
 
 - (id)initWithFrame:(CGRect)frame contentScale:(float)contentScale retainedBacking:(BOOL)retainedBacking {
 	if( self = [super initWithFrame:frame] ) {
 		[self setMultipleTouchEnabled:YES];
-        
+		
 		CAEAGLLayer *eaglLayer = (CAEAGLLayer *)self.layer;
 		
 		self.contentScaleFactor = contentScale;
@@ -22,8 +22,8 @@
 			kEAGLDrawablePropertyRetainedBacking: [NSNumber numberWithBool:retainedBacking],
 			kEAGLDrawablePropertyColorFormat: kEAGLColorFormatRGBA8
 		};
-    }
-    return self;
+	}
+	return self;
 }
 
 @end
