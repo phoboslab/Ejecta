@@ -1,4 +1,5 @@
 #import "EJBindingEventedBase.h"
+#import "EJJavaScriptView.h"
 
 @implementation EJBindingEventedBase
 
@@ -11,7 +12,7 @@
 }
 
 - (void)dealloc {
-	JSContextRef ctx = [EJApp instance].jsGlobalContext;
+	JSContextRef ctx = [EJJavaScriptView sharedView].jsGlobalContext;
 	
 	// Unprotect all event callbacks
 	for( NSString * name in eventListeners ) {
@@ -90,7 +91,7 @@ EJ_BIND_FUNCTION(removeEventListener, ctx, argc, argv) {
 }
 
 - (void)triggerEvent:(NSString *)name argc:(int)argc argv:(JSValueRef[])argv {
-	EJApp * ejecta = [EJApp instance];
+	EJJavaScriptView * ejecta = [EJJavaScriptView sharedView];
 	
 	NSArray * listeners = [eventListeners objectForKey:name];
 	if( listeners ) {

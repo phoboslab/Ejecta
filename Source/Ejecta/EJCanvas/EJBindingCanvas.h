@@ -3,6 +3,8 @@
 #import "EJDrawable.h"
 #import "EJCanvasContext.h"
 
+@class EJJavaScriptView;
+
 typedef enum {
 	kEJCanvasContextModeInvalid,
 	kEJCanvasContextMode2D,

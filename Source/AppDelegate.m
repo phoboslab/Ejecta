@@ -1,5 +1,6 @@
-#import "AppDelegate.h"
 
+#import "AppDelegate.h"
+#import "EJJavaScriptView.h"
 @implementation AppDelegate
 
 @synthesize window;
@@ -8,49 +9,18 @@
 #pragma mark Application lifecycle
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    //Optionally set the idle timer disabled, this prevents the device from sleep when not being interacted with by touch. ie. games with motion control.
 	[application setIdleTimerDisabled:YES];
-	app = [[EJApp alloc] initWithWindow:window];
-	
-    [self.window makeKeyAndVisible];
+    self.ejApp = [EJAppViewController instance];
+    window.rootViewController = self.ejApp;
     return YES;
 }
-
-
-- (void)applicationWillResignActive:(UIApplication *)application {
-	[app pause];
-}
-
-
-- (void)applicationDidEnterBackground:(UIApplication *)application {
-	[app pause];
-}
-
-
-- (void)applicationWillEnterForeground:(UIApplication *)application {
-	[app resume];
-}
-
-
-- (void)applicationDidBecomeActive:(UIApplication *)application {
-	[app resume];
-}
-
-
-- (void)applicationWillTerminate:(UIApplication *)application {
-	[app pause];
-}
-
 
 #pragma mark -
 #pragma mark Memory management
 
-- (void)applicationDidReceiveMemoryWarning:(UIApplication *)application {
-	[app clearCaches];
-}
-
-
 - (void)dealloc {
-	[app release];
+	[self.ejApp release];
     [super dealloc];
 }
 

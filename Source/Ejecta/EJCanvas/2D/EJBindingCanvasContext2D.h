@@ -2,10 +2,12 @@
 #import "EJBindingBase.h"
 #import "EJCanvasContext2D.h"
 
+@class EJJavaScriptView;
+
 @interface EJBindingCanvasContext2D : EJBindingBase {
 	JSObjectRef jsCanvas;
 	EJCanvasContext2D * renderingContext;
-	EJApp * app;
+	EJJavaScriptView * jsView;
 }
 
 - (id)initWithCanvas:(JSObjectRef)canvas renderingContext:(EJCanvasContext2D *)renderingContextp;

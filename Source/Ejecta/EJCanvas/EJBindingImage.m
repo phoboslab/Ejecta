@@ -1,5 +1,5 @@
 #import "EJBindingImage.h"
-#import "EJApp.h"
+#import "EJJavaScriptView.h"
 
 @implementation EJBindingImage
 @synthesize texture;
@@ -11,15 +11,15 @@
 	
 	// Protect this image object from garbage collection, as its callback function
 	// may be the only thing holding on to it
-	JSValueProtect([EJApp instance].jsGlobalContext, jsObject);
+	JSValueProtect([EJJavaScriptView sharedView].jsGlobalContext, jsObject);
 	
 	NSLog(@"Loading Image: %@", path);
-	NSString * fullPath = [[EJApp instance] pathForResource:path];
+	NSString * fullPath = [[EJJavaScriptView sharedView] pathForResource:path];
 	
 	texture = [[EJTexture cachedTextureWithPath:fullPath callback:^{
 		loading = NO;
 		[self triggerEvent:(texture.textureId ? @"load" : @"error") argc:0 argv:NULL];		
-		JSValueUnprotect([EJApp instance].jsGlobalContext, jsObject);
+		JSValueUnprotect([EJJavaScriptView sharedView].jsGlobalContext, jsObject);
 	}] retain];
 }
 

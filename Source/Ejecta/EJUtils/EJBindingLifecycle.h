@@ -1,4 +1,5 @@
 #import "EJBindingEventedBase.h"
+#import "EJJavaScriptView.h"
 
 @interface EJBindingLifecycle : EJBindingEventedBase <EJLifecycleDelegate>
 

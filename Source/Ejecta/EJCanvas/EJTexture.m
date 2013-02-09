@@ -4,7 +4,7 @@
 #import "lodepng/lodepng.h"
 #import "EJConvertWebGL.h"
 
-#import "EJApp.h"
+#import "EJJavaScriptView.h"
 
 
 @implementation EJTextureStorage
@@ -101,7 +101,7 @@
 + (id)cachedTextureWithPath:(NSString *)path callback:(void (^)(void))callback {
 	// For loading on a background thread (non-blocking), but tries the cache first
 	
-	EJTexture * texture = [[EJApp instance].textureCache objectForKey:path];
+	EJTexture * texture = [[EJJavaScriptView sharedView].textureCache objectForKey:path];
 	if( texture ) {
 		// We already have a texture, but it may hasn't finished loading yet. If
 		// the texture's loadCallback is still present, add it as an dependency
@@ -117,7 +117,7 @@
 		// Create a new texture and add it to the cache
 		texture = [[EJTexture alloc] initWithPath:path callback:callback];
 		
-		[[EJApp instance].textureCache setObject:texture forKey:path];
+		[[EJJavaScriptView sharedView].textureCache setObject:texture forKey:path];
 		[texture autorelease];
 		texture->cached = true;
 	}
@@ -133,7 +133,7 @@
 		
 		// Load the image file in a background thread
 		loadCallback = [[NSBlockOperation blockOperationWithBlock:callback] retain];
-		[[EJApp instance].opQueue addOperationWithBlock:^{
+		[[EJJavaScriptView sharedView].opQueue addOperationWithBlock:^{
 			NSMutableData * pixels = [self loadPixelsFromPath:path];
 			
 			// Upload the pixel data in the main thread, otherwise the GLContext gets confused.	
@@ -194,7 +194,7 @@
 
 - (void)dealloc {
 	if( cached ) {
-		[[EJApp instance].textureCache removeObjectForKey:fullPath];
+		[[EJJavaScriptView sharedView].textureCache removeObjectForKey:fullPath];
 	}
 	[fullPath release];
 	[textureStorage release];
