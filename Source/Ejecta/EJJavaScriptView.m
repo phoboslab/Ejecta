@@ -1,11 +1,3 @@
-//
-//  EJJavaScriptView.m
-//  Ejecta
-//
-//  Created by Salvatore Randazzo on 2/6/13.
-//
-//
-
 #import "EJJavaScriptView.h"
 #import "EJTimer.h"
 #import "EJBindingBase.h"
@@ -192,7 +184,7 @@ static EJJavaScriptView *_sharedView = nil;
 	};
 	
 	JSValueRef exception = NULL;
-	JSObjectRef func = JSObjectMakeFunction(self.jsGlobalContext, NULL, 2,  parameterNames, scriptJS, pathJS, 0, &exception );
+	JSObjectRef func = JSObjectMakeFunction(self.jsGlobalContext, NULL, 2, parameterNames, scriptJS, pathJS, 0, &exception );
 	
 	JSStringRelease( scriptJS );
 	JSStringRelease( pathJS );

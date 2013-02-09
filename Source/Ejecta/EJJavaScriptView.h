@@ -1,11 +1,3 @@
-//
-//  EJJavaScriptView.h
-//  Ejecta
-//
-//  Created by Salvatore Randazzo on 2/6/13.
-//
-//
-
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
 #import <JavaScriptCore/JavaScriptCore.h>

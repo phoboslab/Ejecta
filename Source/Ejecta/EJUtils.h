@@ -1,11 +1,3 @@
-//
-//  EJUtils.h
-//  Ejecta
-//
-//  Created by Salvatore Randazzo on 2/6/13.
-//
-//
-
 #import <Foundation/Foundation.h>
 #import "EJBindingBase.h"
 
