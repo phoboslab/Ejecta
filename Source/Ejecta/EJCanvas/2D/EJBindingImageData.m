@@ -29,7 +29,7 @@
 		JSContextRef ctx = [EJJavaScriptView sharedView].jsGlobalContext;
 		int count = imageData.width * imageData.height * 4;
 		
-		void * data = JSTypedArrayGetDataPtr(ctx, dataArray, NULL);
+		void *data = JSTypedArrayGetDataPtr(ctx, dataArray, NULL);
 		memcpy(imageData.pixels.mutableBytes, data, count);
 	}
 	
@@ -47,7 +47,7 @@ EJ_BIND_GET(data, ctx ) {
 		dataArray = JSTypedArrayMake(ctx, kJSTypedArrayTypeUint8ClampedArray, count);
 		JSValueProtect(ctx, dataArray);
 		
-		void * data = JSTypedArrayGetDataPtr(ctx, dataArray, NULL);
+		void *data = JSTypedArrayGetDataPtr(ctx, dataArray, NULL);
 		memcpy(data, imageData.pixels.bytes, count);
 	}
 	return dataArray;

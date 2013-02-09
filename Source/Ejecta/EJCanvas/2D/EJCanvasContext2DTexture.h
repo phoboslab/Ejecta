@@ -2,9 +2,9 @@
 
 @interface EJCanvasContext2DTexture : EJCanvasContext2D {
 	BOOL msaaNeedsResolving;
-	EJTexture * texture;
+	EJTexture *texture;
 }
 
-@property (readonly, nonatomic) EJTexture * texture;
+@property (readonly, nonatomic) EJTexture *texture;
 
 @end

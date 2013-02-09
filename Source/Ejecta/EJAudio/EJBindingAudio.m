@@ -49,8 +49,8 @@
 	// may be the only thing holding on to it
 	JSValueProtect([EJJavaScriptView sharedView].jsGlobalContext, jsObject);
 	
-	NSString * fullPath = [[EJJavaScriptView sharedView] pathForResource:path];
-	NSInvocationOperation * loadOp = [[NSInvocationOperation alloc] initWithTarget:self
+	NSString *fullPath = [[EJJavaScriptView sharedView] pathForResource:path];
+	NSInvocationOperation *loadOp = [[NSInvocationOperation alloc] initWithTarget:self
 				selector:@selector(loadOperation:) object:fullPath];
 	loadOp.threadPriority = 0.2;
 	[[EJJavaScriptView sharedView].opQueue addOperation:loadOp];
@@ -62,7 +62,7 @@
 		// Decide whether to load the sound as OpenAL or AVAudioPlayer source
 		unsigned long long size = [[[NSFileManager defaultManager] attributesOfItemAtPath:fullPath error:nil] fileSize];
 		
-		NSObject<EJAudioSource> * src;
+		NSObject<EJAudioSource> *src;
 		if( size <= EJ_AUDIO_OPENAL_MAX_SIZE ) {
 			NSLog(@"Loading Sound(OpenAL): %@", path);
 			src = [[EJAudioSourceOpenAL alloc] initWithPath:fullPath];
@@ -139,7 +139,7 @@ EJ_BIND_FUNCTION(load, ctx, argc, argv) {
 EJ_BIND_FUNCTION(canPlayType, ctx, argc, argv) {
 	if( argc != 1 ) return NULL;
 	
-	NSString * mime = JSValueToNSString(ctx, argv[0]);
+	NSString *mime = JSValueToNSString(ctx, argv[0]);
 	if( 
 		[mime hasPrefix:@"audio/x-caf"] ||
 		[mime hasPrefix:@"audio/mpeg"] ||
@@ -151,7 +151,7 @@ EJ_BIND_FUNCTION(canPlayType, ctx, argc, argv) {
 }
 
 EJ_BIND_FUNCTION(cloneNode, ctx, argc, argv) {
-	EJBindingAudio * audio = [[EJBindingAudio alloc] initWithContext:ctx argc:0 argv:NULL];
+	EJBindingAudio *audio = [[EJBindingAudio alloc] initWithContext:ctx argc:0 argv:NULL];
 	JSObjectRef clone = [EJBindingAudio createJSObjectWithContext:ctx instance:audio];
 	
 	audio.loop = loop;

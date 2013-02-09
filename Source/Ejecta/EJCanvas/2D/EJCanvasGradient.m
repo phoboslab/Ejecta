@@ -56,7 +56,7 @@
 - (void)rebuild {
 	// Sort color stops by positions. If two ore more stops are at the same
 	// position, ensure that the one added last (.order) will be on top
-	NSArray * sortedStops = [colorStops sortedArrayUsingComparator:^NSComparisonResult(id a, id b) {
+	NSArray *sortedStops = [colorStops sortedArrayUsingComparator:^NSComparisonResult(id a, id b) {
 		EJCanvasGradientColorStop s1, s2;
 		[a getValue:&s1];
 		[b getValue:&s2];
@@ -64,7 +64,7 @@
 		return (s1.pos == s2.pos) ? (s1.order - s2.order) : (s1.pos - s2.pos);
 	}];
 	
-	NSData * pixels = [self getPixelsWithWidth:EJ_CANVAS_GRADIENT_WIDTH forSortedStops:sortedStops];
+	NSData *pixels = [self getPixelsWithWidth:EJ_CANVAS_GRADIENT_WIDTH forSortedStops:sortedStops];
 	
 	// Create or update Texture
 	if( !texture ) {
@@ -78,7 +78,7 @@
 - (NSData *)getPixelsWithWidth:(int)width forSortedStops:(NSArray *)stops {
 	
 	int byteSize = width * 4;
-	NSMutableData * pixels = [NSMutableData dataWithLength:byteSize];
+	NSMutableData *pixels = [NSMutableData dataWithLength:byteSize];
 	
 	if( !stops || !stops.count ) {
 		// No stops? return empty pixel data
@@ -89,10 +89,10 @@
 	[[stops objectAtIndex:0] getValue:&firstStop];
 	currentStop = firstStop;
 	
-	GLubyte * bytes = pixels.mutableBytes;
+	GLubyte *bytes = pixels.mutableBytes;
 	int index = 0;
 	
-	for( NSValue * v in stops ) {
+	for( NSValue *v in stops ) {
 		[v getValue:&nextStop];
 		
 		int stopIndex = MIN(nextStop.pos * (float)byteSize, byteSize);

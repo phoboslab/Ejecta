@@ -91,7 +91,7 @@
 		fullPath = [path retain];
 		owningContext = kEJTextureOwningContextCanvas2D;
 		
-		NSMutableData * pixels = [self loadPixelsFromPath:path];
+		NSMutableData *pixels = [self loadPixelsFromPath:path];
 		[self createWithPixels:pixels format:GL_RGBA];
 	}
 
@@ -101,13 +101,13 @@
 + (id)cachedTextureWithPath:(NSString *)path callback:(void (^)(void))callback {
 	// For loading on a background thread (non-blocking), but tries the cache first
 	
-	EJTexture * texture = [[EJJavaScriptView sharedView].textureCache objectForKey:path];
+	EJTexture *texture = [[EJJavaScriptView sharedView].textureCache objectForKey:path];
 	if( texture ) {
 		// We already have a texture, but it may hasn't finished loading yet. If
 		// the texture's loadCallback is still present, add it as an dependency
 		// for the current callback.
 		
-		NSBlockOperation * callbackOp = [NSBlockOperation blockOperationWithBlock:callback];
+		NSBlockOperation *callbackOp = [NSBlockOperation blockOperationWithBlock:callback];
 		if( texture->loadCallback ) {
 			[callbackOp addDependency:texture->loadCallback];
 		}
@@ -134,7 +134,7 @@
 		// Load the image file in a background thread
 		loadCallback = [[NSBlockOperation blockOperationWithBlock:callback] retain];
 		[[EJJavaScriptView sharedView].opQueue addOperationWithBlock:^{
-			NSMutableData * pixels = [self loadPixelsFromPath:path];
+			NSMutableData *pixels = [self loadPixelsFromPath:path];
 			
 			// Upload the pixel data in the main thread, otherwise the GLContext gets confused.	
 			// We could use a sharegroup here, but it turned out quite buggy and has little
@@ -209,7 +209,7 @@
 	
 		// Keep pixel data of the old TextureStorage when creating the new?
 		if( keepPixels ) {
-			NSMutableData * pixels = self.pixels;
+			NSMutableData *pixels = self.pixels;
 			if( pixels ) {
 				[self createWithPixels:pixels format:GL_RGBA target:target];
 			}
@@ -234,7 +234,7 @@
 }
 
 - (id)copyWithZone:(NSZone *)zone {
-	EJTexture * copy = [[EJTexture allocWithZone:zone] init];
+	EJTexture *copy = [[EJTexture allocWithZone:zone] init];
 	
 	// This retains the textureStorage object and sets the associated properties
 	[copy createWithTexture:self];
@@ -325,7 +325,7 @@
 		glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 		
 		int size = width * height * EJGetBytesPerPixel(GL_UNSIGNED_BYTE, format);
-		NSMutableData * data = [NSMutableData dataWithLength:size];
+		NSMutableData *data = [NSMutableData dataWithLength:size];
 		glReadPixels(0, 0, width, height, format, GL_UNSIGNED_BYTE, data.mutableBytes);
 		
 		glBindFramebuffer(GL_FRAMEBUFFER, boundFrameBuffer);
@@ -339,7 +339,7 @@
 - (NSMutableData *)loadPixelsFromPath:(NSString *)path {
 	// Try @2x texture?
 	if( [UIScreen mainScreen].scale == 2 ) {
-		NSString * path2x = [[[path stringByDeletingPathExtension]
+		NSString *path2x = [[[path stringByDeletingPathExtension]
 			stringByAppendingString:@"@2x"]
 			stringByAppendingPathExtension:[path pathExtension]];
 		
@@ -359,13 +359,13 @@
 }
 
 - (NSMutableData *)loadPixelsWithCGImageFromPath:(NSString *)path {	
-	UIImage * tmpImage = [[UIImage alloc] initWithContentsOfFile:path];
+	UIImage *tmpImage = [[UIImage alloc] initWithContentsOfFile:path];
 	CGImageRef image = tmpImage.CGImage;
 	
 	width = CGImageGetWidth(image);
 	height = CGImageGetHeight(image);
 	
-	NSMutableData * pixels = [NSMutableData dataWithLength:width*height*4];
+	NSMutableData *pixels = [NSMutableData dataWithLength:width*height*4];
 	CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
 	CGContextRef context = CGBitmapContextCreate(pixels.mutableBytes, width, height, 8, width * 4, colorSpace, kCGImageAlphaPremultipliedLast);
 	CGContextDrawImage(context, CGRectMake(0.0, 0.0, (CGFloat)width, (CGFloat)height), image);
@@ -378,7 +378,7 @@
 
 - (NSMutableData *)loadPixelsWithLodePNGFromPath:(NSString *)path {
 	unsigned int w, h;
-	unsigned char * pixels = NULL;
+	unsigned char *pixels = NULL;
 	unsigned int error = lodepng_decode32_file(&pixels, &w, &h, [path UTF8String]);
 	
 	if( error ) {

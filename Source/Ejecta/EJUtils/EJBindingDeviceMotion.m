@@ -8,7 +8,7 @@
 		
 		interval = 1.0f/60.0f;
 		motionManager = [[CMMotionManager alloc] init];
-		NSOperationQueue * queue = [EJJavaScriptView sharedView].opQueue;
+		NSOperationQueue *queue = [EJJavaScriptView sharedView].opQueue;
 		
 		// Has Gyro? (iPhone4 and newer)
 		if( motionManager.isDeviceMotionAvailable ) {

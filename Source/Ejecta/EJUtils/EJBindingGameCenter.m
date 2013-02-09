@@ -67,7 +67,7 @@ EJ_BIND_FUNCTION( authenticate, ctx, argc, argv ) {
 
 EJ_BIND_FUNCTION( softAuthenticate, ctx, argc, argv ) {
 	// Check if the last auth was successful and if so, auto auth this time
-	NSNumber * autoAuth = [[NSUserDefaults standardUserDefaults] objectForKey:kEJBindingGameCenterAutoAuth];
+	NSNumber *autoAuth = [[NSUserDefaults standardUserDefaults] objectForKey:kEJBindingGameCenterAutoAuth];
 	if( autoAuth && [autoAuth boolValue] ) {
 		[self _func_authenticate:ctx argc:argc argv:argv];
 	}
@@ -111,7 +111,7 @@ EJ_BIND_FUNCTION( showLeaderboard, ctx, argc, argv ) {
 	if( argc < 1 ) { return NULL; }
 	if( !authed ) { NSLog(@"GameKit Error: Not authed. Can't show leaderboard."); return NULL; }
 	
-	GKLeaderboardViewController * leaderboard = [[[GKLeaderboardViewController alloc] init] autorelease];
+	GKLeaderboardViewController *leaderboard = [[[GKLeaderboardViewController alloc] init] autorelease];
 	if( leaderboard ) {
 		leaderboard.leaderboardDelegate = self;
 		leaderboard.category = JSValueToNSString(ctx, argv[0]);
@@ -127,7 +127,7 @@ EJ_BIND_FUNCTION( showLeaderboard, ctx, argc, argv ) {
 {
 	if( !authed ) { NSLog(@"GameKit Error: Not authed. Can't report achievment."); return; }
 	
-	GKAchievement * achievement = [achievements objectForKey:identifier];
+	GKAchievement *achievement = [achievements objectForKey:identifier];
 	if( achievement ) {		
 		// Already reported with same or higher percentage or already at 100%?
 		if(

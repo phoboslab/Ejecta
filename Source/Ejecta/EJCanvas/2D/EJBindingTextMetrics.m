@@ -3,7 +3,7 @@
 @implementation EJBindingTextMetrics
 
 + (JSObjectRef)createJSObjectWithContext:(JSContextRef)ctx metrics:(EJTextMetrics)metrics {
-	EJBindingTextMetrics * binding = [[EJBindingTextMetrics alloc] initWithContext:ctx argc:0 argv:NULL];
+	EJBindingTextMetrics *binding = [[EJBindingTextMetrics alloc] initWithContext:ctx argc:0 argv:NULL];
 	binding->metrics = metrics;
 	
 	return [self createJSObjectWithContext:ctx instance:binding];

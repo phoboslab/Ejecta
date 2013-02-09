@@ -3,6 +3,6 @@
 
 @protocol EJDrawable
 
-@property (readonly, nonatomic) EJTexture * texture;
+@property (readonly, nonatomic) EJTexture *texture;
 
 @end

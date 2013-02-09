@@ -21,7 +21,7 @@
 - (int)scheduleCallback:(JSObjectRef)callback interval:(NSTimeInterval)interval repeat:(BOOL)repeat {
 	lastId++;
 	
-	EJTimer * timer = [[EJTimer alloc] initWithCallback:callback interval:interval repeat:repeat];
+	EJTimer *timer = [[EJTimer alloc] initWithCallback:callback interval:interval repeat:repeat];
 	[timers setObject:timer forKey:[NSNumber numberWithInt:lastId]];
 	[timer release];
 	return lastId;
@@ -32,8 +32,8 @@
 }
 
 - (void)update {	
-	for( NSNumber * timerId in [timers allKeys]) {
-		EJTimer * timer = [timers objectForKey:timerId];
+	for( NSNumber *timerId in [timers allKeys]) {
+		EJTimer *timer = [timers objectForKey:timerId];
 		[timer check];
 		
 		if( !timer.active ) {

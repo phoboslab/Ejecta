@@ -53,7 +53,7 @@
 }
 
 - (void)triggerEvent:(NSString *)name all:(NSSet *)all changed:(NSSet *)changed remaining:(NSSet *)remaining {
-	EJJavaScriptView * ejecta = [EJJavaScriptView sharedView];
+	EJJavaScriptView *ejecta = [EJJavaScriptView sharedView];
 	JSContextRef ctx = ejecta.jsGlobalContext;
 	float scale = ejecta.internalScaling;
 	
@@ -65,7 +65,7 @@
 		remainingIndex = 0,
 		changedIndex = 0;
 		
-	for( UITouch * touch in all ) {
+	for( UITouch *touch in all ) {
 		CGPoint pos = [touch locationInView:touch.view];
 		
 		JSValueRef identifier = JSValueMakeNumber(ctx, [touch hash] );

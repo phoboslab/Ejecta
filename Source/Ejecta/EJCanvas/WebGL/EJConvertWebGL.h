@@ -7,11 +7,11 @@
 extern "C" {
 #endif
 
-void EJFlipPixelsY(GLuint bytesPerRow, GLuint rows, GLubyte * pixels);
-void EJPremultiplyAlpha(GLuint width, GLuint height, GLenum format, GLubyte * pixels);
+void EJFlipPixelsY(GLuint bytesPerRow, GLuint rows, GLubyte *pixels);
+void EJPremultiplyAlpha(GLuint width, GLuint height, GLenum format, GLubyte *pixels);
 
-GLfloat * JSValueToGLfloatArray(JSContextRef ctx, JSValueRef value, GLsizei elementSize, GLsizei * numElements);
-GLint * JSValueToGLintArray(JSContextRef ctx, JSValueRef value, GLsizei elementSize, GLsizei * numElements);
+GLfloat *JSValueToGLfloatArray(JSContextRef ctx, JSValueRef value, GLsizei elementSize, GLsizei *numElements);
+GLint *JSValueToGLintArray(JSContextRef ctx, JSValueRef value, GLsizei elementSize, GLsizei *numElements);
 GLuint EJGetBytesPerPixel(GLenum type, GLenum format);
 
 #define EJ_ARRAY_MATCHES_TYPE(ARRAY, TYPE) ( \

@@ -14,7 +14,7 @@
 	JSValueProtect([EJJavaScriptView sharedView].jsGlobalContext, jsObject);
 	
 	NSLog(@"Loading Image: %@", path);
-	NSString * fullPath = [[EJJavaScriptView sharedView] pathForResource:path];
+	NSString *fullPath = [[EJJavaScriptView sharedView] pathForResource:path];
 	
 	texture = [[EJTexture cachedTextureWithPath:fullPath callback:^{
 		loading = NO;
@@ -41,7 +41,7 @@ EJ_BIND_SET(src, ctx, value) {
 	// This will break some edge cases; FIXME
 	if( loading ) { return; }
 	
-	NSString * newPath = JSValueToNSString( ctx, value );
+	NSString *newPath = JSValueToNSString( ctx, value );
 	
 	// Same as the old path? Nothing to do here
 	if( [path isEqualToString:newPath] ) { return; }

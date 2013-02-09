@@ -8,17 +8,17 @@
 #import "EJOpenALBuffer.h"
 
 @interface EJAudioSourceOpenAL : NSObject <EJAudioSource> {
-	NSString * path;
+	NSString *path;
 	unsigned int sourceId;
-	EJOpenALBuffer * buffer;
+	EJOpenALBuffer *buffer;
 	BOOL looping;
 	
-	NSTimer * endTimer;
-	NSObject<EJAudioSourceDelegate> * delegate;
+	NSTimer *endTimer;
+	NSObject<EJAudioSourceDelegate> *delegate;
 }
 
 @property (nonatomic) float currentTime;
 @property (nonatomic) float duration;
-@property (nonatomic, assign) NSObject<EJAudioSourceDelegate> * delegate;
+@property (nonatomic, assign) NSObject<EJAudioSourceDelegate> *delegate;
 
 @end

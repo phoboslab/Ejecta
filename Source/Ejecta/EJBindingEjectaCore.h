@@ -8,7 +8,7 @@ enum {
 };
 
 @interface EJBindingEjectaCore : EJBindingBase {
-	NSString * urlToOpen;
+	NSString *urlToOpen;
 	JSObjectRef getTextCallback;
 }
 

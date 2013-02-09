@@ -85,7 +85,7 @@
 	// Make sure this rendering context is the current one, so all
 	// OpenGL objects can be deleted properly. Remember the currently bound
 	// Context, but only if it's not the context to be deleted
-	EAGLContext * oldContext = [EAGLContext currentContext];
+	EAGLContext *oldContext = [EAGLContext currentContext];
 	if( oldContext == glContext ) { oldContext = NULL; }
 	[EAGLContext setCurrentContext:glContext];
 	

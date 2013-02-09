@@ -4,7 +4,7 @@
 
 @interface EJBindingWebGLObject : EJBindingBase {
 	GLuint index;
-	EJBindingCanvasContextWebGL * webglContext;
+	EJBindingCanvasContextWebGL *webglContext;
 }
 - (id)initWithWebGLContext:(EJBindingCanvasContextWebGL *)webglContext index:(GLuint)index;
 + (GLuint)indexFromJSValue:(JSValueRef)value;
@@ -25,7 +25,7 @@
 
 
 @interface EJBindingWebGLTexture : EJBindingWebGLObject {
-	EJTexture * texture;
+	EJTexture *texture;
 }
 + (EJTexture *)textureFromJSValue:(JSValueRef)value;
 + (JSObjectRef)createJSObjectWithContext:(JSContextRef)ctx webglContext:(EJBindingCanvasContextWebGL *)webglContext;
@@ -47,7 +47,7 @@
 @interface EJBindingWebGLActiveInfo : EJBindingBase {
 	GLint size;
 	GLenum type;
-	NSString * name;
+	NSString *name;
 }
 - (id)initWithSize:(GLint)sizep type:(GLenum)typep name:(NSString *)namep;
 + (JSObjectRef)createJSObjectWithContext:(JSContextRef)ctx size:(GLint)sizep type:(GLenum)typep name:(NSString *)namep;

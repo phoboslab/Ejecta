@@ -4,7 +4,7 @@
 @class EJJavaScriptView;
 
 @interface EJTimerCollection : NSObject {
-	NSMutableDictionary * timers;
+	NSMutableDictionary *timers;
 	int lastId;
 }
 

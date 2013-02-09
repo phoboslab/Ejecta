@@ -4,7 +4,7 @@
 @implementation EJBindingCanvasGradient
 
 + (JSObjectRef)createJSObjectWithContext:(JSContextRef)ctx gradient:(EJCanvasGradient *)gradient {
-	EJBindingCanvasGradient * binding = [[EJBindingCanvasGradient alloc] initWithContext:ctx argc:0 argv:NULL];
+	EJBindingCanvasGradient *binding = [[EJBindingCanvasGradient alloc] initWithContext:ctx argc:0 argv:NULL];
 	binding->gradient = [gradient retain];
 	
 	return [self createJSObjectWithContext:ctx instance:binding];
@@ -13,7 +13,7 @@
 + (EJCanvasGradient *)gradientFromJSValue:(JSValueRef)value {
 	if( !value ) { return NULL; }
 	
-	EJBindingCanvasGradient * binding = (EJBindingCanvasGradient *)JSObjectGetPrivate((JSObjectRef)value);
+	EJBindingCanvasGradient *binding = (EJBindingCanvasGradient *)JSObjectGetPrivate((JSObjectRef)value);
 	return (binding && [binding isMemberOfClass:[EJBindingCanvasGradient class]]) ? binding->gradient : NULL;
 }
 

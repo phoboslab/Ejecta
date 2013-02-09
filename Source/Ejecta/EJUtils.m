@@ -11,7 +11,7 @@ JSValueRef ej_getNativeClass(JSContextRef ctx, JSObjectRef object, JSStringRef p
 	CFStringRef className = JSStringCopyCFString( kCFAllocatorDefault, propertyNameJS );
 	
 	JSObjectRef obj = NULL;
-	NSString * fullClassName = [NSString stringWithFormat:@"EJBinding%@", className];
+	NSString *fullClassName = [NSString stringWithFormat:@"EJBinding%@", className];
 	id class = NSClassFromString(fullClassName);
 	if( class ) {
 		obj = JSObjectMake( ctx, ej_constructorClass, (void *)class );
@@ -23,7 +23,7 @@ JSValueRef ej_getNativeClass(JSContextRef ctx, JSObjectRef object, JSStringRef p
 
 JSObjectRef ej_callAsConstructor(JSContextRef ctx, JSObjectRef constructor, size_t argc, const JSValueRef argv[], JSValueRef* exception) {
 	Class class = (Class)JSObjectGetPrivate(constructor);
-	EJBindingBase * instance = [(EJBindingBase *)[class alloc] initWithContext:ctx argc:argc argv:argv];
+	EJBindingBase *instance = [(EJBindingBase *)[class alloc] initWithContext:ctx argc:argc argv:argv];
 	return [class createJSObjectWithContext:ctx instance:instance];
 }
 

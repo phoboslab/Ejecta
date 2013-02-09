@@ -19,18 +19,18 @@ typedef enum {
 
 @interface EJBindingHttpRequest : EJBindingEventedBase <NSURLConnectionDelegate> {
 	EJHttpRequestType type;
-	NSString * method;
-	NSString * url;
+	NSString *method;
+	NSString *url;
 	BOOL async;
-	NSString * user;
-	NSString * password;
+	NSString *user;
+	NSString *password;
 	int timeout;
-	NSMutableDictionary * requestHeaders;
+	NSMutableDictionary *requestHeaders;
 	
 	EJHttpRequestState state;	
-	NSURLConnection * connection;
-	NSURLResponse * response;
-	NSMutableData * responseBody;
+	NSURLConnection *connection;
+	NSURLResponse *response;
+	NSMutableData *responseBody;
 }
 
 - (void)clearConnection;

@@ -61,7 +61,7 @@
 
 - (void)connection:(NSURLConnection *)connection willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {
 	if( user && password && [challenge previousFailureCount] == 0 ) {
-		NSURLCredential * credentials = [NSURLCredential
+		NSURLCredential *credentials = [NSURLCredential
 			credentialWithUser:user
 			password:password
 			persistence:NSURLCredentialPersistenceNone];
@@ -146,8 +146,8 @@ EJ_BIND_FUNCTION(open, ctx, argc, argv) {
 EJ_BIND_FUNCTION(setRequestHeader, ctx, argc, argv) {
 	if( argc < 2 ) { return NULL; }
 	
-	NSString * header = JSValueToNSString( ctx, argv[0] );
-	NSString * value = JSValueToNSString( ctx, argv[1] );
+	NSString *header = JSValueToNSString( ctx, argv[0] );
+	NSString *value = JSValueToNSString( ctx, argv[1] );
 	
 	[requestHeaders setObject:value forKey:header];
 	return NULL;
@@ -166,9 +166,9 @@ EJ_BIND_FUNCTION(getAllResponseHeaders, ctx, argc, argv) {
 		return NULL;
 	}
 	
-	NSHTTPURLResponse * urlResponse = (NSHTTPURLResponse *)response;
-	NSMutableString * headers = [NSMutableString string];
-	for( NSString * key in urlResponse.allHeaderFields ) {
+	NSHTTPURLResponse *urlResponse = (NSHTTPURLResponse *)response;
+	NSMutableString *headers = [NSMutableString string];
+	for( NSString *key in urlResponse.allHeaderFields ) {
 		id value = [urlResponse.allHeaderFields objectForKey:key];
 		[headers appendFormat:@"%@: %@\n", key, value];
 	}
@@ -181,9 +181,9 @@ EJ_BIND_FUNCTION(getResponseHeader, ctx, argc, argv) {
 		return NULL;
 	}
 	
-	NSHTTPURLResponse * urlResponse = (NSHTTPURLResponse *)response;
-	NSString * header = JSValueToNSString( ctx, argv[0] );
-	NSString * value = [urlResponse.allHeaderFields objectForKey:header];
+	NSHTTPURLResponse *urlResponse = (NSHTTPURLResponse *)response;
+	NSString *header = JSValueToNSString( ctx, argv[0] );
+	NSString *value = [urlResponse.allHeaderFields objectForKey:header];
 	
 	return value ? NSStringToJSValue(ctx, value) : NULL;
 }
@@ -198,21 +198,21 @@ EJ_BIND_FUNCTION(send, ctx, argc, argv) {
 	
 	[self clearConnection];
 
-	NSURL * requestUrl = [NSURL URLWithString:url];
+	NSURL *requestUrl = [NSURL URLWithString:url];
 	if( !requestUrl.host ) {
 		// No host? Assume we have a local file
 		requestUrl = [NSURL fileURLWithPath:[[EJJavaScriptView sharedView] pathForResource:url]];
 	}
-	NSMutableURLRequest * request = [[NSMutableURLRequest alloc] initWithURL:requestUrl];
+	NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:requestUrl];
 	[request setHTTPMethod:method];
 	
-	for( NSString * header in requestHeaders ) {
+	for( NSString *header in requestHeaders ) {
 		[request setValue:[requestHeaders objectForKey:header] forHTTPHeaderField:header];
 	}
 	
 	if( argc > 0 ) {
-		NSString * requestBody = JSValueToNSString( ctx, argv[0] );
-		NSData * requestData = [NSData dataWithBytes:[requestBody UTF8String] length:[requestBody length]];
+		NSString *requestBody = JSValueToNSString( ctx, argv[0] );
+		NSData *requestData = [NSData dataWithBytes:[requestBody UTF8String] length:[requestBody length]];
 		[request setHTTPBody:requestData];
 	}
 	
@@ -229,13 +229,13 @@ EJ_BIND_FUNCTION(send, ctx, argc, argv) {
 		connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
 	}
 	else {	
-		NSData * data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:nil];
+		NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:nil];
 		responseBody = [[NSMutableData alloc] initWithData:data];
 		[response retain];
 		
 		state = kEJHttpRequestStateDone;
 		if( [response isKindOfClass:[NSHTTPURLResponse class]] ) {
-			NSHTTPURLResponse * urlResponse = (NSHTTPURLResponse *)response;
+			NSHTTPURLResponse *urlResponse = (NSHTTPURLResponse *)response;
 			if( urlResponse.statusCode == 200 ) {
 				[self triggerEvent:@"load" argc:0 argv:NULL];
 			}
@@ -265,7 +265,7 @@ EJ_BIND_GET(response, ctx) {
 	}
 	
 	
-	NSString * responseText = [self getResponseText];
+	NSString *responseText = [self getResponseText];
 	if( !responseText ) { return NULL; }
 	
 	if( type == kEJHttpRequestTypeJSON ) {
@@ -280,7 +280,7 @@ EJ_BIND_GET(response, ctx) {
 }
 
 EJ_BIND_GET(responseText, ctx) {
-	NSString * responseText = [self getResponseText];	
+	NSString *responseText = [self getResponseText];	
 	return responseText ? NSStringToJSValue( ctx, responseText ) : NULL;
 }
 
@@ -290,7 +290,7 @@ EJ_BIND_GET(status, ctx) {
 
 EJ_BIND_GET(statusText, ctx) {
 	// FIXME: should be "200 OK" instead of just "200"
-	NSString * code = [NSString stringWithFormat:@"%d", [self getStatusCode]];	
+	NSString *code = [NSString stringWithFormat:@"%d", [self getStatusCode]];	
 	return NSStringToJSValue(ctx, code);
 }
 

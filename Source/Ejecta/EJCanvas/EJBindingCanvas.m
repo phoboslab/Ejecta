@@ -138,7 +138,7 @@ EJ_BIND_GET(MSAASamples, ctx) {
 EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 	if( argc < 1 ) { return NULL; };
 	
-	NSString * type = JSValueToNSString(ctx, argv[0]);
+	NSString *type = JSValueToNSString(ctx, argv[0]);
 	EJCanvasContextMode newContextMode = kEJCanvasContextModeInvalid;
 	
 	if( [type isEqualToString:@"2d"] ) {
@@ -170,7 +170,7 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 	
 	if( newContextMode == kEJCanvasContextMode2D ) {
 		if( isScreenCanvas ) {
-			EJCanvasContext2DScreen * sc = [[EJCanvasContext2DScreen alloc] initWithWidth:width height:height];
+			EJCanvasContext2DScreen *sc = [[EJCanvasContext2DScreen alloc] initWithWidth:width height:height];
 			sc.useRetinaResolution = useRetinaResolution;
 			sc.scalingMode = scalingMode;
 			
@@ -178,21 +178,21 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 			renderingContext = sc;
 		}
 		else {
-			EJCanvasContext2DTexture * tc = [[EJCanvasContext2DTexture alloc] initWithWidth:width height:height];
+			EJCanvasContext2DTexture *tc = [[EJCanvasContext2DTexture alloc] initWithWidth:width height:height];
 			tc.useRetinaResolution = useRetinaResolution;
 			
 			renderingContext = tc;
 		}
 		
 		// Create the JS object
-		EJBindingCanvasContext2D * binding = [[EJBindingCanvasContext2D alloc]
+		EJBindingCanvasContext2D *binding = [[EJBindingCanvasContext2D alloc]
 			initWithCanvas:jsObject renderingContext:(EJCanvasContext2D *)renderingContext];
 		jsCanvasContext = [EJBindingCanvasContext2D createJSObjectWithContext:ctx instance:binding];
 		JSValueProtect(ctx, jsCanvasContext);
 	}
 	
 	else if( newContextMode == kEJCanvasContextModeWebGL ) {
-		EJCanvasContextWebGL * sc = [[EJCanvasContextWebGL alloc] initWithWidth:width height:height];
+		EJCanvasContextWebGL *sc = [[EJCanvasContextWebGL alloc] initWithWidth:width height:height];
 		sc.useRetinaResolution = useRetinaResolution;
 		sc.scalingMode = scalingMode;
 		
@@ -200,7 +200,7 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 		renderingContext = sc;
 		
 		// Create the JS object
-		EJBindingCanvasContextWebGL * binding = [[EJBindingCanvasContextWebGL alloc]
+		EJBindingCanvasContextWebGL *binding = [[EJBindingCanvasContextWebGL alloc]
 			initWithCanvas:jsObject renderingContext:(EJCanvasContextWebGL *)renderingContext];
 		jsCanvasContext = [EJBindingCanvasContextWebGL createJSObjectWithContext:ctx instance:binding];
 		JSValueProtect(ctx, jsCanvasContext);

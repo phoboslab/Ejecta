@@ -7,14 +7,14 @@ void _ej_class_finalize(JSObjectRef object) {
 	[instance release];
 }
 
-NSData * NSDataFromString( NSString *str ) {
+NSData *NSDataFromString( NSString *str ) {
 	int len = [str length] + 1;
-	NSMutableData * d = [NSMutableData dataWithLength:len];
+	NSMutableData *d = [NSMutableData dataWithLength:len];
 	strlcpy(d.mutableBytes, str.UTF8String, len);
 	return d;
 }
 
-static NSMutableDictionary * CachedJSClasses;
+static NSMutableDictionary *CachedJSClasses;
 
 
 @implementation EJBindingBase
@@ -51,8 +51,8 @@ static NSMutableDictionary * CachedJSClasses;
 
 + (JSClassRef)createJSClass {
 	// Gather all class methods that return C callbacks for this class or it's parents
-	NSMutableArray * methods = [[NSMutableArray alloc] init];
-	NSMutableArray * properties = [[NSMutableArray alloc] init];
+	NSMutableArray *methods = [[NSMutableArray alloc] init];
+	NSMutableArray *properties = [[NSMutableArray alloc] init];
 		
 	// Traverse this class and all its super classes
 	id base = [EJBindingBase class];
@@ -61,10 +61,10 @@ static NSMutableDictionary * CachedJSClasses;
 		// Traverse all class methods for this class; i.e. all classes that are defined with the
 		// EJ_BIND_FUNCTION, EJ_BIND_GET or EJ_BIND_SET macros
 		u_int count;
-		Method * methodList = class_copyMethodList(object_getClass(sc), &count);
+		Method *methodList = class_copyMethodList(object_getClass(sc), &count);
 		for (int i = 0; i < count ; i++) {
 			SEL selector = method_getName(methodList[i]);
-			NSString * name = NSStringFromSelector(selector);
+			NSString *name = NSStringFromSelector(selector);
 			
 			if( [name hasPrefix:@"_ptr_to_func_"] ) {
 				[methods addObject: [name substringFromIndex:sizeof("_ptr_to_func_")-1] ];
@@ -79,10 +79,10 @@ static NSMutableDictionary * CachedJSClasses;
 	
 	
 	// Set up the JSStaticValue struct array
-	JSStaticValue * values = calloc( properties.count + 1, sizeof(JSStaticValue) );
+	JSStaticValue *values = calloc( properties.count + 1, sizeof(JSStaticValue) );
 	for( int i = 0; i < properties.count; i++ ) {
-		NSString * name = [properties objectAtIndex:i];
-		NSData * nameData = NSDataFromString( name );
+		NSString *name = [properties objectAtIndex:i];
+		NSData *nameData = NSDataFromString( name );
 		
 		values[i].name = [nameData bytes];
 		values[i].attributes = kJSPropertyAttributeDontDelete;
@@ -101,10 +101,10 @@ static NSMutableDictionary * CachedJSClasses;
 	}
 	
 	// Set up the JSStaticFunction struct array
-	JSStaticFunction * functions = calloc( methods.count + 1, sizeof(JSStaticFunction) );
+	JSStaticFunction *functions = calloc( methods.count + 1, sizeof(JSStaticFunction) );
 	for( int i = 0; i < methods.count; i++ ) {
-		NSString * name = [methods objectAtIndex:i];
-		NSData * nameData = NSDataFromString( name );
+		NSString *name = [methods objectAtIndex:i];
+		NSData *nameData = NSDataFromString( name );
 				
 		functions[i].name = [nameData bytes];
 		functions[i].attributes = kJSPropertyAttributeDontDelete;

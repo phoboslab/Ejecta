@@ -34,7 +34,7 @@ typedef std::vector<subpath_t> path_t;
 }
 
 - (id)copyWithZone:(NSZone *)zone {
-	EJPath * copy = [[EJPath allocWithZone:zone] init];
+	EJPath *copy = [[EJPath allocWithZone:zone] init];
 	copy->currentPos = currentPos;
 	copy->minPos = minPos;
 	copy->maxPos = maxPos;
@@ -320,7 +320,7 @@ typedef std::vector<subpath_t> path_t;
 	[self endSubPath];
 	if( longestSubpath < 3 ) { return; }
 	
-	EJCanvasState * state = context.state;
+	EJCanvasState *state = context.state;
 	EJColorRGBA color = state->fillColor;
 	color.rgba.a = (float)color.rgba.a * state->globalAlpha;
 	
@@ -431,7 +431,7 @@ typedef std::vector<subpath_t> path_t;
 
 - (void)drawArcToContext:(EJCanvasContext2D *)context atPoint:(EJVector2)point v1:(EJVector2)p1 v2:(EJVector2)p2 color:(EJColorRGBA)color {
 
-	EJCanvasState * state = context.state;
+	EJCanvasState *state = context.state;
 	float width2 = state->lineWidth/2;
 	
 	EJVector2
@@ -493,7 +493,7 @@ typedef std::vector<subpath_t> path_t;
 - (void)drawLinesToContext:(EJCanvasContext2D *)context {
 	[self endSubPath];
 	
-	EJCanvasState * state = context.state;
+	EJCanvasState *state = context.state;
 	
 	// Find the width of the line as it is projected onto the screen.
 	float projectedLineWidth = CGAffineTransformGetScale( state->transform ) * state->lineWidth;

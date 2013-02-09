@@ -6,7 +6,7 @@
 	
 	BOOL msaaEnabled;
 	int msaaSamples;
-	EAGLContext * glContext;
+	EAGLContext *glContext;
 }
 
 - (void)create;
@@ -17,6 +17,6 @@
 @property (nonatomic) int msaaSamples;
 @property (nonatomic) short width;
 @property (nonatomic) short height;
-@property (nonatomic, readonly) EAGLContext * glContext;
+@property (nonatomic, readonly) EAGLContext *glContext;
 
 @end

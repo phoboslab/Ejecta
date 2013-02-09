@@ -165,7 +165,7 @@ static const unsigned char ColorHashesToColorNames[498] = {
 	118,116,0,0,37,0,0,0,0,0,0,0,0,0,0,0,112,120,0,34,0,0,0
 };
 
-static inline unsigned int ColorHashForString( const JSChar * s, int length ) {
+static inline unsigned int ColorHashForString( const JSChar *s, int length ) {
 	unsigned int h = 0;
 	for( int i = 0; i < length; i++ ) {
 		h = (h << 6) ^ (h >> 26) ^ (tolower(s[i]) * 1978555465);
@@ -216,7 +216,7 @@ EJColorRGBA JSValueToColorRGBA(JSContextRef ctx, JSValueRef value) {
 	int length = JSStringGetLength( jsString );
 	if( length < 3 ) { return c; }
 	
-	const JSChar * jsc = JSStringGetCharactersPtr(jsString);
+	const JSChar *jsc = JSStringGetCharactersPtr(jsString);
 	char str[] = "ffffff";
 	
 	// #f0f format

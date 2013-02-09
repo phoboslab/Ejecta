@@ -8,7 +8,7 @@
 
 @implementation EJAppViewController
 
-static EJAppViewController * _ejectaInstance = NULL;
+static EJAppViewController *_ejectaInstance = NULL;
 
 + (EJAppViewController *)instance {
 	static dispatch_once_t onceToken;

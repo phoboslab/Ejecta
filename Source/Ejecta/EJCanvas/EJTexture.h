@@ -35,15 +35,15 @@ typedef enum {
 @interface EJTexture : NSObject <NSCopying> {
 	BOOL cached;
 	short width, height;
-	NSString * fullPath;
-	EJTextureStorage * textureStorage;
+	NSString *fullPath;
+	EJTextureStorage *textureStorage;
 	GLenum format;
 	GLuint fbo;
 	float contentScale;
 	
 	EJTextureOwningContext owningContext;
 	EJTextureParams params;
-	NSOperation * loadCallback;
+	NSOperation *loadCallback;
 }
 - (id)initEmptyForWebGL;
 - (id)initWithPath:(NSString *)path;
@@ -73,7 +73,7 @@ typedef enum {
 - (void)bindToTarget:(GLenum)target;
 
 @property (readonly, nonatomic) BOOL isDynamic;
-@property (readonly, nonatomic) NSMutableData * pixels;
+@property (readonly, nonatomic) NSMutableData *pixels;
 @property (readonly, nonatomic)	float contentScale;
 @property (readonly, nonatomic) GLuint textureId;
 @property (readonly, nonatomic) GLenum format;

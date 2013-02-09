@@ -62,7 +62,7 @@ typedef struct {
 	
 	EJCompositeOperation globalCompositeOperation;
 	EJColorRGBA fillColor;
-	NSObject<EJFillable> * fillObject;
+	NSObject<EJFillable> *fillObject;
 	EJColorRGBA strokeColor;
 	float globalAlpha;
 	
@@ -73,9 +73,9 @@ typedef struct {
 	
 	EJTextAlign textAlign;
 	EJTextBaseline textBaseline;
-	EJFontDescriptor * font;
+	EJFontDescriptor *font;
 	
-	EJPath * clipPath;
+	EJPath *clipPath;
 } EJCanvasState;
 
 @class EJJavaScriptView;
@@ -88,22 +88,22 @@ typedef struct {
 	EJVector2 vertexScale, vertexTranslate;
 	
 	GLenum textureFilter;
-	EJTexture * currentTexture;
-	EJPath * path;
+	EJTexture *currentTexture;
+	EJPath *path;
 	
 	int vertexBufferIndex;
 	
 	int stateIndex;
 	EJCanvasState stateStack[EJ_CANVAS_STATE_STACK_SIZE];
-	EJCanvasState * state;
+	EJCanvasState *state;
 	
 	BOOL useRetinaResolution;
 	float backingStoreRatio;
 	
-	NSCache * fontCache;
+	NSCache *fontCache;
 	
-	EJJavaScriptView * app;
-	EJGLProgram2D * currentProgram;
+	EJJavaScriptView *app;
+	EJGLProgram2D *currentProgram;
 }
 
 - (id)initWithWidth:(short)width height:(short)height;
@@ -177,10 +177,10 @@ typedef struct {
 - (void)clip;
 - (void)resetClip;
 
-@property (nonatomic) EJCanvasState * state;
+@property (nonatomic) EJCanvasState *state;
 @property (nonatomic) EJCompositeOperation globalCompositeOperation;
-@property (nonatomic, retain) EJFontDescriptor * font;
-@property (nonatomic, retain) NSObject<EJFillable> * fillObject;
+@property (nonatomic, retain) EJFontDescriptor *font;
+@property (nonatomic, retain) NSObject<EJFillable> *fillObject;
 @property (nonatomic, assign) float backingStoreRatio;
 @property (nonatomic) BOOL useRetinaResolution;
 @property (nonatomic) BOOL imageSmoothingEnabled;

@@ -15,17 +15,17 @@
 	JSContextRef ctx = [EJJavaScriptView sharedView].jsGlobalContext;
 	
 	// Unprotect all event callbacks
-	for( NSString * name in eventListeners ) {
-		NSArray * listeners = [eventListeners objectForKey:name];
-		for( NSValue * callbackValue in listeners ) {
+	for( NSString *name in eventListeners ) {
+		NSArray *listeners = [eventListeners objectForKey:name];
+		for( NSValue *callbackValue in listeners ) {
 			JSValueUnprotect(ctx, [callbackValue pointerValue]);
 		}
 	}
 	[eventListeners release];
 	
 	// Unprotect all event callbacks
-	for( NSString * name in onCallbacks ) {
-		NSValue * listener = [onCallbacks objectForKey:name];
+	for( NSString *name in onCallbacks ) {
+		NSValue *listener = [onCallbacks objectForKey:name];
 		JSValueUnprotect(ctx, [(NSValue *)listener pointerValue]);
 	}
 	[onCallbacks release];
@@ -34,7 +34,7 @@
 }
 
 - (JSObjectRef)getCallbackWith:(NSString *)name ctx:(JSContextRef)ctx {
-	NSValue * listener = [onCallbacks objectForKey:name];
+	NSValue *listener = [onCallbacks objectForKey:name];
 	return listener ? [listener pointerValue] : NULL;
 }
 
@@ -57,12 +57,12 @@
 EJ_BIND_FUNCTION(addEventListener, ctx, argc, argv) {
 	if( argc < 2 ) { return NULL; }
 	
-	NSString * name = JSValueToNSString( ctx, argv[0] );
+	NSString *name = JSValueToNSString( ctx, argv[0] );
 	JSObjectRef callback = JSValueToObject(ctx, argv[1], NULL);
 	JSValueProtect(ctx, callback);
-	NSValue * callbackValue = [NSValue valueWithPointer:callback];
+	NSValue *callbackValue = [NSValue valueWithPointer:callback];
 	
-	NSMutableArray * listeners = NULL;
+	NSMutableArray *listeners = NULL;
 	if( (listeners = [eventListeners objectForKey:name]) ) {
 		[listeners addObject:callbackValue];
 	}
@@ -75,9 +75,9 @@ EJ_BIND_FUNCTION(addEventListener, ctx, argc, argv) {
 EJ_BIND_FUNCTION(removeEventListener, ctx, argc, argv) {
 	if( argc < 2 ) { return NULL; }
 	
-	NSString * name = JSValueToNSString( ctx, argv[0] );
+	NSString *name = JSValueToNSString( ctx, argv[0] );
 
-	NSMutableArray * listeners = NULL;
+	NSMutableArray *listeners = NULL;
 	if( (listeners = [eventListeners objectForKey:name]) ) {
 		JSObjectRef callback = JSValueToObject(ctx, argv[1], NULL);
 		for( int i = 0; i < listeners.count; i++ ) {
@@ -91,16 +91,16 @@ EJ_BIND_FUNCTION(removeEventListener, ctx, argc, argv) {
 }
 
 - (void)triggerEvent:(NSString *)name argc:(int)argc argv:(JSValueRef[])argv {
-	EJJavaScriptView * ejecta = [EJJavaScriptView sharedView];
+	EJJavaScriptView *ejecta = [EJJavaScriptView sharedView];
 	
-	NSArray * listeners = [eventListeners objectForKey:name];
+	NSArray *listeners = [eventListeners objectForKey:name];
 	if( listeners ) {
-		for( NSValue * callbackValue in listeners ) {
+		for( NSValue *callbackValue in listeners ) {
 			[ejecta invokeCallback:[callbackValue pointerValue] thisObject:jsObject argc:argc argv:argv];
 		}
 	}
 	
-	NSValue * callbackValue = [onCallbacks objectForKey:name];
+	NSValue *callbackValue = [onCallbacks objectForKey:name];
 	if( callbackValue ) {
 		[ejecta invokeCallback:[callbackValue pointerValue] thisObject:jsObject argc:argc argv:argv];
 	}

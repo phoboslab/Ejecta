@@ -13,7 +13,7 @@
 		return NULL;
 	}
 	
-	EJFontDescriptor * descriptor = [[EJFontDescriptor alloc] init];
+	EJFontDescriptor *descriptor = [[EJFontDescriptor alloc] init];
 	descriptor->name = [name retain];
 	descriptor->size = size;
 	
@@ -59,7 +59,7 @@
 
 
 
-int EJFontGlyphLayoutSortByTextureIndex(const void * a, const void * b) {
+int EJFontGlyphLayoutSortByTextureIndex(const void *a, const void *b) {
 	return ( ((EJFontGlyphLayout*)a)->textureIndex - ((EJFontGlyphLayout*)b)->textureIndex );
 }
 
@@ -140,7 +140,7 @@ int EJFontGlyphLayoutSortByTextureIndex(const void * a, const void * b) {
 
 - (unsigned short)createGlyph:(CGGlyph)glyph withFont:(CTFontRef)font {
 	// Get glyph information
-	EJFontGlyphInfo * glyphInfo = &glyphInfoMap[glyph];
+	EJFontGlyphInfo *glyphInfo = &glyphInfoMap[glyph];
 	
 	CGRect bbRect;
 	CTFontGetBoundingRectsForGlyphs(font, kCTFontDefaultOrientation, &glyph, &bbRect, 1);
@@ -170,7 +170,7 @@ int EJFontGlyphLayoutSortByTextureIndex(const void * a, const void * b) {
 		}
 	}
 	
-	EJTexture * texture;
+	EJTexture *texture;
 	if( createNewTexture ) {
 		txLineX = txLineY = txLineH = 0;		
 		texture = [[EJTexture alloc] initWithWidth:EJ_FONT_TEXTURE_SIZE height:EJ_FONT_TEXTURE_SIZE format:GL_ALPHA];
@@ -187,7 +187,7 @@ int EJFontGlyphLayoutSortByTextureIndex(const void * a, const void * b) {
 	glyphInfo->tw = (glyphInfo->w / EJ_FONT_TEXTURE_SIZE) * contentScale,
 	glyphInfo->th = (glyphInfo->h / EJ_FONT_TEXTURE_SIZE) * contentScale;
 	
-	NSMutableData * pixels = [NSMutableData dataWithLength:pxWidth * pxHeight];
+	NSMutableData *pixels = [NSMutableData dataWithLength:pxWidth * pxHeight];
 	
 	CGContextRef context = CGBitmapContextCreate(pixels.mutableBytes, pxWidth, pxHeight, 8, pxWidth, NULL, kCGImageAlphaOnly);
 	
@@ -236,14 +236,14 @@ int EJFontGlyphLayoutSortByTextureIndex(const void * a, const void * b) {
 - (EJFontLayout *)getLayoutForString:(NSString *)string {
 
 	// Try Cache first
-	EJFontLayout * cached = [layoutCache objectForKey:string];
+	EJFontLayout *cached = [layoutCache objectForKey:string];
 	if( cached ) {
 		return cached;
 	}
 
 	
 	// Create attributed line
-	NSAttributedString * attributes = [[NSAttributedString alloc]
+	NSAttributedString *attributes = [[NSAttributedString alloc]
 		initWithString:string
 		attributes:@{ (id)kCTFontAttributeName: (id)ctMainFont }];
 	
@@ -266,8 +266,8 @@ int EJFontGlyphLayoutSortByTextureIndex(const void * a, const void * b) {
 	// Create a layout buffer large enough to hold all glyphs for this line
 	int lineGlyphCount = CTLineGetGlyphCount(line);
 	int layoutBufferSize = sizeof(EJFontGlyphLayout) * lineGlyphCount;
-	NSMutableData * layoutData = [NSMutableData dataWithLength:layoutBufferSize];
-	EJFontGlyphLayout * layoutBuffer = (EJFontGlyphLayout *)layoutData.mutableBytes;
+	NSMutableData *layoutData = [NSMutableData dataWithLength:layoutBufferSize];
+	EJFontGlyphLayout *layoutBuffer = (EJFontGlyphLayout *)layoutData.mutableBytes;
 		
 	
 	// Go through all runs for this line
@@ -281,7 +281,7 @@ int EJFontGlyphLayoutSortByTextureIndex(const void * a, const void * b) {
 		CTFontRef runFont = (CTFontRef)CFDictionaryGetValue(CTRunGetAttributes(run), kCTFontAttributeName);
 	
 		// Fetch glyphs buffer
-		const CGGlyph * glyphs = CTRunGetGlyphsPtr(run);
+		const CGGlyph *glyphs = CTRunGetGlyphsPtr(run);
 		if( !glyphs ) {
 			size_t glyphsBufferSize = sizeof(CGGlyph) * runGlyphCount;
 			if( malloc_size(glyphsBuffer) < glyphsBufferSize ) {
@@ -292,7 +292,7 @@ int EJFontGlyphLayoutSortByTextureIndex(const void * a, const void * b) {
 		}
 		
 		// Fetch Positions buffer
-		CGPoint * positions = (CGPoint*)CTRunGetPositionsPtr(run);
+		CGPoint *positions = (CGPoint*)CTRunGetPositionsPtr(run);
 		if( !positions ) {
 			size_t positionsBufferSize = sizeof(CGPoint) * runGlyphCount;
 			if( malloc_size(positionsBuffer) < positionsBufferSize ) {
@@ -306,7 +306,7 @@ int EJFontGlyphLayoutSortByTextureIndex(const void * a, const void * b) {
 		// Go through all glyphs for this run, create the textures and collect the glyph
 		// info and positions as well as the max ascent and descent
 		for( int g = 0; g < runGlyphCount; g++ ) {
-			EJFontGlyphLayout * gl = &layoutBuffer[layoutIndex];
+			EJFontGlyphLayout *gl = &layoutBuffer[layoutIndex];
 			gl->glyph = glyphs[g];
 			gl->xpos = positions[g].x;
 			gl->info = &glyphInfoMap[gl->glyph];
@@ -331,7 +331,7 @@ int EJFontGlyphLayoutSortByTextureIndex(const void * a, const void * b) {
 	
 	
 	// Create the layout object and add it to the cache	
-	EJFontLayout * layout = [[EJFontLayout alloc] initWithGlyphLayout:layoutData
+	EJFontLayout *layout = [[EJFontLayout alloc] initWithGlyphLayout:layoutData
 		glyphCount:lineGlyphCount metrics:metrics];
 		
 	[layoutCache setObject:layout forKey:string];
@@ -361,7 +361,7 @@ int EJFontGlyphLayoutSortByTextureIndex(const void * a, const void * b) {
 - (void)drawString:(NSString *)string toContext:(EJCanvasContext2D *)context x:(float)x y:(float)y {
 	if( string.length == 0 ) { return; }
 	
-	EJFontLayout * layout = [self getLayoutForString:string];
+	EJFontLayout *layout = [self getLayoutForString:string];
 	
 	// Figure out the x position with the current textAlign.
 	if(context.state->textAlign != kEJTextAlignLeft) {
@@ -380,12 +380,12 @@ int EJFontGlyphLayoutSortByTextureIndex(const void * a, const void * b) {
 	
 	
 	// Fill or stroke color?
-	EJCanvasState * state = context.state;
+	EJCanvasState *state = context.state;
 	EJColorRGBA color = fill ? state->fillColor : state->strokeColor;
 	color.rgba.a = (float)color.rgba.a * state->globalAlpha;
 	
 	// Go through all glyphs - bind textures as needed - and draw
-	EJFontGlyphLayout * layoutBuffer = layout.glyphLayout;
+	EJFontGlyphLayout *layoutBuffer = layout.glyphLayout;
 	int glyphCount = layout.glyphCount;
 	int i = 0;
 	while( i < glyphCount ) {
@@ -394,7 +394,7 @@ int EJFontGlyphLayoutSortByTextureIndex(const void * a, const void * b) {
 		
 		// Go through glyphs while the texture stays the same
 		while( i < glyphCount && textureIndex == layoutBuffer[i].textureIndex ) {
-			EJFontGlyphInfo * glyphInfo = layoutBuffer[i].info;
+			EJFontGlyphInfo *glyphInfo = layoutBuffer[i].info;
 			
 			float gx = x + layoutBuffer[i].xpos + glyphInfo->x;
 			float gy = y - (glyphInfo->h + glyphInfo->y);

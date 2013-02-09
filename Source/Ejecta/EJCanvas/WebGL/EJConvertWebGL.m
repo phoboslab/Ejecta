@@ -3,7 +3,7 @@
 #import <JavaScriptCore/JSTypedArray.h>
 
 
-void EJFlipPixelsY(GLuint bytesPerRow, GLuint rows, GLubyte * pixels) {
+void EJFlipPixelsY(GLuint bytesPerRow, GLuint rows, GLubyte *pixels) {
 	if( !pixels ) { return; }
 	
 	GLuint middle = rows/2;
@@ -13,8 +13,8 @@ void EJFlipPixelsY(GLuint bytesPerRow, GLuint rows, GLubyte * pixels) {
 	for( GLuint rowTop = 0, rowBottom = rows-1; rowTop < middle; rowTop++, rowBottom-- ) {
 		
 		// Swap bytes in packs of sizeof(GLuint) bytes
-		GLuint * iTop = (GLuint *)(pixels + rowTop * bytesPerRow);
-		GLuint * iBottom = (GLuint *)(pixels + rowBottom * bytesPerRow);
+		GLuint *iTop = (GLuint *)(pixels + rowTop * bytesPerRow);
+		GLuint *iBottom = (GLuint *)(pixels + rowBottom * bytesPerRow);
 		
 		GLuint itmp;
 		GLint n = intsPerRow;
@@ -25,8 +25,8 @@ void EJFlipPixelsY(GLuint bytesPerRow, GLuint rows, GLubyte * pixels) {
 		} while(--n > 0);
 		
 		// Swap the remaining bytes
-		GLubyte * bTop = (GLubyte *)iTop;
-		GLubyte * bBottom = (GLubyte *)iBottom;
+		GLubyte *bTop = (GLubyte *)iTop;
+		GLubyte *bBottom = (GLubyte *)iBottom;
 		
 		GLubyte btmp;
 		switch( remainingBytes ) {
@@ -37,7 +37,7 @@ void EJFlipPixelsY(GLuint bytesPerRow, GLuint rows, GLubyte * pixels) {
 	}
 }
 
-void EJPremultiplyAlpha(GLuint width, GLuint height, GLenum format, GLubyte * pixels) {
+void EJPremultiplyAlpha(GLuint width, GLuint height, GLenum format, GLubyte *pixels) {
 	if( !pixels ) { return;	}
 		
 	if( format == GL_RGBA ) {
@@ -60,10 +60,10 @@ void EJPremultiplyAlpha(GLuint width, GLuint height, GLenum format, GLubyte * pi
 
 // FIXME: use C++ with a template?
 #define CREATE_JS_VALUE_TO_ARRAY_FUNC(NAME, TYPE, ARRAY_TYPE) \
-TYPE * NAME(JSContextRef ctx, JSValueRef value, GLsizei elementSize, GLsizei * numElements) { \
+TYPE *NAME(JSContextRef ctx, JSValueRef value, GLsizei elementSize, GLsizei *numElements) { \
 	if( JSTypedArrayGetType(ctx, value) == ARRAY_TYPE ) { \
 		size_t byteLength; \
-		TYPE * arrayValue = JSTypedArrayGetDataPtr(ctx, value, &byteLength); \
+		TYPE *arrayValue = JSTypedArrayGetDataPtr(ctx, value, &byteLength); \
 		GLsizei count = byteLength/sizeof(TYPE); \
 		if( arrayValue && count && (count % elementSize) == 0 ) { \
 			*numElements = count / elementSize; \
@@ -78,8 +78,8 @@ TYPE * NAME(JSContextRef ctx, JSValueRef value, GLsizei elementSize, GLsizei * n
 		JSStringRelease(jsLengthName); \
 		\
 		if( count && (count % elementSize) == 0 ) { \
-			NSMutableData * buffer = [NSMutableData dataWithCapacity:count * sizeof(TYPE)]; \
-			TYPE * values = buffer.mutableBytes; \
+			NSMutableData *buffer = [NSMutableData dataWithCapacity:count * sizeof(TYPE)]; \
+			TYPE *values = buffer.mutableBytes; \
 			for( int i = 0; i < count; i++ ) { \
 				values[i] = JSValueToNumberFast(ctx, JSObjectGetPropertyAtIndex(ctx, jsArray, i, NULL)); \
 			} \

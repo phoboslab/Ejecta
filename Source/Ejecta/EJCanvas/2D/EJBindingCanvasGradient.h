@@ -2,7 +2,7 @@
 #import "EJCanvasGradient.h"
 
 @interface EJBindingCanvasGradient : EJBindingBase {
-	EJCanvasGradient * gradient;
+	EJCanvasGradient *gradient;
 }
 
 + (JSObjectRef)createJSObjectWithContext:(JSContextRef)ctx gradient:(EJCanvasGradient *)gradient;

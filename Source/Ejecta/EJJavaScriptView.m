@@ -15,13 +15,13 @@
 
 @property (nonatomic, assign, readwrite) JSGlobalContextRef jsGlobalContext;
 
-@property (nonatomic, assign) NSMutableDictionary * textureCache;
-@property (nonatomic, strong) EJOpenALManager * openALManager;
-@property (nonatomic, strong) EJGLProgram2D * glProgram2DFlat;
-@property (nonatomic, strong) EJGLProgram2D * glProgram2DTexture;
-@property (nonatomic, strong) EJGLProgram2D * glProgram2DAlphaTexture;
-@property (nonatomic, strong) EJGLProgram2D * glProgram2DPattern;
-@property (nonatomic, strong) EJGLProgram2DRadialGradient * glProgram2DRadialGradient;
+@property (nonatomic, assign) NSMutableDictionary *textureCache;
+@property (nonatomic, strong) EJOpenALManager *openALManager;
+@property (nonatomic, strong) EJGLProgram2D *glProgram2DFlat;
+@property (nonatomic, strong) EJGLProgram2D *glProgram2DTexture;
+@property (nonatomic, strong) EJGLProgram2D *glProgram2DAlphaTexture;
+@property (nonatomic, strong) EJGLProgram2D *glProgram2DPattern;
+@property (nonatomic, strong) EJGLProgram2DRadialGradient *glProgram2DRadialGradient;
 @property (nonatomic, strong) EAGLContext *glContext2D;
 @property (nonatomic, strong) EAGLSharegroup *glSharegroup;
 @property (nonatomic, strong) EAGLContext *glCurrentContext;
@@ -146,7 +146,7 @@ static EJJavaScriptView *_sharedView = nil;
 }
 
 - (void)loadScriptAtPath:(NSString *)path {
-	NSString * script = [NSString stringWithContentsOfFile:[self pathForResource:path] encoding:NSUTF8StringEncoding error:NULL];
+	NSString *script = [NSString stringWithContentsOfFile:[self pathForResource:path] encoding:NSUTF8StringEncoding error:NULL];
 	
 	if( !script ) {
 		NSLog(@"Error: Can't Find Script %@", path );
@@ -166,8 +166,8 @@ static EJJavaScriptView *_sharedView = nil;
 }
 
 - (JSValueRef)loadModuleWithId:(NSString *)moduleId module:(JSValueRef)module exports:(JSValueRef)exports {
-	NSString * path = [moduleId stringByAppendingString:@".js"];
-	NSString * script = [NSString stringWithContentsOfFile:[self pathForResource:path] encoding:NSUTF8StringEncoding error:NULL];
+	NSString *path = [moduleId stringByAppendingString:@".js"];
+	NSString *script = [NSString stringWithContentsOfFile:[self pathForResource:path] encoding:NSUTF8StringEncoding error:NULL];
 	
 	if( !script ) {
 		NSLog(@"Error: Can't Find Module %@", moduleId );
@@ -273,7 +273,7 @@ static EJJavaScriptView *_sharedView = nil;
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-	NSMutableSet * remaining = [event.allTouches mutableCopy];
+	NSMutableSet *remaining = [event.allTouches mutableCopy];
 	[remaining minusSet:touches];
 	
 	[self.touchDelegate triggerEvent:@"touchend" all:event.allTouches changed:touches remaining:remaining];

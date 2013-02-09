@@ -10,7 +10,7 @@
 @synthesize duration;
 
 + (id)cachedBufferWithPath:(NSString *)path {
-	EJOpenALBuffer * buffer = [[[EJJavaScriptView sharedView].openALManager.buffers objectForKey:path] retain];
+	EJOpenALBuffer *buffer = [[[EJJavaScriptView sharedView].openALManager.buffers objectForKey:path] retain];
 	if( !buffer ) {
 		buffer = [[EJOpenALBuffer alloc] initWithPath:path];
 		[[EJJavaScriptView sharedView].openALManager.buffers setObject:buffer forKey:path];
@@ -21,8 +21,8 @@
 - (id)initWithPath:(NSString *)pathp {
 	if( self = [super init] ) {
 		path = [pathp retain];
-		NSURL * url = [NSURL fileURLWithPath:pathp];
-		void * data = [self getAudioDataWithURL:url];
+		NSURL *url = [NSURL fileURLWithPath:pathp];
+		void *data = [self getAudioDataWithURL:url];
 
 		if( data ) {
 			alGenBuffers( 1, &bufferId );
@@ -45,7 +45,7 @@
 
 - (void*)getAudioDataWithURL:(NSURL *)url {
 	
-	void * data = NULL;
+	void *data = NULL;
 	
 	// Open the file
 	ExtAudioFileRef	file = NULL;

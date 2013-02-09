@@ -31,22 +31,22 @@
 - (void)dealloc {
 	// Make sure this rendering context is the current one, so all
 	// OpenGL objects can be deleted properly.
-	EAGLContext * oldContext = [EAGLContext currentContext];
+	EAGLContext *oldContext = [EAGLContext currentContext];
 	[EAGLContext setCurrentContext:renderingContext.glContext];
 	
-	for( NSNumber * n in buffers ) { GLuint buffer = n.intValue; glDeleteBuffers(1, &buffer); }
+	for( NSNumber *n in buffers ) { GLuint buffer = n.intValue; glDeleteBuffers(1, &buffer); }
 	[buffers release];
 	
-	for( NSNumber * n in programs ) { glDeleteProgram(n.intValue); }
+	for( NSNumber *n in programs ) { glDeleteProgram(n.intValue); }
 	[programs release];
 	
-	for( NSNumber * n in shaders ) { glDeleteShader(n.intValue); }
+	for( NSNumber *n in shaders ) { glDeleteShader(n.intValue); }
 	[shaders release];
 	
-	for( NSNumber * n in framebuffers ) { GLuint buffer = n.intValue; glDeleteFramebuffers(1, &buffer); }
+	for( NSNumber *n in framebuffers ) { GLuint buffer = n.intValue; glDeleteFramebuffers(1, &buffer); }
 	[framebuffers release];
 	
-	for( NSNumber * n in renderbuffers ) { GLuint buffer = n.intValue; glDeleteRenderbuffers(1, &buffer); }
+	for( NSNumber *n in renderbuffers ) { GLuint buffer = n.intValue; glDeleteRenderbuffers(1, &buffer); }
 	[renderbuffers release];
 	
 	[textures release];
@@ -59,7 +59,7 @@
 }
 
 - (void)deleteBuffer:(GLuint)buffer {
-	NSNumber * key = [NSNumber numberWithInt:buffer];
+	NSNumber *key = [NSNumber numberWithInt:buffer];
 	if( [buffers objectForKey:key] ) {
 		ejectaInstance.currentRenderingContext = renderingContext;
 		glDeleteBuffers(1, &buffer);
@@ -70,7 +70,7 @@
 - (void)deleteTexture:(GLuint)texture {
 	// This just deletes the pointer to the JSObject; the texture itself
 	// is retained and released by the binding
-	NSNumber * key = [NSNumber numberWithInt:texture];
+	NSNumber *key = [NSNumber numberWithInt:texture];
 	JSObjectRef obj = [[textures objectForKey:key] pointerValue];
 	[textures removeObjectForKey:key];
 	
@@ -88,7 +88,7 @@
 }
 
 - (void)deleteProgram:(GLuint)program {
-	NSNumber * key = [NSNumber numberWithInt:program];
+	NSNumber *key = [NSNumber numberWithInt:program];
 	if( [programs objectForKey:key] ) {
 		ejectaInstance.currentRenderingContext = renderingContext;
 		glDeleteProgram(program);
@@ -97,7 +97,7 @@
 }
 
 - (void)deleteShader:(GLuint)shader {
-	NSNumber * key = [NSNumber numberWithInt:shader];
+	NSNumber *key = [NSNumber numberWithInt:shader];
 	if( [shaders objectForKey:key] ) {
 		ejectaInstance.currentRenderingContext = renderingContext;
 		glDeleteShader(shader);
@@ -107,7 +107,7 @@
 }
 
 - (void)deleteRenderbuffer:(GLuint)renderbuffer {
-	NSNumber * key = [NSNumber numberWithInt:renderbuffer];
+	NSNumber *key = [NSNumber numberWithInt:renderbuffer];
 	if( [renderbuffers objectForKey:key] ) {
 		ejectaInstance.currentRenderingContext = renderingContext;
 		glDeleteRenderbuffers(1, &renderbuffer);
@@ -117,7 +117,7 @@
 }
 
 - (void)deleteFramebuffer:(GLuint)framebuffer {
-	NSNumber * key = [NSNumber numberWithInt:framebuffer];
+	NSNumber *key = [NSNumber numberWithInt:framebuffer];
 	if( [framebuffers objectForKey:key] ) {
 		ejectaInstance.currentRenderingContext = renderingContext;
 		glDeleteFramebuffers(1, &framebuffer);
@@ -205,7 +205,7 @@ EJ_BIND_FUNCTION(bindAttribLocation, ctx, argc, argv) {
 	
 	GLuint program = [EJBindingWebGLProgram indexFromJSValue:argv[0]];
 	GLuint index = JSValueToNumberFast(ctx, argv[1]);
-	NSString * name = JSValueToNSString(ctx, argv[2]);
+	NSString *name = JSValueToNSString(ctx, argv[2]);
 	
 	glBindAttribLocation(program, index, [name UTF8String]);
 	return NULL;
@@ -247,7 +247,7 @@ EJ_BIND_FUNCTION(bindTexture, ctx, argc, argv) {
 	ejectaInstance.currentRenderingContext = renderingContext;
 	
 	GLenum target = JSValueToNumberFast(ctx, argv[0]);
-	EJTexture * texture = [EJBindingWebGLTexture textureFromJSValue:argv[1]];
+	EJTexture *texture = [EJBindingWebGLTexture textureFromJSValue:argv[1]];
 	
 	if( target == GL_TEXTURE_2D ) {
 		if( texture ) {
@@ -290,7 +290,7 @@ EJ_BIND_FUNCTION(bufferData, ctx, argc, argv) {
 	
 	GLenum target = JSValueToNumberFast(ctx, argv[0]);
 	size_t size;
-	GLvoid * buffer = JSTypedArrayGetDataPtr(ctx, argv[1], &size);
+	GLvoid *buffer = JSTypedArrayGetDataPtr(ctx, argv[1], &size);
 	GLenum usage = JSValueToNumberFast(ctx, argv[2]);
 
 	if( buffer ) {
@@ -313,7 +313,7 @@ EJ_BIND_FUNCTION(bufferSubData, ctx, argc, argv) {
 	GLintptr offset = JSValueToNumberFast(ctx, argv[1]);
 	
 	size_t size;
-	GLvoid * buffer = JSTypedArrayGetDataPtr(ctx, argv[2], &size);
+	GLvoid *buffer = JSTypedArrayGetDataPtr(ctx, argv[2], &size);
 	if( buffer ) {
 		glBufferSubData(target, offset, size, buffer);
 	}
@@ -352,7 +352,7 @@ EJ_BIND_FUNCTION(copyTexImage2D, ctx, argc, argv) {
 	
 	ejectaInstance.currentRenderingContext = renderingContext;
 	
-	EJTexture * targetTexture;
+	EJTexture *targetTexture;
 	if( target == GL_TEXTURE_2D ) {
 		targetTexture = activeTexture->texture;
 	}
@@ -373,7 +373,7 @@ EJ_BIND_FUNCTION(copyTexSubImage2D, ctx, argc, argv) {
 	
 	ejectaInstance.currentRenderingContext = renderingContext;
 	
-	EJTexture * targetTexture;
+	EJTexture *targetTexture;
 	if( target == GL_TEXTURE_2D ) {
 		targetTexture = activeTexture->texture;
 	}
@@ -528,7 +528,7 @@ EJ_BIND_FUNCTION(framebufferTexture2D, ctx, argc, argv) {
 	ejectaInstance.currentRenderingContext = renderingContext;
 	
 	EJ_UNPACK_ARGV(GLenum target, GLenum attachment, GLenum textarget);
-	EJTexture * texture = [EJBindingWebGLTexture textureFromJSValue:argv[3]];
+	EJTexture *texture = [EJBindingWebGLTexture textureFromJSValue:argv[3]];
 	EJ_UNPACK_ARGV_OFFSET(4, GLint level);
 	
 	[texture ensureMutableKeepPixels:NO forTarget:GL_TEXTURE_2D];
@@ -551,13 +551,13 @@ EJ_BIND_FUNCTION(getActiveAttrib, ctx, argc, argv) {
 	GLint buffsize;
 	glGetProgramiv(program, GL_ACTIVE_ATTRIBUTE_MAX_LENGTH, &buffsize);
 	
-	GLchar * namebuffer = malloc(buffsize);
+	GLchar *namebuffer = malloc(buffsize);
 	GLsizei length;
 	GLint size;
 	GLenum type;
 	glGetActiveAttrib(program, index, buffsize, &length, &size, &type, namebuffer);
 	
-	NSString * name = [NSString stringWithUTF8String:namebuffer];
+	NSString *name = [NSString stringWithUTF8String:namebuffer];
 	free(namebuffer);
 	
 	return [EJBindingWebGLActiveInfo createJSObjectWithContext:ctx size:size type:type name:name];
@@ -574,13 +574,13 @@ EJ_BIND_FUNCTION(getActiveUniform, ctx, argc, argv) {
 	GLint buffsize;
 	glGetProgramiv(program, GL_ACTIVE_UNIFORM_MAX_LENGTH, &buffsize);
 	
-	GLchar * namebuffer = malloc(buffsize);
+	GLchar *namebuffer = malloc(buffsize);
 	GLsizei length;
 	GLint size;
 	GLenum type;
 	glGetActiveUniform(program, index, buffsize, &length, &size, &type, namebuffer);
 	
-	NSString * name = [NSString stringWithUTF8String:namebuffer];
+	NSString *name = [NSString stringWithUTF8String:namebuffer];
 	free(namebuffer);
 	
 	return [EJBindingWebGLActiveInfo createJSObjectWithContext:ctx size:size type:type name:name];
@@ -596,10 +596,10 @@ EJ_BIND_FUNCTION(getAttachedShaders, ctx, argc, argv) {
 	GLint count;
 	glGetProgramiv(program, GL_ATTACHED_SHADERS, &count);
 	
-	GLuint * list = malloc(count * sizeof(GLuint));
+	GLuint *list = malloc(count * sizeof(GLuint));
 	glGetAttachedShaders(program, count, NULL, list);
 	
-	JSValueRef * args = malloc(count * sizeof(JSObjectRef));
+	JSValueRef *args = malloc(count * sizeof(JSObjectRef));
 	for( int i = 0; i < count; i++ ) {
 		args[i] = [[shaders objectForKey:[NSNumber numberWithInt:list[i]]] pointerValue];
 	}
@@ -616,7 +616,7 @@ EJ_BIND_FUNCTION(getAttribLocation, ctx, argc, argv) {
 	ejectaInstance.currentRenderingContext = renderingContext;
 	
 	GLuint program = [EJBindingWebGLProgram indexFromJSValue:argv[0]];
-	NSString * name = JSValueToNSString(ctx, argv[1]);
+	NSString *name = JSValueToNSString(ctx, argv[1]);
 
 	return JSValueMakeNumber(ctx, glGetAttribLocation(program, [name UTF8String]));
 }
@@ -819,7 +819,7 @@ EJ_BIND_FUNCTION(getProgramInfoLog, ctx, argc, argv) {
 	glGetProgramiv(program, GL_INFO_LOG_LENGTH, &size);
 	
 	// Get the actual log message and return it
-	GLchar * message = (GLchar *)malloc(size);
+	GLchar *message = (GLchar *)malloc(size);
 	glGetProgramInfoLog(program, size, &size, message);
 	
 	JSStringRef jss = JSStringCreateWithUTF8CString(message);
@@ -899,7 +899,7 @@ EJ_BIND_FUNCTION(getShaderInfoLog, ctx, argc, argv) {
 	glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &size);
 	
 	// Get the actual log message and return it
-	GLchar * message = (GLchar *)malloc(size);
+	GLchar *message = (GLchar *)malloc(size);
 	glGetShaderInfoLog(shader, size, &size, message);
 	
 	JSStringRef jss = JSStringCreateWithUTF8CString(message);
@@ -922,7 +922,7 @@ EJ_BIND_FUNCTION(getShaderSource, ctx, argc, argv) {
 	glGetShaderiv(shader, GL_SHADER_SOURCE_LENGTH, &size);
 	
 	// Get the actual shader source and return it
-	GLchar * source = (GLchar *)malloc(size);
+	GLchar *source = (GLchar *)malloc(size);
 	glGetShaderSource(shader, size, &size, source);
 	
 	JSStringRef jss = JSStringCreateWithUTF8CString(source);
@@ -986,7 +986,7 @@ EJ_BIND_FUNCTION(getUniform, ctx, argc, argv) {
 	BOOL found = false;
 	GLint numElements;
 	GLenum elementType;
-	GLchar * nameBuffer = malloc(nameLength);
+	GLchar *nameBuffer = malloc(nameLength);
 	
 	for( int i = 0; i < numUniforms; i++ ) {
 		glGetActiveUniform(program, i, nameLength, NULL, &numElements, &elementType, nameBuffer);
@@ -1046,14 +1046,14 @@ EJ_BIND_FUNCTION(getUniform, ctx, argc, argv) {
 	// Float32Array
 	if( type == GL_FLOAT ) {
 		array = JSTypedArrayMake(ctx, kJSTypedArrayTypeFloat32Array, size);
-		void * buffer = JSTypedArrayGetDataPtr(ctx, array, NULL);
+		void *buffer = JSTypedArrayGetDataPtr(ctx, array, NULL);
 		glGetUniformfv(program, uniform, buffer);
 	}
 	
 	// Int32Array
 	else if( type == GL_INT ) {
 		array = JSTypedArrayMake(ctx, kJSTypedArrayTypeInt32Array, size);
-		void * buffer = JSTypedArrayGetDataPtr(ctx, array, NULL);
+		void *buffer = JSTypedArrayGetDataPtr(ctx, array, NULL);
 		glGetUniformiv(program, uniform, buffer);
 	}
 	
@@ -1078,7 +1078,7 @@ EJ_BIND_FUNCTION(getUniformLocation, ctx, argc, argv) {
 	ejectaInstance.currentRenderingContext = renderingContext;
 	
 	GLuint program = [EJBindingWebGLProgram indexFromJSValue:argv[0]];
-	NSString * name = JSValueToNSString(ctx, argv[1]);
+	NSString *name = JSValueToNSString(ctx, argv[1]);
 	
 	GLuint uniform = glGetUniformLocation(program, [name UTF8String]);
 	return [EJBindingWebGLUniformLocation createJSObjectWithContext:ctx webglContext:self index:uniform];
@@ -1096,7 +1096,7 @@ EJ_BIND_FUNCTION(getVertexAttrib, ctx, argc, argv) {
 	}
 	else if( pname == GL_CURRENT_VERTEX_ATTRIB ) {
 		JSObjectRef array = JSTypedArrayMake(ctx, kJSTypedArrayTypeFloat32Array, 4);
-		GLint * values = JSTypedArrayGetDataPtr(ctx, array, NULL);
+		GLint *values = JSTypedArrayGetDataPtr(ctx, array, NULL);
 		glGetVertexAttribiv(index, pname, values);
 		return array;
 	}
@@ -1112,7 +1112,7 @@ EJ_BIND_FUNCTION(getVertexAttribOffset, ctx, argc, argv) {
 	
 	ejectaInstance.currentRenderingContext = renderingContext;
 	
-	GLvoid * pointer;
+	GLvoid *pointer;
 	glGetVertexAttribPointerv(index, pname, &pointer);
 	return JSValueMakeNumber(ctx, (int)pointer);
 }
@@ -1140,7 +1140,7 @@ EJ_BIND_FUNCTION(isTexture, ctx, argc, argv) {
 	
 	ejectaInstance.currentRenderingContext = renderingContext;
 	
-	EJTexture * texture = [EJBindingWebGLTexture textureFromJSValue:argv[0]];
+	EJTexture *texture = [EJBindingWebGLTexture textureFromJSValue:argv[0]];
 	return JSValueMakeBoolean(ctx, glIsTexture(texture.textureId));
 }
 
@@ -1213,7 +1213,7 @@ EJ_BIND_FUNCTION(readPixels, ctx, argc, argv) {
 	ejectaInstance.currentRenderingContext = renderingContext;
 	
 	size_t size;
-	void * pixels = JSTypedArrayGetDataPtr(ctx, argv[6], &size);
+	void *pixels = JSTypedArrayGetDataPtr(ctx, argv[6], &size);
 	
 	GLuint bytesPerPixel = EJGetBytesPerPixel(type, format);
 	if( bytesPerPixel && size >= width * height * bytesPerPixel ) {
@@ -1228,7 +1228,7 @@ EJ_BIND_FUNCTION(renderbufferStorage, ctx, argc, argv) {
 	
 	ejectaInstance.currentRenderingContext = renderingContext;
 	
-	EJTexture * targetTexture = NULL;
+	EJTexture *targetTexture = NULL;
 	if( target == GL_TEXTURE_2D ) {
 		targetTexture = activeTexture->texture;
 	}
@@ -1255,7 +1255,7 @@ EJ_BIND_FUNCTION(shaderSource, ctx, argc, argv) {
 	ejectaInstance.currentRenderingContext = renderingContext;
 	
 	GLuint shader = [EJBindingWebGLShader indexFromJSValue:argv[0]];
-	const GLchar * source = [JSValueToNSString(ctx, argv[1]) UTF8String];
+	const GLchar *source = [JSValueToNSString(ctx, argv[1]) UTF8String];
 	
 	glShaderSource(shader, 1, &source, NULL);
 	return NULL;
@@ -1281,7 +1281,7 @@ EJ_BIND_FUNCTION(texImage2D, ctx, argc, argv) {
 	EJ_UNPACK_ARGV(GLenum target, GLint level, GLenum internalformat);
 	
 	
-	EJTexture * targetTexture = NULL;
+	EJTexture *targetTexture = NULL;
 	JSObjectRef jsTargetTexture;
 	GLenum bindTarget;
 	if( target == GL_TEXTURE_2D ) {
@@ -1304,8 +1304,8 @@ EJ_BIND_FUNCTION(texImage2D, ctx, argc, argv) {
 	if( argc == 6) {
 		EJ_UNPACK_ARGV_OFFSET(3, GLenum format, GLenum type);
 		
-		NSObject<EJDrawable> * drawable = (NSObject<EJDrawable> *)JSObjectGetPrivate((JSObjectRef)argv[5]);
-		EJTexture * sourceTexture = drawable.texture;		
+		NSObject<EJDrawable> *drawable = (NSObject<EJDrawable> *)JSObjectGetPrivate((JSObjectRef)argv[5]);
+		EJTexture *sourceTexture = drawable.texture;		
 		
 		// We don't care about internalFormat, format or type params here; the source image will
 		// always be GL_RGBA and loaded as GL_UNSIGNED_BYTE
@@ -1325,7 +1325,7 @@ EJ_BIND_FUNCTION(texImage2D, ctx, argc, argv) {
 			// Needs more processing; accessing .pixels attempts to reload the source image
 			// or uses glReadPixels to get the pixel data from the attached FBO
 			else {
-				GLubyte * pixels = sourceTexture.pixels.mutableBytes;
+				GLubyte *pixels = sourceTexture.pixels.mutableBytes;
 				if( pixels ) {
 					short width = sourceTexture.width;
 					short height = sourceTexture.height;
@@ -1357,7 +1357,7 @@ EJ_BIND_FUNCTION(texImage2D, ctx, argc, argv) {
 			int bytesPerPixel = EJGetBytesPerPixel(type, format);
 			
 			size_t byteLength;
-			void * pixels = JSTypedArrayGetDataPtr(ctx, argv[8], &byteLength);
+			void *pixels = JSTypedArrayGetDataPtr(ctx, argv[8], &byteLength);
 			
 			if( bytesPerPixel && byteLength >= width * height * bytesPerPixel ) {
 				if( unpackFlipY ) {
@@ -1378,7 +1378,7 @@ EJ_BIND_FUNCTION(texImage2D, ctx, argc, argv) {
 		else if( JSValueIsNull(ctx, argv[8]) ) {
 			[targetTexture ensureMutableKeepPixels:NO forTarget:bindTarget];
 			[targetTexture bindToTarget:bindTarget];
-			void * nulled = calloc(width * height, EJGetBytesPerPixel(type, format));
+			void *nulled = calloc(width * height, EJGetBytesPerPixel(type, format));
 			glTexImage2D(target, level, format, width, height, 0, format, type, nulled);
 			free(nulled);
 		}
@@ -1394,7 +1394,7 @@ EJ_BIND_FUNCTION(texImage2D, ctx, argc, argv) {
 	if( targetTexture.textureId && targetTexture.textureId != oldTextureId ) {
 		[targetTexture bindToTarget:bindTarget];
 		
-		NSNumber * key = [NSNumber numberWithInt:targetTexture.textureId];
+		NSNumber *key = [NSNumber numberWithInt:targetTexture.textureId];
 		[textures setObject:[NSValue valueWithPointer:jsTargetTexture] forKey:key];
 	}
 
@@ -1415,7 +1415,7 @@ EJ_BIND_FUNCTION(texSubImage2D, ctx, argc, argv) {
 	EJ_UNPACK_ARGV(GLenum target, GLint level, GLint xoffset, GLint yoffset);
 	
 	
-	EJTexture * targetTexture = NULL;
+	EJTexture *targetTexture = NULL;
 	JSObjectRef jsTargetTexture;
 	GLenum bindTarget;
 	if( target == GL_TEXTURE_2D ) {
@@ -1438,8 +1438,8 @@ EJ_BIND_FUNCTION(texSubImage2D, ctx, argc, argv) {
 	if( argc == 7) {
 		EJ_UNPACK_ARGV_OFFSET(4, GLenum format, GLenum type);
 		
-		NSObject<EJDrawable> * drawable = (NSObject<EJDrawable> *)JSObjectGetPrivate((JSObjectRef)argv[5]);
-		EJTexture * sourceTexture = drawable.texture;		
+		NSObject<EJDrawable> *drawable = (NSObject<EJDrawable> *)JSObjectGetPrivate((JSObjectRef)argv[5]);
+		EJTexture *sourceTexture = drawable.texture;		
 		
 		// We don't care about internalFormat, format or type params here; the source image will
 		// always be GL_RGBA and loaded as GL_UNSIGNED_BYTE
@@ -1449,7 +1449,7 @@ EJ_BIND_FUNCTION(texSubImage2D, ctx, argc, argv) {
 			// Load image pixels, proccess as neccessary, make sure the current texture
 			// is mutable and update
 		
-			GLubyte * pixels = sourceTexture.pixels.mutableBytes;
+			GLubyte *pixels = sourceTexture.pixels.mutableBytes;
 			if( pixels ) {
 				short width = sourceTexture.width;
 				short height = sourceTexture.height;
@@ -1479,7 +1479,7 @@ EJ_BIND_FUNCTION(texSubImage2D, ctx, argc, argv) {
 			int bytesPerPixel = EJGetBytesPerPixel(type, format);
 			
 			size_t byteLength;
-			void * pixels = JSTypedArrayGetDataPtr(ctx, argv[8], &byteLength);
+			void *pixels = JSTypedArrayGetDataPtr(ctx, argv[8], &byteLength);
 			
 			if( bytesPerPixel && byteLength >= width * height * bytesPerPixel ) {
 				if( unpackFlipY ) {
@@ -1499,7 +1499,7 @@ EJ_BIND_FUNCTION(texSubImage2D, ctx, argc, argv) {
 		else if( JSValueIsNull(ctx, argv[8]) ) {
 			[targetTexture ensureMutableKeepPixels:YES forTarget:bindTarget];
 			[targetTexture bindToTarget:bindTarget];
-			void * nulled = calloc(width * height, EJGetBytesPerPixel(type, format));
+			void *nulled = calloc(width * height, EJGetBytesPerPixel(type, format));
 			glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, type, nulled);
 			free(nulled);
 		}
@@ -1515,7 +1515,7 @@ EJ_BIND_FUNCTION(texSubImage2D, ctx, argc, argv) {
 	if( targetTexture.textureId && targetTexture.textureId != oldTextureId ) {
 		[targetTexture bindToTarget:bindTarget];
 		
-		NSNumber * key = [NSNumber numberWithInt:targetTexture.textureId];
+		NSNumber *key = [NSNumber numberWithInt:targetTexture.textureId];
 		[textures setObject:[NSValue valueWithPointer:jsTargetTexture] forKey:key];
 	}
 	
@@ -1527,7 +1527,7 @@ EJ_BIND_FUNCTION(texParameterf, ctx, argc, argv) {
 	
 	ejectaInstance.currentRenderingContext = renderingContext;
 	
-	EJTexture * targetTexture = NULL;
+	EJTexture *targetTexture = NULL;
 	if( target == GL_TEXTURE_2D ) {
 		targetTexture = activeTexture->texture;
 	}
@@ -1545,7 +1545,7 @@ EJ_BIND_FUNCTION(texParameteri, ctx, argc, argv) {
 	
 	ejectaInstance.currentRenderingContext = renderingContext;
 	
-	EJTexture * targetTexture = NULL;
+	EJTexture *targetTexture = NULL;
 	if( target == GL_TEXTURE_2D ) {
 		targetTexture = activeTexture->texture;
 	}
@@ -1585,7 +1585,7 @@ EJ_BIND_FUNCTION(texParameteri, ctx, argc, argv) {
 		if ( argc < 2 ) { return NULL; } \
 		GLuint uniform = [EJBindingWebGLUniformLocation indexFromJSValue:argv[0]]; \
 		GLsizei count; \
-		TYPE * values = JSValueTo##TYPE##Array(ctx, argv[1], LENGTH, &count); \
+		TYPE *values = JSValueTo##TYPE##Array(ctx, argv[1], LENGTH, &count); \
 		if( values ) { \
 			ejectaInstance.currentRenderingContext = renderingContext; \
 			glUniform##NAME(uniform, count, values); \
@@ -1611,7 +1611,7 @@ EJ_BIND_FUNCTION(texParameteri, ctx, argc, argv) {
 		GLuint uniform = [EJBindingWebGLUniformLocation indexFromJSValue:argv[0]]; \
 		GLboolean transpose = JSValueToNumberFast(ctx, argv[1]); \
 		GLsizei count; \
-		TYPE * values = JSValueTo##TYPE##Array(ctx, argv[2], LENGTH, &count); \
+		TYPE *values = JSValueTo##TYPE##Array(ctx, argv[2], LENGTH, &count); \
 		if( values ) { \
 			ejectaInstance.currentRenderingContext = renderingContext; \
 			glUniformMatrix##NAME(uniform, count, transpose, values); \
@@ -1658,7 +1658,7 @@ EJ_BIND_FUNCTION_DIRECT(vertexAttrib4f, glVertexAttrib4f, index, x, y, z, w);
 		if ( argc < 2 ) { return NULL; } \
 		GLuint index = JSValueToNumberFast(ctx, argv[0]); \
 		GLsizei count; \
-		TYPE * values = JSValueTo##TYPE##Array(ctx, argv[1], LENGTH, &count); \
+		TYPE *values = JSValueTo##TYPE##Array(ctx, argv[1], LENGTH, &count); \
 		if( values ) { \
 			ejectaInstance.currentRenderingContext = renderingContext; \
 			glVertexAttrib##NAME(index, values); \

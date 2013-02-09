@@ -3,7 +3,7 @@
 #import "EJPresentable.h"
 
 @interface EJCanvasContext2DScreen : EJCanvasContext2D <EJPresentable> {
-	EAGLView * glview;
+	EAGLView *glview;
 	GLuint colorRenderbuffer;
 	
 	EJScalingMode scalingMode;

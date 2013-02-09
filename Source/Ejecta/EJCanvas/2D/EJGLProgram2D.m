@@ -46,8 +46,8 @@
 }
 
 + (GLint)compileShaderFile:(NSString *)file type:(GLenum)type {
-	NSString * path = [NSString stringWithFormat:@"%@/%@", [[NSBundle mainBundle] resourcePath], file];
-	NSString * source = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil];
+	NSString *path = [NSString stringWithFormat:@"%@/%@", [[NSBundle mainBundle] resourcePath], file];
+	NSString *source = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil];
 	if( !source ) {
 		NSLog(@"Failed to load shader file %@", file);
 		return 0;
@@ -57,7 +57,7 @@
 }
 
 + (GLint)compileShaderSource:(NSString *)source type:(GLenum)type {
-	const GLchar * glsource = (GLchar *)[source UTF8String];
+	const GLchar *glsource = (GLchar *)[source UTF8String];
 	
 	GLint shader = glCreateShader(type);
 	glShaderSource(shader, 1, &glsource, NULL);

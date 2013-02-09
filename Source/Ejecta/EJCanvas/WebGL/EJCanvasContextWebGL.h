@@ -7,7 +7,7 @@
 	GLuint depthRenderBuffer;
 	
 	GLint bufferWidth, bufferHeight;
-	EAGLView * glview;
+	EAGLView *glview;
 	
 	float backingStoreRatio;
 	BOOL useRetinaResolution;

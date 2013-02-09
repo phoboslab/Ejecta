@@ -32,8 +32,8 @@ EJ_BIND_FUNCTION(include, ctx, argc, argv ) {
 EJ_BIND_FUNCTION(loadFont, ctx, argc, argv ) {
 	if( argc < 1 ) { return NULL; }
 
-	NSString * path = JSValueToNSString(ctx, argv[0]);
-	NSString * fullPath = [[EJJavaScriptView sharedView] pathForResource:path];
+	NSString *path = JSValueToNSString(ctx, argv[0]);
+	NSString *fullPath = [[EJJavaScriptView sharedView] pathForResource:path];
 	[EJFont loadFontAtPath:fullPath];
 	return NULL;
 }
@@ -56,13 +56,13 @@ EJ_BIND_FUNCTION(require, ctx, argc, argv ) {
 EJ_BIND_FUNCTION(openURL, ctx, argc, argv ) {
 	if( argc < 1 ) { return NULL; }
 	
-	NSString * url = JSValueToNSString( ctx, argv[0] );
+	NSString *url = JSValueToNSString( ctx, argv[0] );
 	if( argc == 2 ) {
 		[urlToOpen release];
 		urlToOpen = [url retain];
 		
-		NSString * confirm = JSValueToNSString( ctx, argv[1] );
-		UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Open Browser?" message:confirm delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Ok", nil];
+		NSString *confirm = JSValueToNSString( ctx, argv[1] );
+		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Open Browser?" message:confirm delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Ok", nil];
 		alert.tag = kEJCoreAlertViewOpenURL;
 		[alert show];
 		[alert release];
@@ -76,8 +76,8 @@ EJ_BIND_FUNCTION(openURL, ctx, argc, argv ) {
 EJ_BIND_FUNCTION(getText, ctx, argc, argv) {
 	if( argc < 3 ) { return NULL; }
 	
-	NSString * title = JSValueToNSString(ctx, argv[0]);
-	NSString * message = JSValueToNSString(ctx, argv[1]);
+	NSString *title = JSValueToNSString(ctx, argv[0]);
+	NSString *message = JSValueToNSString(ctx, argv[1]);
 	
 	if( getTextCallback ) {
 		JSValueUnprotect(ctx, getTextCallback);
@@ -85,7 +85,7 @@ EJ_BIND_FUNCTION(getText, ctx, argc, argv) {
 	getTextCallback = JSValueToObject(ctx, argv[2], NULL);
 	JSValueProtect(ctx, getTextCallback);
 	
-	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:title message:message delegate:self
+	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title message:message delegate:self
 		cancelButtonTitle:@"Cancel" otherButtonTitles:@"Ok", nil];
 	alert.alertViewStyle = UIAlertViewStylePlainTextInput;
 	alert.tag = kEJCoreAlertViewGetText;
@@ -104,7 +104,7 @@ EJ_BIND_FUNCTION(getText, ctx, argc, argv) {
 	}
 	
 	else if( alertView.tag == kEJCoreAlertViewGetText ) {
-		NSString * text = @"";
+		NSString *text = @"";
 		if( index == 1 ) {
 			text = [[alertView textFieldAtIndex:0] text];
 		}

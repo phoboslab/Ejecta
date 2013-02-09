@@ -124,7 +124,7 @@ extern JSValueRef ej_global_undefined;
 
 
 #define EJ_BIND_ENUM(NAME, TARGET, ...) \
-	static const char * _##NAME##EnumNames[] = {__VA_ARGS__}; \
+	static const char *_##NAME##EnumNames[] = {__VA_ARGS__}; \
 	EJ_BIND_GET(NAME, ctx) { \
 		JSStringRef src = JSStringCreateWithUTF8CString( _##NAME##EnumNames[TARGET] ); \
 		JSValueRef ret = JSValueMakeString(ctx, src); \
@@ -134,7 +134,7 @@ extern JSValueRef ej_global_undefined;
 	\
 	EJ_BIND_SET(NAME, ctx, value) { \
 		JSStringRef _str = JSValueToStringCopy(ctx, value, NULL); \
-		const JSChar * _strptr = JSStringGetCharactersPtr( _str ); \
+		const JSChar *_strptr = JSStringGetCharactersPtr( _str ); \
 		int _length = JSStringGetLength(_str)-1; \
 		const char ** _names = _##NAME##EnumNames; \
 		int _target; \
@@ -147,7 +147,7 @@ extern JSValueRef ej_global_undefined;
 #define _EJ_BIND_ENUM_COMPARE(INDEX, NAME) \
 	if( _length == sizeof(NAME)-2 && JSStrIsEqualToStr( _strptr, _names[INDEX], _length) ) { _target = INDEX; }
 	
-static inline bool JSStrIsEqualToStr( const JSChar * s1, const char * s2, int length ) {
+static inline bool JSStrIsEqualToStr( const JSChar *s1, const char *s2, int length ) {
 	for( int i = 0; i < length && *s1 == *s2; i++ ) {
 		s1++;
 		s2++;
