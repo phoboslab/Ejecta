@@ -1,13 +1,40 @@
 #import "EJJavaScriptView.h"
 #import "EJTimer.h"
 #import "EJBindingBase.h"
-#import "EJUtils.h"
 #import <objc/runtime.h>
 
-// ---------------------------------------------------------------------------------
-// Ejecta Main Class implementation - this creates the JavaScript Context and loads
-// the initial JavaScript source files
 
+
+#pragma mark -
+#pragma mark Ejecta view Implementation
+
+JSValueRef _EJGlobalUndefined;
+JSClassRef _EJGlobalConstructorClass;
+
+JSValueRef EJGetNativeClass(JSContextRef ctx, JSObjectRef object, JSStringRef propertyNameJS, JSValueRef* exception) {
+	CFStringRef className = JSStringCopyCFString( kCFAllocatorDefault, propertyNameJS );
+	
+	JSObjectRef obj = NULL;
+	NSString *fullClassName = [NSString stringWithFormat:@"EJBinding%@", className];
+	id class = NSClassFromString(fullClassName);
+	if( class ) {
+		obj = JSObjectMake( ctx, _EJGlobalConstructorClass, (void *)class );
+	}
+	
+	CFRelease(className);
+	return obj ? obj : _EJGlobalUndefined;
+}
+
+JSObjectRef EJCallAsConstructor(JSContextRef ctx, JSObjectRef constructor, size_t argc, const JSValueRef argv[], JSValueRef* exception) {
+	Class class = (Class)JSObjectGetPrivate(constructor);
+	EJBindingBase *instance = [(EJBindingBase *)[class alloc] initWithContext:ctx argc:argc argv:argv];
+	return [class createJSObjectWithContext:ctx instance:instance];
+}
+
+
+
+#pragma mark -
+#pragma mark Ejecta view Implementation
 
 @implementation EJJavaScriptView
 
@@ -74,17 +101,17 @@ static EJJavaScriptView *_sharedView = nil;
 		// Create the global JS context and attach the 'Ejecta' object
 		
 		JSClassDefinition constructorClassDef = kJSClassDefinitionEmpty;
-		constructorClassDef.callAsConstructor = ej_callAsConstructor;
-		ej_constructorClass = JSClassCreate(&constructorClassDef);
+		constructorClassDef.callAsConstructor = EJCallAsConstructor;
+		_EJGlobalConstructorClass = JSClassCreate(&constructorClassDef);
 		
 		JSClassDefinition globalClassDef = kJSClassDefinitionEmpty;
-		globalClassDef.getProperty = ej_getNativeClass;
+		globalClassDef.getProperty = EJGetNativeClass;
 		JSClassRef globalClass = JSClassCreate(&globalClassDef);
 		
 		
 		jsGlobalContext = JSGlobalContextCreate(NULL);
-		ej_global_undefined = JSValueMakeUndefined(jsGlobalContext);
-		JSValueProtect(jsGlobalContext, ej_global_undefined);
+		_EJGlobalUndefined = JSValueMakeUndefined(jsGlobalContext);
+		JSValueProtect(jsGlobalContext, _EJGlobalUndefined);
 		JSObjectRef globalObject = JSContextGetGlobalObject(jsGlobalContext);
 		
 		JSObjectRef iosObject = JSObjectMake(jsGlobalContext, globalClass, NULL );
@@ -99,8 +126,36 @@ static EJJavaScriptView *_sharedView = nil;
 		glSharegroup = glContext2D.sharegroup;
 		glCurrentContext = glContext2D;
 		[EAGLContext setCurrentContext:glCurrentContext];
+		
+//		[self loadScriptAtPath:EJECTA_BOOT_JS];
 	}
 	return self;
+}
+
+- (void)dealloc {
+	self.pausesAutomaticallyWhenBackgrounded = false;
+	JSGlobalContextRelease(jsGlobalContext);
+	
+	[currentRenderingContext release];
+	[screenRenderingContext release];
+	
+	[touchDelegate release];
+	[lifecycleDelegate release];
+	[opQueue release];
+	
+	[displayLink invalidate];
+	[displayLink release];
+	[timers release];
+	
+	[textureCache release];
+	[openALManager release];
+	[glProgram2DFlat release];
+	[glProgram2DTexture release];
+	[glProgram2DAlphaTexture release];
+	[glProgram2DPattern release];
+	[glProgram2DRadialGradient release];
+	[glContext2D release];
+	[super dealloc];
 }
 
 - (void)setPausesAutomaticallyWhenBackgrounded:(BOOL)pauses {
@@ -142,12 +197,6 @@ static EJJavaScriptView *_sharedView = nil;
 //TODO: should not couple to app folder
 - (NSString *)pathForResource:(NSString *)path {
 	return [NSString stringWithFormat:@"%@/" EJECTA_APP_FOLDER "%@", [[NSBundle mainBundle] resourcePath], path];
-}
-
-- (void)loadDefaultScripts {
-	// Load the initial JavaScript source files
-	[self loadScriptAtPath:EJECTA_BOOT_JS];
-	[self loadScriptAtPath:EJECTA_MAIN_JS];
 }
 
 - (void)loadScriptAtPath:(NSString *)path {
@@ -271,6 +320,24 @@ static EJJavaScriptView *_sharedView = nil;
 	JSGarbageCollect(jsGlobalContext);
 }
 
+- (void)setCurrentRenderingContext:(EJCanvasContext *)renderingContext {
+	if( renderingContext != currentRenderingContext ) {
+		[currentRenderingContext flushBuffers];
+		[currentRenderingContext release];
+		
+		// Switch GL Context if different
+		if( renderingContext && renderingContext.glContext != glCurrentContext ) {
+			glFlush();
+			glCurrentContext = renderingContext.glContext;
+			[EAGLContext setCurrentContext:glCurrentContext];
+		}
+		
+		[renderingContext prepare];
+		currentRenderingContext = [renderingContext retain];
+	}
+}
+
+
 #pragma mark -
 #pragma mark Touch handlers
 
@@ -322,6 +389,10 @@ static EJJavaScriptView *_sharedView = nil;
 	return NULL;
 }
 
+
+#pragma mark
+#pragma mark Cached Objects
+
 #define EJ_GL_PROGRAM_GETTER(TYPE, NAME) \
 	- (TYPE *)glProgram2D##NAME { \
 		if( !glProgram2D##NAME ) { \
@@ -351,23 +422,6 @@ EJ_GL_PROGRAM_GETTER(EJGLProgram2DRadialGradient, RadialGradient);
 		textureCache = (NSMutableDictionary *)CFDictionaryCreateMutable(NULL, 8, &kCFCopyStringDictionaryKeyCallBacks, NULL);
 	}
 	return textureCache;
-}
-
-- (void)setCurrentRenderingContext:(EJCanvasContext *)renderingContext {
-	if( renderingContext != currentRenderingContext ) {
-		[currentRenderingContext flushBuffers];
-		currentRenderingContext = nil;
-		
-		// Switch GL Context if different
-		if( renderingContext && renderingContext.glContext != glCurrentContext ) {
-			glFlush();
-			glCurrentContext = renderingContext.glContext;
-			[EAGLContext setCurrentContext:glCurrentContext];
-		}
-		
-		[renderingContext prepare];
-		currentRenderingContext = renderingContext;
-	}
 }
 
 @end

@@ -8,16 +8,8 @@
 #import "EJGLProgram2DRadialGradient.h"
 #import "EJOpenALManager.h"
 
-#import "EJUtils.h"
-
-#define EJECTA_VERSION @"1.2"
-#define EJECTA_APP_FOLDER @"App/"
-
-#define EJECTA_BOOT_JS @"../Ejecta.js"
-#define EJECTA_MAIN_JS @"index.js"
-
 @interface EJAppViewController : UIViewController {
-
+	BOOL landscapeMode;
 }
 
 + (EJAppViewController *)instance;

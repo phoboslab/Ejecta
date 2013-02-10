@@ -3,7 +3,7 @@
 
 #include <objc/message.h>
 
-extern JSValueRef ej_global_undefined;
+extern JSValueRef _EJGlobalUndefined;
 
 // (Not sure if clever hack or really stupid...)
 
@@ -43,7 +43,7 @@ extern JSValueRef ej_global_undefined;
 	) { \
 		id instance = (id)JSObjectGetPrivate(object); \
 		JSValueRef ret = (JSValueRef)objc_msgSend(instance, @selector(_func_##NAME:argc:argv:), ctx, argc, argv); \
-		return ret ? ret : ej_global_undefined; \
+		return ret ? ret : _EJGlobalUndefined; \
 	} \
 	__EJ_GET_POINTER_TO(_func_##NAME)\
 	\
@@ -113,7 +113,7 @@ extern JSValueRef ej_global_undefined;
 			NSLog(@"Warning: method " @ #NAME @" is not yet implemented!"); \
 			didShowWarning = true; \
 		} \
-		return ej_global_undefined; \
+		return _EJGlobalUndefined; \
 	} \
 	__EJ_GET_POINTER_TO(_func_##NAME)
 

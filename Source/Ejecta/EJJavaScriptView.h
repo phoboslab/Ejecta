@@ -8,6 +8,19 @@
 #import "EJGLProgram2DRadialGradient.h"
 #import "EJOpenALManager.h"
 
+
+#define EJECTA_VERSION @"1.2"
+#define EJECTA_APP_FOLDER @"App/"
+
+#define EJECTA_BOOT_JS @"../Ejecta.js"
+
+
+JSValueRef _EJGlobalUndefined;
+JSClassRef _EJGlobalConstructorClass;
+JSValueRef EJGetNativeClass(JSContextRef ctx, JSObjectRef object, JSStringRef propertyNameJS, JSValueRef* exception);
+JSObjectRef EJCallAsConstructor(JSContextRef ctx, JSObjectRef constructor, size_t argc, const JSValueRef argv[], JSValueRef* exception);
+
+
 @protocol EJTouchDelegate
 - (void)triggerEvent:(NSString *)name all:(NSSet *)all changed:(NSSet *)changed remaining:(NSSet *)remaining;
 @end
@@ -41,7 +54,7 @@
 	EAGLSharegroup *glSharegroup;
 	EAGLContext *glCurrentContext;
 	
-	CADisplayLink * displayLink;
+	CADisplayLink *displayLink;
 
 	NSObject<EJLifecycleDelegate> *lifecycleDelegate;
 	NSObject<EJTouchDelegate> *touchDelegate;
@@ -57,27 +70,28 @@
 @property (nonatomic, assign, getter = isPaused) BOOL isPaused; // Pauses drawing/updating of the JSView
 @property (nonatomic, assign) float internalScaling;
 
-@property (nonatomic, assign, readonly) JSGlobalContextRef jsGlobalContext;
+@property (nonatomic, readonly) JSGlobalContextRef jsGlobalContext;
 
-@property (nonatomic, retain, readonly) NSMutableDictionary *textureCache;
-@property (nonatomic, retain, readonly) EJOpenALManager *openALManager;
-@property (nonatomic, retain, readonly) EJGLProgram2D *glProgram2DFlat;
-@property (nonatomic, retain, readonly) EJGLProgram2D *glProgram2DTexture;
-@property (nonatomic, retain, readonly) EJGLProgram2D *glProgram2DAlphaTexture;
-@property (nonatomic, retain, readonly) EJGLProgram2D *glProgram2DPattern;
-@property (nonatomic, retain, readonly) EJGLProgram2DRadialGradient *glProgram2DRadialGradient;
-@property (nonatomic, assign) EJCanvasContext *currentRenderingContext;
-@property (nonatomic, retain, readonly) EAGLContext *glContext2D;
-@property (nonatomic, retain, readonly) EAGLSharegroup *glSharegroup;
-@property (nonatomic, retain, readonly) EAGLContext *glCurrentContext;
+@property (nonatomic, readonly) NSMutableDictionary *textureCache;
+@property (nonatomic, readonly) EJOpenALManager *openALManager;
+
+@property (nonatomic, readonly) EJGLProgram2D *glProgram2DFlat;
+@property (nonatomic, readonly) EJGLProgram2D *glProgram2DTexture;
+@property (nonatomic, readonly) EJGLProgram2D *glProgram2DAlphaTexture;
+@property (nonatomic, readonly) EJGLProgram2D *glProgram2DPattern;
+@property (nonatomic, readonly) EJGLProgram2DRadialGradient *glProgram2DRadialGradient;
+@property (nonatomic, readonly) EAGLContext *glContext2D;
+@property (nonatomic, readonly) EAGLSharegroup *glSharegroup;
+@property (nonatomic, readonly) EAGLContext *glCurrentContext;
 
 @property (nonatomic, retain) NSObject<EJLifecycleDelegate> *lifecycleDelegate;
 @property (nonatomic, retain) NSObject<EJTouchDelegate> *touchDelegate;
-@property (nonatomic, assign) EJCanvasContext<EJPresentable> *screenRenderingContext;
+
+@property (nonatomic, retain) EJCanvasContext *currentRenderingContext;
+@property (nonatomic, retain) EJCanvasContext<EJPresentable> *screenRenderingContext;
 
 @property (nonatomic, retain) NSOperationQueue *opQueue;
 
-- (void)loadDefaultScripts;
 - (void)loadScriptAtPath:(NSString *)path;
 
 - (void)clearCaches;

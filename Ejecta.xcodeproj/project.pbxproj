@@ -11,7 +11,6 @@
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765FC0DF74451002DB57D /* CoreGraphics.framework */; };
 		3EF00C5916C29360004599A4 /* EJJavaScriptView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EF00C5816C29360004599A4 /* EJJavaScriptView.m */; };
-		3EF00C6116C29954004599A4 /* EJUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EF00C6016C29954004599A4 /* EJUtils.m */; };
 		5B7B76761619DB9700691910 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B7B76751619DB9700691910 /* CoreText.framework */; };
 		B6074FF315F8E41700D987F9 /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6074FF215F8E41600D987F9 /* GameKit.framework */; };
 		B607AB67132EA6C300D7C3EA /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B607AB66132EA6C300D7C3EA /* OpenAL.framework */; };
@@ -98,8 +97,6 @@
 		288765FC0DF74451002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		3EF00C5716C29360004599A4 /* EJJavaScriptView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJJavaScriptView.h; sourceTree = "<group>"; };
 		3EF00C5816C29360004599A4 /* EJJavaScriptView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJJavaScriptView.m; sourceTree = "<group>"; };
-		3EF00C5F16C29954004599A4 /* EJUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EJUtils.h; path = Source/Ejecta/EJUtils.h; sourceTree = SOURCE_ROOT; };
-		3EF00C6016C29954004599A4 /* EJUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EJUtils.m; path = Source/Ejecta/EJUtils.m; sourceTree = SOURCE_ROOT; };
 		5B7B76751619DB9700691910 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
 		B6074FF215F8E41600D987F9 /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
 		B607AB66132EA6C300D7C3EA /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
@@ -342,8 +339,6 @@
 				B64CE612166682700087CF94 /* EJAudio */,
 				B64CE624166682700087CF94 /* EJCanvas */,
 				B64CE642166682700087CF94 /* EJUtils */,
-				3EF00C5F16C29954004599A4 /* EJUtils.h */,
-				3EF00C6016C29954004599A4 /* EJUtils.m */,
 				B64CE610166682700087CF94 /* EJAppViewController.h */,
 				B64CE611166682700087CF94 /* EJAppViewController.m */,
 				3EF00C5716C29360004599A4 /* EJJavaScriptView.h */,
@@ -659,7 +654,6 @@
 				B6A0F4AF16A9D86100477789 /* EJCanvasGradient.m in Sources */,
 				B6A0F4B416AB0B4600477789 /* EJBindingCanvasGradient.m in Sources */,
 				3EF00C5916C29360004599A4 /* EJJavaScriptView.m in Sources */,
-				3EF00C6116C29954004599A4 /* EJUtils.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

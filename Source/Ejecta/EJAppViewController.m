@@ -8,6 +8,8 @@
 
 @implementation EJAppViewController
 
+@synthesize landscapeMode;
+
 static EJAppViewController *_ejectaInstance = NULL;
 
 + (EJAppViewController *)instance {
@@ -20,9 +22,10 @@ static EJAppViewController *_ejectaInstance = NULL;
 
 - (id)init{
 	if( self = [super init] ) {
-		_landscapeMode = [[[NSBundle mainBundle] infoDictionary][@"UIInterfaceOrientation"] hasPrefix:@"UIInterfaceOrientationLandscape"];
+		landscapeMode = [[[NSBundle mainBundle] infoDictionary][@"UIInterfaceOrientation"] hasPrefix:@"UIInterfaceOrientationLandscape"];
 		_ejectaInstance = self;
-		[[EJJavaScriptView sharedView] loadDefaultScripts];
+		[[EJJavaScriptView sharedView] loadScriptAtPath:@"../Ejecta.js"];
+		[[EJJavaScriptView sharedView] loadScriptAtPath:@"index.js"];
 	}
 	return self;
 }
