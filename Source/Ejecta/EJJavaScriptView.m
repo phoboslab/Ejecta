@@ -8,27 +8,33 @@
 // Ejecta Main Class implementation - this creates the JavaScript Context and loads
 // the initial JavaScript source files
 
-@interface EJJavaScriptView ()
-
-@property (nonatomic, strong) EJTimerCollection *timers;
-@property (nonatomic, strong) CADisplayLink *displayLink;
-
-@property (nonatomic, assign, readwrite) JSGlobalContextRef jsGlobalContext;
-
-@property (nonatomic, assign) NSMutableDictionary *textureCache;
-@property (nonatomic, strong) EJOpenALManager *openALManager;
-@property (nonatomic, strong) EJGLProgram2D *glProgram2DFlat;
-@property (nonatomic, strong) EJGLProgram2D *glProgram2DTexture;
-@property (nonatomic, strong) EJGLProgram2D *glProgram2DAlphaTexture;
-@property (nonatomic, strong) EJGLProgram2D *glProgram2DPattern;
-@property (nonatomic, strong) EJGLProgram2DRadialGradient *glProgram2DRadialGradient;
-@property (nonatomic, strong) EAGLContext *glContext2D;
-@property (nonatomic, strong) EAGLSharegroup *glSharegroup;
-@property (nonatomic, strong) EAGLContext *glCurrentContext;
-
-@end
 
 @implementation EJJavaScriptView
+
+@synthesize pausesAutomaticallyWhenBackgrounded;
+@synthesize isPaused;
+@synthesize internalScaling;
+@synthesize jsGlobalContext;
+
+@synthesize openALManager;
+@synthesize glProgram2DFlat;
+@synthesize glProgram2DTexture;
+@synthesize glProgram2DAlphaTexture;
+@synthesize glProgram2DPattern;
+@synthesize glProgram2DRadialGradient;
+@synthesize currentRenderingContext;
+@synthesize glContext2D;
+@synthesize glSharegroup;
+@synthesize glCurrentContext;
+
+@synthesize lifecycleDelegate;
+@synthesize touchDelegate;
+@synthesize screenRenderingContext;
+
+@synthesize opQueue;
+
+
+
 static EJJavaScriptView *_sharedView = nil;
 
 + (EJJavaScriptView*)sharedView {
@@ -49,23 +55,21 @@ static EJJavaScriptView *_sharedView = nil;
 }
 
 - (id)initWithFrame:(CGRect)frame {
-	self = [super initWithFrame:frame];
-	if (self) {
-		
-		self.isPaused = false;
-		self.internalScaling = 1;
+	if( self = [super initWithFrame:frame] ) {		
+		isPaused = false;
+		internalScaling = 1;
 		
 		self.pausesAutomaticallyWhenBackgrounded = YES;
 		
 		// Limit all background operations (image & sound loading) to one thread
-		self.opQueue = [[NSOperationQueue alloc] init];
-		self.opQueue.maxConcurrentOperationCount = 1;
+		opQueue = [[NSOperationQueue alloc] init];
+		opQueue.maxConcurrentOperationCount = 1;
 		
-		self.timers = [[EJTimerCollection alloc] init];
+		timers = [[EJTimerCollection alloc] init];
 		
-		self.displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(run:)];
-		[self.displayLink setFrameInterval:1];
-		[self.displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+		displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(run:)];
+		[displayLink setFrameInterval:1];
+		[displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 		
 		// Create the global JS context and attach the 'Ejecta' object
 		
@@ -78,35 +82,35 @@ static EJJavaScriptView *_sharedView = nil;
 		JSClassRef globalClass = JSClassCreate(&globalClassDef);
 		
 		
-		self.jsGlobalContext = JSGlobalContextCreate(NULL);
-		ej_global_undefined = JSValueMakeUndefined(self.jsGlobalContext);
-		JSValueProtect(self.jsGlobalContext, ej_global_undefined);
-		JSObjectRef globalObject = JSContextGetGlobalObject(self.jsGlobalContext);
+		jsGlobalContext = JSGlobalContextCreate(NULL);
+		ej_global_undefined = JSValueMakeUndefined(jsGlobalContext);
+		JSValueProtect(jsGlobalContext, ej_global_undefined);
+		JSObjectRef globalObject = JSContextGetGlobalObject(jsGlobalContext);
 		
-		JSObjectRef iosObject = JSObjectMake(self.jsGlobalContext, globalClass, NULL );
+		JSObjectRef iosObject = JSObjectMake(jsGlobalContext, globalClass, NULL );
 		JSObjectSetProperty(
-			self.jsGlobalContext, globalObject,
+			jsGlobalContext, globalObject,
 			JSStringCreateWithUTF8CString("Ejecta"), iosObject,
 			kJSPropertyAttributeDontDelete | kJSPropertyAttributeReadOnly, NULL
 		);
 		
 		// Create the OpenGL context for Canvas2D
-		self.glContext2D = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
-		self.glSharegroup = self.glContext2D.sharegroup;
-		self.glCurrentContext = self.glContext2D;
-		[EAGLContext setCurrentContext:self.glCurrentContext];
+		glContext2D = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
+		glSharegroup = glContext2D.sharegroup;
+		glCurrentContext = glContext2D;
+		[EAGLContext setCurrentContext:glCurrentContext];
 	}
 	return self;
 }
 
-- (void)setPausesAutomaticallyWhenBackgrounded:(BOOL)pausesAutomaticallyWhenBackgrounded {
+- (void)setPausesAutomaticallyWhenBackgrounded:(BOOL)pauses {
 	NSArray *pauseN = @[UIApplicationWillResignActiveNotification,
 		UIApplicationDidEnterBackgroundNotification,
 		UIApplicationWillTerminateNotification];
 	NSArray *resumeN = @[UIApplicationWillEnterForegroundNotification,
 		UIApplicationDidBecomeActiveNotification];
 	
-	if (pausesAutomaticallyWhenBackgrounded) {
+	if (pauses) {
 		[self observeKeyPaths:pauseN selector:@selector(pause)];
 		[self observeKeyPaths:resumeN selector:@selector(resume)];
 	} 
@@ -114,7 +118,7 @@ static EJJavaScriptView *_sharedView = nil;
 		[self removeObserver:self forKeyPaths:pauseN];
 		[self removeObserver:self forKeyPaths:resumeN];
 	}
-	_pausesAutomaticallyWhenBackgrounded = pausesAutomaticallyWhenBackgrounded;
+	pausesAutomaticallyWhenBackgrounded = pauses;
 }
 
 - (void)removeObserver:(id)observer forKeyPaths:(NSArray*)keyPaths {
@@ -130,6 +134,7 @@ static EJJavaScriptView *_sharedView = nil;
 		[nc addObserver:self selector:selector name:name object:nil];
 	}
 }
+
 
 #pragma mark -
 #pragma mark Script loading and execution
@@ -154,12 +159,12 @@ static EJJavaScriptView *_sharedView = nil;
 	}
 	
 	NSLog(@"Loading Script: %@", path );
-	JSStringRef scriptJS = JSStringCreateWithCFString((__bridge CFStringRef)script);
-	JSStringRef pathJS = JSStringCreateWithCFString((__bridge CFStringRef)path);
+	JSStringRef scriptJS = JSStringCreateWithCFString((CFStringRef)script);
+	JSStringRef pathJS = JSStringCreateWithCFString((CFStringRef)path);
 	
 	JSValueRef exception = NULL;
-	JSEvaluateScript(self.jsGlobalContext, scriptJS, NULL, pathJS, 0, &exception );
-	[self logException:exception ctx:self.jsGlobalContext];
+	JSEvaluateScript(jsGlobalContext, scriptJS, NULL, pathJS, 0, &exception );
+	[self logException:exception ctx:jsGlobalContext];
 	
 	JSStringRelease( scriptJS );
 	JSStringRelease( pathJS );
@@ -176,15 +181,15 @@ static EJJavaScriptView *_sharedView = nil;
 	
 	NSLog(@"Loading Module: %@", moduleId );
 	
-	JSStringRef scriptJS = JSStringCreateWithCFString((__bridge CFStringRef)script);
-	JSStringRef pathJS = JSStringCreateWithCFString((__bridge CFStringRef)path);
+	JSStringRef scriptJS = JSStringCreateWithCFString((CFStringRef)script);
+	JSStringRef pathJS = JSStringCreateWithCFString((CFStringRef)path);
 	JSStringRef parameterNames[] = {
 		JSStringCreateWithUTF8CString("module"),
 		JSStringCreateWithUTF8CString("exports"),
 	};
 	
 	JSValueRef exception = NULL;
-	JSObjectRef func = JSObjectMakeFunction(self.jsGlobalContext, NULL, 2, parameterNames, scriptJS, pathJS, 0, &exception );
+	JSObjectRef func = JSObjectMakeFunction(jsGlobalContext, NULL, 2, parameterNames, scriptJS, pathJS, 0, &exception );
 	
 	JSStringRelease( scriptJS );
 	JSStringRelease( pathJS );
@@ -192,7 +197,7 @@ static EJJavaScriptView *_sharedView = nil;
 	JSStringRelease(parameterNames[1]);
 	
 	if( exception ) {
-		[self logException:exception ctx:self.jsGlobalContext];
+		[self logException:exception ctx:jsGlobalContext];
 		return NULL;
 	}
 	
@@ -202,8 +207,8 @@ static EJJavaScriptView *_sharedView = nil;
 
 - (JSValueRef)invokeCallback:(JSObjectRef)callback thisObject:(JSObjectRef)thisObject argc:(size_t)argc argv:(const JSValueRef [])argv {
 	JSValueRef exception = NULL;
-	JSValueRef result = JSObjectCallAsFunction(self.jsGlobalContext, callback, thisObject, argc, argv, &exception );
-	[self logException:exception ctx:self.jsGlobalContext];
+	JSValueRef result = JSObjectCallAsFunction(jsGlobalContext, callback, thisObject, argc, argv, &exception );
+	[self logException:exception ctx:jsGlobalContext];
 	return result;
 }
 
@@ -228,55 +233,56 @@ static EJJavaScriptView *_sharedView = nil;
 	JSStringRelease( jsFilePropertyName );
 }
 
+
 #pragma mark -
 #pragma mark Run loop
 
 - (void)run:(CADisplayLink *)sender {
-	if(self.isPaused) { return; }
+	if(isPaused) { return; }
 	
 	// Check all timers
-	[self.timers update];
+	[timers update];
 	
 	// Redraw the canvas
-	self.currentRenderingContext = self.screenRenderingContext;
-	[self.screenRenderingContext present];
+	self.currentRenderingContext = screenRenderingContext;
+	[screenRenderingContext present];
 }
 
 
 - (void)pause {
-	if(self.isPaused) { return; }
+	if( isPaused ) { return; }
 	
-	[self.lifecycleDelegate pause];
-	[self.displayLink removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-	[self.screenRenderingContext finish];
-	self.isPaused = true;
+	[lifecycleDelegate pause];
+	[displayLink removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+	[screenRenderingContext finish];
+	isPaused = true;
 }
 
 - (void)resume {
-	if( !self.isPaused ) { return; }
+	if( !isPaused ) { return; }
 	
-	[self.lifecycleDelegate resume];
-	[EAGLContext setCurrentContext:self.glCurrentContext];
-	[self.displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-	self.isPaused = false;
+	[lifecycleDelegate resume];
+	[EAGLContext setCurrentContext:glCurrentContext];
+	[displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+	isPaused = false;
 }
 
 - (void)clearCaches {
-	JSGarbageCollect(self.jsGlobalContext);
+	JSGarbageCollect(jsGlobalContext);
 }
 
 #pragma mark -
 #pragma mark Touch handlers
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-	[self.touchDelegate triggerEvent:@"touchstart" all:event.allTouches changed:touches remaining:event.allTouches];
+	[touchDelegate triggerEvent:@"touchstart" all:event.allTouches changed:touches remaining:event.allTouches];
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
 	NSMutableSet *remaining = [event.allTouches mutableCopy];
 	[remaining minusSet:touches];
 	
-	[self.touchDelegate triggerEvent:@"touchend" all:event.allTouches changed:touches remaining:remaining];
+	[touchDelegate triggerEvent:@"touchend" all:event.allTouches changed:touches remaining:remaining];
 }
 
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -284,15 +290,16 @@ static EJJavaScriptView *_sharedView = nil;
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-	[self.touchDelegate triggerEvent:@"touchmove" all:event.allTouches changed:touches remaining:event.allTouches];
+	[touchDelegate triggerEvent:@"touchmove" all:event.allTouches changed:touches remaining:event.allTouches];
 }
+
 
 //TODO: Does this belong in this class?
 #pragma mark
 #pragma mark Timers
 
 - (JSValueRef)createTimer:(JSContextRef)ctxp argc:(size_t)argc argv:(const JSValueRef [])argv repeat:(BOOL)repeat {
-	if( argc != 2 || !JSValueIsObject(ctxp, argv[0]) || !JSValueIsNumber(self.jsGlobalContext, argv[1]) ) {
+	if( argc != 2 || !JSValueIsObject(ctxp, argv[0]) || !JSValueIsNumber(jsGlobalContext, argv[1]) ) {
 		return NULL;
 	}
 	
@@ -304,23 +311,23 @@ static EJJavaScriptView *_sharedView = nil;
 		interval = 0;
 	}
 	
-	int timerId = [self.timers scheduleCallback:func interval:interval repeat:repeat];
+	int timerId = [timers scheduleCallback:func interval:interval repeat:repeat];
 	return JSValueMakeNumber( ctxp, timerId );
 }
 
 - (JSValueRef)deleteTimer:(JSContextRef)ctxp argc:(size_t)argc argv:(const JSValueRef [])argv {
 	if( argc != 1 || !JSValueIsNumber(ctxp, argv[0]) ) return NULL;
 	
-	[self.timers cancelId:JSValueToNumberFast(ctxp, argv[0])];
+	[timers cancelId:JSValueToNumberFast(ctxp, argv[0])];
 	return NULL;
 }
 
 #define EJ_GL_PROGRAM_GETTER(TYPE, NAME) \
 	- (TYPE *)glProgram2D##NAME { \
-		if( !_glProgram2D##NAME ) { \
-			_glProgram2D##NAME = [[TYPE alloc] initWithVertexShader:@"Vertex.vsh" fragmentShader: @ #NAME @".fsh"]; \
+		if( !glProgram2D##NAME ) { \
+			glProgram2D##NAME = [[TYPE alloc] initWithVertexShader:@"Vertex.vsh" fragmentShader: @ #NAME @".fsh"]; \
 		} \
-	return _glProgram2D##NAME; \
+	return glProgram2D##NAME; \
 	}
 
 EJ_GL_PROGRAM_GETTER(EJGLProgram2D, Flat);
@@ -332,34 +339,34 @@ EJ_GL_PROGRAM_GETTER(EJGLProgram2DRadialGradient, RadialGradient);
 #undef EJ_GL_PROGRAM_GETTER
 
 - (EJOpenALManager *)openALManager {
-	if( !_openALManager ) {
-		self.openALManager = [[EJOpenALManager alloc] init];
+	if( !openALManager ) {
+		openALManager = [[EJOpenALManager alloc] init];
 	}
-	return _openALManager;
+	return openALManager;
 }
 
 - (NSMutableDictionary *)textureCache {
-	if(!_textureCache) {
+	if( !textureCache ) {
 		// Create a non-retaining Dictionary to hold the cached textures
-		_textureCache = (NSMutableDictionary*)CFBridgingRelease(CFDictionaryCreateMutable(NULL, 8, &kCFCopyStringDictionaryKeyCallBacks, NULL));
+		textureCache = (NSMutableDictionary *)CFDictionaryCreateMutable(NULL, 8, &kCFCopyStringDictionaryKeyCallBacks, NULL);
 	}
-	return _textureCache;
+	return textureCache;
 }
 
 - (void)setCurrentRenderingContext:(EJCanvasContext *)renderingContext {
-	if( renderingContext != self.currentRenderingContext ) {
-		[self.currentRenderingContext flushBuffers];
-		_currentRenderingContext = nil;
+	if( renderingContext != currentRenderingContext ) {
+		[currentRenderingContext flushBuffers];
+		currentRenderingContext = nil;
 		
 		// Switch GL Context if different
-		if( renderingContext && renderingContext.glContext != self.glCurrentContext ) {
+		if( renderingContext && renderingContext.glContext != glCurrentContext ) {
 			glFlush();
-			self.glCurrentContext = renderingContext.glContext;
-			[EAGLContext setCurrentContext:self.glCurrentContext];
+			glCurrentContext = renderingContext.glContext;
+			[EAGLContext setCurrentContext:glCurrentContext];
 		}
 		
 		[renderingContext prepare];
-		_currentRenderingContext = renderingContext;
+		currentRenderingContext = renderingContext;
 	}
 }
 

@@ -9,10 +9,11 @@
 #pragma mark Application lifecycle
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    //Optionally set the idle timer disabled, this prevents the device from sleep when not being interacted with by touch. ie. games with motion control.
+    // Optionally set the idle timer disabled, this prevents the device from sleep when
+	// not being interacted with by touch. ie. games with motion control.
 	[application setIdleTimerDisabled:YES];
-    self.ejApp = [EJAppViewController instance];
-    window.rootViewController = self.ejApp;
+    ejApp = [EJAppViewController instance];
+    window.rootViewController = ejApp;
     return YES;
 }
 
@@ -20,7 +21,7 @@
 #pragma mark Memory management
 
 - (void)dealloc {
-	[self.ejApp release];
+	[ejApp release];
     [super dealloc];
 }
 
