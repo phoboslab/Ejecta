@@ -19,7 +19,7 @@
 	[GKAchievement loadAchievementsWithCompletionHandler:^(NSArray *loadedAchievements, NSError *error) {
 		if( !error ) {
 			for (GKAchievement* achievement in loadedAchievements) {
-				[achievements setObject:achievement forKey:achievement.identifier];
+				achievements[achievement.identifier] = achievement;
 			}
 		}
 	}];
@@ -52,7 +52,7 @@ EJ_BIND_FUNCTION( authenticate, ctx, argc, argv ) {
 			NSLog(@"GameKit: Auth failed: %@", error );
 		}
 		
-		[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:authed] forKey:kEJBindingGameCenterAutoAuth];
+		[[NSUserDefaults standardUserDefaults] setObject:@(authed) forKey:kEJBindingGameCenterAutoAuth];
 		[[NSUserDefaults standardUserDefaults] synchronize];
 		
 		if( callback ) {
@@ -127,7 +127,7 @@ EJ_BIND_FUNCTION( showLeaderboard, ctx, argc, argv ) {
 {
 	if( !authed ) { NSLog(@"GameKit Error: Not authed. Can't report achievment."); return; }
 	
-	GKAchievement *achievement = [achievements objectForKey:identifier];
+	GKAchievement *achievement = achievements[identifier];
 	if( achievement ) {		
 		// Already reported with same or higher percentage or already at 100%?
 		if(
@@ -153,7 +153,7 @@ EJ_BIND_FUNCTION( showLeaderboard, ctx, argc, argv ) {
 	}
 	
 	[achievement reportAchievementWithCompletionHandler:^(NSError *error) {
-		[achievements setObject:achievement forKey:identifier];
+		achievements[identifier] = achievement;
 		
 		if( callback ) {
 			JSContextRef gctx = [EJJavaScriptView sharedView].jsGlobalContext;

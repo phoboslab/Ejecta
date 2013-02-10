@@ -163,7 +163,7 @@ EJ_BIND_SET(font, ctx, value) {
 		size = ceilf(size*4.0/3.0);
 	}
 	
-	EJFontDescriptor *font = [EJFontDescriptor descriptorWithName:[NSString stringWithUTF8String:name] size:size];
+	EJFontDescriptor *font = [EJFontDescriptor descriptorWithName:@(name) size:size];
 	if( font ) {
 		renderingContext.font = font;
 	}

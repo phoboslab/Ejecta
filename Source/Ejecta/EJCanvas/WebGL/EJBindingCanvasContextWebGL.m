@@ -59,8 +59,8 @@
 }
 
 - (void)deleteBuffer:(GLuint)buffer {
-	NSNumber *key = [NSNumber numberWithInt:buffer];
-	if( [buffers objectForKey:key] ) {
+	NSNumber *key = @(buffer);
+	if( buffers[key] ) {
 		ejectaInstance.currentRenderingContext = renderingContext;
 		glDeleteBuffers(1, &buffer);
 		[buffers removeObjectForKey:key];
@@ -70,8 +70,8 @@
 - (void)deleteTexture:(GLuint)texture {
 	// This just deletes the pointer to the JSObject; the texture itself
 	// is retained and released by the binding
-	NSNumber *key = [NSNumber numberWithInt:texture];
-	JSObjectRef obj = [[textures objectForKey:key] pointerValue];
+	NSNumber *key = @(texture);
+	JSObjectRef obj = [textures[key] pointerValue];
 	[textures removeObjectForKey:key];
 	
 	// See if it's bound in any of the texture units
@@ -88,8 +88,8 @@
 }
 
 - (void)deleteProgram:(GLuint)program {
-	NSNumber *key = [NSNumber numberWithInt:program];
-	if( [programs objectForKey:key] ) {
+	NSNumber *key = @(program);
+	if( programs[key] ) {
 		ejectaInstance.currentRenderingContext = renderingContext;
 		glDeleteProgram(program);
 		[programs removeObjectForKey:key];
@@ -97,8 +97,8 @@
 }
 
 - (void)deleteShader:(GLuint)shader {
-	NSNumber *key = [NSNumber numberWithInt:shader];
-	if( [shaders objectForKey:key] ) {
+	NSNumber *key = @(shader);
+	if( shaders[key] ) {
 		ejectaInstance.currentRenderingContext = renderingContext;
 		glDeleteShader(shader);
 		[shaders removeObjectForKey:key];
@@ -107,8 +107,8 @@
 }
 
 - (void)deleteRenderbuffer:(GLuint)renderbuffer {
-	NSNumber *key = [NSNumber numberWithInt:renderbuffer];
-	if( [renderbuffers objectForKey:key] ) {
+	NSNumber *key = @(renderbuffer);
+	if( renderbuffers[key] ) {
 		ejectaInstance.currentRenderingContext = renderingContext;
 		glDeleteRenderbuffers(1, &renderbuffer);
 		[renderbuffers removeObjectForKey:key];
@@ -117,8 +117,8 @@
 }
 
 - (void)deleteFramebuffer:(GLuint)framebuffer {
-	NSNumber *key = [NSNumber numberWithInt:framebuffer];
-	if( [framebuffers objectForKey:key] ) {
+	NSNumber *key = @(framebuffer);
+	if( framebuffers[key] ) {
 		ejectaInstance.currentRenderingContext = renderingContext;
 		glDeleteFramebuffers(1, &framebuffer);
 		[framebuffers removeObjectForKey:key];
@@ -394,7 +394,7 @@ EJ_BIND_FUNCTION(createBuffer, ctx, argc, argv) {
 	GLuint index;
 	glGenBuffers(1, &index);
 	JSObjectRef obj = [EJBindingWebGLBuffer createJSObjectWithContext:ctx webglContext:self index:index];
-	[buffers setObject:[NSValue valueWithPointer:obj] forKey:[NSNumber numberWithInt:index]];
+	buffers[@(index)] = [NSValue valueWithPointer:obj];
 	return obj;
 }
 
@@ -403,7 +403,7 @@ EJ_BIND_FUNCTION(createFramebuffer, ctx, argc, argv) {
 	GLuint index;
 	glGenFramebuffers(1, &index);
 	JSObjectRef obj = [EJBindingWebGLFramebuffer createJSObjectWithContext:ctx webglContext:self index:index];
-	[framebuffers setObject:[NSValue valueWithPointer:obj] forKey:[NSNumber numberWithInt:index]];
+	framebuffers[@(index)] = [NSValue valueWithPointer:obj];
 	return obj;
 }
 
@@ -412,7 +412,7 @@ EJ_BIND_FUNCTION(createRenderbuffer, ctx, argc, argv) {
 	GLuint index;
 	glGenRenderbuffers(1, &index);
 	JSObjectRef obj = [EJBindingWebGLRenderbuffer createJSObjectWithContext:ctx webglContext:self index:index];
-	[renderbuffers setObject:[NSValue valueWithPointer:obj] forKey:[NSNumber numberWithInt:index]];
+	renderbuffers[@(index)] = [NSValue valueWithPointer:obj];
 	return obj;
 }
 
@@ -430,7 +430,7 @@ EJ_BIND_FUNCTION(createProgram, ctx, argc, argv) {
 	
 	GLuint program = glCreateProgram();
 	JSObjectRef obj = [EJBindingWebGLProgram createJSObjectWithContext:ctx webglContext:self index:program];
-	[programs setObject:[NSValue valueWithPointer:obj] forKey:[NSNumber numberWithInt:program]];
+	programs[@(program)] = [NSValue valueWithPointer:obj];
 	return obj;
 }
 
@@ -441,7 +441,7 @@ EJ_BIND_FUNCTION(createShader, ctx, argc, argv) {
 
 	GLuint shader = glCreateShader(type);
 	JSObjectRef obj = [EJBindingWebGLShader createJSObjectWithContext:ctx webglContext:self index:shader];
-	[shaders setObject:[NSValue valueWithPointer:obj] forKey:[NSNumber numberWithInt:shader]];
+	shaders[@(shader)] = [NSValue valueWithPointer:obj];
 	return obj;
 }
 
@@ -557,7 +557,7 @@ EJ_BIND_FUNCTION(getActiveAttrib, ctx, argc, argv) {
 	GLenum type;
 	glGetActiveAttrib(program, index, buffsize, &length, &size, &type, namebuffer);
 	
-	NSString *name = [NSString stringWithUTF8String:namebuffer];
+	NSString *name = @(namebuffer);
 	free(namebuffer);
 	
 	return [EJBindingWebGLActiveInfo createJSObjectWithContext:ctx size:size type:type name:name];
@@ -580,7 +580,7 @@ EJ_BIND_FUNCTION(getActiveUniform, ctx, argc, argv) {
 	GLenum type;
 	glGetActiveUniform(program, index, buffsize, &length, &size, &type, namebuffer);
 	
-	NSString *name = [NSString stringWithUTF8String:namebuffer];
+	NSString *name = @(namebuffer);
 	free(namebuffer);
 	
 	return [EJBindingWebGLActiveInfo createJSObjectWithContext:ctx size:size type:type name:name];
@@ -601,7 +601,7 @@ EJ_BIND_FUNCTION(getAttachedShaders, ctx, argc, argv) {
 	
 	JSValueRef *args = malloc(count * sizeof(JSObjectRef));
 	for( int i = 0; i < count; i++ ) {
-		args[i] = [[shaders objectForKey:[NSNumber numberWithInt:list[i]]] pointerValue];
+		args[i] = [shaders[@(list[i])] pointerValue];
 	}
 	JSObjectRef array = JSObjectMakeArray(ctx, count, args, NULL);
 	free(args);
@@ -679,32 +679,32 @@ EJ_BIND_FUNCTION(getParameter, ctx, argc, argv) {
 		case GL_ARRAY_BUFFER_BINDING:
 		case GL_ELEMENT_ARRAY_BUFFER_BINDING:
 			glGetIntegerv(pname, intbuffer);
-			ret = [[buffers objectForKey:[NSNumber numberWithInt:intbuffer[0]]] pointerValue];
+			ret = [buffers[@(intbuffer[0])] pointerValue];
 			break;
 		
 		// WebGLProgram
 		case GL_CURRENT_PROGRAM:
 			glGetIntegerv(pname, intbuffer);
-			ret = [[programs objectForKey:[NSNumber numberWithInt:intbuffer[0]]] pointerValue];
+			ret = [programs[@(intbuffer[0])] pointerValue];
 			break;
 		
 		// WebGLFramebuffer
 		case GL_FRAMEBUFFER_BINDING:
 			glGetIntegerv(pname, intbuffer);
-			ret = [[framebuffers objectForKey:[NSNumber numberWithInt:intbuffer[0]]] pointerValue];
+			ret = [framebuffers[@(intbuffer[0])] pointerValue];
 			break;
 			
 		// WebGLRenderbuffer
 		case GL_RENDERBUFFER_BINDING:
 			glGetIntegerv(pname, intbuffer);
-			ret = [[renderbuffers objectForKey:[NSNumber numberWithInt:intbuffer[0]]] pointerValue];
+			ret = [renderbuffers[@(intbuffer[0])] pointerValue];
 			break;
 		
 		// WebGLTexture
 		case GL_TEXTURE_BINDING_2D:
 		case GL_TEXTURE_BINDING_CUBE_MAP:
 			glGetIntegerv(pname, intbuffer);
-			ret = [[textures objectForKey:[NSNumber numberWithInt:intbuffer[0]]] pointerValue];
+			ret = [textures[@(intbuffer[0])] pointerValue];
 			break;
 			
 		// Ejecta/WebGL specific
@@ -730,7 +730,7 @@ EJ_BIND_FUNCTION(getParameter, ctx, argc, argv) {
 		case GL_SHADING_LANGUAGE_VERSION:
 		case GL_VENDOR:
 		case GL_VERSION:
-			ret = NSStringToJSValue(ctx, [NSString stringWithUTF8String:(char *)glGetString(pname)]);
+			ret = NSStringToJSValue(ctx, @((char *)glGetString(pname)));
 			break;
 		
 		// single float
@@ -784,10 +784,10 @@ EJ_BIND_FUNCTION(getFramebufferAttachmentParameter, ctx, argc, argv) {
 		glGetFramebufferAttachmentParameteriv(target, attachment, GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE, &ptype);
 		
 		if( ptype == GL_RENDERBUFFER ) {
-			return [[renderbuffers objectForKey:[NSNumber numberWithInt:param]] pointerValue];
+			return [renderbuffers[@(param)] pointerValue];
 		}
 		else if( ptype == GL_TEXTURE ) {
-			return [[textures objectForKey:[NSNumber numberWithInt:param]] pointerValue];
+			return [textures[@(param)] pointerValue];
 		}
 	}
 	
@@ -1092,7 +1092,7 @@ EJ_BIND_FUNCTION(getVertexAttrib, ctx, argc, argv) {
 	if( pname == GL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING ) {
 		GLint buffer;
 		glGetVertexAttribiv(index, pname, &buffer);
-		return [[buffers objectForKey:[NSNumber numberWithInt:buffer]] pointerValue];
+		return [buffers[@(buffer)] pointerValue];
 	}
 	else if( pname == GL_CURRENT_VERTEX_ATTRIB ) {
 		JSObjectRef array = JSTypedArrayMake(ctx, kJSTypedArrayTypeFloat32Array, 4);
@@ -1387,15 +1387,14 @@ EJ_BIND_FUNCTION(texImage2D, ctx, argc, argv) {
 	
 	// Remove old texture, if different
 	if( oldTextureId && oldTextureId != targetTexture.textureId ) {
-		[textures removeObjectForKey:[NSNumber numberWithInt:oldTextureId]];
+		[textures removeObjectForKey:@(oldTextureId)];
 	}
 	
 	// Bind and remember new texture id
 	if( targetTexture.textureId && targetTexture.textureId != oldTextureId ) {
 		[targetTexture bindToTarget:bindTarget];
 		
-		NSNumber *key = [NSNumber numberWithInt:targetTexture.textureId];
-		[textures setObject:[NSValue valueWithPointer:jsTargetTexture] forKey:key];
+		textures[@(targetTexture.textureId)] = [NSValue valueWithPointer:jsTargetTexture];
 	}
 
 	return NULL;
@@ -1508,15 +1507,14 @@ EJ_BIND_FUNCTION(texSubImage2D, ctx, argc, argv) {
 	
 	// Remove old texture, if different
 	if( oldTextureId && oldTextureId != targetTexture.textureId ) {
-		[textures removeObjectForKey:[NSNumber numberWithInt:oldTextureId]];
+		[textures removeObjectForKey:@(oldTextureId)];
 	}
 	
 	// Bind and remember new texture id
 	if( targetTexture.textureId && targetTexture.textureId != oldTextureId ) {
 		[targetTexture bindToTarget:bindTarget];
 		
-		NSNumber *key = [NSNumber numberWithInt:targetTexture.textureId];
-		[textures setObject:[NSValue valueWithPointer:jsTargetTexture] forKey:key];
+		textures[@(targetTexture.textureId)] = [NSValue valueWithPointer:jsTargetTexture];
 	}
 	
 	return NULL;

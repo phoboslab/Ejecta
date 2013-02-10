@@ -86,7 +86,7 @@
 	}
 	
 	EJCanvasGradientColorStop firstStop, currentStop, nextStop;
-	[[stops objectAtIndex:0] getValue:&firstStop];
+	[stops[0] getValue:&firstStop];
 	currentStop = firstStop;
 	
 	GLubyte *bytes = pixels.mutableBytes;

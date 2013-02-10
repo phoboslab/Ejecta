@@ -33,14 +33,14 @@ static NSMutableDictionary *CachedJSClasses;
 		CachedJSClasses = [[NSMutableDictionary alloc] initWithCapacity:16];
 	}
 	
-	JSClassRef jsClass = [[CachedJSClasses objectForKey:ownClass] pointerValue];
+	JSClassRef jsClass = [CachedJSClasses[ownClass] pointerValue];
 	if( jsClass ) {
 		return jsClass;
 	}
 	
 	// Still here? Create and insert into cache
 	jsClass = [self createJSClass];
-	[CachedJSClasses setObject:[NSValue valueWithPointer:jsClass] forKey:ownClass];
+	CachedJSClasses[ownClass] = [NSValue valueWithPointer:jsClass];
 	return jsClass;
 }
 
@@ -81,7 +81,7 @@ static NSMutableDictionary *CachedJSClasses;
 	// Set up the JSStaticValue struct array
 	JSStaticValue *values = calloc( properties.count + 1, sizeof(JSStaticValue) );
 	for( int i = 0; i < properties.count; i++ ) {
-		NSString *name = [properties objectAtIndex:i];
+		NSString *name = properties[i];
 		NSData *nameData = NSDataFromString( name );
 		
 		values[i].name = [nameData bytes];
@@ -103,7 +103,7 @@ static NSMutableDictionary *CachedJSClasses;
 	// Set up the JSStaticFunction struct array
 	JSStaticFunction *functions = calloc( methods.count + 1, sizeof(JSStaticFunction) );
 	for( int i = 0; i < methods.count; i++ ) {
-		NSString *name = [methods objectAtIndex:i];
+		NSString *name = methods[i];
 		NSData *nameData = NSDataFromString( name );
 				
 		functions[i].name = [nameData bytes];

@@ -19,7 +19,7 @@
 		eaglLayer.opaque = TRUE;
 		
 		eaglLayer.drawableProperties = @{
-			kEAGLDrawablePropertyRetainedBacking: [NSNumber numberWithBool:retainedBacking],
+			kEAGLDrawablePropertyRetainedBacking: @(retainedBacking),
 			kEAGLDrawablePropertyColorFormat: kEAGLColorFormatRGBA8
 		};
 	}

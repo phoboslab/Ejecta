@@ -390,7 +390,7 @@ int EJFontGlyphLayoutSortByTextureIndex(const void *a, const void *b) {
 	int i = 0;
 	while( i < glyphCount ) {
 		int textureIndex = layoutBuffer[i].textureIndex;
-		[context setTexture:[textures objectAtIndex:textureIndex-1]];
+		[context setTexture:textures[textureIndex-1]];
 		
 		// Go through glyphs while the texture stays the same
 		while( i < glyphCount && textureIndex == layoutBuffer[i].textureIndex ) {

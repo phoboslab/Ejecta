@@ -149,7 +149,7 @@ EJ_BIND_FUNCTION(setRequestHeader, ctx, argc, argv) {
 	NSString *header = JSValueToNSString( ctx, argv[0] );
 	NSString *value = JSValueToNSString( ctx, argv[1] );
 	
-	[requestHeaders setObject:value forKey:header];
+	requestHeaders[header] = value;
 	return NULL;
 }
 
@@ -169,8 +169,7 @@ EJ_BIND_FUNCTION(getAllResponseHeaders, ctx, argc, argv) {
 	NSHTTPURLResponse *urlResponse = (NSHTTPURLResponse *)response;
 	NSMutableString *headers = [NSMutableString string];
 	for( NSString *key in urlResponse.allHeaderFields ) {
-		id value = [urlResponse.allHeaderFields objectForKey:key];
-		[headers appendFormat:@"%@: %@\n", key, value];
+		[headers appendFormat:@"%@: %@\n", key, urlResponse.allHeaderFields[key]];
 	}
 	
 	return NSStringToJSValue(ctx, headers);
@@ -183,7 +182,7 @@ EJ_BIND_FUNCTION(getResponseHeader, ctx, argc, argv) {
 	
 	NSHTTPURLResponse *urlResponse = (NSHTTPURLResponse *)response;
 	NSString *header = JSValueToNSString( ctx, argv[0] );
-	NSString *value = [urlResponse.allHeaderFields objectForKey:header];
+	NSString *value = urlResponse.allHeaderFields[header];
 	
 	return value ? NSStringToJSValue(ctx, value) : NULL;
 }
@@ -207,7 +206,7 @@ EJ_BIND_FUNCTION(send, ctx, argc, argv) {
 	[request setHTTPMethod:method];
 	
 	for( NSString *header in requestHeaders ) {
-		[request setValue:[requestHeaders objectForKey:header] forHTTPHeaderField:header];
+		[request setValue:requestHeaders[header] forHTTPHeaderField:header];
 	}
 	
 	if( argc > 0 ) {

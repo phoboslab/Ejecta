@@ -34,7 +34,7 @@ EJ_BIND_FUNCTION(removeItem, ctx, argc, argv ) {
 }
 
 EJ_BIND_FUNCTION(clear, ctx, argc, argv ) {
-	[[NSUserDefaults standardUserDefaults] setPersistentDomain:[NSDictionary dictionary] forName:[[NSBundle mainBundle] bundleIdentifier]];
+	[[NSUserDefaults standardUserDefaults] setPersistentDomain:@{} forName:[[NSBundle mainBundle] bundleIdentifier]];
 	return NULL;
 }
 

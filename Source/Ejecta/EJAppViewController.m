@@ -20,16 +20,14 @@ static EJAppViewController *_ejectaInstance = NULL;
 
 - (id)init{
 	if( self = [super init] ) {
-		_landscapeMode = [[[[NSBundle mainBundle] infoDictionary]
-			objectForKey:@"UIInterfaceOrientation"] hasPrefix:@"UIInterfaceOrientationLandscape"];
+		_landscapeMode = [[[NSBundle mainBundle] infoDictionary][@"UIInterfaceOrientation"] hasPrefix:@"UIInterfaceOrientationLandscape"];
 		_ejectaInstance = self;
 		[[EJJavaScriptView sharedView] loadDefaultScripts];
 	}
 	return self;
 }
 
-+(id)alloc
-{
++(id)alloc {
 	@synchronized([EJAppViewController class]){
 		NSAssert(_ejectaInstance == nil, @"Attempt to allocate a second instance of singleton EJAppViewController");
 		_ejectaInstance = [super alloc];
@@ -42,13 +40,11 @@ static EJAppViewController *_ejectaInstance = NULL;
 	[super dealloc];
 }
 
-- (void)didReceiveMemoryWarning
-{
+- (void)didReceiveMemoryWarning {
 	[[EJJavaScriptView sharedView] clearCaches];
 }
 
-- (void)loadView
-{
+- (void)loadView {
 	EJJavaScriptView *view = [EJJavaScriptView sharedView];
 	self.view = view;
 }

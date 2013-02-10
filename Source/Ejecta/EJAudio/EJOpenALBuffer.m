@@ -10,10 +10,10 @@
 @synthesize duration;
 
 + (id)cachedBufferWithPath:(NSString *)path {
-	EJOpenALBuffer *buffer = [[[EJJavaScriptView sharedView].openALManager.buffers objectForKey:path] retain];
+	EJOpenALBuffer *buffer = [[EJJavaScriptView sharedView].openALManager.buffers[path] retain];
 	if( !buffer ) {
 		buffer = [[EJOpenALBuffer alloc] initWithPath:path];
-		[[EJJavaScriptView sharedView].openALManager.buffers setObject:buffer forKey:path];
+		[EJJavaScriptView sharedView].openALManager.buffers[path] = buffer;
 	}
 	return buffer;
 }

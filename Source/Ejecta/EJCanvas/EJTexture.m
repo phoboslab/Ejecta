@@ -101,7 +101,7 @@
 + (id)cachedTextureWithPath:(NSString *)path callback:(void (^)(void))callback {
 	// For loading on a background thread (non-blocking), but tries the cache first
 	
-	EJTexture *texture = [[EJJavaScriptView sharedView].textureCache objectForKey:path];
+	EJTexture *texture = [EJJavaScriptView sharedView].textureCache[path];
 	if( texture ) {
 		// We already have a texture, but it may hasn't finished loading yet. If
 		// the texture's loadCallback is still present, add it as an dependency
@@ -117,7 +117,7 @@
 		// Create a new texture and add it to the cache
 		texture = [[EJTexture alloc] initWithPath:path callback:callback];
 		
-		[[EJJavaScriptView sharedView].textureCache setObject:texture forKey:path];
+		[EJJavaScriptView sharedView].textureCache[path] = texture;
 		[texture autorelease];
 		texture->cached = true;
 	}

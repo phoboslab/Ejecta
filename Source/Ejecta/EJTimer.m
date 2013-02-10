@@ -5,8 +5,7 @@
 @implementation EJTimerCollection
 
 
-- (id)init
-{
+- (id)init {
 	if (self = [super init]) {
 		timers = [[NSMutableDictionary alloc] init];
 	}
@@ -22,18 +21,18 @@
 	lastId++;
 	
 	EJTimer *timer = [[EJTimer alloc] initWithCallback:callback interval:interval repeat:repeat];
-	[timers setObject:timer forKey:[NSNumber numberWithInt:lastId]];
+	timers[@(lastId)] = timer;
 	[timer release];
 	return lastId;
 }
 
 - (void)cancelId:(int)timerId {
-	[timers removeObjectForKey:[NSNumber numberWithInt:timerId]];
+	[timers removeObjectForKey:@(timerId)];
 }
 
 - (void)update {	
 	for( NSNumber *timerId in [timers allKeys]) {
-		EJTimer *timer = [timers objectForKey:timerId];
+		EJTimer *timer = timers[timerId];
 		[timer check];
 		
 		if( !timer.active ) {
