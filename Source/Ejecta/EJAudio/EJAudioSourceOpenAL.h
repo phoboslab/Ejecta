@@ -14,11 +14,11 @@
 	BOOL looping;
 	
 	NSTimer *endTimer;
-	NSObject<EJAudioSourceDelegate> *delegate;
+	NSObject<EJAudioSourceDelegate> *__weak delegate;
 }
 
 @property (nonatomic) float currentTime;
 @property (nonatomic) float duration;
-@property (nonatomic, assign) NSObject<EJAudioSourceDelegate> *delegate;
+@property (nonatomic, weak) NSObject<EJAudioSourceDelegate> *delegate;
 
 @end

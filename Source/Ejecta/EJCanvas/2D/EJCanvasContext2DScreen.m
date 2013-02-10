@@ -13,7 +13,7 @@
 	
 	CGRect frame = CGRectMake(0, 0, width, height);
 	CGSize screen = app.bounds.size;
-	float contentScale = (useRetinaResolution && [UIScreen mainScreen].scale == 2) ? 2 : 1;
+	float contentScale = (self.useRetinaResolution && [UIScreen mainScreen].scale == 2) ? 2 : 1;
 	float aspect = frame.size.width / frame.size.height;
 	
 	if( scalingMode == kEJScalingModeFitWidth ) {
@@ -27,7 +27,7 @@
 	float internalScaling = frame.size.width / (float)width;
 	app.internalScaling = internalScaling;
 	
-	backingStoreRatio = internalScaling * contentScale;
+	self.backingStoreRatio = internalScaling * contentScale;
 	
 	bufferWidth = frame.size.width * contentScale;
 	bufferHeight = frame.size.height * contentScale;
@@ -40,7 +40,7 @@
 			@"msaa: %@",
 		width, height, aspect, 
 		internalScaling, frame.size.width, frame.size.height,
-		(useRetinaResolution ? @"yes" : @"no"),
+		(self.useRetinaResolution ? @"yes" : @"no"),
 		frame.size.width * contentScale, frame.size.height * contentScale,
 		(msaaEnabled ? [NSString stringWithFormat:@"yes (%d samples)", msaaSamples] : @"no")
 	);
@@ -68,10 +68,6 @@
 	[app addSubview:glview];
 }
 
-- (void)dealloc {
-	[glview release];
-	[super dealloc];
-}
 
 
 - (void)setWidth:(short)newWidth {
@@ -88,7 +84,7 @@
 
 - (EJImageData*)getImageDataSx:(short)sx sy:(short)sy sw:(short)sw sh:(short)sh {
 	// Take care of the flipped screen layout
-	return [self getImageDataScaled:backingStoreRatio flipped:YES sx:sx sy:sy sw:sw sh:sh];
+	return [self getImageDataScaled:self.backingStoreRatio flipped:YES sx:sx sy:sy sw:sw sh:sh];
 }
 
 - (EJImageData*)getImageDataHDSx:(short)sx sy:(short)sy sw:(short)sw sh:(short)sh {

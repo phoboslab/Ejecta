@@ -19,16 +19,12 @@
 - (id)initWithCanvas:(JSObjectRef)canvas renderingContext:(EJCanvasContext2D *)renderingContextp {
 	if( self = [super initWithContext:NULL argc:0 argv:NULL] ) {
 		jsView = [EJJavaScriptView sharedView]; // Keep a local copy - may be faster?
-		renderingContext = [renderingContextp retain];
+		renderingContext = renderingContextp;
 		jsCanvas = canvas;
 	}
 	return self;
 }
 
-- (void)dealloc {	
-	[renderingContext release];
-	[super dealloc];
-}
 
 EJ_BIND_GET(canvas, ctx) {
 	return jsCanvas;
@@ -44,19 +40,19 @@ EJ_BIND_ENUM(globalCompositeOperation, renderingContext.globalCompositeOperation
 	"xor"				// kEJCompositeOperationXOR
 );
 
-EJ_BIND_ENUM(lineCap, renderingContext.state->lineCap,
+EJ_BIND_ENUM(lineCap, renderingContext.state.lineCap,
 	"butt",		// kEJLineCapButt
 	"round",	// kEJLineCapRound
 	"square"	// kEJLineCapSquare
 );
 
-EJ_BIND_ENUM(lineJoin, renderingContext.state->lineJoin,
+EJ_BIND_ENUM(lineJoin, renderingContext.state.lineJoin,
 	"miter",	// kEJLineJoinMiter
 	"bevel",	// kEJLineJoinBevel
 	"round"		// kEJLineJoinRound
 );
 
-EJ_BIND_ENUM(textAlign, renderingContext.state->textAlign,
+EJ_BIND_ENUM(textAlign, renderingContext.state.textAlign,
 	"start",	// kEJTextAlignStart
 	"end",		// kEJTextAlignEnd
 	"left",		// kEJTextAlignLeft
@@ -64,7 +60,7 @@ EJ_BIND_ENUM(textAlign, renderingContext.state->textAlign,
 	"right"		// kEJTextAlignRight
 );
 
-EJ_BIND_ENUM(textBaseline, renderingContext.state->textBaseline,
+EJ_BIND_ENUM(textBaseline, renderingContext.state.textBaseline,
 	"alphabetic",	// kEJTextBaselineAlphabetic
 	"middle",		// kEJTextBaselineMiddle
 	"top",			// kEJTextBaselineTop
@@ -74,18 +70,19 @@ EJ_BIND_ENUM(textBaseline, renderingContext.state->textBaseline,
 );
 
 EJ_BIND_GET(fillStyle, ctx ) {
-	if( renderingContext.fillObject ) {
-		if( [renderingContext.fillObject isKindOfClass:[EJCanvasPattern class]] ) {
-			EJCanvasPattern *pattern = (EJCanvasPattern *)renderingContext.fillObject;
+	NSObject<EJFillable> *fillable = renderingContext.state.fillObject;
+	if( fillable ) {
+		if( [fillable isKindOfClass:[EJCanvasPattern class]] ) {
+			EJCanvasPattern *pattern = (EJCanvasPattern *)fillable;
 			return [EJBindingCanvasPattern createJSObjectWithContext:ctx pattern:pattern];
 		}
-		else if( [renderingContext.fillObject isKindOfClass:[EJCanvasGradient class]] ) {
-			EJCanvasGradient *gradient = (EJCanvasGradient *)renderingContext.fillObject;
+		else if( [fillable isKindOfClass:[EJCanvasGradient class]] ) {
+			EJCanvasGradient *gradient = (EJCanvasGradient *)fillable;
 			return [EJBindingCanvasGradient createJSObjectWithContext:ctx gradient:gradient];
 		}
 	}
 	else {
-		return ColorRGBAToJSValue(ctx, renderingContext.state->fillColor);
+		return ColorRGBAToJSValue(ctx, renderingContext.state.fillColor);
 	}
 	
 	return NULL;
@@ -97,53 +94,53 @@ EJ_BIND_SET(fillStyle, ctx, value) {
 		
 		NSObject<EJFillable> *fillable;
 		if( (fillable = [EJBindingCanvasPattern patternFromJSValue:value]) ) {
-			renderingContext.fillObject = fillable;
+			renderingContext.state.fillObject = fillable;
 		}
 		else if( (fillable = [EJBindingCanvasGradient gradientFromJSValue:value]) ) {
-			renderingContext.fillObject = fillable;
+			renderingContext.state.fillObject = fillable;
 		}
 	}
 	else {
 		// Should be a color string
-		renderingContext.state->fillColor = JSValueToColorRGBA(ctx, value);
-		renderingContext.fillObject = NULL;
+		renderingContext.state.fillColor = JSValueToColorRGBA(ctx, value);
+		renderingContext.state.fillObject = NULL;
 	}
 }
 
 EJ_BIND_GET(strokeStyle, ctx ) {
-	return ColorRGBAToJSValue(ctx, renderingContext.state->strokeColor);
+	return ColorRGBAToJSValue(ctx, renderingContext.state.strokeColor);
 }
 
 EJ_BIND_SET(strokeStyle, ctx, value) {
-	renderingContext.state->strokeColor = JSValueToColorRGBA(ctx, value);
+	renderingContext.state.strokeColor = JSValueToColorRGBA(ctx, value);
 }
 
 EJ_BIND_GET(globalAlpha, ctx ) {
-	return JSValueMakeNumber(ctx, renderingContext.state->globalAlpha );
+	return JSValueMakeNumber(ctx, renderingContext.state.globalAlpha );
 }
 
 EJ_BIND_SET(globalAlpha, ctx, value) {
-	renderingContext.state->globalAlpha = MIN(1,MAX(JSValueToNumberFast(ctx, value),0));
+	renderingContext.state.globalAlpha = MIN(1,MAX(JSValueToNumberFast(ctx, value),0));
 }
 
 EJ_BIND_GET(lineWidth, ctx) {
-	return JSValueMakeNumber(ctx, renderingContext.state->lineWidth);
+	return JSValueMakeNumber(ctx, renderingContext.state.lineWidth);
 }
 
 EJ_BIND_SET(lineWidth, ctx, value) {
-	renderingContext.state->lineWidth = JSValueToNumberFast(ctx, value);
+	renderingContext.state.lineWidth = JSValueToNumberFast(ctx, value);
 }
 
 EJ_BIND_GET(miterLimit, ctx) {
-	return JSValueMakeNumber(ctx, renderingContext.state->miterLimit);
+	return JSValueMakeNumber(ctx, renderingContext.state.miterLimit);
 }
 
 EJ_BIND_SET(miterLimit, ctx, value) {
-	renderingContext.state->miterLimit = JSValueToNumberFast(ctx, value);
+	renderingContext.state.miterLimit = JSValueToNumberFast(ctx, value);
 }
 
 EJ_BIND_GET(font, ctx) {
-	EJFontDescriptor *font = renderingContext.state->font;
+	EJFontDescriptor *font = renderingContext.state.font;
 	NSString *name = [NSString stringWithFormat:@"%dpx %@", (int)font.size, font.name];
 	return NSStringToJSValue(ctx, name);
 }
@@ -165,7 +162,7 @@ EJ_BIND_SET(font, ctx, value) {
 	
 	EJFontDescriptor *font = [EJFontDescriptor descriptorWithName:@(name) size:size];
 	if( font ) {
-		renderingContext.font = font;
+		renderingContext.state.font = font;
 	}
 	
 	JSStringRelease(jsString);
@@ -227,7 +224,7 @@ EJ_BIND_FUNCTION(setTransform, ctx, argc, argv) {
 EJ_BIND_FUNCTION(drawImage, ctx, argc, argv) {
 	if( argc < 3 || !JSValueIsObject(ctx, argv[0]) ) return NULL;
 	
-	NSObject<EJDrawable> *drawable = (NSObject<EJDrawable> *)JSObjectGetPrivate((JSObjectRef)argv[0]);
+	NSObject<EJDrawable> *drawable = JSValueGetNativeObject(argv[0]);
 	EJTexture *image = drawable.texture;
 	float scale = image.contentScale;
 	
@@ -305,7 +302,7 @@ EJ_BIND_FUNCTION(createImageData, ctx, argc, argv) {
 	EJ_UNPACK_ARGV(short sw, short sh);
 		
 	NSMutableData *pixels = [NSMutableData dataWithLength:sw * sh * 4];
-	EJImageData *imageData = [[[EJImageData alloc] initWithWidth:sw height:sh pixels:pixels] autorelease];
+	EJImageData *imageData = [[EJImageData alloc] initWithWidth:sw height:sh pixels:pixels];
 	
 	EJBindingImageData *binding = [[EJBindingImageData alloc] initWithImageData:imageData];
 	return [EJBindingImageData createJSObjectWithContext:ctx instance:binding];
@@ -314,7 +311,7 @@ EJ_BIND_FUNCTION(createImageData, ctx, argc, argv) {
 EJ_BIND_FUNCTION(putImageData, ctx, argc, argv) {
 	if( argc < 3 ) { return NULL; }
 	
-	EJBindingImageData *jsImageData = (EJBindingImageData *)JSObjectGetPrivate((JSObjectRef)argv[0]);
+	EJBindingImageData *jsImageData = JSValueGetNativeObject(argv[0]);
 	EJ_UNPACK_ARGV_OFFSET(1, float dx, float dy);
 	
 	jsView.currentRenderingContext = renderingContext;
@@ -337,7 +334,7 @@ EJ_BIND_FUNCTION(createImageDataHD, ctx, argc, argv) {
 	EJ_UNPACK_ARGV(short sw, short sh);
 		
 	NSMutableData *pixels = [NSMutableData dataWithLength:sw * sh * 4];
-	EJImageData *imageData = [[[EJImageData alloc] initWithWidth:sw height:sh pixels:pixels] autorelease];
+	EJImageData *imageData = [[EJImageData alloc] initWithWidth:sw height:sh pixels:pixels];
 	
 	EJBindingImageData *binding = [[EJBindingImageData alloc] initWithImageData:imageData];
 	return [EJBindingImageData createJSObjectWithContext:ctx instance:binding];
@@ -346,7 +343,7 @@ EJ_BIND_FUNCTION(createImageDataHD, ctx, argc, argv) {
 EJ_BIND_FUNCTION(putImageDataHD, ctx, argc, argv) {
 	if( argc < 3 ) { return NULL; }
 	
-	EJBindingImageData *jsImageData = (EJBindingImageData *)JSObjectGetPrivate((JSObjectRef)argv[0]);
+	EJBindingImageData *jsImageData = JSValueGetNativeObject(argv[0]);
 	EJ_UNPACK_ARGV_OFFSET(1, float dx, float dy);
 	
 	jsView.currentRenderingContext = renderingContext;
@@ -358,7 +355,7 @@ EJ_BIND_FUNCTION(createLinearGradient, ctx, argc, argv) {
 	EJVector2 p1, p2;
 	EJ_UNPACK_ARGV(p1.x, p1.y, p2.x, p2.y);
 	
-	EJCanvasGradient *gradient = [[[EJCanvasGradient alloc] initLinearGradientWithP1:p1 p2:p2] autorelease];
+	EJCanvasGradient *gradient = [[EJCanvasGradient alloc] initLinearGradientWithP1:p1 p2:p2];
 	return [EJBindingCanvasGradient createJSObjectWithContext:ctx gradient:gradient];
 }
 
@@ -367,13 +364,13 @@ EJ_BIND_FUNCTION(createRadialGradient, ctx, argc, argv) {
 	float r1, r2;
 	EJ_UNPACK_ARGV(p1.x, p1.y, r1, p2.x, p2.y, r2);
 	
-	EJCanvasGradient *gradient = [[[EJCanvasGradient alloc] initRadialGradientWithP1:p1 r1:r1 p2:p2 r2:r2] autorelease];
+	EJCanvasGradient *gradient = [[EJCanvasGradient alloc] initRadialGradientWithP1:p1 r1:r1 p2:p2 r2:r2];
 	return [EJBindingCanvasGradient createJSObjectWithContext:ctx gradient:gradient];
 }
 
 EJ_BIND_FUNCTION(createPattern, ctx, argc, argv) {
 	if( argc < 1 ) { return NULL; }
-	NSObject<EJDrawable> *drawable = (NSObject<EJDrawable> *)JSObjectGetPrivate((JSObjectRef)argv[0]);
+	NSObject<EJDrawable> *drawable = JSValueGetNativeObject(argv[0]);
 	EJTexture *image = drawable.texture;
 	
 	if( !image ) { return NULL; }
@@ -391,7 +388,7 @@ EJ_BIND_FUNCTION(createPattern, ctx, argc, argv) {
 			repeat = kEJCanvasPatternNoRepeat;
 		}
 	}
-	EJCanvasPattern *pattern = [[[EJCanvasPattern alloc] initWithTexture:image repeat:repeat] autorelease];
+	EJCanvasPattern *pattern = [[EJCanvasPattern alloc] initWithTexture:image repeat:repeat];
 	return [EJBindingCanvasPattern createJSObjectWithContext:ctx pattern:pattern];
 }
 

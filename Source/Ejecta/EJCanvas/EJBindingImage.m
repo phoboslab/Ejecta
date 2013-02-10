@@ -16,18 +16,13 @@
 	NSLog(@"Loading Image: %@", path);
 	NSString *fullPath = [[EJJavaScriptView sharedView] pathForResource:path];
 	
-	texture = [[EJTexture cachedTextureWithPath:fullPath callback:^{
+	texture = [EJTexture cachedTextureWithPath:fullPath callback:^{
 		loading = NO;
 		[self triggerEvent:(texture.textureId ? @"load" : @"error") argc:0 argv:NULL];		
 		JSValueUnprotect([EJJavaScriptView sharedView].jsGlobalContext, jsObject);
-	}] retain];
+	}];
 }
 
-- (void)dealloc {
-	[texture release];
-	[path release];
-	[super dealloc];
-}
 
 EJ_BIND_GET(src, ctx ) { 
 	JSStringRef src = JSStringCreateWithUTF8CString( [path UTF8String] );
@@ -49,15 +44,13 @@ EJ_BIND_SET(src, ctx, value) {
 	
 	// Release the old path and texture?
 	if( path ) {
-		[path release];
 		path = nil;
 		
-		[texture release];
 		texture = nil;
 	}
 	
 	if( [newPath length] ) {
-		path = [newPath retain];
+		path = newPath;
 		[self beginLoad];
 	}
 }

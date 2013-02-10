@@ -4,21 +4,17 @@
 
 - (id)initWithWebGLContext:(EJBindingCanvasContextWebGL *)webglContextp index:(GLuint)indexp {
 	if( self = [super initWithContext:NULL argc:0 argv:NULL] ) {
-		webglContext = [webglContextp retain];
+		webglContext = webglContextp;
 		index = indexp;
 	}
 	return self;
 }
 
-- (void)dealloc {
-	[webglContext release];
-	[super dealloc];
-}
 
 + (GLuint)indexFromJSValue:(JSValueRef)value {
 	if( !value ) { return 0; }
 	
-	EJBindingWebGLObject *binding = (EJBindingWebGLObject *)JSObjectGetPrivate((JSObjectRef)value);
+	EJBindingWebGLObject *binding = JSValueGetNativeObject(value);
 	return (binding && [binding isMemberOfClass:[self class]]) ? binding->index : 0;
 }
 
@@ -33,7 +29,6 @@
 @implementation EJBindingWebGLBuffer
 - (void)dealloc {
 	[webglContext deleteBuffer:index];
-	[super dealloc];
 }
 @end
 
@@ -41,7 +36,6 @@
 @implementation EJBindingWebGLProgram
 - (void)dealloc {
 	[webglContext deleteProgram:index];
-	[super dealloc];
 }
 @end
 
@@ -49,7 +43,6 @@
 @implementation EJBindingWebGLShader
 - (void)dealloc {
 	[webglContext deleteShader:index];
-	[super dealloc];
 }
 @end
 
@@ -57,7 +50,7 @@
 @implementation EJBindingWebGLTexture
 - (id)initWithWebGLContext:(EJBindingCanvasContextWebGL *)webglContextp {
 	if( self = [super initWithContext:NULL argc:0 argv:NULL] ) {
-		webglContext = [webglContextp retain];
+		webglContext = webglContextp;
 		texture = [[EJTexture alloc] initEmptyForWebGL];
 	}
 	return self;
@@ -67,14 +60,12 @@
 	if( texture.textureId ) {
 		[webglContext deleteTexture:texture.textureId];
 	}
-	[texture release];
-	[super dealloc];
 }
 
 + (EJTexture *)textureFromJSValue:(JSValueRef)value {
 	if( !value ) { return NULL; }
 	
-	EJBindingWebGLTexture *binding = (EJBindingWebGLTexture *)JSObjectGetPrivate((JSObjectRef)value);
+	EJBindingWebGLTexture *binding = JSValueGetNativeObject(value);
 	return (binding && [binding isMemberOfClass:[self class]]) ? binding->texture : NULL;
 }
 
@@ -93,14 +84,12 @@
 @implementation EJBindingWebGLRenderbuffer
 - (void)dealloc {
 	[webglContext deleteRenderbuffer:index];
-	[super dealloc];
 }
 @end
 
 @implementation EJBindingWebGLFramebuffer
 - (void)dealloc {
 	[webglContext deleteFramebuffer:index];
-	[super dealloc];
 }
 @end
 
@@ -111,15 +100,11 @@
 	if( self = [super initWithContext:NULL argc:0 argv:NULL] ) {
 		size = sizep;
 		type = typep;
-		name = [namep retain];
+		name = namep;
 	}
 	return self;
 }
 
-- (void)dealloc {
-	[name release];
-	[super dealloc];
-}
 
 EJ_BIND_GET(size, ctx) { return JSValueMakeNumber(ctx, size); }
 EJ_BIND_GET(type, ctx) { return JSValueMakeNumber(ctx, type); }

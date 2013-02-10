@@ -4,15 +4,14 @@ NSString *JSValueToNSString( JSContextRef ctx, JSValueRef v ) {
 	JSStringRef jsString = JSValueToStringCopy( ctx, v, NULL );
 	if( !jsString ) return nil;
 	
-	NSString *string = (NSString *)JSStringCopyCFString( kCFAllocatorDefault, jsString );
-	[string autorelease];
+	NSString *string = (NSString *)CFBridgingRelease(JSStringCopyCFString( kCFAllocatorDefault, jsString ));
 	JSStringRelease( jsString );
 	
 	return string;
 }
 
 JSValueRef NSStringToJSValue( JSContextRef ctx, NSString *string ) {
-	JSStringRef jstr = JSStringCreateWithCFString((CFStringRef)string);
+	JSStringRef jstr = JSStringCreateWithCFString((__bridge CFStringRef)string);
 	JSValueRef ret = JSValueMakeString(ctx, jstr);
 	JSStringRelease(jstr);
 	return ret;

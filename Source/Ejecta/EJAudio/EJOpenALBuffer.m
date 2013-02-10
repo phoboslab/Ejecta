@@ -10,7 +10,7 @@
 @synthesize duration;
 
 + (id)cachedBufferWithPath:(NSString *)path {
-	EJOpenALBuffer *buffer = [[EJJavaScriptView sharedView].openALManager.buffers[path] retain];
+	EJOpenALBuffer *buffer = [EJJavaScriptView sharedView].openALManager.buffers[path];
 	if( !buffer ) {
 		buffer = [[EJOpenALBuffer alloc] initWithPath:path];
 		[EJJavaScriptView sharedView].openALManager.buffers[path] = buffer;
@@ -20,7 +20,7 @@
 
 - (id)initWithPath:(NSString *)pathp {
 	if( self = [super init] ) {
-		path = [pathp retain];
+		path = pathp;
 		NSURL *url = [NSURL fileURLWithPath:pathp];
 		void *data = [self getAudioDataWithURL:url];
 
@@ -35,12 +35,10 @@
 
 - (void)dealloc {
 	[[EJJavaScriptView sharedView].openALManager.buffers removeObjectForKey:path];
-	[path release];
 	
 	if( bufferId ) {
 		alDeleteBuffers(1, &bufferId);
 	}
-	[super dealloc];
 }
 
 - (void*)getAudioDataWithURL:(NSURL *)url {
@@ -49,7 +47,7 @@
 	
 	// Open the file
 	ExtAudioFileRef	file = NULL;
-	OSStatus error = ExtAudioFileOpenURL((CFURLRef)url, &file);
+	OSStatus error = ExtAudioFileOpenURL((__bridge CFURLRef)url, &file);
 	if( error ) {
 		NSLog(@"OpenALSource: ExtAudioFileOpenURL FAILED, Error = %ld", error);
 		goto Exit; 

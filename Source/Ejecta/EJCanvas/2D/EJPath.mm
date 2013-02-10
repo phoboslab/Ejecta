@@ -20,7 +20,6 @@ typedef std::vector<subpath_t> path_t;
 
 
 @implementation EJPath
-
 @synthesize transform;
 
 - (id)init {
@@ -321,8 +320,8 @@ typedef std::vector<subpath_t> path_t;
 	if( longestSubpath < 3 ) { return; }
 	
 	EJCanvasState *state = context.state;
-	EJColorRGBA color = state->fillColor;
-	color.rgba.a = (float)color.rgba.a * state->globalAlpha;
+	EJColorRGBA color = state.fillColor;
+	color.rgba.a = (float)color.rgba.a * state.globalAlpha;
 	
 	
 	// For potentially concave polygons (those with more than 3 unique vertices), we
@@ -392,7 +391,7 @@ typedef std::vector<subpath_t> path_t;
 	glStencilFunc(GL_NOTEQUAL, 0x00, 0xff);
 	glStencilOp(GL_ZERO, GL_ZERO, GL_ZERO);
 
-	if( state->fillObject && target == kEJPathPolygonTargetColor ) {
+	if( state.fillObject && target == kEJPathPolygonTargetColor ) {
 		// If we have a fill pattern or gradient, we have to do some extra work to unproject the
 		// Quad we're drawing, so we can then project it _with_ the pattern/gradient again
 		
@@ -406,10 +405,10 @@ typedef std::vector<subpath_t> path_t;
 		EJVector2 tmin = { MIN(p1.x, MIN(p2.x,MIN(p3.x, p4.x))), MIN(p1.y, MIN(p2.y,MIN(p3.y, p4.y))) };
 		EJVector2 tmax = { MAX(p1.x, MAX(p2.x,MAX(p3.x, p4.x))), MAX(p1.y, MAX(p2.y,MAX(p3.y, p4.y))) };
 		
-		color = (EJColorRGBA){.rgba = {255, 255, 255, 255 * state->globalAlpha}};
+		color = (EJColorRGBA){.rgba = {255, 255, 255, 255 * state.globalAlpha}};
 		[context
 			pushFilledRectX:tmin.x y:tmin.y w:tmax.x-tmin.x h:tmax.y-tmin.y
-			fillable:state->fillObject color:color withTransform:transform];
+			fillable:state.fillObject color:color withTransform:transform];
 	}
 	else {
 		[context
@@ -432,7 +431,7 @@ typedef std::vector<subpath_t> path_t;
 - (void)drawArcToContext:(EJCanvasContext2D *)context atPoint:(EJVector2)point v1:(EJVector2)p1 v2:(EJVector2)p2 color:(EJColorRGBA)color {
 
 	EJCanvasState *state = context.state;
-	float width2 = state->lineWidth/2;
+	float width2 = state.lineWidth/2;
 	
 	EJVector2
 		v1 = EJVector2Normalize(EJVector2Sub(p1, point)),
@@ -452,7 +451,7 @@ typedef std::vector<subpath_t> path_t;
 	}
 	
 	// 1 step per 5 pixel
-	float pxScale = CGAffineTransformGetScale(state->transform);
+	float pxScale = CGAffineTransformGetScale(state.transform);
 	int numSteps = ceilf( (angle2 * width2 * pxScale) / 5.0f );
 	
 	if( numSteps == 1 ) {
@@ -496,23 +495,23 @@ typedef std::vector<subpath_t> path_t;
 	EJCanvasState *state = context.state;
 	
 	// Find the width of the line as it is projected onto the screen.
-	float projectedLineWidth = CGAffineTransformGetScale( state->transform ) * state->lineWidth;
+	float projectedLineWidth = CGAffineTransformGetScale( state.transform ) * state.lineWidth;
 	
 	// Figure out if we need to add line caps and set the cap texture coord for square or round caps.
 	// For thin lines we disable texturing and line caps.
-	float width2 = state->lineWidth/2;
-	BOOL addCaps = (projectedLineWidth > 2 && (state->lineCap == kEJLineCapRound || state->lineCap == kEJLineCapSquare));
+	float width2 = state.lineWidth/2;
+	BOOL addCaps = (projectedLineWidth > 2 && (state.lineCap == kEJLineCapRound || state.lineCap == kEJLineCapSquare));
 	
 	// The miter limit is the maximum allowed ratio of the miter length to half the line width.
-	BOOL addMiter = (state->lineJoin == kEJLineJoinMiter);
-	float miterLimit = (state->miterLimit * width2);
+	BOOL addMiter = (state.lineJoin == kEJLineJoinMiter);
+	float miterLimit = (state.miterLimit * width2);
 	
-	EJColorRGBA color = state->strokeColor;
-	color.rgba.a = (float)color.rgba.a * state->globalAlpha;
+	EJColorRGBA color = state.strokeColor;
+	color.rgba.a = (float)color.rgba.a * state.globalAlpha;
 	
 	// Enable stencil test when drawing transparent lines.
 	// Cycle through all bits, so that the stencil buffer only has to be cleared after eight stroke operations
-	BOOL useStencil = (color.rgba.a < 0xff || state->globalCompositeOperation != kEJCompositeOperationSourceOver);
+	BOOL useStencil = (color.rgba.a < 0xff || state.globalCompositeOperation != kEJCompositeOperationSourceOver);
 	if( useStencil ) {
 		[context flushBuffers];
 		[context createStencilBufferOnce];
@@ -583,7 +582,7 @@ typedef std::vector<subpath_t> path_t;
 				
 				// Start cap
 				if( addCaps && !subPathIsClosed ) {
-					if( state->lineCap == kEJLineCapSquare ) {
+					if( state.lineCap == kEJLineCapSquare ) {
 						EJVector2 capExt = { -nextExt.y, nextExt.x };
 						EJVector2 cap11 = EJVector2Add( miter21, capExt );
 						EJVector2 cap12 = EJVector2Add( miter22, capExt );
@@ -607,7 +606,7 @@ typedef std::vector<subpath_t> path_t;
 			BOOL miterAdded = false;
 			if( addMiter ) {
 				EJVector2 miterEdge = EJVector2Add( currentEdge, nextEdge );
-				float miterExt = (1/EJVector2Dot(miterEdge, miterEdge)) * state->lineWidth;
+				float miterExt = (1/EJVector2Dot(miterEdge, miterEdge)) * state.lineWidth;
 				
 				if( miterExt < miterLimit ) {
 					miterEdge.x *= miterExt;
@@ -663,7 +662,7 @@ typedef std::vector<subpath_t> path_t;
 				d2 = EJDistanceToLineSegmentSquared(EJVector2Sub(current, nextExt), current, prev);
 				p2 = ( d1 > d2 ) ? EJVector2Add(current, nextExt) : EJVector2Sub(current, nextExt);
 				
-				if( state->lineJoin==kEJLineJoinRound ) {
+				if( state.lineJoin==kEJLineJoinRound ) {
 					[self drawArcToContext:context atPoint:current v1:p1 v2:p2 color:color];
 				}
 				else {
@@ -716,7 +715,7 @@ typedef std::vector<subpath_t> path_t;
 			d2 = EJDistanceToLineSegmentSquared(firstMiter2, current, next);
 			p1 = (d1>d2)?firstMiter1:firstMiter2;
 			
-			if( state->lineJoin==kEJLineJoinRound ) {
+			if( state.lineJoin==kEJLineJoinRound ) {
 				[self drawArcToContext:context atPoint:next v1:p1 v2:p2 color:color];
 			}
 			else {
@@ -732,7 +731,7 @@ typedef std::vector<subpath_t> path_t;
 
 		// End cap
 		if( addCaps && !subPathIsClosed ) {
-			if( state->lineCap == kEJLineCapSquare ) {
+			if( state.lineCap == kEJLineCapSquare ) {
 				EJVector2 capExt = { nextExt.y, -nextExt.x };
 				EJVector2 cap11 = EJVector2Add( miter11, capExt );
 				EJVector2 cap12 = EJVector2Add( miter12, capExt );

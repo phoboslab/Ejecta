@@ -3,8 +3,8 @@
 
 
 void _ej_class_finalize(JSObjectRef object) {
-	id instance = (id)JSObjectGetPrivate(object);
-	[instance release];
+	id instance;
+	instance = (__bridge_transfer id)JSObjectGetPrivate(object);
 }
 
 NSData *NSDataFromString( NSString *str ) {
@@ -45,7 +45,6 @@ static NSMutableDictionary *CachedJSClasses;
 }
 
 + (void)clearJSClassCache {
-	[CachedJSClasses release];
 	CachedJSClasses = NULL;
 }
 
@@ -88,12 +87,12 @@ static NSMutableDictionary *CachedJSClasses;
 		values[i].attributes = kJSPropertyAttributeDontDelete;
 		
 		SEL get = NSSelectorFromString([NSString stringWithFormat:@"_ptr_to_get_%@", name]);
-		values[i].getProperty = (JSObjectGetPropertyCallback)[self performSelector:get];
+		values[i].getProperty = (__bridge void *)objc_msgSend(self, get);
 		
 		// Property has a setter? Otherwise mark as read only
 		SEL set = NSSelectorFromString([NSString stringWithFormat:@"_ptr_to_set_%@", name]);
 		if( [self respondsToSelector:set] ) {
-			values[i].setProperty = (JSObjectSetPropertyCallback)[self performSelector:set];
+			values[i].setProperty = (__bridge void *)objc_msgSend(self, set);
 		}
 		else {
 			values[i].attributes |= kJSPropertyAttributeReadOnly;
@@ -110,7 +109,7 @@ static NSMutableDictionary *CachedJSClasses;
 		functions[i].attributes = kJSPropertyAttributeDontDelete;
 		
 		SEL call = NSSelectorFromString([NSString stringWithFormat:@"_ptr_to_func_%@", name]);
-		functions[i].callAsFunction = (JSObjectCallAsFunctionCallback)[self performSelector:call];
+		functions[i].callAsFunction = (__bridge void *)objc_msgSend(self, call);
 	}
 	
 	JSClassDefinition classDef = kJSClassDefinitionEmpty;
@@ -123,8 +122,6 @@ static NSMutableDictionary *CachedJSClasses;
 	free( values );
 	free( functions );
 	
-	[properties release];
-	[methods release];
 	
 	return class;
 }
@@ -133,7 +130,7 @@ static NSMutableDictionary *CachedJSClasses;
 	JSClassRef jsClass = [self getJSClass];
 	
 	JSObjectRef obj = JSObjectMake( ctx, jsClass, NULL );
-	JSObjectSetPrivate( obj, (void *)instance );
+	JSObjectSetPrivate( obj, (__bridge_retained void *)instance );
 	instance->jsObject = obj;
 	
 	return obj;

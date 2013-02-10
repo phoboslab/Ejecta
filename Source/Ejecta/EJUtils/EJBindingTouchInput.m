@@ -49,7 +49,6 @@
 		JSValueUnprotect( ctx, jsTouchesPool[i] );
 	}
 	
-	[super dealloc];
 }
 
 - (void)triggerEvent:(NSString *)name all:(NSSet *)all changed:(NSSet *)changed remaining:(NSSet *)remaining {

@@ -7,19 +7,13 @@
 
 - (id)initWithPath:(NSString *)pathp {
 	if( self = [super init] ) {
-		path = [pathp retain];
+		path = pathp;
 		player = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:path] error:nil];
 		player.delegate = self;
 	}
 	return self;
 }
 
-- (void)dealloc {
-	[path release];
-	[player release];
-	
-	[super dealloc];
-}
 
 - (void)play {
 	[player play];

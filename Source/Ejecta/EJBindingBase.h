@@ -39,10 +39,11 @@ extern JSValueRef ej_global_undefined;
 		JSObjectRef object, \
 		size_t argc, \
 		const JSValueRef argv[], \
-		JSValueRef* exception \
+		JSValueRef *exception \
 	) { \
-		id instance = (id)JSObjectGetPrivate(object); \
-		JSValueRef ret = (JSValueRef)objc_msgSend(instance, @selector(_func_##NAME:argc:argv:), ctx, argc, argv); \
+		__unsafe_unretained id instance = (__bridge id)JSObjectGetPrivate(object); \
+		JSValueRef ret = (__bridge JSValueRef)objc_msgSend( \
+			instance, @selector(_func_##NAME:argc:argv:), ctx, argc, argv); \
 		return ret ? ret : ej_global_undefined; \
 	} \
 	__EJ_GET_POINTER_TO(_func_##NAME)\
@@ -61,10 +62,10 @@ extern JSValueRef ej_global_undefined;
 		JSContextRef ctx, \
 		JSObjectRef object, \
 		JSStringRef propertyName, \
-		JSValueRef* exception \
+		JSValueRef *exception \
 	) { \
-		id instance = (id)JSObjectGetPrivate(object); \
-		return (JSValueRef)objc_msgSend(instance, @selector(_get_##NAME:), ctx); \
+		__unsafe_unretained id instance = (__bridge id)JSObjectGetPrivate(object); \
+		return (__bridge JSValueRef)objc_msgSend(instance, @selector(_get_##NAME:), ctx); \
 	} \
 	__EJ_GET_POINTER_TO(_get_##NAME)\
 	\
@@ -83,9 +84,9 @@ extern JSValueRef ej_global_undefined;
 		JSObjectRef object, \
 		JSStringRef propertyName, \
 		JSValueRef value, \
-		JSValueRef* exception \
+		JSValueRef *exception \
 	) { \
-		id instance = (id)JSObjectGetPrivate(object); \
+		__unsafe_unretained id instance = (__bridge id)JSObjectGetPrivate(object); \
 		objc_msgSend(instance, @selector(_set_##NAME:value:), ctx, value); \
 		return true; \
 	} \
@@ -106,7 +107,7 @@ extern JSValueRef ej_global_undefined;
 		JSObjectRef object, \
 		size_t argc, \
 		const JSValueRef argv[], \
-		JSValueRef* exception \
+		JSValueRef *exception \
 	) { \
 		static bool didShowWarning; \
 		if( !didShowWarning ) { \
@@ -136,7 +137,7 @@ extern JSValueRef ej_global_undefined;
 		JSStringRef _str = JSValueToStringCopy(ctx, value, NULL); \
 		const JSChar *_strptr = JSStringGetCharactersPtr( _str ); \
 		int _length = JSStringGetLength(_str)-1; \
-		const char ** _names = _##NAME##EnumNames; \
+		const char **_names = _##NAME##EnumNames; \
 		int _target; \
 		EJ_MAP_EXT(0, _EJ_LITERAL(else), _EJ_BIND_ENUM_COMPARE, __VA_ARGS__) \
 		else { JSStringRelease( _str ); return; } \
@@ -164,7 +165,7 @@ static inline bool JSStrIsEqualToStr( const JSChar *s1, const char *s2, int leng
 		JSContextRef ctx, \
 		JSObjectRef object, \
 		JSStringRef propertyName, \
-		JSValueRef* exception \
+		JSValueRef *exception \
 	) { \
 		return JSValueMakeNumber(ctx, VALUE); \
 	} \

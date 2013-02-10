@@ -8,18 +8,14 @@
 	if( self = [super init] ) {
 		width = widthp;
 		height = heightp;
-		pixels = [pixelsp retain];
+		pixels = pixelsp;
 	}
 	return self;
 }
 
-- (void)dealloc {
-	[pixels release];
-	[super dealloc];
-}
 
 - (EJTexture *)texture {
-	return [[[EJTexture alloc] initWithWidth:width height:height pixels:pixels] autorelease];
+	return [[EJTexture alloc] initWithWidth:width height:height pixels:pixels];
 }
 
 @end

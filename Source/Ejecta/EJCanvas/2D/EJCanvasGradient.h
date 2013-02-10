@@ -33,7 +33,7 @@ typedef struct {
 - (NSData *)getPixelsWithWidth:(int)width forSortedStops:(NSArray *)stops;
 
 @property (readonly, nonatomic) EJCanvasGradientType type;
-@property (readonly, nonatomic) EJTexture *texture;
+@property (weak, readonly, nonatomic) EJTexture *texture;
 @property (readonly, nonatomic) EJVector2 p1;
 @property (readonly, nonatomic) EJVector2 p2;
 @property (readonly, nonatomic) float r1;

@@ -7,7 +7,7 @@
 
 - (id)initWithImageData:(EJImageData *)data {
 	if( self = [super initWithContext:NULL argc:0 argv:NULL] ) {
-		imageData = [data retain];
+		imageData = data;
 		dataArray = NULL;
 	}
 	return self;
@@ -19,8 +19,6 @@
 		JSValueUnprotect(ctx, dataArray);
 	}
 	
-	[imageData release];
-	[super dealloc];
 }
 
 - (EJImageData *)imageData {

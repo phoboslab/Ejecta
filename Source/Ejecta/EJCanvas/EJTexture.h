@@ -73,7 +73,7 @@ typedef enum {
 - (void)bindToTarget:(GLenum)target;
 
 @property (readonly, nonatomic) BOOL isDynamic;
-@property (readonly, nonatomic) NSMutableData *pixels;
+@property (weak, readonly, nonatomic) NSMutableData *pixels;
 @property (readonly, nonatomic)	float contentScale;
 @property (readonly, nonatomic) GLuint textureId;
 @property (readonly, nonatomic) GLenum format;

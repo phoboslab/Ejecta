@@ -26,7 +26,7 @@ typedef enum {
 	CGAffineTransform transform;
 }
 
-@property (nonatomic,assign) CGAffineTransform transform;;
+@property (nonatomic, assign) CGAffineTransform transform;
 
 - (void)push:(EJVector2)v;
 - (void)reset;

@@ -12,17 +12,12 @@
 	return self;
 }
 
-- (void)dealloc {
-	[timers release];
-	[super dealloc];
-}
 
 - (int)scheduleCallback:(JSObjectRef)callback interval:(NSTimeInterval)interval repeat:(BOOL)repeat {
 	lastId++;
 	
 	EJTimer *timer = [[EJTimer alloc] initWithCallback:callback interval:interval repeat:repeat];
 	timers[@(lastId)] = timer;
-	[timer release];
 	return lastId;
 }
 
@@ -46,7 +41,7 @@
 
 
 @interface EJTimer()
-@property (nonatomic, retain) NSDate *target;
+@property (nonatomic, strong) NSDate *target;
 @end
 
 
@@ -68,7 +63,6 @@
 
 - (void)dealloc {
 	JSValueUnprotect([EJJavaScriptView sharedView].jsGlobalContext, callback);
-	[super dealloc];
 }
 
 - (void)check {	

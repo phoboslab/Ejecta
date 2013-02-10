@@ -7,7 +7,6 @@
 #import "EJFont.h"
 #import "EJGLProgram2D.h"
 
-#define EJ_CANVAS_STATE_STACK_SIZE 16
 #define EJ_CANVAS_VERTEX_BUFFER_SIZE 1600 // 1600 * 20b = ~32kb
 
 extern EJVertex EJCanvasVertexBuffer[EJ_CANVAS_VERTEX_BUFFER_SIZE];
@@ -57,26 +56,30 @@ typedef enum {
 @protocol EJFillable
 @end
 
-typedef struct {
-	CGAffineTransform transform;
-	
-	EJCompositeOperation globalCompositeOperation;
-	EJColorRGBA fillColor;
-	NSObject<EJFillable> *fillObject;
-	EJColorRGBA strokeColor;
-	float globalAlpha;
-	
-	float lineWidth;
-	EJLineCap lineCap;
-	EJLineJoin lineJoin;
-	float miterLimit;
-	
-	EJTextAlign textAlign;
-	EJTextBaseline textBaseline;
-	EJFontDescriptor *font;
-	
-	EJPath *clipPath;
-} EJCanvasState;
+
+@interface EJCanvasState : NSObject <NSCopying>
+
+@property (nonatomic) CGAffineTransform transform;
+
+@property (nonatomic) EJCompositeOperation globalCompositeOperation;
+@property (nonatomic) EJColorRGBA fillColor;
+@property (nonatomic, retain) NSObject<EJFillable> *fillObject;
+@property (nonatomic) EJColorRGBA strokeColor;
+@property (nonatomic) float globalAlpha;
+
+@property (nonatomic) float lineWidth;
+@property (nonatomic) EJLineCap lineCap;
+@property (nonatomic) EJLineJoin lineJoin;
+@property (nonatomic) float miterLimit;
+
+@property (nonatomic) EJTextAlign textAlign;
+@property (nonatomic) EJTextBaseline textBaseline;
+@property (nonatomic, strong) EJFontDescriptor *font;
+
+@property (nonatomic, strong) EJPath *clipPath;
+
+@end
+
 
 @class EJJavaScriptView;
 @interface EJCanvasContext2D : EJCanvasContext {
@@ -94,11 +97,8 @@ typedef struct {
 	int vertexBufferIndex;
 	
 	int stateIndex;
-	EJCanvasState stateStack[EJ_CANVAS_STATE_STACK_SIZE];
+	NSMutableArray *stateStack;
 	EJCanvasState *state;
-	
-	BOOL useRetinaResolution;
-	float backingStoreRatio;
 	
 	NSCache *fontCache;
 	
@@ -177,10 +177,8 @@ typedef struct {
 - (void)clip;
 - (void)resetClip;
 
-@property (nonatomic) EJCanvasState *state;
+@property (nonatomic, readonly) EJCanvasState *state;
 @property (nonatomic) EJCompositeOperation globalCompositeOperation;
-@property (nonatomic, retain) EJFontDescriptor *font;
-@property (nonatomic, retain) NSObject<EJFillable> *fillObject;
 @property (nonatomic, assign) float backingStoreRatio;
 @property (nonatomic) BOOL useRetinaResolution;
 @property (nonatomic) BOOL imageSmoothingEnabled;

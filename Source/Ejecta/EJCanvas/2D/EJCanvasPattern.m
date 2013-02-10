@@ -13,9 +13,5 @@
 	return self;
 }
 
-- (void)dealloc {
-	[texture release];
-	[super dealloc];
-}
 
 @end

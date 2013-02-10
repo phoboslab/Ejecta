@@ -31,7 +31,6 @@
 
 - (void)dealloc {
 	if( program ) { glDeleteProgram(program); }
-	[super dealloc];
 }
 
 - (void)bindAttributeLocations {

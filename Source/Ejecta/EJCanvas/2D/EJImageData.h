@@ -8,7 +8,7 @@
 
 - (id)initWithWidth:(int)width height:(int)height pixels:(NSMutableData *)pixels;
 
-@property (readonly, nonatomic) EJTexture *texture;
+@property (weak, readonly, nonatomic) EJTexture *texture;
 @property (readonly, nonatomic) int width;
 @property (readonly, nonatomic) int height;
 @property (readonly, nonatomic) NSMutableData *pixels;

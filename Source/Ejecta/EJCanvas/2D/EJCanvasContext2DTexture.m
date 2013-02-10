@@ -3,16 +3,16 @@
 @implementation EJCanvasContext2DTexture
 
 - (void)create {
-	backingStoreRatio = (useRetinaResolution && [UIScreen mainScreen].scale == 2) ? 2 : 1;
-	bufferWidth = width * backingStoreRatio;
-	bufferHeight = height * backingStoreRatio;
+	self.backingStoreRatio = (self.useRetinaResolution && [UIScreen mainScreen].scale == 2) ? 2 : 1;
+	bufferWidth = width * self.backingStoreRatio;
+	bufferHeight = height * self.backingStoreRatio;
 	
 	// This creates the frame- and renderbuffers
 	[super create];
 	
 	// Create the texture and set it as the rendering target for this framebuffer
 	texture = [[EJTexture alloc] initAsRenderTargetWithWidth:width height:height
-		fbo:viewFrameBuffer contentScale:backingStoreRatio];
+		fbo:viewFrameBuffer contentScale:self.backingStoreRatio];
 
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture.textureId, 0);
 	
@@ -23,15 +23,10 @@
 	glClear(GL_COLOR_BUFFER_BIT);
 }
 
-- (void)dealloc {
-	[texture release];
-	[super dealloc];
-}
 
 - (void)recreate {
-	[texture release];
 	texture = [[EJTexture alloc] initAsRenderTargetWithWidth:width height:height
-		fbo:viewFrameBuffer contentScale:backingStoreRatio];
+		fbo:viewFrameBuffer contentScale:self.backingStoreRatio];
 	bufferWidth = texture.width;
 	bufferHeight = texture.height;
 	

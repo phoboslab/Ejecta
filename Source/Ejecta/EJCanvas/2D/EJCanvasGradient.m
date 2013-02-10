@@ -30,18 +30,12 @@
 	return self;
 }
 
-- (void)dealloc {
-	[texture release];
-	[colorStops release];
-	[super dealloc];
-}
 
 - (void)addStopWithColor:(EJColorRGBA)color at:(float)pos {
 	EJCanvasGradientColorStop stop = { .pos = pos, .color = color, .order = colorStops.count };
 	[colorStops addObject:[NSValue value:&stop withObjCType:@encode(EJCanvasGradientColorStop)]];
 	
 	// Release current texture; it's invalid now
-	[texture release];
 	texture = NULL;
 }
 

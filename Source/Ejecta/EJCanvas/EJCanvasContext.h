@@ -17,6 +17,6 @@
 @property (nonatomic) int msaaSamples;
 @property (nonatomic) short width;
 @property (nonatomic) short height;
-@property (nonatomic, readonly) EAGLContext *glContext;
+@property (strong, nonatomic, readonly) EAGLContext *glContext;
 
 @end

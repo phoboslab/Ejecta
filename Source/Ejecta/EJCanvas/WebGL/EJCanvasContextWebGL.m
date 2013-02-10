@@ -9,7 +9,8 @@
 
 - (id)initWithWidth:(short)widthp height:(short)heightp {
 	if( self = [super init] ) {
-		glContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2 sharegroup:[EJJavaScriptView sharedView].glSharegroup];
+		glContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2 sharegroup:
+			[EJJavaScriptView sharedView].glSharegroup];
 		
 		bufferWidth = width = widthp;
 		bufferHeight = height = heightp;
@@ -92,11 +93,8 @@
 	if( viewFrameBuffer ) { glDeleteFramebuffers( 1, &viewFrameBuffer); }
 	if( viewRenderBuffer ) { glDeleteRenderbuffers(1, &viewRenderBuffer); }
 	if( depthRenderBuffer ) { glDeleteRenderbuffers(1, &depthRenderBuffer); }
-	[glview release];
-	[glContext release];
 	
 	[EAGLContext setCurrentContext:oldContext];
-	[super dealloc];
 }
 
 - (void)prepare {	

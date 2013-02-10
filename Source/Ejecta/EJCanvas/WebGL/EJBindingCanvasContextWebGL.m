@@ -13,7 +13,7 @@
 - (id)initWithCanvas:(JSObjectRef)canvas renderingContext:(EJCanvasContextWebGL *)renderingContextp {
 	if( self = [super initWithContext:NULL argc:0 argv:NULL] ) {
 		ejectaInstance = [EJJavaScriptView sharedView]; // Keep a local copy - may be faster?
-		renderingContext = [renderingContextp retain];
+		renderingContext = renderingContextp;
 		jsCanvas = canvas;
 		
 		buffers = [NSMutableDictionary new];
@@ -35,27 +35,19 @@
 	[EAGLContext setCurrentContext:renderingContext.glContext];
 	
 	for( NSNumber *n in buffers ) { GLuint buffer = n.intValue; glDeleteBuffers(1, &buffer); }
-	[buffers release];
 	
 	for( NSNumber *n in programs ) { glDeleteProgram(n.intValue); }
-	[programs release];
 	
 	for( NSNumber *n in shaders ) { glDeleteShader(n.intValue); }
-	[shaders release];
 	
 	for( NSNumber *n in framebuffers ) { GLuint buffer = n.intValue; glDeleteFramebuffers(1, &buffer); }
-	[framebuffers release];
 	
 	for( NSNumber *n in renderbuffers ) { GLuint buffer = n.intValue; glDeleteRenderbuffers(1, &buffer); }
-	[renderbuffers release];
 	
-	[textures release];
 	
 	[EAGLContext setCurrentContext:oldContext];
 	
-	[renderingContext release];
 	
-	[super dealloc];
 }
 
 - (void)deleteBuffer:(GLuint)buffer {
@@ -1304,7 +1296,7 @@ EJ_BIND_FUNCTION(texImage2D, ctx, argc, argv) {
 	if( argc == 6) {
 		EJ_UNPACK_ARGV_OFFSET(3, GLenum format, GLenum type);
 		
-		NSObject<EJDrawable> *drawable = (NSObject<EJDrawable> *)JSObjectGetPrivate((JSObjectRef)argv[5]);
+		NSObject<EJDrawable> *drawable = JSValueGetNativeObject(argv[5]);
 		EJTexture *sourceTexture = drawable.texture;		
 		
 		// We don't care about internalFormat, format or type params here; the source image will
@@ -1437,7 +1429,7 @@ EJ_BIND_FUNCTION(texSubImage2D, ctx, argc, argv) {
 	if( argc == 7) {
 		EJ_UNPACK_ARGV_OFFSET(4, GLenum format, GLenum type);
 		
-		NSObject<EJDrawable> *drawable = (NSObject<EJDrawable> *)JSObjectGetPrivate((JSObjectRef)argv[5]);
+		NSObject<EJDrawable> *drawable = JSValueGetNativeObject(argv[5]);
 		EJTexture *sourceTexture = drawable.texture;		
 		
 		// We don't care about internalFormat, format or type params here; the source image will

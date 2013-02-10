@@ -10,6 +10,6 @@
 - (id)initWithImageData:(EJImageData *)data;
 
 @property (readonly, nonatomic) EJImageData *imageData;
-@property (readonly, nonatomic) EJTexture *texture;
+@property (weak, readonly, nonatomic) EJTexture *texture;
 
 @end

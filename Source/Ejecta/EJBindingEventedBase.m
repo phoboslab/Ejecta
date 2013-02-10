@@ -21,16 +21,13 @@
 			JSValueUnprotect(ctx, [callbackValue pointerValue]);
 		}
 	}
-	[eventListeners release];
 	
 	// Unprotect all event callbacks
 	for( NSString *name in onCallbacks ) {
 		NSValue *listener = onCallbacks[name];
 		JSValueUnprotect(ctx, [(NSValue *)listener pointerValue]);
 	}
-	[onCallbacks release];
 	
-	[super dealloc];
 }
 
 - (JSObjectRef)getCallbackWith:(NSString *)name ctx:(JSContextRef)ctx {

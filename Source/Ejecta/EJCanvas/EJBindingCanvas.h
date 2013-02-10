@@ -25,6 +25,6 @@ typedef enum {
 	int msaaSamples;
 }
 
-@property (readonly, nonatomic) EJTexture *texture;
+@property (weak, readonly, nonatomic) EJTexture *texture;
 
 @end

@@ -45,11 +45,9 @@ static BOOL HasScreenCanvas = NO;
 	if( isScreenCanvas ) {
 		HasScreenCanvas	= NO;
 	}
-	[renderingContext release];
 	if( jsCanvasContext ) {
 		JSValueUnprotect([EJJavaScriptView sharedView].jsGlobalContext, jsCanvasContext);
 	}
-	[super dealloc];
 }
 
 - (EJTexture *)texture {

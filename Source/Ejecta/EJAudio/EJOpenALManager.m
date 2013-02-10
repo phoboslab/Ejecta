@@ -6,7 +6,7 @@
 -(id)init {
 	if( self = [super init] ) {
 		// Create a non-retaining Dictionary to hold the cached buffers
-		buffers = (NSMutableDictionary*)CFDictionaryCreateMutable(NULL, 8, &kCFCopyStringDictionaryKeyCallBacks, NULL);
+		buffers = (NSMutableDictionary*)CFBridgingRelease(CFDictionaryCreateMutable(NULL, 8, &kCFCopyStringDictionaryKeyCallBacks, NULL));
 		
 		device = alcOpenDevice(NULL);
 		if( device ) {
@@ -18,11 +18,9 @@
 }
 
 - (void)dealloc {
-	[buffers release];
 	
 	alcDestroyContext( context );
 	alcCloseDevice( device );
-	[super dealloc];
 }
 
 @end

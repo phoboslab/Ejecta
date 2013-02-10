@@ -9,10 +9,10 @@
 		JSContextRef ctx, \
 		JSObjectRef object, \
 		JSStringRef propertyName, \
-		JSValueRef* exception \
+		JSValueRef *exception \
 	) { \
-		id instance = (id)JSObjectGetPrivate(object); \
-		return (JSValueRef)objc_msgSend(instance, @selector(getCallbackWith:ctx:), ( @ #NAME), ctx); \
+		__unsafe_unretained id instance = (__bridge id)JSObjectGetPrivate(object); \
+		return (__bridge JSValueRef)objc_msgSend(instance, @selector(getCallbackWith:ctx:), ( @ #NAME), ctx); \
 	} \
 	__EJ_GET_POINTER_TO(_get_on##NAME) \
 	\
@@ -21,9 +21,9 @@
 		JSObjectRef object, \
 		JSStringRef propertyName, \
 		JSValueRef value, \
-		JSValueRef* exception \
+		JSValueRef *exception \
 	) { \
-		id instance = (id)JSObjectGetPrivate(object); \
+		__unsafe_unretained id instance = (__bridge id)JSObjectGetPrivate(object); \
 		objc_msgSend(instance, @selector(setCallbackWith:ctx:callback:), ( @ #NAME), ctx, value); \
 		return true; \
 	} \

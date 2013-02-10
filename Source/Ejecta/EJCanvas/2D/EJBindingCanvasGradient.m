@@ -5,7 +5,7 @@
 
 + (JSObjectRef)createJSObjectWithContext:(JSContextRef)ctx gradient:(EJCanvasGradient *)gradient {
 	EJBindingCanvasGradient *binding = [[EJBindingCanvasGradient alloc] initWithContext:ctx argc:0 argv:NULL];
-	binding->gradient = [gradient retain];
+	binding->gradient = gradient;
 	
 	return [self createJSObjectWithContext:ctx instance:binding];
 }
@@ -13,14 +13,10 @@
 + (EJCanvasGradient *)gradientFromJSValue:(JSValueRef)value {
 	if( !value ) { return NULL; }
 	
-	EJBindingCanvasGradient *binding = (EJBindingCanvasGradient *)JSObjectGetPrivate((JSObjectRef)value);
+	EJBindingCanvasGradient *binding = JSValueGetNativeObject(value);
 	return (binding && [binding isMemberOfClass:[EJBindingCanvasGradient class]]) ? binding->gradient : NULL;
 }
 
-- (void)dealloc {
-	[gradient release];
-	[super dealloc];
-}
 
 EJ_BIND_FUNCTION(addColorStop, ctx, argc, argv) {
 	if( argc < 2 ) { return NULL; }

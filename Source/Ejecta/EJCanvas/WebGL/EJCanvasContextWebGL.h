@@ -24,6 +24,6 @@
 
 @property (nonatomic) BOOL useRetinaResolution;
 @property (nonatomic) EJScalingMode scalingMode;
-@property (nonatomic,readonly) float backingStoreRatio;
+@property (nonatomic, readonly) float backingStoreRatio;
 
 @end

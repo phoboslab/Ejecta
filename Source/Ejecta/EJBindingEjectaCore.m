@@ -8,11 +8,9 @@
 @implementation EJBindingEjectaCore
 
 - (void)dealloc {
-	[urlToOpen release];
 	if( getTextCallback ) {
 		JSValueUnprotect([EJJavaScriptView sharedView].jsGlobalContext, getTextCallback);
 	}
-	[super dealloc];
 }
 
 EJ_BIND_FUNCTION(log, ctx, argc, argv ) {
@@ -58,14 +56,12 @@ EJ_BIND_FUNCTION(openURL, ctx, argc, argv ) {
 	
 	NSString *url = JSValueToNSString( ctx, argv[0] );
 	if( argc == 2 ) {
-		[urlToOpen release];
-		urlToOpen = [url retain];
+		urlToOpen = url;
 		
 		NSString *confirm = JSValueToNSString( ctx, argv[1] );
 		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Open Browser?" message:confirm delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Ok", nil];
 		alert.tag = kEJCoreAlertViewOpenURL;
 		[alert show];
-		[alert release];
 	}
 	else {
 		[[UIApplication sharedApplication] openURL:[NSURL URLWithString: url]];
@@ -90,7 +86,6 @@ EJ_BIND_FUNCTION(getText, ctx, argc, argv) {
 	alert.alertViewStyle = UIAlertViewStylePlainTextInput;
 	alert.tag = kEJCoreAlertViewGetText;
 	[alert show];
-	[alert release];
 	return NULL;
 }
 
@@ -99,7 +94,6 @@ EJ_BIND_FUNCTION(getText, ctx, argc, argv) {
 		if( index == 1 ) {
 			[[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlToOpen]];
 		}
-		[urlToOpen release];
 		urlToOpen = nil;
 	}
 	

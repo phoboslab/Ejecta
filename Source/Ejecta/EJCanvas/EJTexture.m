@@ -31,7 +31,6 @@
 	if( textureId ) {
 		glDeleteTextures(1, &textureId);
 	}
-	[super dealloc];
 }
 
 - (void)bindToTarget:(GLenum)target withParams:(EJTextureParam *)newParams {
@@ -88,7 +87,7 @@
 	
 	if( self = [super init] ) {
 		contentScale = 1;
-		fullPath = [path retain];
+		fullPath = path;
 		owningContext = kEJTextureOwningContextCanvas2D;
 		
 		NSMutableData *pixels = [self loadPixelsFromPath:path];
@@ -118,7 +117,6 @@
 		texture = [[EJTexture alloc] initWithPath:path callback:callback];
 		
 		[EJJavaScriptView sharedView].textureCache[path] = texture;
-		[texture autorelease];
 		texture->cached = true;
 	}
 	return texture;
@@ -128,11 +126,11 @@
 	// For loading on a background thread (non-blocking)
 	if( self = [super init] ) {
 		contentScale = 1;
-		fullPath = [path retain];
+		fullPath = path;
 		owningContext = kEJTextureOwningContextCanvas2D;
 		
 		// Load the image file in a background thread
-		loadCallback = [[NSBlockOperation blockOperationWithBlock:callback] retain];
+		loadCallback = [NSBlockOperation blockOperationWithBlock:callback];
 		[[EJJavaScriptView sharedView].opQueue addOperationWithBlock:^{
 			NSMutableData *pixels = [self loadPixelsFromPath:path];
 			
@@ -142,7 +140,6 @@
 			[[NSOperationQueue mainQueue] addOperation:[NSBlockOperation blockOperationWithBlock:^{
 				[self createWithPixels:pixels format:GL_RGBA];
 				[loadCallback start];
-				[loadCallback release];
 				loadCallback = NULL;
 			}]];
 			
@@ -196,16 +193,13 @@
 	if( cached ) {
 		[[EJJavaScriptView sharedView].textureCache removeObjectForKey:fullPath];
 	}
-	[fullPath release];
-	[textureStorage release];
-	[super dealloc];
 }
 
 - (void)ensureMutableKeepPixels:(BOOL)keepPixels forTarget:(GLenum)target {
 
 	// If we have a TextureStorage but it's not mutable (i.e. created by Canvas2D) and
 	// we're not the only owner of it, we have to create a new TextureStorage
-	if( textureStorage && textureStorage.immutable && textureStorage.retainCount > 1 ) {
+	if( textureStorage && textureStorage.immutable ) {
 	
 		// Keep pixel data of the old TextureStorage when creating the new?
 		if( keepPixels ) {
@@ -215,7 +209,6 @@
 			}
 		}
 		else {
-			[textureStorage release];
 			textureStorage = NULL;
 		}
 	}
@@ -254,17 +247,15 @@
 }
 
 - (void)createWithTexture:(EJTexture *)other {
-	[textureStorage release];
-	[fullPath release];
 	
 	format = other->format;
 	contentScale = other->contentScale;
-	fullPath = [other->fullPath retain];
+	fullPath = other->fullPath;
 	
 	width = other->width;
 	height = other->height;
 	
-	textureStorage = [other->textureStorage retain];
+	textureStorage = other->textureStorage;
 }
 
 - (void)createWithPixels:(NSData *)pixels format:(GLenum)formatp {
@@ -274,7 +265,6 @@
 - (void)createWithPixels:(NSData *)pixels format:(GLenum)formatp target:(GLenum)target {
 	// Release previous texture if we had one
 	if( textureStorage ) {
-		[textureStorage release];
 		textureStorage = NULL;
 	}
 	
@@ -371,7 +361,6 @@
 	CGContextDrawImage(context, CGRectMake(0.0, 0.0, (CGFloat)width, (CGFloat)height), image);
 	CGContextRelease(context);
 	CGColorSpaceRelease(colorSpace);
-	[tmpImage release];
 	
 	return pixels;
 }

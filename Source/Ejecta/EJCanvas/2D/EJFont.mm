@@ -14,21 +14,15 @@
 	}
 	
 	EJFontDescriptor *descriptor = [[EJFontDescriptor alloc] init];
-	descriptor->name = [name retain];
+	descriptor->name = name;
 	descriptor->size = size;
 	
-	descriptor->identFilled = [[NSString stringWithFormat:@"%@:F:%.2f", name, size] retain];
-	descriptor->identOutlined = [[NSString stringWithFormat:@"%@:O:%.2f", name, size] retain];
+	descriptor->identFilled = [NSString stringWithFormat:@"%@:F:%.2f", name, size];
+	descriptor->identOutlined = [NSString stringWithFormat:@"%@:O:%.2f", name, size];
 	
-	return [descriptor autorelease];
+	return descriptor;
 }
 
-- (void)dealloc {
-	[identFilled release];
-	[identOutlined release];
-	[name release];
-	[super dealloc];
-}
 
 @end
 
@@ -39,17 +33,13 @@
 
 - (id)initWithGlyphLayout:(NSData *)layout glyphCount:(int)count metrics:(EJTextMetrics)metricsp {
 	if( self = [super init] ) {
-		glyphLayout = [layout retain];
+		glyphLayout = layout;
 		glyphCount = count;
 		metrics = metricsp;
 	}
 	return self;
 }
 
-- (void)dealloc {
-	[glyphLayout release];
-	[super dealloc];
-}
 
 - (EJFontGlyphLayout *)glyphLayout {
 	return (EJFontGlyphLayout *)glyphLayout.bytes;
@@ -82,7 +72,7 @@ int EJFontGlyphLayoutSortByTextureIndex(const void *a, const void *b) {
 		contentScale = contentScalep;
 		fill = fillp;
 		
-		ctMainFont = CTFontCreateWithName((CFStringRef)desc.name, desc.size, NULL);
+		ctMainFont = CTFontCreateWithName((__bridge CFStringRef)desc.name, desc.size, NULL);
 		cgMainFont = CTFontCopyGraphicsFont(ctMainFont, NULL);
 		
 		if( ctMainFont ) {
@@ -114,7 +104,7 @@ int EJFontGlyphLayoutSortByTextureIndex(const void *a, const void *b) {
 		return;
 	}
 	CFErrorRef error;
-	CGDataProviderRef provider = CGDataProviderCreateWithCFData((CFDataRef)inData);
+	CGDataProviderRef provider = CGDataProviderCreateWithCFData((__bridge CFDataRef)inData);
 	CGFontRef font = CGFontCreateWithDataProvider(provider);
 	if( !CTFontManagerRegisterGraphicsFont(font, &error) ){
 		CFStringRef errorDescription = CFErrorCopyDescription(error);
@@ -129,13 +119,10 @@ int EJFontGlyphLayoutSortByTextureIndex(const void *a, const void *b) {
 	CGFontRelease(cgMainFont);
 	CFRelease(ctMainFont);
 	
-	[textures release];
-	[layoutCache release];
 	
 	free(glyphsBuffer);
 	free(positionsBuffer);
 	
-	[super dealloc];
 }
 
 - (unsigned short)createGlyph:(CGGlyph)glyph withFont:(CTFontRef)font {
@@ -175,7 +162,6 @@ int EJFontGlyphLayoutSortByTextureIndex(const void *a, const void *b) {
 		txLineX = txLineY = txLineH = 0;		
 		texture = [[EJTexture alloc] initWithWidth:EJ_FONT_TEXTURE_SIZE height:EJ_FONT_TEXTURE_SIZE format:GL_ALPHA];
 		[textures addObject:texture];
-		[texture release];	
 	}
 	else {
 		texture = [textures lastObject];
@@ -245,11 +231,10 @@ int EJFontGlyphLayoutSortByTextureIndex(const void *a, const void *b) {
 	// Create attributed line
 	NSAttributedString *attributes = [[NSAttributedString alloc]
 		initWithString:string
-		attributes:@{ (id)kCTFontAttributeName: (id)ctMainFont }];
+		attributes:@{ (id)kCTFontAttributeName: (__bridge id)ctMainFont }];
 	
-	CTLineRef line = CTLineCreateWithAttributedString((CFAttributedStringRef)attributes);
+	CTLineRef line = CTLineCreateWithAttributedString((__bridge CFAttributedStringRef)attributes);
 	
-	[attributes release];
 	
 	// Get line metrics; sadly, ascent and descent are broken: 'ascent' equals
 	// the total height (i.e. what should be ascent + descent) and 'descent'
@@ -338,7 +323,7 @@ int EJFontGlyphLayoutSortByTextureIndex(const void *a, const void *b) {
 	
 	CFRelease(line);
 	
-	return [layout autorelease];
+	return layout;
 }
 
 - (float)getYOffsetForBaseline:(EJTextBaseline)baseline {
@@ -364,16 +349,16 @@ int EJFontGlyphLayoutSortByTextureIndex(const void *a, const void *b) {
 	EJFontLayout *layout = [self getLayoutForString:string];
 	
 	// Figure out the x position with the current textAlign.
-	if(context.state->textAlign != kEJTextAlignLeft) {
-		if( context.state->textAlign == kEJTextAlignRight || context.state->textAlign == kEJTextAlignEnd ) {
+	if(context.state.textAlign != kEJTextAlignLeft) {
+		if( context.state.textAlign == kEJTextAlignRight || context.state.textAlign == kEJTextAlignEnd ) {
 			x -= layout.metrics.width;
 		}
-		else if( context.state->textAlign == kEJTextAlignCenter ) {
+		else if( context.state.textAlign == kEJTextAlignCenter ) {
 			x -= layout.metrics.width/2.0f;
 		}
 	}
 
-	y += [self getYOffsetForBaseline:context.state->textBaseline];
+	y += [self getYOffsetForBaseline:context.state.textBaseline];
 	
 	x = roundf(x);
 	y = roundf(y);
@@ -381,8 +366,8 @@ int EJFontGlyphLayoutSortByTextureIndex(const void *a, const void *b) {
 	
 	// Fill or stroke color?
 	EJCanvasState *state = context.state;
-	EJColorRGBA color = fill ? state->fillColor : state->strokeColor;
-	color.rgba.a = (float)color.rgba.a * state->globalAlpha;
+	EJColorRGBA color = fill ? state.fillColor : state.strokeColor;
+	color.rgba.a = (float)color.rgba.a * state.globalAlpha;
 	
 	// Go through all glyphs - bind textures as needed - and draw
 	EJFontGlyphLayout *layoutBuffer = layout.glyphLayout;
@@ -401,7 +386,7 @@ int EJFontGlyphLayoutSortByTextureIndex(const void *a, const void *b) {
 			
 			[context pushTexturedRectX:gx y:gy w:glyphInfo->w h:glyphInfo->h
 				tx:glyphInfo->tx ty:glyphInfo->ty+glyphInfo->th tw:glyphInfo->tw th:-glyphInfo->th
-				color:color withTransform:state->transform];
+				color:color withTransform:state.transform];
 			
 			i++;
 		}
@@ -411,7 +396,7 @@ int EJFontGlyphLayoutSortByTextureIndex(const void *a, const void *b) {
 - (EJTextMetrics)measureString:(NSString*)string forContext:(EJCanvasContext2D *)context {
 	if( string.length == 0 ) { return {0}; }
 	
-	float yOffset = [self getYOffsetForBaseline:context.state->textBaseline];
+	float yOffset = [self getYOffsetForBaseline:context.state.textBaseline];
 	EJTextMetrics metrics = [self getLayoutForString:string].metrics;
 	
 	metrics.width = ceilf(metrics.width);

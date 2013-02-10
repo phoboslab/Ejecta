@@ -36,9 +36,6 @@ static EJAppViewController *_ejectaInstance = NULL;
 	return nil;
 }
 
-- (void)dealloc {
-	[super dealloc];
-}
 
 - (void)didReceiveMemoryWarning {
 	[[EJJavaScriptView sharedView] clearCaches];

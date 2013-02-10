@@ -30,7 +30,7 @@ typedef enum {
 @property (nonatomic) BOOL loop;
 @property (nonatomic) BOOL ended;
 @property (nonatomic) float volume;
-@property (nonatomic, retain) NSString *path;
+@property (nonatomic, strong) NSString *path;
 @property (nonatomic) EJAudioPreload preload;
 
 @end

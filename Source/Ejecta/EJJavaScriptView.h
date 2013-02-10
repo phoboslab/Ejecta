@@ -37,21 +37,21 @@
 
 @property (nonatomic, assign, readonly) JSGlobalContextRef jsGlobalContext;
 
-@property (nonatomic, assign, readonly) NSMutableDictionary *textureCache;
+@property (nonatomic, weak, readonly) NSMutableDictionary *textureCache;
 @property (nonatomic, strong, readonly) EJOpenALManager *openALManager;
 @property (nonatomic, strong, readonly) EJGLProgram2D *glProgram2DFlat;
 @property (nonatomic, strong, readonly) EJGLProgram2D *glProgram2DTexture;
 @property (nonatomic, strong, readonly) EJGLProgram2D *glProgram2DAlphaTexture;
 @property (nonatomic, strong, readonly) EJGLProgram2D *glProgram2DPattern;
 @property (nonatomic, strong, readonly) EJGLProgram2DRadialGradient *glProgram2DRadialGradient;
-@property (nonatomic, assign) EJCanvasContext *currentRenderingContext;
+@property (nonatomic, weak) EJCanvasContext *currentRenderingContext;
 @property (nonatomic, strong, readonly) EAGLContext *glContext2D;
 @property (nonatomic, strong, readonly) EAGLSharegroup *glSharegroup;
 @property (nonatomic, strong, readonly) EAGLContext *glCurrentContext;
 
 @property (nonatomic, strong) NSObject<EJLifecycleDelegate> *lifecycleDelegate;
 @property (nonatomic, strong) NSObject<EJTouchDelegate> *touchDelegate;
-@property (nonatomic, assign) EJCanvasContext<EJPresentable> *screenRenderingContext;
+@property (nonatomic, weak) EJCanvasContext<EJPresentable> *screenRenderingContext;
 
 @property (nonatomic, strong) NSOperationQueue *opQueue;
 

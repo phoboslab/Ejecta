@@ -20,19 +20,12 @@
 	return self;
 }
 
-- (void)dealloc {
-	[source release];
-	[path release];
-	[super dealloc];
-}
 
 - (void)setSourcePath:(NSString *)pathp {
 	if( !path || ![path isEqualToString:pathp] ) {
-		[path release];
-		[source release];
 		source = NULL;
 		
-		path = [pathp retain];
+		path = pathp;
 		if( preload != kEJAudioPreloadNone ) {
 			[self load];
 		}
@@ -54,7 +47,6 @@
 				selector:@selector(loadOperation:) object:fullPath];
 	loadOp.threadPriority = 0.2;
 	[[EJJavaScriptView sharedView].opQueue addOperation:loadOp];
-	[loadOp release];
 }
 
 - (void)loadOperation:(NSString *)fullPath {
@@ -72,14 +64,13 @@
 			src = [[EJAudioSourceAVAudio alloc] initWithPath:fullPath];
 		}
 		src.delegate = self;
-		[src autorelease];
 		
 		[self performSelectorOnMainThread:@selector(endLoad:) withObject:src waitUntilDone:NO];
 	}
 }
 
 - (void)endLoad:(NSObject<EJAudioSource> *)src {
-	source = [src retain];
+	source = src;
 	[source setLooping:loop];
 	[source setVolume:volume];
 	

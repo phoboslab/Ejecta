@@ -27,8 +27,6 @@
 
 - (void)dealloc {
 	[banner removeFromSuperview];
-	[banner release];
-	[super dealloc];
 }
 
 - (void)bannerViewDidLoadAd:(ADBannerView *)theBanner {

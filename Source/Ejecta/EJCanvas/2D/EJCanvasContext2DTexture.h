@@ -5,6 +5,6 @@
 	EJTexture *texture;
 }
 
-@property (readonly, nonatomic) EJTexture *texture;
+@property (weak, readonly, nonatomic) EJTexture *texture;
 
 @end

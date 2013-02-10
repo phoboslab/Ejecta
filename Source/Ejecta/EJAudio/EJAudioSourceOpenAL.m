@@ -7,9 +7,9 @@
 
 - (id)initWithPath:(NSString *)pathp {
 	if( self = [super init] ) {
-		path = [pathp retain];
+		path = pathp;
 		
-		buffer = [[EJOpenALBuffer cachedBufferWithPath:pathp] retain];
+		buffer = [EJOpenALBuffer cachedBufferWithPath:pathp];
 		
 		alGenSources(1, &sourceId); 
 		alSourcei(sourceId, AL_BUFFER, buffer.bufferId);
@@ -24,11 +24,8 @@
 		alDeleteSources(1, &sourceId);
 	}
 	
-	[buffer release];
-	[path release];
 	[endTimer invalidate];
 	
-	[super dealloc];
 }
 
 - (void)play {

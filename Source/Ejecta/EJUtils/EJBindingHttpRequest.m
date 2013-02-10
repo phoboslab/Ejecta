@@ -12,25 +12,23 @@
 }
 
 - (void) dealloc {
-	[requestHeaders release];
 	[self clearRequest];
 	[self clearConnection];
 	
-	[super dealloc];
 }
 
 - (void)clearConnection {
 	[connection cancel];
-	[connection release]; connection = NULL;
-	[responseBody release]; responseBody = NULL;
-	[response release]; response = NULL;
+	 connection = NULL;
+	 responseBody = NULL;
+	 response = NULL;
 }
 
 - (void)clearRequest {
-	[method release]; method = NULL;
-	[url release]; url = NULL;
-	[user release]; user = NULL;
-	[password release]; password = NULL;
+	 method = NULL;
+	 url = NULL;
+	 user = NULL;
+	 password = NULL;
 }
 
 - (int)getStatusCode {
@@ -56,7 +54,7 @@
 		}
 	}
 
-	return [[[NSString alloc] initWithData:responseBody encoding:encoding] autorelease];
+	return [[NSString alloc] initWithData:responseBody encoding:encoding];
 }
 
 - (void)connection:(NSURLConnection *)connection willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {
@@ -81,7 +79,7 @@
 - (void)connectionDidFinishLoading:(NSURLConnection *)connectionp {
 	state = kEJHttpRequestStateDone;
 	
-	[connection release]; connection = NULL;
+	 connection = NULL;
 	[self triggerEvent:@"load" argc:0 argv:NULL];
 	[self triggerEvent:@"loadend" argc:0 argv:NULL];
 	[self triggerEvent:@"readystatechange" argc:0 argv:NULL];
@@ -90,7 +88,7 @@
 - (void)connection:(NSURLConnection *)connectionp didFailWithError:(NSError *)error {
 	state = kEJHttpRequestStateDone;
 	
-	[connection release]; connection = NULL;
+	 connection = NULL;
 	if( error.code == kCFURLErrorTimedOut ) {
 		[self triggerEvent:@"timeout" argc:0 argv:NULL];
 	}
@@ -104,8 +102,7 @@
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)responsep {
 	state = kEJHttpRequestStateHeadersReceived;
 	
-	[response release];
-	response = (NSHTTPURLResponse *)[responsep retain];
+	response = (NSHTTPURLResponse *)responsep;
 	[self triggerEvent:@"progress" argc:0 argv:NULL];
 	[self triggerEvent:@"readystatechange" argc:0 argv:NULL];
 }
@@ -130,13 +127,13 @@ EJ_BIND_FUNCTION(open, ctx, argc, argv) {
 	[self clearConnection];
 	[self clearRequest];
 	
-	method = [JSValueToNSString( ctx, argv[0] ) retain];
-	url = [JSValueToNSString( ctx, argv[1] ) retain];
+	method = JSValueToNSString( ctx, argv[0] );
+	url = JSValueToNSString( ctx, argv[1] );
 	async = argc > 2 ? JSValueToBoolean( ctx, argv[2] ) : true;
 	
 	if( argc > 4 ) {
-		user = [JSValueToNSString( ctx, argv[3] ) retain];
-		password = [JSValueToNSString( ctx, argv[4] ) retain];
+		user = JSValueToNSString( ctx, argv[3] );
+		password = JSValueToNSString( ctx, argv[4] );
 	}
 	
 	state = kEJHttpRequestStateOpened;
@@ -227,10 +224,10 @@ EJ_BIND_FUNCTION(send, ctx, argc, argv) {
 		state = kEJHttpRequestStateLoading;
 		connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
 	}
-	else {	
-		NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:nil];
+	else {
+		NSURLResponse * localResp = response;
+		NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&localResp error:nil];
 		responseBody = [[NSMutableData alloc] initWithData:data];
-		[response retain];
 		
 		state = kEJHttpRequestStateDone;
 		if( [response isKindOfClass:[NSHTTPURLResponse class]] ) {
@@ -245,7 +242,6 @@ EJ_BIND_FUNCTION(send, ctx, argc, argv) {
 		[self triggerEvent:@"loadend" argc:0 argv:NULL];
 		[self triggerEvent:@"readystatechange" argc:0 argv:NULL];
 	}
-	[request release];
 	
 	return NULL;
 }
@@ -268,7 +264,7 @@ EJ_BIND_GET(response, ctx) {
 	if( !responseText ) { return NULL; }
 	
 	if( type == kEJHttpRequestTypeJSON ) {
-		JSStringRef jsText = JSStringCreateWithCFString((CFStringRef)responseText);
+		JSStringRef jsText = JSStringCreateWithCFString((__bridge CFStringRef)responseText);
 		JSObjectRef jsonObject = (JSObjectRef)JSValueMakeFromJSONString(ctx, jsText);
 		JSStringRelease(jsText);
 		return jsonObject;
