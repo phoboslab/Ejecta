@@ -24,7 +24,10 @@
 
 + (JSObjectRef)createJSObjectWithContext:(JSContextRef)ctx webglContext:(EJBindingCanvasContextWebGL *)webglContext index:(GLuint)index {
 	id native = [[self alloc] initWithWebGLContext:webglContext index:index];
-	return [self createJSObjectWithContext:ctx instance:native];
+	
+	JSObjectRef obj = [self createJSObjectWithContext:ctx instance:native];
+	[native release];
+	return obj;
 }
 
 @end
@@ -80,7 +83,10 @@
 
 + (JSObjectRef)createJSObjectWithContext:(JSContextRef)ctx webglContext:(EJBindingCanvasContextWebGL *)webglContext {
 	id native = [[self alloc] initWithWebGLContext:webglContext];
-	return [self createJSObjectWithContext:ctx instance:native];
+	
+	JSObjectRef obj = [self createJSObjectWithContext:ctx instance:native];
+	[native release];
+	return obj;
 }
 @end
 
@@ -127,7 +133,10 @@ EJ_BIND_GET(name, ctx) { return NSStringToJSValue(ctx, name); }
 
 + (JSObjectRef)createJSObjectWithContext:(JSContextRef)ctx size:(GLint)sizep type:(GLenum)typep name:(NSString *)namep {
 	id native = [[self alloc] initWithSize:sizep type:typep name:namep];
-	return [self createJSObjectWithContext:ctx instance:native];
+	
+	JSObjectRef obj = [self createJSObjectWithContext:ctx instance:native];
+	[native release];
+	return obj;
 }
 
 @end
@@ -150,7 +159,10 @@ EJ_BIND_GET(precision, ctx) { return JSValueMakeNumber(ctx, precision); }
 
 + (JSObjectRef)createJSObjectWithContext:(JSContextRef)ctx rangeMin:(GLint)rangeMin rangeMax:(GLint)rangeMax precision:(GLint)precision {
 	id native = [[self alloc] initWithRangeMin:rangeMin rangeMax:rangeMax precision:precision];
-	return [self createJSObjectWithContext:ctx instance:native];
+	
+	JSObjectRef obj = [self createJSObjectWithContext:ctx instance:native];
+	[native release];
+	return obj;
 }
 
 @end

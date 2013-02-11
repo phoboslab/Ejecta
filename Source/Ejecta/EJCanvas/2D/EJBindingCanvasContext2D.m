@@ -297,7 +297,7 @@ EJ_BIND_FUNCTION(getImageData, ctx, argc, argv) {
 	
 	EJImageData *imageData = [renderingContext getImageDataSx:sx sy:sy sw:sw sh:sh];
 	
-	EJBindingImageData *binding = [[EJBindingImageData alloc] initWithImageData:imageData];
+	EJBindingImageData *binding = [[[EJBindingImageData alloc] initWithImageData:imageData] autorelease];
 	return [EJBindingImageData createJSObjectWithContext:ctx instance:binding];
 }
 
@@ -307,7 +307,7 @@ EJ_BIND_FUNCTION(createImageData, ctx, argc, argv) {
 	NSMutableData *pixels = [NSMutableData dataWithLength:sw * sh * 4];
 	EJImageData *imageData = [[[EJImageData alloc] initWithWidth:sw height:sh pixels:pixels] autorelease];
 	
-	EJBindingImageData *binding = [[EJBindingImageData alloc] initWithImageData:imageData];
+	EJBindingImageData *binding = [[[EJBindingImageData alloc] initWithImageData:imageData] autorelease];
 	return [EJBindingImageData createJSObjectWithContext:ctx instance:binding];
 }
 
@@ -329,7 +329,7 @@ EJ_BIND_FUNCTION(getImageDataHD, ctx, argc, argv) {
 	
 	EJImageData *imageData = [renderingContext getImageDataHDSx:sx sy:sy sw:sw sh:sh];
 	
-	EJBindingImageData *binding = [[EJBindingImageData alloc] initWithImageData:imageData];
+	EJBindingImageData *binding = [[[EJBindingImageData alloc] initWithImageData:imageData] autorelease];
 	return [EJBindingImageData createJSObjectWithContext:ctx instance:binding];
 }
 
@@ -339,7 +339,7 @@ EJ_BIND_FUNCTION(createImageDataHD, ctx, argc, argv) {
 	NSMutableData *pixels = [NSMutableData dataWithLength:sw * sh * 4];
 	EJImageData *imageData = [[[EJImageData alloc] initWithWidth:sw height:sh pixels:pixels] autorelease];
 	
-	EJBindingImageData *binding = [[EJBindingImageData alloc] initWithImageData:imageData];
+	EJBindingImageData *binding = [[[EJBindingImageData alloc] initWithImageData:imageData] autorelease];
 	return [EJBindingImageData createJSObjectWithContext:ctx instance:binding];
 }
 

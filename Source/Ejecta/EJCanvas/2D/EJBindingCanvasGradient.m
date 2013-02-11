@@ -7,7 +7,9 @@
 	EJBindingCanvasGradient *binding = [[EJBindingCanvasGradient alloc] initWithContext:ctx argc:0 argv:NULL];
 	binding->gradient = [gradient retain];
 	
-	return [self createJSObjectWithContext:ctx instance:binding];
+	JSObjectRef obj = [self createJSObjectWithContext:ctx instance:binding];
+	[binding release];
+	return obj;
 }
 
 + (EJCanvasGradient *)gradientFromJSValue:(JSValueRef)value {

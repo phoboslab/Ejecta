@@ -28,7 +28,10 @@ JSValueRef EJGetNativeClass(JSContextRef ctx, JSObjectRef object, JSStringRef pr
 JSObjectRef EJCallAsConstructor(JSContextRef ctx, JSObjectRef constructor, size_t argc, const JSValueRef argv[], JSValueRef* exception) {
 	Class class = (Class)JSObjectGetPrivate(constructor);
 	EJBindingBase *instance = [(EJBindingBase *)[class alloc] initWithContext:ctx argc:argc argv:argv];
-	return [class createJSObjectWithContext:ctx instance:instance];
+	
+	JSObjectRef obj = [class createJSObjectWithContext:ctx instance:instance];
+	[instance release];
+	return obj;
 }
 
 

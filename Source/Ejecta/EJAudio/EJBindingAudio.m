@@ -165,6 +165,7 @@ EJ_BIND_FUNCTION(cloneNode, ctx, argc, argv) {
 		[audio load];
 	}
 	
+	[audio release];
 	return clone;
 }
 

@@ -188,6 +188,7 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 		EJBindingCanvasContext2D *binding = [[EJBindingCanvasContext2D alloc]
 			initWithCanvas:jsObject renderingContext:(EJCanvasContext2D *)renderingContext];
 		jsCanvasContext = [EJBindingCanvasContext2D createJSObjectWithContext:ctx instance:binding];
+		[binding release];
 		JSValueProtect(ctx, jsCanvasContext);
 	}
 	
@@ -203,6 +204,7 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 		EJBindingCanvasContextWebGL *binding = [[EJBindingCanvasContextWebGL alloc]
 			initWithCanvas:jsObject renderingContext:(EJCanvasContextWebGL *)renderingContext];
 		jsCanvasContext = [EJBindingCanvasContextWebGL createJSObjectWithContext:ctx instance:binding];
+		[binding release];
 		JSValueProtect(ctx, jsCanvasContext);
 	}
 	

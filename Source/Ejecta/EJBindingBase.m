@@ -2,7 +2,7 @@
 #import <objc/runtime.h>
 
 
-void _ej_class_finalize(JSObjectRef object) {
+void EJBindingBaseFinalize(JSObjectRef object) {
 	id instance = (id)JSObjectGetPrivate(object);
 	[instance release];
 }
@@ -115,7 +115,7 @@ static NSMutableDictionary *CachedJSClasses;
 	
 	JSClassDefinition classDef = kJSClassDefinitionEmpty;
 	classDef.className = class_getName(self.class) + sizeof("EJBinding")-1;
-	classDef.finalize = _ej_class_finalize;
+	classDef.finalize = EJBindingBaseFinalize;
 	classDef.staticValues = values;
 	classDef.staticFunctions = functions;
 	JSClassRef class = JSClassCreate(&classDef);
@@ -130,10 +130,11 @@ static NSMutableDictionary *CachedJSClasses;
 }
 
 + (JSObjectRef)createJSObjectWithContext:(JSContextRef)ctx instance:(EJBindingBase *)instance {
-	JSClassRef jsClass = [self getJSClass];
+	// Create JSObject with the JSClass for this ObjC-Class
+	JSObjectRef obj = JSObjectMake( ctx, [self getJSClass], NULL );
 	
-	JSObjectRef obj = JSObjectMake( ctx, jsClass, NULL );
-	JSObjectSetPrivate( obj, (void *)instance );
+	// The JSObject retains the instance; it will be released by EJBindingBaseFinalize
+	JSObjectSetPrivate( obj, (void *)[instance retain] );
 	instance->jsObject = obj;
 	
 	return obj;
