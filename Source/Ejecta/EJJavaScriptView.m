@@ -1,39 +1,8 @@
 #import "EJJavaScriptView.h"
 #import "EJTimer.h"
 #import "EJBindingBase.h"
+#import "EJClassLoader.h"
 #import <objc/runtime.h>
-
-
-
-#pragma mark -
-#pragma mark Ejecta view Implementation
-
-JSValueRef _EJGlobalUndefined;
-JSClassRef _EJGlobalConstructorClass;
-
-JSValueRef EJGetNativeClass(JSContextRef ctx, JSObjectRef object, JSStringRef propertyNameJS, JSValueRef* exception) {
-	CFStringRef className = JSStringCopyCFString( kCFAllocatorDefault, propertyNameJS );
-	
-	JSObjectRef obj = NULL;
-	NSString *fullClassName = [NSString stringWithFormat:@"EJBinding%@", className];
-	id class = NSClassFromString(fullClassName);
-	if( class ) {
-		obj = JSObjectMake( ctx, _EJGlobalConstructorClass, (void *)class );
-	}
-	
-	CFRelease(className);
-	return obj ? obj : _EJGlobalUndefined;
-}
-
-JSObjectRef EJCallAsConstructor(JSContextRef ctx, JSObjectRef constructor, size_t argc, const JSValueRef argv[], JSValueRef* exception) {
-	Class class = (Class)JSObjectGetPrivate(constructor);
-	EJBindingBase *instance = [(EJBindingBase *)[class alloc] initWithContext:ctx argc:argc argv:argv];
-	
-	JSObjectRef obj = [class createJSObjectWithContext:ctx instance:instance];
-	[instance release];
-	return obj;
-}
-
 
 
 #pragma mark -
@@ -41,7 +10,7 @@ JSObjectRef EJCallAsConstructor(JSContextRef ctx, JSObjectRef constructor, size_
 
 @implementation EJJavaScriptView
 
-@synthesize pausesAutomaticallyWhenBackgrounded;
+@synthesize pauseOnEnterBackground;
 @synthesize isPaused;
 @synthesize internalScaling;
 @synthesize jsGlobalContext;
@@ -75,7 +44,7 @@ static EJJavaScriptView *_sharedView = nil;
 	return _sharedView;
 }
 
-+(id)alloc {
++ (id)alloc {
 	@synchronized([EJJavaScriptView class]){
 		NSAssert(_sharedView == nil, @"Attempt to allocate a second instance of singleton EJJavaScriptView");
 		_sharedView = [super alloc];
@@ -89,7 +58,7 @@ static EJJavaScriptView *_sharedView = nil;
 		isPaused = false;
 		internalScaling = 1;
 		
-		self.pausesAutomaticallyWhenBackgrounded = YES;
+		self.pauseOnEnterBackground = YES;
 		
 		// Limit all background operations (image & sound loading) to one thread
 		opQueue = [[NSOperationQueue alloc] init];
@@ -101,28 +70,10 @@ static EJJavaScriptView *_sharedView = nil;
 		[displayLink setFrameInterval:1];
 		[displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 		
-		// Create the global JS context and attach the 'Ejecta' object
-		
-		JSClassDefinition constructorClassDef = kJSClassDefinitionEmpty;
-		constructorClassDef.callAsConstructor = EJCallAsConstructor;
-		_EJGlobalConstructorClass = JSClassCreate(&constructorClassDef);
-		
-		JSClassDefinition globalClassDef = kJSClassDefinitionEmpty;
-		globalClassDef.getProperty = EJGetNativeClass;
-		JSClassRef globalClass = JSClassCreate(&globalClassDef);
-		
-		
+		// Create the global JS context and attach the 'Ejecta' object		
 		jsGlobalContext = JSGlobalContextCreate(NULL);
-		_EJGlobalUndefined = JSValueMakeUndefined(jsGlobalContext);
-		JSValueProtect(jsGlobalContext, _EJGlobalUndefined);
-		JSObjectRef globalObject = JSContextGetGlobalObject(jsGlobalContext);
+		classLoader = [[EJClassLoader alloc] initWithGlobalContext:jsGlobalContext name:@"Ejecta"];
 		
-		JSObjectRef iosObject = JSObjectMake(jsGlobalContext, globalClass, NULL );
-		JSObjectSetProperty(
-			jsGlobalContext, globalObject,
-			JSStringCreateWithUTF8CString("Ejecta"), iosObject,
-			kJSPropertyAttributeDontDelete | kJSPropertyAttributeReadOnly, NULL
-		);
 		
 		// Create the OpenGL context for Canvas2D
 		glContext2D = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
@@ -136,7 +87,9 @@ static EJJavaScriptView *_sharedView = nil;
 }
 
 - (void)dealloc {
-	self.pausesAutomaticallyWhenBackgrounded = false;
+	self.pauseOnEnterBackground = false;
+	
+	[classLoader release];
 	JSGlobalContextRelease(jsGlobalContext);
 	
 	[currentRenderingContext release];
@@ -161,7 +114,7 @@ static EJJavaScriptView *_sharedView = nil;
 	[super dealloc];
 }
 
-- (void)setPausesAutomaticallyWhenBackgrounded:(BOOL)pauses {
+- (void)setPauseOnEnterBackground:(BOOL)pauses {
 	NSArray *pauseN = @[UIApplicationWillResignActiveNotification,
 		UIApplicationDidEnterBackgroundNotification,
 		UIApplicationWillTerminateNotification];
@@ -176,7 +129,7 @@ static EJJavaScriptView *_sharedView = nil;
 		[self removeObserver:self forKeyPaths:pauseN];
 		[self removeObserver:self forKeyPaths:resumeN];
 	}
-	pausesAutomaticallyWhenBackgrounded = pauses;
+	pauseOnEnterBackground = pauses;
 }
 
 - (void)removeObserver:(id)observer forKeyPaths:(NSArray*)keyPaths {

@@ -21,6 +21,7 @@
 		B6243666166684420046B8C7 /* libJavaScriptCore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B64CE60C1666825F0087CF94 /* libJavaScriptCore.a */; };
 		B62436681666851E0046B8C7 /* Ejecta.js in Resources */ = {isa = PBXBuildFile; fileRef = B64CE63F166682700087CF94 /* Ejecta.js */; };
 		B630048916C1A2390036D8D4 /* EJBindingTextMetrics.m in Sources */ = {isa = PBXBuildFile; fileRef = B630048816C1A1960036D8D4 /* EJBindingTextMetrics.m */; };
+		B630048C16CB098D0036D8D4 /* EJClassLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = B630048B16CB09850036D8D4 /* EJClassLoader.m */; };
 		B64C878A16B800DA0097CD5B /* AlphaTexture.fsh in Resources */ = {isa = PBXBuildFile; fileRef = B64C878016B800C10097CD5B /* AlphaTexture.fsh */; };
 		B64C878B16B800DA0097CD5B /* Flat.fsh in Resources */ = {isa = PBXBuildFile; fileRef = B64C878116B800C10097CD5B /* Flat.fsh */; };
 		B64C878C16B800DA0097CD5B /* Pattern.fsh in Resources */ = {isa = PBXBuildFile; fileRef = B64C878216B800C10097CD5B /* Pattern.fsh */; };
@@ -106,6 +107,8 @@
 		B609F2CE16AD873A00A3B2B9 /* RadialGradient.fsh */ = {isa = PBXFileReference; explicitFileType = sourcecode.glsl; fileEncoding = 4; path = RadialGradient.fsh; sourceTree = "<group>"; };
 		B630048716C1A1960036D8D4 /* EJBindingTextMetrics.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EJBindingTextMetrics.h; sourceTree = "<group>"; };
 		B630048816C1A1960036D8D4 /* EJBindingTextMetrics.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EJBindingTextMetrics.m; sourceTree = "<group>"; };
+		B630048A16CB097F0036D8D4 /* EJClassLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJClassLoader.h; sourceTree = "<group>"; };
+		B630048B16CB09850036D8D4 /* EJClassLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJClassLoader.m; sourceTree = "<group>"; };
 		B64C878016B800C10097CD5B /* AlphaTexture.fsh */ = {isa = PBXFileReference; explicitFileType = sourcecode.glsl; fileEncoding = 4; path = AlphaTexture.fsh; sourceTree = "<group>"; };
 		B64C878116B800C10097CD5B /* Flat.fsh */ = {isa = PBXFileReference; explicitFileType = sourcecode.glsl; fileEncoding = 4; path = Flat.fsh; sourceTree = "<group>"; };
 		B64C878216B800C10097CD5B /* Pattern.fsh */ = {isa = PBXFileReference; explicitFileType = sourcecode.glsl; fileEncoding = 4; path = Pattern.fsh; sourceTree = "<group>"; };
@@ -343,6 +346,8 @@
 				B64CE611166682700087CF94 /* EJAppViewController.m */,
 				3EF00C5716C29360004599A4 /* EJJavaScriptView.h */,
 				3EF00C5816C29360004599A4 /* EJJavaScriptView.m */,
+				B630048A16CB097F0036D8D4 /* EJClassLoader.h */,
+				B630048B16CB09850036D8D4 /* EJClassLoader.m */,
 				B64CE61E166682700087CF94 /* EJBindingBase.h */,
 				B64CE61F166682700087CF94 /* EJBindingBase.m */,
 				B64CE622166682700087CF94 /* EJBindingEventedBase.h */,
@@ -654,6 +659,7 @@
 				B6A0F4AF16A9D86100477789 /* EJCanvasGradient.m in Sources */,
 				B6A0F4B416AB0B4600477789 /* EJBindingCanvasGradient.m in Sources */,
 				3EF00C5916C29360004599A4 /* EJJavaScriptView.m in Sources */,
+				B630048C16CB098D0036D8D4 /* EJClassLoader.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

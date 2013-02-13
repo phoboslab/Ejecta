@@ -15,12 +15,6 @@
 #define EJECTA_BOOT_JS @"../Ejecta.js"
 
 
-JSValueRef _EJGlobalUndefined;
-JSClassRef _EJGlobalConstructorClass;
-JSValueRef EJGetNativeClass(JSContextRef ctx, JSObjectRef object, JSStringRef propertyNameJS, JSValueRef* exception);
-JSObjectRef EJCallAsConstructor(JSContextRef ctx, JSObjectRef constructor, size_t argc, const JSValueRef argv[], JSValueRef* exception);
-
-
 @protocol EJTouchDelegate
 - (void)triggerEvent:(NSString *)name all:(NSSet *)all changed:(NSSet *)changed remaining:(NSSet *)remaining;
 @end
@@ -31,14 +25,16 @@ JSObjectRef EJCallAsConstructor(JSContextRef ctx, JSObjectRef constructor, size_
 @end
 
 @class EJTimerCollection;
+@class EJClassLoader;
 
 @interface EJJavaScriptView : UIView {
-	BOOL pausesAutomaticallyWhenBackgrounded;
+	BOOL pauseOnEnterBackground;
 
 	BOOL isPaused;
 	float internalScaling;
 
 	JSGlobalContextRef jsGlobalContext;
+	EJClassLoader *classLoader;
 
 	EJTimerCollection *timers;
 	NSMutableDictionary *textureCache;
@@ -65,7 +61,7 @@ JSObjectRef EJCallAsConstructor(JSContextRef ctx, JSObjectRef constructor, size_
 
 + (EJJavaScriptView*)sharedView;
 
-@property (nonatomic, assign) BOOL pausesAutomaticallyWhenBackgrounded;
+@property (nonatomic, assign) BOOL pauseOnEnterBackground;
 
 @property (nonatomic, assign, getter = isPaused) BOOL isPaused; // Pauses drawing/updating of the JSView
 @property (nonatomic, assign) float internalScaling;

@@ -20,6 +20,8 @@ extern JSValueRef _EJGlobalUndefined;
 // and gather all function pointers.
 
 
+#define EJ_BINDING_CLASS_PREFIX "EJBinding"
+
 // The class method that returns a pointer to the static C callback function
 #define __EJ_GET_POINTER_TO(NAME) \
 	+ (void *)_ptr_to##NAME { \
@@ -229,14 +231,14 @@ static inline bool JSStrIsEqualToStr( const JSChar *s1, const char *s2, int leng
 #define _EJ_UNPACK_NUMBER(INDEX, NAME) NAME = JSValueToNumberFast(ctx, argv[INDEX]);
 
 
+
 @interface EJBindingBase : NSObject {
 	JSObjectRef jsObject;
 }
 
 - (id)initWithContext:(JSContextRef)ctxp argc:(size_t)argc argv:(const JSValueRef [])argv;
-+ (JSClassRef)getJSClass;
-+ (void)clearJSClassCache;
-+ (JSClassRef)createJSClass;
 + (JSObjectRef)createJSObjectWithContext:(JSContextRef)ctx instance:(EJBindingBase *)instance;
+void EJBindingBaseFinalize(JSObjectRef object);
 
 @end
+
