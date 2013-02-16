@@ -1,9 +1,8 @@
 #import <Foundation/Foundation.h>
 #import "EJAppViewController.h"
+#import "EJJavaScriptView.h"
 
 #include <objc/message.h>
-
-extern JSValueRef _EJGlobalUndefined;
 
 // (Not sure if clever hack or really stupid...)
 
@@ -45,7 +44,7 @@ extern JSValueRef _EJGlobalUndefined;
 	) { \
 		id instance = (id)JSObjectGetPrivate(object); \
 		JSValueRef ret = (JSValueRef)objc_msgSend(instance, @selector(_func_##NAME:argc:argv:), ctx, argc, argv); \
-		return ret ? ret : _EJGlobalUndefined; \
+		return ret ? ret : ((EJBindingBase *)instance)->scriptView->jsUndefined; \
 	} \
 	__EJ_GET_POINTER_TO(_func_##NAME)\
 	\
@@ -115,7 +114,8 @@ extern JSValueRef _EJGlobalUndefined;
 			NSLog(@"Warning: method " @ #NAME @" is not yet implemented!"); \
 			didShowWarning = true; \
 		} \
-		return _EJGlobalUndefined; \
+		id instance = (id)JSObjectGetPrivate(object); \
+		return ((EJBindingBase *)instance)->scriptView->jsUndefined; \
 	} \
 	__EJ_GET_POINTER_TO(_func_##NAME)
 
@@ -231,14 +231,22 @@ static inline bool JSStrIsEqualToStr( const JSChar *s1, const char *s2, int leng
 #define _EJ_UNPACK_NUMBER(INDEX, NAME) NAME = JSValueToNumberFast(ctx, argv[INDEX]);
 
 
-
+@class EJJavaScriptView;
 @interface EJBindingBase : NSObject {
 	JSObjectRef jsObject;
+	
+	// Puplic for fast access to instance->scriptView->jsUndefined in bound functions
+	@public	EJJavaScriptView *scriptView;
 }
 
 - (id)initWithContext:(JSContextRef)ctxp argc:(size_t)argc argv:(const JSValueRef [])argv;
-+ (JSObjectRef)createJSObjectWithContext:(JSContextRef)ctx instance:(EJBindingBase *)instance;
+- (void)createWithJSObject:(JSObjectRef)obj scriptView:(EJJavaScriptView *)view;
++ (JSObjectRef)createJSObjectWithContext:(JSContextRef)ctx
+	scriptView:(EJJavaScriptView *)scriptView
+	instance:(EJBindingBase *)instance;
 void EJBindingBaseFinalize(JSObjectRef object);
+
+@property (nonatomic, readonly) EJJavaScriptView *scriptView;
 
 @end
 

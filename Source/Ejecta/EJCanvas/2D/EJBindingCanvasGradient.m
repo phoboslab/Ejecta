@@ -3,11 +3,14 @@
 
 @implementation EJBindingCanvasGradient
 
-+ (JSObjectRef)createJSObjectWithContext:(JSContextRef)ctx gradient:(EJCanvasGradient *)gradient {
++ (JSObjectRef)createJSObjectWithContext:(JSContextRef)ctx
+	scriptView:(EJJavaScriptView *)view
+	gradient:(EJCanvasGradient *)gradient
+{
 	EJBindingCanvasGradient *binding = [[EJBindingCanvasGradient alloc] initWithContext:ctx argc:0 argv:NULL];
 	binding->gradient = [gradient retain];
 	
-	JSObjectRef obj = [self createJSObjectWithContext:ctx instance:binding];
+	JSObjectRef obj = [self createJSObjectWithContext:ctx scriptView:view instance:binding];
 	[binding release];
 	return obj;
 }

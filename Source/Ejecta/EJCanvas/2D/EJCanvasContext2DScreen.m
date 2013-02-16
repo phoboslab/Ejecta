@@ -12,7 +12,7 @@
 	// screen size and retina properties into account
 	
 	CGRect frame = CGRectMake(0, 0, width, height);
-	CGSize screen = app.bounds.size;
+	CGSize screen = scriptView.bounds.size;
 	float contentScale = (useRetinaResolution && [UIScreen mainScreen].scale == 2) ? 2 : 1;
 	float aspect = frame.size.width / frame.size.height;
 	
@@ -25,7 +25,7 @@
 		frame.size.height = screen.height;
 	}
 	float internalScaling = frame.size.width / (float)width;
-	app.internalScaling = internalScaling;
+	scriptView.internalScaling = internalScaling;
 	
 	backingStoreRatio = internalScaling * contentScale;
 	
@@ -64,11 +64,12 @@
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	// Append the OpenGL view to Impact's main view
-	[app addSubview:glview];
+	// Append the OpenGL view to Ejecta's main view
+	[scriptView addSubview:glview];
 }
 
 - (void)dealloc {
+	[glview removeFromSuperview];
 	[glview release];
 	[super dealloc];
 }

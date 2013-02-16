@@ -11,43 +11,32 @@
 
 @implementation EJBindingCanvas
 
-static BOOL HasScreenCanvas = NO;
-
-- (id)initWithContext:(JSContextRef)ctx argc:(size_t)argc argv:(const JSValueRef [])argv {
-	
-	if( self = [super initWithContext:ctx argc:argc argv:argv] ) {
+- (void)createWithJSObject:(JSObjectRef)obj scriptView:(EJJavaScriptView *)view {
+	[super createWithJSObject:obj scriptView:view];
 				
-		scalingMode = kEJScalingModeFitWidth;
-		useRetinaResolution = true;
-		msaaEnabled = false;
-		msaaSamples = 2;
-		
-		// If we don't have a screen canvas yet, make it this one
-		if( !HasScreenCanvas ) {
-			isScreenCanvas = YES;
-			HasScreenCanvas = YES;
-		}
-		
-		if( argc == 2 ) {
-			width = JSValueToNumberFast(ctx, argv[0]);
-			height = JSValueToNumberFast(ctx, argv[1]);
-		}
-		else {
-			CGSize screen = [EJJavaScriptView sharedView].bounds.size;
-			width = screen.width;
-			height = screen.height;
-		}
+	scalingMode = kEJScalingModeFitWidth;
+	useRetinaResolution = true;
+	msaaEnabled = false;
+	msaaSamples = 2;
+	
+	// If we don't have a screen canvas yet, make it this one
+	if( !scriptView.hasScreenCanvas ) {
+		isScreenCanvas = YES;
+		scriptView.hasScreenCanvas = YES;
 	}
-	return self;
+	
+	CGSize screen = scriptView.bounds.size;
+	width = screen.width;
+	height = screen.height;
 }
 
 - (void)dealloc {
 	if( isScreenCanvas ) {
-		HasScreenCanvas	= NO;
+		scriptView.hasScreenCanvas = NO;
 	}
 	[renderingContext release];
 	if( jsCanvasContext ) {
-		JSValueUnprotect([EJJavaScriptView sharedView].jsGlobalContext, jsCanvasContext);
+		JSValueUnprotect(scriptView.jsGlobalContext, jsCanvasContext);
 	}
 	[super dealloc];
 }
@@ -74,7 +63,7 @@ EJ_BIND_GET(width, ctx) {
 EJ_BIND_SET(width, ctx, value) {
 	short newWidth = JSValueToNumberFast(ctx, value);
 	if( renderingContext ) {
-		[EJJavaScriptView sharedView].currentRenderingContext = renderingContext;
+		scriptView.currentRenderingContext = renderingContext;
 		renderingContext.width = newWidth;
 		width = renderingContext.width;
 		return;
@@ -91,7 +80,7 @@ EJ_BIND_GET(height, ctx) {
 EJ_BIND_SET(height, ctx, value) {
 	short newHeight = JSValueToNumberFast(ctx, value);
 	if( renderingContext ) {
-		[EJJavaScriptView sharedView].currentRenderingContext = renderingContext;
+		scriptView.currentRenderingContext = renderingContext;
 		renderingContext.height = newHeight;
 		height = renderingContext.height;
 	}
@@ -166,19 +155,21 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 	
 	
 	// Create the requested CanvasContext
-	[EJJavaScriptView sharedView].currentRenderingContext = nil;
+	scriptView.currentRenderingContext = nil;
 	
 	if( newContextMode == kEJCanvasContextMode2D ) {
 		if( isScreenCanvas ) {
-			EJCanvasContext2DScreen *sc = [[EJCanvasContext2DScreen alloc] initWithWidth:width height:height];
+			EJCanvasContext2DScreen *sc = [[EJCanvasContext2DScreen alloc]
+				initWithScriptView:scriptView width:width height:height];
 			sc.useRetinaResolution = useRetinaResolution;
 			sc.scalingMode = scalingMode;
 			
-			[EJJavaScriptView sharedView].screenRenderingContext = sc;
+			scriptView.screenRenderingContext = sc;
 			renderingContext = sc;
 		}
 		else {
-			EJCanvasContext2DTexture *tc = [[EJCanvasContext2DTexture alloc] initWithWidth:width height:height];
+			EJCanvasContext2DTexture *tc = [[EJCanvasContext2DTexture alloc]
+				initWithScriptView:scriptView width:width height:height];
 			tc.useRetinaResolution = useRetinaResolution;
 			
 			renderingContext = tc;
@@ -187,23 +178,24 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 		// Create the JS object
 		EJBindingCanvasContext2D *binding = [[EJBindingCanvasContext2D alloc]
 			initWithCanvas:jsObject renderingContext:(EJCanvasContext2D *)renderingContext];
-		jsCanvasContext = [EJBindingCanvasContext2D createJSObjectWithContext:ctx instance:binding];
+		jsCanvasContext = [EJBindingCanvasContext2D createJSObjectWithContext:ctx scriptView:scriptView instance:binding];
 		[binding release];
 		JSValueProtect(ctx, jsCanvasContext);
 	}
 	
 	else if( newContextMode == kEJCanvasContextModeWebGL ) {
-		EJCanvasContextWebGL *sc = [[EJCanvasContextWebGL alloc] initWithWidth:width height:height];
+		EJCanvasContextWebGL *sc = [[EJCanvasContextWebGL alloc]
+			initWithScriptView:scriptView width:width height:height];
 		sc.useRetinaResolution = useRetinaResolution;
 		sc.scalingMode = scalingMode;
 		
-		[EJJavaScriptView sharedView].screenRenderingContext = sc;
+		scriptView.screenRenderingContext = sc;
 		renderingContext = sc;
 		
 		// Create the JS object
 		EJBindingCanvasContextWebGL *binding = [[EJBindingCanvasContextWebGL alloc]
 			initWithCanvas:jsObject renderingContext:(EJCanvasContextWebGL *)renderingContext];
-		jsCanvasContext = [EJBindingCanvasContextWebGL createJSObjectWithContext:ctx instance:binding];
+		jsCanvasContext = [EJBindingCanvasContextWebGL createJSObjectWithContext:ctx scriptView:scriptView instance:binding];
 		[binding release];
 		JSValueProtect(ctx, jsCanvasContext);
 	}
@@ -216,7 +208,7 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 	
 	[EAGLContext setCurrentContext:renderingContext.glContext];
 	[renderingContext create];
-	[EJJavaScriptView sharedView].currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	
 	
 	return jsCanvasContext;

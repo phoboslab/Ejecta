@@ -47,13 +47,13 @@
 	
 	// Protect this Audio object from garbage collection, as its callback function
 	// may be the only thing holding on to it
-	JSValueProtect([EJJavaScriptView sharedView].jsGlobalContext, jsObject);
+	JSValueProtect(scriptView.jsGlobalContext, jsObject);
 	
-	NSString *fullPath = [[EJJavaScriptView sharedView] pathForResource:path];
+	NSString *fullPath = [scriptView pathForResource:path];
 	NSInvocationOperation *loadOp = [[NSInvocationOperation alloc] initWithTarget:self
 				selector:@selector(loadOperation:) object:fullPath];
 	loadOp.threadPriority = 0.2;
-	[[EJJavaScriptView sharedView].opQueue addOperation:loadOp];
+	[scriptView.opQueue addOperation:loadOp];
 	[loadOp release];
 }
 
@@ -91,7 +91,7 @@
 	[self triggerEvent:@"canplaythrough" argc:0 argv:NULL];
 	[self triggerEvent:@"loadedmetadata" argc:0 argv:NULL];
 	
-	JSValueUnprotect([EJJavaScriptView sharedView].jsGlobalContext, jsObject);
+	JSValueUnprotect(scriptView.jsGlobalContext, jsObject);
 }
 
 - (void)sourceDidFinishPlaying:(NSObject<EJAudioSource> *)source {
@@ -152,7 +152,7 @@ EJ_BIND_FUNCTION(canPlayType, ctx, argc, argv) {
 
 EJ_BIND_FUNCTION(cloneNode, ctx, argc, argv) {
 	EJBindingAudio *audio = [[EJBindingAudio alloc] initWithContext:ctx argc:0 argv:NULL];
-	JSObjectRef clone = [EJBindingAudio createJSObjectWithContext:ctx instance:audio];
+	JSObjectRef clone = [EJBindingAudio createJSObjectWithContext:ctx scriptView:scriptView instance:audio];
 	
 	audio.loop = loop;
 	audio.volume = volume;

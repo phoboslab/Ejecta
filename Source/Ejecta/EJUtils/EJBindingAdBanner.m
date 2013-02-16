@@ -3,26 +3,28 @@
 
 @implementation EJBindingAdBanner
 
-- (id)initWithContext:(JSContextRef)ctx argc:(size_t)argc argv:(const JSValueRef [])argv {
-	if( self = [super initWithContext:ctx argc:argc argv:argv] ) {
-		isAtBottom = NO;
-		wantsToShow = NO;
-		isReady = NO;
-		
-		banner = [[ADBannerView alloc] initWithFrame:CGRectZero];
-		banner.delegate = self;
-		banner.hidden = YES;
-		
-		banner.requiredContentSizeIdentifiers = [NSSet setWithObjects:
-			([[EJAppViewController instance] landscapeMode]
-				? ADBannerContentSizeIdentifierLandscape
-				: ADBannerContentSizeIdentifierPortrait),
-			nil];
-		
-		[[EJJavaScriptView sharedView] addSubview:banner];
-		NSLog(@"AdBanner: init at y %f", banner.frame.origin.y);
-	}
-	return self;
+- (void)createWithJSObject:(JSObjectRef)obj scriptView:(EJJavaScriptView *)view {
+	[super createWithJSObject:obj scriptView:view];
+	
+	isAtBottom = NO;
+	wantsToShow = NO;
+	isReady = NO;
+	
+	banner = [[ADBannerView alloc] initWithFrame:CGRectZero];
+	banner.delegate = self;
+	banner.hidden = YES;
+	
+	BOOL landscape = [[[NSBundle mainBundle] infoDictionary][@"UIInterfaceOrientation"]
+		hasPrefix:@"UIInterfaceOrientationLandscape"];
+	
+	banner.requiredContentSizeIdentifiers = [NSSet setWithObjects:
+		(landscape
+			? ADBannerContentSizeIdentifierLandscape
+			: ADBannerContentSizeIdentifierPortrait),
+		nil];
+	
+	[scriptView addSubview:banner];
+	NSLog(@"AdBanner: init at y %f", banner.frame.origin.y);
 }
 
 - (void)dealloc {
@@ -35,7 +37,7 @@
 	NSLog(@"AdBanner: Ad loaded");
 	isReady = YES;
 	if( wantsToShow ) {
-		[[EJJavaScriptView sharedView] bringSubviewToFront:banner];
+		[scriptView bringSubviewToFront:banner];
 		banner.hidden = NO;
 	}
 	[self triggerEvent:@"load" argc:0 argv:NULL];
@@ -57,7 +59,7 @@ EJ_BIND_SET( isAtBottom, ctx, value ) {
 	
 	CGRect frame = banner.frame;
 	frame.origin.y = isAtBottom
-		? [EJJavaScriptView sharedView].bounds.size.height - frame.size.height
+		? scriptView.bounds.size.height - frame.size.height
 		: 0;
 		
 	banner.frame = frame;
@@ -72,7 +74,7 @@ EJ_BIND_FUNCTION(hide, ctx, argc, argv ) {
 EJ_BIND_FUNCTION(show, ctx, argc, argv ) {
 	wantsToShow = YES;
 	if( isReady ) {
-		[[EJJavaScriptView sharedView] bringSubviewToFront:banner];
+		[scriptView bringSubviewToFront:banner];
 		banner.hidden = NO;
 	}
 	return NULL;

@@ -12,7 +12,7 @@
 }
 
 - (void)dealloc {
-	JSContextRef ctx = [EJJavaScriptView sharedView].jsGlobalContext;
+	JSContextRef ctx = scriptView.jsGlobalContext;
 	
 	// Unprotect all event callbacks
 	for( NSString *name in eventListeners ) {
@@ -90,19 +90,17 @@ EJ_BIND_FUNCTION(removeEventListener, ctx, argc, argv) {
 	return NULL;
 }
 
-- (void)triggerEvent:(NSString *)name argc:(int)argc argv:(JSValueRef[])argv {
-	EJJavaScriptView *ejecta = [EJJavaScriptView sharedView];
-	
+- (void)triggerEvent:(NSString *)name argc:(int)argc argv:(JSValueRef[])argv {	
 	NSArray *listeners = eventListeners[name];
 	if( listeners ) {
 		for( NSValue *callbackValue in listeners ) {
-			[ejecta invokeCallback:[callbackValue pointerValue] thisObject:jsObject argc:argc argv:argv];
+			[scriptView invokeCallback:[callbackValue pointerValue] thisObject:jsObject argc:argc argv:argv];
 		}
 	}
 	
 	NSValue *callbackValue = onCallbacks[name];
 	if( callbackValue ) {
-		[ejecta invokeCallback:[callbackValue pointerValue] thisObject:jsObject argc:argc argv:argv];
+		[scriptView invokeCallback:[callbackValue pointerValue] thisObject:jsObject argc:argc argv:argv];
 	}
 }
 

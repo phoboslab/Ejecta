@@ -1,33 +1,57 @@
 #import "EJClassLoader.h"
 #import "EJBindingBase.h"
+#import "EJJavaScriptView.h"
 
 
-JSValueRef _EJGlobalUndefined;
 static JSClassRef EJGlobalConstructorClass;
 static NSMutableDictionary *EJGlobalJSClassCache;
 
+typedef struct {
+	Class class;
+	EJJavaScriptView *scriptView;
+} EJClassWithScriptView;
 
 JSValueRef EJGetNativeClass(JSContextRef ctx, JSObjectRef object, JSStringRef propertyNameJS, JSValueRef* exception) {
 	CFStringRef className = JSStringCopyCFString( kCFAllocatorDefault, propertyNameJS );
+	EJJavaScriptView *scriptView = JSObjectGetPrivate(object);
 	
 	JSObjectRef obj = NULL;
 	NSString *fullClassName = [@EJ_BINDING_CLASS_PREFIX stringByAppendingString:(NSString *)className];
 	Class class = NSClassFromString(fullClassName);
+	
 	if( class && [class isSubclassOfClass:EJBindingBase.class] ) {
-		obj = JSObjectMake( ctx, EJGlobalConstructorClass, (void *)class );
+		
+		// Pack the class together with the scriptView into a struct, so it can
+		// be put in the constructor's private data
+		EJClassWithScriptView *classWithScriptView = malloc(sizeof(EJClassWithScriptView));
+		classWithScriptView->class = class;
+		classWithScriptView->scriptView = scriptView;
+		
+		obj = JSObjectMake( ctx, EJGlobalConstructorClass, (void *)classWithScriptView );
 	}
 	
 	CFRelease(className);
-	return obj ? obj : _EJGlobalUndefined;
+	return obj ? obj : scriptView->jsUndefined;
 }
 
 JSObjectRef EJCallAsConstructor(JSContextRef ctx, JSObjectRef constructor, size_t argc, const JSValueRef argv[], JSValueRef* exception) {
-	Class class = (Class)JSObjectGetPrivate(constructor);	
-	EJBindingBase *instance = [(EJBindingBase *)[class alloc] initWithContext:ctx argc:argc argv:argv];
 	
-	JSObjectRef obj = [class createJSObjectWithContext:ctx instance:instance];
+	// Unpack the class and scriptView from the constructor's private data
+	EJClassWithScriptView *classWithScriptView = (EJClassWithScriptView *)JSObjectGetPrivate(constructor);
+	Class class = classWithScriptView->class;
+	EJJavaScriptView *scriptView = classWithScriptView->scriptView;
+	
+	// Init the native class and create the JSObject with it
+	EJBindingBase *instance = [(EJBindingBase *)[class alloc] initWithContext:ctx argc:argc argv:argv];
+	JSObjectRef obj = [class createJSObjectWithContext:ctx scriptView:scriptView instance:instance];
 	[instance release];
+	
 	return obj;
+}
+
+void EJConstructorFinalize(JSObjectRef object) {
+	EJClassWithScriptView *classWithScriptView = (EJClassWithScriptView *)JSObjectGetPrivate(object);
+	free(classWithScriptView);
 }
 
 
@@ -126,38 +150,33 @@ JSObjectRef EJCallAsConstructor(JSContextRef ctx, JSObjectRef constructor, size_
 	return jsClass;
 }
 
-- (id)initWithGlobalContext:(JSGlobalContextRef)contextp name:(NSString *)name {
+- (id)initWithScriptView:(EJJavaScriptView *)scriptView name:(NSString *)name {
 	if( self = [super init] ) {
-		context = JSGlobalContextRetain(contextp);
+		JSGlobalContextRef context = scriptView.jsGlobalContext;
 		
 		// Create or retain the global constructor class
 		if( !EJGlobalConstructorClass ) {
 			JSClassDefinition constructorClassDef = kJSClassDefinitionEmpty;
 			constructorClassDef.callAsConstructor = EJCallAsConstructor;
+			constructorClassDef.finalize = EJConstructorFinalize;
 			EJGlobalConstructorClass = JSClassCreate(&constructorClassDef);
 		}
 		else {
 			JSClassRetain(EJGlobalConstructorClass);
 		}
 		
-		
-		// FIXME: Somehow make this per instance!?
-		_EJGlobalUndefined = JSValueMakeUndefined(context);
-		
-		
 		// Create the collection class and attach it to the global context with
 		// the given name
-		JSClassDefinition constructorCollectionClassDef = kJSClassDefinitionEmpty;
-		constructorCollectionClassDef.getProperty = EJGetNativeClass;
-		JSClassRef constructorCollectionClass = JSClassCreate(&constructorCollectionClassDef);
+		JSClassDefinition loaderClassDef = kJSClassDefinitionEmpty;
+		loaderClassDef.getProperty = EJGetNativeClass;
+		JSClassRef loaderClass = JSClassCreate(&loaderClassDef);
 		
-		JSValueProtect(context, _EJGlobalUndefined);
 		JSObjectRef global = JSContextGetGlobalObject(context);
 		
-		JSObjectRef constructorCollection = JSObjectMake(context, constructorCollectionClass, NULL );
+		JSObjectRef loader = JSObjectMake(context, loaderClass, scriptView);
 		JSStringRef jsName = JSStringCreateWithUTF8CString(name.UTF8String);
 		JSObjectSetProperty(
-			context, global, jsName, constructorCollection,
+			context, global, jsName, loader,
 			(kJSPropertyAttributeDontDelete | kJSPropertyAttributeReadOnly),
 			NULL
 		);
@@ -177,17 +196,16 @@ JSObjectRef EJCallAsConstructor(JSContextRef ctx, JSObjectRef constructor, size_
 
 - (void)dealloc {
 	// If we are the last Collection to hold on to the Class cache, release it and
-	// set it to NULL, so it can be properly re-created if needed.
+	// set it to nil, so it can be properly re-created if needed.
 	if( EJGlobalJSClassCache.retainCount == 1 ) {
 		[EJGlobalJSClassCache release];
-		EJGlobalJSClassCache = NULL;
+		EJGlobalJSClassCache = nil;
 	}
 	else {
 		[EJGlobalJSClassCache release];
 	}
 	
 	JSClassRelease(EJGlobalConstructorClass);
-	JSGlobalContextRelease(context);
 	[super dealloc];
 }
 

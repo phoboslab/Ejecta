@@ -29,7 +29,6 @@ typedef struct {
 	
 	JSObjectRef jsCanvas;
 	EJCanvasContextWebGL *renderingContext;
-	EJJavaScriptView *ejectaInstance;
 	
 	NSMutableDictionary *renderbuffers;
 	NSMutableDictionary *framebuffers;

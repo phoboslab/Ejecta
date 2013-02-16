@@ -4,7 +4,7 @@
 #import <OpenAL/alc.h>
 
 #import "EJAudioSource.h"
-#import "EJOpenALManager.h"
+#import "EJSharedOpenALManager.h"
 #import "EJOpenALBuffer.h"
 
 @interface EJAudioSourceOpenAL : NSObject <EJAudioSource> {

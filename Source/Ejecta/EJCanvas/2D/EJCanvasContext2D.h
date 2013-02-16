@@ -5,12 +5,9 @@
 #import "EJCanvas2DTypes.h"
 #import "EJCanvasContext.h"
 #import "EJFont.h"
-#import "EJGLProgram2D.h"
+#import "EJSharedOpenGLContext.h"
 
 #define EJ_CANVAS_STATE_STACK_SIZE 16
-#define EJ_CANVAS_VERTEX_BUFFER_SIZE 1600 // 1600 * 20b = ~32kb
-
-extern EJVertex EJCanvasVertexBuffer[EJ_CANVAS_VERTEX_BUFFER_SIZE];
 
 typedef enum {
 	kEJLineCapButt,
@@ -75,7 +72,7 @@ typedef struct {
 	EJTextBaseline textBaseline;
 	EJFontDescriptor *font;
 	
-	EJPath *clipPath;
+	EJPath *clipPath;	
 } EJCanvasState;
 
 @class EJJavaScriptView;
@@ -91,6 +88,8 @@ typedef struct {
 	EJTexture *currentTexture;
 	EJPath *path;
 	
+	EJVertex *vertexBuffer;
+	int vertexBufferSize;
 	int vertexBufferIndex;
 	
 	int stateIndex;
@@ -102,11 +101,12 @@ typedef struct {
 	
 	NSCache *fontCache;
 	
-	EJJavaScriptView *app;
+	EJJavaScriptView *scriptView;
 	EJGLProgram2D *currentProgram;
+	EJSharedOpenGLContext *sharedGLContext;
 }
 
-- (id)initWithWidth:(short)width height:(short)height;
+- (id)initWithScriptView:(EJJavaScriptView *)scriptViewp width:(short)widthp height:(short)heightp;
 - (void)create;
 - (void)createStencilBufferOnce;
 - (void)bindVertexBuffer;

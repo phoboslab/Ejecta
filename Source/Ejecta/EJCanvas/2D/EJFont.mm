@@ -192,7 +192,8 @@ int EJFontGlyphLayoutSortByTextureIndex(const void *a, const void *b) {
 	CGContextRef context = CGBitmapContextCreate(pixels.mutableBytes, pxWidth, pxHeight, 8, pxWidth, NULL, kCGImageAlphaOnly);
 	
 	CGFontRef graphicsFont = cgMainFont;
-	if( font != ctMainFont ) {
+	BOOL isMainFont = (font == ctMainFont);
+	if( !isMainFont ) {
 		// Not the main font? Create the CGFont from the given ctFont.
 		graphicsFont = CTFontCopyGraphicsFont(font, NULL);
 	}
@@ -224,7 +225,7 @@ int EJFontGlyphLayoutSortByTextureIndex(const void *a, const void *b) {
 	txLineH = MAX( txLineH, pxHeight );
 	
 	
-	if( font != ctMainFont ) {
+	if( !isMainFont ) {
 		CGFontRelease(graphicsFont);
 	}
 	

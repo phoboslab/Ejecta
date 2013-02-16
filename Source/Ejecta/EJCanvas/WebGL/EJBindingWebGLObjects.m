@@ -22,10 +22,14 @@
 	return (binding && [binding isMemberOfClass:[self class]]) ? binding->index : 0;
 }
 
-+ (JSObjectRef)createJSObjectWithContext:(JSContextRef)ctx webglContext:(EJBindingCanvasContextWebGL *)webglContext index:(GLuint)index {
++ (JSObjectRef)createJSObjectWithContext:(JSContextRef)ctx
+	scriptView:(EJJavaScriptView *)view
+	webglContext:(EJBindingCanvasContextWebGL *)webglContext
+	index:(GLuint)index
+{
 	id native = [[self alloc] initWithWebGLContext:webglContext index:index];
 	
-	JSObjectRef obj = [self createJSObjectWithContext:ctx instance:native];
+	JSObjectRef obj = [self createJSObjectWithContext:ctx scriptView:view instance:native];
 	[native release];
 	return obj;
 }
@@ -81,10 +85,13 @@
 	return (binding && [binding isMemberOfClass:[self class]]) ? binding->texture : NULL;
 }
 
-+ (JSObjectRef)createJSObjectWithContext:(JSContextRef)ctx webglContext:(EJBindingCanvasContextWebGL *)webglContext {
++ (JSObjectRef)createJSObjectWithContext:(JSContextRef)ctx
+	scriptView:(EJJavaScriptView *)view
+	webglContext:(EJBindingCanvasContextWebGL *)webglContext
+{
 	id native = [[self alloc] initWithWebGLContext:webglContext];
 	
-	JSObjectRef obj = [self createJSObjectWithContext:ctx instance:native];
+	JSObjectRef obj = [self createJSObjectWithContext:ctx scriptView:view instance:native];
 	[native release];
 	return obj;
 }
@@ -131,10 +138,13 @@ EJ_BIND_GET(size, ctx) { return JSValueMakeNumber(ctx, size); }
 EJ_BIND_GET(type, ctx) { return JSValueMakeNumber(ctx, type); }
 EJ_BIND_GET(name, ctx) { return NSStringToJSValue(ctx, name); }
 
-+ (JSObjectRef)createJSObjectWithContext:(JSContextRef)ctx size:(GLint)sizep type:(GLenum)typep name:(NSString *)namep {
++ (JSObjectRef)createJSObjectWithContext:(JSContextRef)ctx
+	scriptView:(EJJavaScriptView *)view
+	size:(GLint)sizep type:(GLenum)typep name:(NSString *)namep
+{
 	id native = [[self alloc] initWithSize:sizep type:typep name:namep];
 	
-	JSObjectRef obj = [self createJSObjectWithContext:ctx instance:native];
+	JSObjectRef obj = [self createJSObjectWithContext:ctx scriptView:view instance:native];
 	[native release];
 	return obj;
 }
@@ -157,10 +167,13 @@ EJ_BIND_GET(rangeMin, ctx) { return JSValueMakeNumber(ctx, rangeMin); }
 EJ_BIND_GET(rangeMax, ctx) { return JSValueMakeNumber(ctx, rangeMax); }
 EJ_BIND_GET(precision, ctx) { return JSValueMakeNumber(ctx, precision); }
 
-+ (JSObjectRef)createJSObjectWithContext:(JSContextRef)ctx rangeMin:(GLint)rangeMin rangeMax:(GLint)rangeMax precision:(GLint)precision {
++ (JSObjectRef)createJSObjectWithContext:(JSContextRef)ctx
+	scriptView:(EJJavaScriptView *)view
+	rangeMin:(GLint)rangeMin rangeMax:(GLint)rangeMax precision:(GLint)precision
+{
 	id native = [[self alloc] initWithRangeMin:rangeMin rangeMax:rangeMax precision:precision];
 	
-	JSObjectRef obj = [self createJSObjectWithContext:ctx instance:native];
+	JSObjectRef obj = [self createJSObjectWithContext:ctx scriptView:view instance:native];
 	[native release];
 	return obj;
 }

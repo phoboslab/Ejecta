@@ -4,6 +4,26 @@
 #import "EJClassLoader.h"
 #import <objc/runtime.h>
 
+#import "AppDelegate.h"
+
+
+@implementation EJNonRetainingProxy
++ (EJNonRetainingProxy *)nonRetainingProxyWithTarget:(id)target {
+    EJNonRetainingProxy *proxy = [[[self alloc] init] autorelease];
+    proxy->target = target;
+    return proxy;
+}
+
+- (BOOL)respondsToSelector:(SEL)sel {
+    return [target respondsToSelector:sel] || [super respondsToSelector:sel];
+}
+
+- (id)forwardingTargetForSelector:(SEL)sel {
+    return target;
+}
+
+@end
+
 
 #pragma mark -
 #pragma mark Ejecta view Implementation
@@ -12,19 +32,12 @@
 
 @synthesize pauseOnEnterBackground;
 @synthesize isPaused;
+@synthesize hasScreenCanvas;
 @synthesize internalScaling;
 @synthesize jsGlobalContext;
 
-@synthesize openALManager;
-@synthesize glProgram2DFlat;
-@synthesize glProgram2DTexture;
-@synthesize glProgram2DAlphaTexture;
-@synthesize glProgram2DPattern;
-@synthesize glProgram2DRadialGradient;
 @synthesize currentRenderingContext;
-@synthesize glContext2D;
-@synthesize glSharegroup;
-@synthesize glCurrentContext;
+@synthesize openGLContext;
 
 @synthesize lifecycleDelegate;
 @synthesize touchDelegate;
@@ -32,31 +45,17 @@
 
 @synthesize opQueue;
 
-
-
-static EJJavaScriptView *_sharedView = nil;
-
-+ (EJJavaScriptView*)sharedView {
-	static dispatch_once_t onceToken;
-	dispatch_once(&onceToken, ^{
-		_sharedView = [[EJJavaScriptView alloc] initWithFrame:[[UIScreen mainScreen]bounds]];
-	});
-	return _sharedView;
-}
-
-+ (id)alloc {
-	@synchronized([EJJavaScriptView class]){
-		NSAssert(_sharedView == nil, @"Attempt to allocate a second instance of singleton EJJavaScriptView");
-		_sharedView = [super alloc];
-		return _sharedView;
-	}
-	return nil;
-}
-
 - (id)initWithFrame:(CGRect)frame {
 	if( self = [super initWithFrame:frame] ) {		
 		isPaused = false;
 		internalScaling = 1;
+
+		// CADisplayLink (and NSNotificationCenter?) retains it's target, but this
+		// is causing a retain loop - we can't completely release the scriptView
+		// from the outside.
+		// So we're using a "weak proxy" that doesn't retain the scriptView; we can
+		// then just invalidate the CADisplayLink in our dealloc and be done with it.
+		proxy = [[EJNonRetainingProxy nonRetainingProxyWithTarget:self] retain];
 		
 		self.pauseOnEnterBackground = YES;
 		
@@ -64,53 +63,65 @@ static EJJavaScriptView *_sharedView = nil;
 		opQueue = [[NSOperationQueue alloc] init];
 		opQueue.maxConcurrentOperationCount = 1;
 		
-		timers = [[EJTimerCollection alloc] init];
+		timers = [[EJTimerCollection alloc] initWithScriptView:self];
 		
-		displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(run:)];
+		displayLink = [[CADisplayLink displayLinkWithTarget:proxy selector:@selector(run:)] retain];
 		[displayLink setFrameInterval:1];
 		[displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 		
 		// Create the global JS context and attach the 'Ejecta' object		
 		jsGlobalContext = JSGlobalContextCreate(NULL);
-		classLoader = [[EJClassLoader alloc] initWithGlobalContext:jsGlobalContext name:@"Ejecta"];
+		jsUndefined = JSValueMakeUndefined(jsGlobalContext);
+		JSValueProtect(jsGlobalContext, jsUndefined);
 		
+		classLoader = [[EJClassLoader alloc] initWithScriptView:self name:@"Ejecta"];
+		
+		
+		// Retain the caches here, so even if they're currently unused in JavaScript,
+		// they will persist until the last scriptView is released
+		textureCache = [[EJSharedTextureCache instance] retain];
+		openALManager = [[EJSharedOpenALManager instance] retain];
+		openGLContext = [[EJSharedOpenGLContext instance] retain];
 		
 		// Create the OpenGL context for Canvas2D
-		glContext2D = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
-		glSharegroup = glContext2D.sharegroup;
-		glCurrentContext = glContext2D;
+		glCurrentContext = openGLContext.glContext2D;
 		[EAGLContext setCurrentContext:glCurrentContext];
 		
-//		[self loadScriptAtPath:EJECTA_BOOT_JS];
+		[self loadScriptAtPath:EJECTA_BOOT_JS];
 	}
 	return self;
 }
 
 - (void)dealloc {
+	// Careful, order is important! The JS context has to be released first;
+	// it will release the canvas objects which still need the openGLContext
+	// to be present, to release textures etc.
+	JSValueUnprotect(jsGlobalContext, jsUndefined);
+	JSGlobalContextRelease(jsGlobalContext);
+	
+	// Remove from notification center
 	self.pauseOnEnterBackground = false;
 	
+	// Remove from display link
+	[displayLink invalidate];
+	[displayLink release];
+	
+	[textureCache release];
+	[openALManager release];
 	[classLoader release];
-	JSGlobalContextRelease(jsGlobalContext);
 	
 	[currentRenderingContext release];
 	[screenRenderingContext release];
 	
 	[touchDelegate release];
 	[lifecycleDelegate release];
+	
+	[opQueue cancelAllOperations];
 	[opQueue release];
 	
-	[displayLink invalidate];
-	[displayLink release];
 	[timers release];
 	
-	[textureCache release];
-	[openALManager release];
-	[glProgram2DFlat release];
-	[glProgram2DTexture release];
-	[glProgram2DAlphaTexture release];
-	[glProgram2DPattern release];
-	[glProgram2DRadialGradient release];
-	[glContext2D release];
+	[openGLContext release];
 	[super dealloc];
 }
 
@@ -126,23 +137,23 @@ static EJJavaScriptView *_sharedView = nil;
 		[self observeKeyPaths:resumeN selector:@selector(resume)];
 	} 
 	else {
-		[self removeObserver:self forKeyPaths:pauseN];
-		[self removeObserver:self forKeyPaths:resumeN];
+		[self removeObserverForKeyPaths:pauseN];
+		[self removeObserverForKeyPaths:resumeN];
 	}
 	pauseOnEnterBackground = pauses;
 }
 
-- (void)removeObserver:(id)observer forKeyPaths:(NSArray*)keyPaths {
+- (void)removeObserverForKeyPaths:(NSArray*)keyPaths {
 	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-	for (NSString *name in keyPaths) {
-		[nc removeObserver:observer name:name object:nil];
+	for( NSString *name in keyPaths ) {
+		[nc removeObserver:proxy name:name object:nil];
 	}
 }
 
 - (void)observeKeyPaths:(NSArray*)keyPaths selector:(SEL)selector {
 	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-	for (NSString *name in keyPaths) {
-		[nc addObserver:self selector:selector name:name object:nil];
+	for( NSString *name in keyPaths ) {
+		[nc addObserver:proxy selector:selector name:name object:nil];
 	}
 }
 
@@ -306,6 +317,7 @@ static EJJavaScriptView *_sharedView = nil;
 	[remaining minusSet:touches];
 	
 	[touchDelegate triggerEvent:@"touchend" all:event.allTouches changed:touches remaining:remaining];
+	[remaining release];
 }
 
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -343,41 +355,6 @@ static EJJavaScriptView *_sharedView = nil;
 	
 	[timers cancelId:JSValueToNumberFast(ctxp, argv[0])];
 	return NULL;
-}
-
-
-#pragma mark
-#pragma mark Cached Objects
-
-#define EJ_GL_PROGRAM_GETTER(TYPE, NAME) \
-	- (TYPE *)glProgram2D##NAME { \
-		if( !glProgram2D##NAME ) { \
-			glProgram2D##NAME = [[TYPE alloc] initWithVertexShader:@"Vertex.vsh" fragmentShader: @ #NAME @".fsh"]; \
-		} \
-	return glProgram2D##NAME; \
-	}
-
-EJ_GL_PROGRAM_GETTER(EJGLProgram2D, Flat);
-EJ_GL_PROGRAM_GETTER(EJGLProgram2D, Texture);
-EJ_GL_PROGRAM_GETTER(EJGLProgram2D, AlphaTexture);
-EJ_GL_PROGRAM_GETTER(EJGLProgram2D, Pattern);
-EJ_GL_PROGRAM_GETTER(EJGLProgram2DRadialGradient, RadialGradient);
-
-#undef EJ_GL_PROGRAM_GETTER
-
-- (EJOpenALManager *)openALManager {
-	if( !openALManager ) {
-		openALManager = [[EJOpenALManager alloc] init];
-	}
-	return openALManager;
-}
-
-- (NSMutableDictionary *)textureCache {
-	if( !textureCache ) {
-		// Create a non-retaining Dictionary to hold the cached textures
-		textureCache = (NSMutableDictionary *)CFDictionaryCreateMutable(NULL, 8, &kCFCopyStringDictionaryKeyCallBacks, NULL);
-	}
-	return textureCache;
 }
 
 @end

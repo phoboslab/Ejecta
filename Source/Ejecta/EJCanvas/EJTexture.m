@@ -4,62 +4,7 @@
 #import "lodepng/lodepng.h"
 #import "EJConvertWebGL.h"
 
-#import "EJJavaScriptView.h"
-
-
-@implementation EJTextureStorage
-@synthesize textureId;
-@synthesize immutable;
-
-- (id)init {
-	if( self = [super init] ) {
-		glGenTextures(1, &textureId);
-		immutable = NO;
-	}
-	return self;
-}
-
-- (id)initImmutable {
-	if( self = [super init] ) {
-		glGenTextures(1, &textureId);
-		immutable = YES;
-	}
-	return self;
-}
-
-- (void)dealloc {
-	if( textureId ) {
-		glDeleteTextures(1, &textureId);
-	}
-	[super dealloc];
-}
-
-- (void)bindToTarget:(GLenum)target withParams:(EJTextureParam *)newParams {
-	glBindTexture(target, textureId);
-	
-	// Check if we have to set a param
-	if(params[kEJTextureParamMinFilter] != newParams[kEJTextureParamMinFilter]) {
-		params[kEJTextureParamMinFilter] = newParams[kEJTextureParamMinFilter];
-		glTexParameteri(target, GL_TEXTURE_MIN_FILTER, params[kEJTextureParamMinFilter]);
-	}
-	if(params[kEJTextureParamMagFilter] != newParams[kEJTextureParamMagFilter]) {
-		params[kEJTextureParamMagFilter] = newParams[kEJTextureParamMagFilter];
-		glTexParameteri(target, GL_TEXTURE_MAG_FILTER, params[kEJTextureParamMagFilter]);
-	}
-	if(params[kEJTextureParamWrapS] != newParams[kEJTextureParamWrapS]) {
-		params[kEJTextureParamWrapS] = newParams[kEJTextureParamWrapS];
-		glTexParameteri(target, GL_TEXTURE_WRAP_S, params[kEJTextureParamWrapS]);
-	}
-	if(params[kEJTextureParamWrapT] != newParams[kEJTextureParamWrapT]) {
-		params[kEJTextureParamWrapT] = newParams[kEJTextureParamWrapT];
-		glTexParameteri(target, GL_TEXTURE_WRAP_T, params[kEJTextureParamWrapT]);
-	}
-}
-
-@end
-
-
-
+#import "EJSharedTextureCache.h"
 
 
 @implementation EJTexture
@@ -98,10 +43,10 @@
 	return self;
 }
 
-+ (id)cachedTextureWithPath:(NSString *)path callback:(void (^)(void))callback {
++ (id)cachedTextureWithPath:(NSString *)path loadOnQueue:(NSOperationQueue *)queue callback:(void (^)(void))callback {
 	// For loading on a background thread (non-blocking), but tries the cache first
 	
-	EJTexture *texture = [EJJavaScriptView sharedView].textureCache[path];
+	EJTexture *texture = [EJSharedTextureCache instance].textures[path];
 	if( texture ) {
 		// We already have a texture, but it may hasn't finished loading yet. If
 		// the texture's loadCallback is still present, add it as an dependency
@@ -115,16 +60,16 @@
 	}
 	else {
 		// Create a new texture and add it to the cache
-		texture = [[EJTexture alloc] initWithPath:path callback:callback];
+		texture = [[EJTexture alloc] initWithPath:path loadOnQueue:queue callback:callback];
 		
-		[EJJavaScriptView sharedView].textureCache[path] = texture;
+		[EJSharedTextureCache instance].textures[path] = texture;
 		[texture autorelease];
 		texture->cached = true;
 	}
 	return texture;
 }
 
-- (id)initWithPath:(NSString *)path callback:(void (^)(void))callback {
+- (id)initWithPath:(NSString *)path loadOnQueue:(NSOperationQueue *)queue callback:(void (^)(void))callback {
 	// For loading on a background thread (non-blocking)
 	if( self = [super init] ) {
 		contentScale = 1;
@@ -133,7 +78,7 @@
 		
 		// Load the image file in a background thread
 		loadCallback = [[NSBlockOperation blockOperationWithBlock:callback] retain];
-		[[EJJavaScriptView sharedView].opQueue addOperationWithBlock:^{
+		[queue addOperationWithBlock:^{
 			NSMutableData *pixels = [self loadPixelsFromPath:path];
 			
 			// Upload the pixel data in the main thread, otherwise the GLContext gets confused.	
@@ -194,7 +139,7 @@
 
 - (void)dealloc {
 	if( cached ) {
-		[[EJJavaScriptView sharedView].textureCache removeObjectForKey:fullPath];
+		[[EJSharedTextureCache instance].textures removeObjectForKey:fullPath];
 	}
 	[fullPath release];
 	[textureStorage release];

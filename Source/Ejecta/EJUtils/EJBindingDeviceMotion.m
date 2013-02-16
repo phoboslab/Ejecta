@@ -3,32 +3,29 @@
 
 @implementation EJBindingDeviceMotion
 
-- (id)initWithContext:(JSContextRef)ctx argc:(size_t)argc argv:(const JSValueRef [])argv {
-	if( self = [super initWithContext:ctx argc:argc argv:argv] ) {
-		
-		interval = 1.0f/60.0f;
-		motionManager = [[CMMotionManager alloc] init];
-		NSOperationQueue *queue = [EJJavaScriptView sharedView].opQueue;
-		
-		// Has Gyro? (iPhone4 and newer)
-		if( motionManager.isDeviceMotionAvailable ) {
-			motionManager.deviceMotionUpdateInterval = interval;
-			[motionManager startDeviceMotionUpdatesToQueue:queue withHandler:
-				^(CMDeviceMotion *motion, NSError *error) {
-					[self triggerEventWithMotion:motion];
-				}];
-		}
-		
-		// Only basic accelerometer data
-		else {
-			motionManager.accelerometerUpdateInterval = interval;
-			[motionManager startAccelerometerUpdatesToQueue:queue withHandler:
-				^(CMAccelerometerData *accelerometerData, NSError *error) {
-					[self triggerEventWithAccelerometerData:accelerometerData];
-				}];
-		}
+- (void)createWithJSObject:(JSObjectRef)obj scriptView:(EJJavaScriptView *)view {
+	[super createWithJSObject:obj scriptView:view];
+	interval = 1.0f/60.0f;
+	motionManager = [[CMMotionManager alloc] init];
+	NSOperationQueue *queue = scriptView.opQueue;
+	
+	// Has Gyro? (iPhone4 and newer)
+	if( motionManager.isDeviceMotionAvailable ) {
+		motionManager.deviceMotionUpdateInterval = interval;
+		[motionManager startDeviceMotionUpdatesToQueue:queue withHandler:
+			^(CMDeviceMotion *motion, NSError *error) {
+				[self triggerEventWithMotion:motion];
+			}];
 	}
-	return self;
+	
+	// Only basic accelerometer data
+	else {
+		motionManager.accelerometerUpdateInterval = interval;
+		[motionManager startAccelerometerUpdatesToQueue:queue withHandler:
+			^(CMAccelerometerData *accelerometerData, NSError *error) {
+				[self triggerEventWithAccelerometerData:accelerometerData];
+			}];
+	}
 }
 
 
@@ -36,7 +33,7 @@ static const float g = 9.80665;
 static const float radToDeg = (180/M_PI);
 
 - (void)triggerEventWithMotion:(CMDeviceMotion *)motion {
-	JSContextRef ctx = [EJJavaScriptView sharedView].jsGlobalContext;
+	JSContextRef ctx = scriptView.jsGlobalContext;
 	
 	// accelerationIncludingGravity {x, y, z}
 	params[0] = JSValueMakeNumber(ctx, (motion.userAcceleration.x + motion.gravity.x) * g);
@@ -62,7 +59,7 @@ static const float radToDeg = (180/M_PI);
 }
 
 - (void)triggerEventWithAccelerometerData:(CMAccelerometerData *)accel {
-	JSContextRef ctx = [EJJavaScriptView sharedView].jsGlobalContext;
+	JSContextRef ctx = scriptView.jsGlobalContext;
 	
 	// accelerationIncludingGravity {x, y, z}
 	params[0] = JSValueMakeNumber(ctx, accel.acceleration.x * g);

@@ -1,59 +1,36 @@
 #import <objc/runtime.h>
 
 #import "EJAppViewController.h"
-#import "EJBindingBase.h"
-#import "EJTimer.h"
-
 #import "EJJavaScriptView.h"
 
 @implementation EJAppViewController
 
-@synthesize landscapeMode;
-
-static EJAppViewController *_ejectaInstance = NULL;
-
-+ (EJAppViewController *)instance {
-	static dispatch_once_t onceToken;
-	dispatch_once(&onceToken, ^{
-		_ejectaInstance = [[EJAppViewController alloc] init];
-	});
-	return _ejectaInstance;
-}
-
 - (id)init{
 	if( self = [super init] ) {
 		landscapeMode = [[[NSBundle mainBundle] infoDictionary][@"UIInterfaceOrientation"] hasPrefix:@"UIInterfaceOrientationLandscape"];
-		_ejectaInstance = self;
-		[[EJJavaScriptView sharedView] loadScriptAtPath:@"../Ejecta.js"];
-		[[EJJavaScriptView sharedView] loadScriptAtPath:@"index.js"];
 	}
 	return self;
 }
 
-+(id)alloc {
-	@synchronized([EJAppViewController class]){
-		NSAssert(_ejectaInstance == nil, @"Attempt to allocate a second instance of singleton EJAppViewController");
-		_ejectaInstance = [super alloc];
-		return _ejectaInstance;
-	}
-	return nil;
-}
-
 - (void)dealloc {
+	self.view = nil;
 	[super dealloc];
 }
 
 - (void)didReceiveMemoryWarning {
-	[[EJJavaScriptView sharedView] clearCaches];
+	[(EJJavaScriptView *)self.view clearCaches];
 }
 
 - (void)loadView {
-	EJJavaScriptView *view = [EJJavaScriptView sharedView];
+	EJJavaScriptView *view = [[EJJavaScriptView alloc] initWithFrame:UIScreen.mainScreen.bounds];
 	self.view = view;
+	
+	[view loadScriptAtPath:@"index.js"];
+	[view release];
 }
 
 - (NSUInteger)supportedInterfaceOrientations {
-	if(self.landscapeMode) {
+	if(landscapeMode) {
 		// Allow Landscape Left and Right
 		return UIInterfaceOrientationMaskLandscape;
 	}

@@ -11,15 +11,15 @@
 	
 	// Protect this image object from garbage collection, as its callback function
 	// may be the only thing holding on to it
-	JSValueProtect([EJJavaScriptView sharedView].jsGlobalContext, jsObject);
+	JSValueProtect(scriptView.jsGlobalContext, jsObject);
 	
 	NSLog(@"Loading Image: %@", path);
-	NSString *fullPath = [[EJJavaScriptView sharedView] pathForResource:path];
+	NSString *fullPath = [scriptView pathForResource:path];
 	
-	texture = [[EJTexture cachedTextureWithPath:fullPath callback:^{
+	texture = [[EJTexture cachedTextureWithPath:fullPath loadOnQueue:scriptView.opQueue callback:^{
 		loading = NO;
 		[self triggerEvent:(texture.textureId ? @"load" : @"error") argc:0 argv:NULL];		
-		JSValueUnprotect([EJJavaScriptView sharedView].jsGlobalContext, jsObject);
+		JSValueUnprotect(scriptView.jsGlobalContext, jsObject);
 	}] retain];
 }
 

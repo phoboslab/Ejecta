@@ -2,11 +2,14 @@
 
 @implementation EJBindingCanvasPattern
 
-+ (JSObjectRef)createJSObjectWithContext:(JSContextRef)ctx pattern:(EJCanvasPattern *)pattern {
++ (JSObjectRef)createJSObjectWithContext:(JSContextRef)ctx
+	scriptView:(EJJavaScriptView *)view
+	pattern:(EJCanvasPattern *)pattern
+{
 	EJBindingCanvasPattern *binding = [[EJBindingCanvasPattern alloc] initWithContext:ctx argc:0 argv:NULL];
 	binding->pattern = [pattern retain];
 	
-	JSObjectRef obj = [self createJSObjectWithContext:ctx instance:binding];
+	JSObjectRef obj = [self createJSObjectWithContext:ctx scriptView:view instance:binding];
 	[binding release];
 	return obj;
 }

@@ -14,9 +14,8 @@
 }
 
 - (void)dealloc {
-	JSContextRef ctx = [EJJavaScriptView sharedView].jsGlobalContext;
 	if( dataArray ) {
-		JSValueUnprotect(ctx, dataArray);
+		JSValueUnprotect(scriptView.jsGlobalContext, dataArray);
 	}
 	
 	[imageData release];
@@ -26,10 +25,9 @@
 - (EJImageData *)imageData {
 	if( dataArray ) {
 		// Copy values from the JSArray back into the imageData
-		JSContextRef ctx = [EJJavaScriptView sharedView].jsGlobalContext;
 		int count = imageData.width * imageData.height * 4;
 		
-		void *data = JSTypedArrayGetDataPtr(ctx, dataArray, NULL);
+		void *data = JSTypedArrayGetDataPtr(scriptView.jsGlobalContext, dataArray, NULL);
 		memcpy(imageData.pixels.mutableBytes, data, count);
 	}
 	

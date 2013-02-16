@@ -2,11 +2,14 @@
 
 @implementation EJBindingTextMetrics
 
-+ (JSObjectRef)createJSObjectWithContext:(JSContextRef)ctx metrics:(EJTextMetrics)metrics {
++ (JSObjectRef)createJSObjectWithContext:(JSContextRef)ctx
+	scriptView:(EJJavaScriptView *)view
+	metrics:(EJTextMetrics)metrics
+{
 	EJBindingTextMetrics *binding = [[EJBindingTextMetrics alloc] initWithContext:ctx argc:0 argv:NULL];
 	binding->metrics = metrics;
 	
-	JSObjectRef obj = [self createJSObjectWithContext:ctx instance:binding];
+	JSObjectRef obj = [self createJSObjectWithContext:ctx scriptView:view instance:binding];
 	[binding release];
 	return obj;
 }

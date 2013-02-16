@@ -2,8 +2,6 @@
 #import "AppDelegate.h"
 #import "EJJavaScriptView.h"
 @implementation AppDelegate
-
-@synthesize ejApp;
 @synthesize window;
 
 #pragma mark -
@@ -15,16 +13,19 @@
 	// not being interacted with by touch. ie. games with motion control.
 	[application setIdleTimerDisabled:YES];
 	
-    ejApp = [EJAppViewController instance];
-    window.rootViewController = ejApp;
+	EJAppViewController *vc = [[EJAppViewController alloc] init];
+    window.rootViewController = vc;
+	[vc release];
+	
     return YES;
 }
+
 
 #pragma mark -
 #pragma mark Memory management
 
 - (void)dealloc {
-	[ejApp release];
+	window.rootViewController = nil;
 	[window release];
     [super dealloc];
 }

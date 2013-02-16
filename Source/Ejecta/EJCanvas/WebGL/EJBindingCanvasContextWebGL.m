@@ -12,7 +12,6 @@
 
 - (id)initWithCanvas:(JSObjectRef)canvas renderingContext:(EJCanvasContextWebGL *)renderingContextp {
 	if( self = [super initWithContext:NULL argc:0 argv:NULL] ) {
-		ejectaInstance = [EJJavaScriptView sharedView]; // Keep a local copy - may be faster?
 		renderingContext = [renderingContextp retain];
 		jsCanvas = canvas;
 		
@@ -61,7 +60,7 @@
 - (void)deleteBuffer:(GLuint)buffer {
 	NSNumber *key = @(buffer);
 	if( buffers[key] ) {
-		ejectaInstance.currentRenderingContext = renderingContext;
+		scriptView.currentRenderingContext = renderingContext;
 		glDeleteBuffers(1, &buffer);
 		[buffers removeObjectForKey:key];
 	}
@@ -90,7 +89,7 @@
 - (void)deleteProgram:(GLuint)program {
 	NSNumber *key = @(program);
 	if( programs[key] ) {
-		ejectaInstance.currentRenderingContext = renderingContext;
+		scriptView.currentRenderingContext = renderingContext;
 		glDeleteProgram(program);
 		[programs removeObjectForKey:key];
 	}
@@ -99,7 +98,7 @@
 - (void)deleteShader:(GLuint)shader {
 	NSNumber *key = @(shader);
 	if( shaders[key] ) {
-		ejectaInstance.currentRenderingContext = renderingContext;
+		scriptView.currentRenderingContext = renderingContext;
 		glDeleteShader(shader);
 		[shaders removeObjectForKey:key];
 	}
@@ -109,7 +108,7 @@
 - (void)deleteRenderbuffer:(GLuint)renderbuffer {
 	NSNumber *key = @(renderbuffer);
 	if( renderbuffers[key] ) {
-		ejectaInstance.currentRenderingContext = renderingContext;
+		scriptView.currentRenderingContext = renderingContext;
 		glDeleteRenderbuffers(1, &renderbuffer);
 		[renderbuffers removeObjectForKey:key];
 	}
@@ -119,7 +118,7 @@
 - (void)deleteFramebuffer:(GLuint)framebuffer {
 	NSNumber *key = @(framebuffer);
 	if( framebuffers[key] ) {
-		ejectaInstance.currentRenderingContext = renderingContext;
+		scriptView.currentRenderingContext = renderingContext;
 		glDeleteFramebuffers(1, &framebuffer);
 		[framebuffers removeObjectForKey:key];
 	}
@@ -149,7 +148,7 @@ EJ_BIND_GET(drawingBufferHeight, ctx) {
 #define EJ_BIND_FUNCTION_DIRECT(NAME, BINDING, ...) \
 	EJ_BIND_FUNCTION(NAME, ctx, argc, argv) { \
 		if( argc < EJ_ARGC(__VA_ARGS__) ) { return NULL; } \
-		ejectaInstance.currentRenderingContext = renderingContext; \
+		scriptView.currentRenderingContext = renderingContext; \
 		BINDING( EJ_MAP_EXT(0, _EJ_COMMA, _EJ_BIND_FUNCTION_DIRECT_UNPACK, __VA_ARGS__) ); \
 		return NULL;\
 	}
@@ -158,6 +157,7 @@ EJ_BIND_GET(drawingBufferHeight, ctx) {
 
 EJ_BIND_FUNCTION(getContextAttributes, ctx, argc, argv) {
 	return [EJBindingWebGLContextAttributes createJSObjectWithContext:ctx
+		scriptView:scriptView
 		instance:[[[EJBindingWebGLContextAttributes alloc] init] autorelease]];
 }
 
@@ -176,7 +176,7 @@ EJ_BIND_FUNCTION(getExtension, ctx, argc, argv) {
 EJ_BIND_FUNCTION(activeTexture, ctx, argc, argv) {
 	if ( argc < 1 ) { return NULL; }
 	
-	ejectaInstance.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	
 	GLenum texture = JSValueToNumberFast(ctx, argv[0]);
 	GLuint index = texture - GL_TEXTURE0;
@@ -190,7 +190,7 @@ EJ_BIND_FUNCTION(activeTexture, ctx, argc, argv) {
 EJ_BIND_FUNCTION(attachShader, ctx, argc, argv) {
 	if( argc < 2 ) { return NULL; }
 	
-	ejectaInstance.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	
 	GLuint program = [EJBindingWebGLProgram indexFromJSValue:argv[0]];
 	GLuint shader = [EJBindingWebGLShader indexFromJSValue:argv[1]];
@@ -201,7 +201,7 @@ EJ_BIND_FUNCTION(attachShader, ctx, argc, argv) {
 EJ_BIND_FUNCTION(bindAttribLocation, ctx, argc, argv) {
 	if( argc < 3 ) { return NULL; }
 	
-	ejectaInstance.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	
 	GLuint program = [EJBindingWebGLProgram indexFromJSValue:argv[0]];
 	GLuint index = JSValueToNumberFast(ctx, argv[1]);
@@ -214,7 +214,7 @@ EJ_BIND_FUNCTION(bindAttribLocation, ctx, argc, argv) {
 
 EJ_BIND_FUNCTION(bindBuffer, ctx, argc, argv) {
 		if( argc < 2 ) { return NULL; }
-		ejectaInstance.currentRenderingContext = renderingContext;
+		scriptView.currentRenderingContext = renderingContext;
 		GLenum target = JSValueToNumberFast(ctx, argv[0]);
 		GLuint index = [EJBindingWebGLBuffer indexFromJSValue:argv[1]];
 		glBindBuffer(target, index);
@@ -224,7 +224,7 @@ EJ_BIND_FUNCTION(bindBuffer, ctx, argc, argv) {
 #define EJ_BIND_BIND(I, NAME) \
 	EJ_BIND_FUNCTION(bind##NAME, ctx, argc, argv) { \
 		if( argc < 2 ) { return NULL; } \
-		ejectaInstance.currentRenderingContext = renderingContext; \
+		scriptView.currentRenderingContext = renderingContext; \
 		GLenum target = JSValueToNumberFast(ctx, argv[0]); \
 		GLuint index = [EJBindingWebGL##NAME indexFromJSValue:argv[1]]; \
 		if( index ) { \
@@ -244,7 +244,7 @@ EJ_BIND_FUNCTION(bindBuffer, ctx, argc, argv) {
 EJ_BIND_FUNCTION(bindTexture, ctx, argc, argv) {
 	if( argc < 2 ) { return NULL; }
 	
-	ejectaInstance.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	
 	GLenum target = JSValueToNumberFast(ctx, argv[0]);
 	EJTexture *texture = [EJBindingWebGLTexture textureFromJSValue:argv[1]];
@@ -286,7 +286,7 @@ EJ_BIND_FUNCTION_DIRECT(blendFuncSeparate, glBlendFuncSeparate, srcRGB, dstRGB, 
 EJ_BIND_FUNCTION(bufferData, ctx, argc, argv) {
 	if( argc < 3 ) { return NULL; }
 	
-	ejectaInstance.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	
 	GLenum target = JSValueToNumberFast(ctx, argv[0]);
 	size_t size;
@@ -307,7 +307,7 @@ EJ_BIND_FUNCTION(bufferData, ctx, argc, argv) {
 EJ_BIND_FUNCTION(bufferSubData, ctx, argc, argv) {
 	if( argc < 3 ) { return NULL; }
 	
-	ejectaInstance.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	
 	GLenum target = JSValueToNumberFast(ctx, argv[0]);
 	GLintptr offset = JSValueToNumberFast(ctx, argv[1]);
@@ -323,7 +323,7 @@ EJ_BIND_FUNCTION(bufferSubData, ctx, argc, argv) {
 EJ_BIND_FUNCTION(checkFramebufferStatus, ctx, argc, argv) {
 	EJ_UNPACK_ARGV(GLenum target);
 	
-	ejectaInstance.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	
 	return JSValueMakeNumber(ctx, glCheckFramebufferStatus(target));
 }
@@ -337,7 +337,7 @@ EJ_BIND_FUNCTION_DIRECT(colorMask, glColorMask, red, green, blue, alpha);
 EJ_BIND_FUNCTION(compileShader, ctx, argc, argv) {
 	if( argc < 1 ) { return NULL; }
 	
-	ejectaInstance.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	
 	GLuint shader = [EJBindingWebGLShader indexFromJSValue:argv[0]];
 	glCompileShader(shader);
@@ -350,7 +350,7 @@ EJ_BIND_FUNCTION_NOT_IMPLEMENTED(compressedTexSubImage2D);
 EJ_BIND_FUNCTION(copyTexImage2D, ctx, argc, argv) {
 	EJ_UNPACK_ARGV(GLenum target, GLint level, GLenum internalformat, GLint x, GLint y, GLsizei width, GLsizei height);
 	
-	ejectaInstance.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	
 	EJTexture *targetTexture;
 	if( target == GL_TEXTURE_2D ) {
@@ -371,7 +371,7 @@ EJ_BIND_FUNCTION(copyTexImage2D, ctx, argc, argv) {
 EJ_BIND_FUNCTION(copyTexSubImage2D, ctx, argc, argv) {
 	EJ_UNPACK_ARGV(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint x, GLint y, GLsizei width, GLsizei height);
 	
-	ejectaInstance.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	
 	EJTexture *targetTexture;
 	if( target == GL_TEXTURE_2D ) {
@@ -390,46 +390,51 @@ EJ_BIND_FUNCTION(copyTexSubImage2D, ctx, argc, argv) {
 }
 
 EJ_BIND_FUNCTION(createBuffer, ctx, argc, argv) {
-	ejectaInstance.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	GLuint index;
 	glGenBuffers(1, &index);
-	JSObjectRef obj = [EJBindingWebGLBuffer createJSObjectWithContext:ctx webglContext:self index:index];
+	JSObjectRef obj = [EJBindingWebGLBuffer createJSObjectWithContext:ctx
+		scriptView:scriptView webglContext:self index:index];
 	buffers[@(index)] = [NSValue valueWithPointer:obj];
 	return obj;
 }
 
 EJ_BIND_FUNCTION(createFramebuffer, ctx, argc, argv) {
-	ejectaInstance.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	GLuint index;
 	glGenFramebuffers(1, &index);
-	JSObjectRef obj = [EJBindingWebGLFramebuffer createJSObjectWithContext:ctx webglContext:self index:index];
+	JSObjectRef obj = [EJBindingWebGLFramebuffer createJSObjectWithContext:ctx
+		scriptView:scriptView webglContext:self index:index];
 	framebuffers[@(index)] = [NSValue valueWithPointer:obj];
 	return obj;
 }
 
 EJ_BIND_FUNCTION(createRenderbuffer, ctx, argc, argv) {
-	ejectaInstance.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	GLuint index;
 	glGenRenderbuffers(1, &index);
-	JSObjectRef obj = [EJBindingWebGLRenderbuffer createJSObjectWithContext:ctx webglContext:self index:index];
+	JSObjectRef obj = [EJBindingWebGLRenderbuffer createJSObjectWithContext:ctx
+		scriptView:scriptView webglContext:self index:index];
 	renderbuffers[@(index)] = [NSValue valueWithPointer:obj];
 	return obj;
 }
 
 EJ_BIND_FUNCTION(createTexture, ctx, argc, argv) {
-	ejectaInstance.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	
 	// The texture is initialized empty; it doesn't have a valid gl textureId, so we
 	// can't put it in our textures dictionary just yet
-	return [EJBindingWebGLTexture createJSObjectWithContext:ctx webglContext:self];
+	return [EJBindingWebGLTexture createJSObjectWithContext:ctx
+		scriptView:scriptView webglContext:self];
 }
 
 
 EJ_BIND_FUNCTION(createProgram, ctx, argc, argv) {
-	ejectaInstance.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	
 	GLuint program = glCreateProgram();
-	JSObjectRef obj = [EJBindingWebGLProgram createJSObjectWithContext:ctx webglContext:self index:program];
+	JSObjectRef obj = [EJBindingWebGLProgram createJSObjectWithContext:ctx
+		scriptView:scriptView webglContext:self index:program];
 	programs[@(program)] = [NSValue valueWithPointer:obj];
 	return obj;
 }
@@ -437,10 +442,11 @@ EJ_BIND_FUNCTION(createProgram, ctx, argc, argv) {
 EJ_BIND_FUNCTION(createShader, ctx, argc, argv) {
 	EJ_UNPACK_ARGV(GLenum type);
 	
-	ejectaInstance.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 
 	GLuint shader = glCreateShader(type);
-	JSObjectRef obj = [EJBindingWebGLShader createJSObjectWithContext:ctx webglContext:self index:shader];
+	JSObjectRef obj = [EJBindingWebGLShader createJSObjectWithContext:ctx
+		scriptView:scriptView webglContext:self index:shader];
 	shaders[@(shader)] = [NSValue valueWithPointer:obj];
 	return obj;
 }
@@ -468,7 +474,7 @@ EJ_BIND_FUNCTION_DIRECT(depthRange, glDepthRangef, zNear, zFar);
 EJ_BIND_FUNCTION(detachShader, ctx, argc, argv) {
 	if( argc < 2 ) { return NULL; }
 	
-	ejectaInstance.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	
 	GLuint program = [EJBindingWebGLProgram indexFromJSValue:argv[0]];
 	GLuint shader = [EJBindingWebGLProgram indexFromJSValue:argv[1]];
@@ -483,7 +489,7 @@ EJ_BIND_FUNCTION_DIRECT(drawArrays, glDrawArrays, mode, first, count);
 EJ_BIND_FUNCTION(drawElements, ctx, argc, argv) {
 	EJ_UNPACK_ARGV(GLenum mode, GLsizei count, GLenum type, GLint offset);
 	
-	ejectaInstance.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	
 	glDrawElements(mode, count, type, EJ_BUFFER_OFFSET(offset));
 	return NULL;
@@ -493,13 +499,13 @@ EJ_BIND_FUNCTION_DIRECT(enable, glEnable, cap);
 EJ_BIND_FUNCTION_DIRECT(enableVertexAttribArray, glEnableVertexAttribArray, index);
 
 EJ_BIND_FUNCTION(flush, ctx, argc, argv) {
-	ejectaInstance.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	glFlush();
 	return NULL;
 }
 
 EJ_BIND_FUNCTION(finish, ctx, argc, argv) {
-	ejectaInstance.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	glFinish();
 	return NULL;
 }
@@ -507,7 +513,7 @@ EJ_BIND_FUNCTION(finish, ctx, argc, argv) {
 EJ_BIND_FUNCTION(framebufferRenderbuffer, ctx, argc, argv) {
 	if( argc < 4 ) { return NULL; }
 	
-	ejectaInstance.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	
 	EJ_UNPACK_ARGV(GLenum target, GLenum attachment, GLenum renderbuffertarget);
 	GLuint renderbuffer = [EJBindingWebGLRenderbuffer indexFromJSValue:argv[3]];
@@ -525,7 +531,7 @@ EJ_BIND_FUNCTION(framebufferRenderbuffer, ctx, argc, argv) {
 EJ_BIND_FUNCTION(framebufferTexture2D, ctx, argc, argv) {
 	if( argc < 5 ) { return NULL; }
 	
-	ejectaInstance.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	
 	EJ_UNPACK_ARGV(GLenum target, GLenum attachment, GLenum textarget);
 	EJTexture *texture = [EJBindingWebGLTexture textureFromJSValue:argv[3]];
@@ -543,7 +549,7 @@ EJ_BIND_FUNCTION_DIRECT(generateMipmap, glGenerateMipmap, mode);
 EJ_BIND_FUNCTION(getActiveAttrib, ctx, argc, argv) {
 	if( argc < 2 ) { return NULL; }
 	
-	ejectaInstance.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	
 	GLuint program = [EJBindingWebGLProgram indexFromJSValue:argv[0]];
 	GLuint index = JSValueToNumberFast(ctx, argv[1]);
@@ -560,13 +566,14 @@ EJ_BIND_FUNCTION(getActiveAttrib, ctx, argc, argv) {
 	NSString *name = @(namebuffer);
 	free(namebuffer);
 	
-	return [EJBindingWebGLActiveInfo createJSObjectWithContext:ctx size:size type:type name:name];
+	return [EJBindingWebGLActiveInfo createJSObjectWithContext:ctx
+		scriptView:scriptView size:size type:type name:name];
 }
 
 EJ_BIND_FUNCTION(getActiveUniform, ctx, argc, argv) {
 	if( argc < 2 ) { return NULL; }
 	
-	ejectaInstance.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	
 	GLuint program = [EJBindingWebGLProgram indexFromJSValue:argv[0]];
 	GLuint index = JSValueToNumberFast(ctx, argv[1]);
@@ -583,13 +590,14 @@ EJ_BIND_FUNCTION(getActiveUniform, ctx, argc, argv) {
 	NSString *name = @(namebuffer);
 	free(namebuffer);
 	
-	return [EJBindingWebGLActiveInfo createJSObjectWithContext:ctx size:size type:type name:name];
+	return [EJBindingWebGLActiveInfo createJSObjectWithContext:ctx
+		scriptView:scriptView size:size type:type name:name];
 }
 
 EJ_BIND_FUNCTION(getAttachedShaders, ctx, argc, argv) {
 	if( argc < 1 ) { return NULL; }
 	
-	ejectaInstance.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	
 	GLuint program = [EJBindingWebGLProgram indexFromJSValue:argv[0]];
 	
@@ -613,7 +621,7 @@ EJ_BIND_FUNCTION(getAttachedShaders, ctx, argc, argv) {
 EJ_BIND_FUNCTION(getAttribLocation, ctx, argc, argv) {
 	if( argc < 2 ) { return NULL; }
 	
-	ejectaInstance.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	
 	GLuint program = [EJBindingWebGLProgram indexFromJSValue:argv[0]];
 	NSString *name = JSValueToNSString(ctx, argv[1]);
@@ -624,7 +632,7 @@ EJ_BIND_FUNCTION(getAttribLocation, ctx, argc, argv) {
 EJ_BIND_FUNCTION(getParameter, ctx, argc, argv) {
 	EJ_UNPACK_ARGV(GLenum pname);
 	
-	ejectaInstance.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	
 	JSValueRef ret = NULL;
 	
@@ -758,7 +766,7 @@ EJ_BIND_FUNCTION(getParameter, ctx, argc, argv) {
 EJ_BIND_FUNCTION(getBufferParameter, ctx, argc, argv) {
 	EJ_UNPACK_ARGV(GLenum target, GLenum pname);
 	
-	ejectaInstance.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	
 	GLint param;
 	glGetBufferParameteriv(target, pname, &param);
@@ -766,14 +774,14 @@ EJ_BIND_FUNCTION(getBufferParameter, ctx, argc, argv) {
 }
 
 EJ_BIND_FUNCTION(getError, ctx, argc, argv) {
-	ejectaInstance.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	return JSValueMakeNumber(ctx, glGetError());
 }
 
 EJ_BIND_FUNCTION(getFramebufferAttachmentParameter, ctx, argc, argv) {	
 	EJ_UNPACK_ARGV(GLenum target, GLenum attachment, GLenum pname);
 	
-	ejectaInstance.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	
 	GLint param;
 	glGetFramebufferAttachmentParameteriv(target, attachment, pname, &param);
@@ -797,7 +805,7 @@ EJ_BIND_FUNCTION(getFramebufferAttachmentParameter, ctx, argc, argv) {
 EJ_BIND_FUNCTION(getProgramParameter, ctx, argc, argv) {
 	if( argc < 2 ) { return NULL; }
 	
-	ejectaInstance.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	
 	GLuint program = [EJBindingWebGLProgram indexFromJSValue:argv[0]];
 	GLenum pname = JSValueToNumberFast(ctx, argv[1]);
@@ -810,7 +818,7 @@ EJ_BIND_FUNCTION(getProgramParameter, ctx, argc, argv) {
 EJ_BIND_FUNCTION(getProgramInfoLog, ctx, argc, argv) {
 	if( argc < 1 ) { return NULL; }
 	
-	ejectaInstance.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	
 	GLuint program = [EJBindingWebGLProgram indexFromJSValue:argv[0]];
 	
@@ -834,7 +842,7 @@ EJ_BIND_FUNCTION(getProgramInfoLog, ctx, argc, argv) {
 EJ_BIND_FUNCTION(getRenderbufferParameter, ctx, argc, argv) {
 	EJ_UNPACK_ARGV(GLenum target, GLenum pname);
 	
-	ejectaInstance.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	
 	GLint value;
 	glGetRenderbufferParameteriv(target, pname, &value);
@@ -844,7 +852,7 @@ EJ_BIND_FUNCTION(getRenderbufferParameter, ctx, argc, argv) {
 EJ_BIND_FUNCTION(getShaderParameter, ctx, argc, argv) {
 	if( argc < 2 ) { return NULL; }
 	
-	ejectaInstance.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	
 	GLuint shader = [EJBindingWebGLShader indexFromJSValue:argv[0]];
 	GLenum pname = JSValueToNumberFast(ctx, argv[1]);
@@ -883,14 +891,14 @@ EJ_BIND_FUNCTION(getShaderPrecisionFormat, ctx, argc, argv) {
 			return NULL;
 	}
 	
-	return [EJBindingWebGLShaderPrecisionFormat
-		createJSObjectWithContext:ctx rangeMin:rangeMin rangeMax:rangeMax precision:precision];
+	return [EJBindingWebGLShaderPrecisionFormat	createJSObjectWithContext:ctx
+		scriptView:scriptView rangeMin:rangeMin rangeMax:rangeMax precision:precision];
 }
 
 EJ_BIND_FUNCTION(getShaderInfoLog, ctx, argc, argv) {
 	if( argc < 1 ) { return NULL; }
 	
-	ejectaInstance.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	
 	GLuint shader = [EJBindingWebGLShader indexFromJSValue:argv[0]];
 
@@ -914,7 +922,7 @@ EJ_BIND_FUNCTION(getShaderInfoLog, ctx, argc, argv) {
 EJ_BIND_FUNCTION(getShaderSource, ctx, argc, argv) {
 	if( argc < 1 ) { return NULL; }
 	
-	ejectaInstance.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	
 	GLuint shader = [EJBindingWebGLShader indexFromJSValue:argv[0]];
 	// Get the info log size
@@ -937,7 +945,7 @@ EJ_BIND_FUNCTION(getShaderSource, ctx, argc, argv) {
 EJ_BIND_FUNCTION(getTexParameter, ctx, argc, argv) {
 	EJ_UNPACK_ARGV(GLenum target, GLenum pname);
 	
-	ejectaInstance.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	
 	GLint value = 0;
 	if( target == GL_TEXTURE_2D ) {
@@ -953,7 +961,7 @@ EJ_BIND_FUNCTION(getTexParameter, ctx, argc, argv) {
 EJ_BIND_FUNCTION(getUniform, ctx, argc, argv) {
 	if( argc < 2 ) { return NULL; }
 	
-	ejectaInstance.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	
 	GLuint program = [EJBindingWebGLProgram indexFromJSValue:argv[0]];
 	GLuint uniform = [EJBindingWebGLUniformLocation indexFromJSValue:argv[1]];
@@ -1075,19 +1083,20 @@ EJ_BIND_FUNCTION(getUniform, ctx, argc, argv) {
 EJ_BIND_FUNCTION(getUniformLocation, ctx, argc, argv) {
 	if( argc < 2 ) { return NULL; }
 	
-	ejectaInstance.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	
 	GLuint program = [EJBindingWebGLProgram indexFromJSValue:argv[0]];
 	NSString *name = JSValueToNSString(ctx, argv[1]);
 	
 	GLuint uniform = glGetUniformLocation(program, [name UTF8String]);
-	return [EJBindingWebGLUniformLocation createJSObjectWithContext:ctx webglContext:self index:uniform];
+	return [EJBindingWebGLUniformLocation createJSObjectWithContext:ctx
+		scriptView:scriptView webglContext:self index:uniform];
 }
 
 EJ_BIND_FUNCTION(getVertexAttrib, ctx, argc, argv) {
 	EJ_UNPACK_ARGV(GLuint index, GLenum pname);
 	
-	ejectaInstance.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	
 	if( pname == GL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING ) {
 		GLint buffer;
@@ -1110,7 +1119,7 @@ EJ_BIND_FUNCTION(getVertexAttrib, ctx, argc, argv) {
 EJ_BIND_FUNCTION(getVertexAttribOffset, ctx, argc, argv) {
 	EJ_UNPACK_ARGV(GLuint index, GLenum pname);
 	
-	ejectaInstance.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	
 	GLvoid *pointer;
 	glGetVertexAttribPointerv(index, pname, &pointer);
@@ -1123,7 +1132,7 @@ EJ_BIND_FUNCTION_DIRECT(hint, glHint, target, mode);
 #define EJ_BIND_IS_OBJECT(I, NAME) \
 	EJ_BIND_FUNCTION(is##NAME, ctx, argc, argv) { \
 		if( argc < 1 ) { return NULL; } \
-		ejectaInstance.currentRenderingContext = renderingContext; \
+		scriptView.currentRenderingContext = renderingContext; \
 		GLuint index = [EJBindingWebGL##NAME indexFromJSValue:argv[0]]; \
 		return JSValueMakeBoolean(ctx, glIs##NAME(index)); \
 	}
@@ -1138,7 +1147,7 @@ EJ_BIND_FUNCTION_DIRECT(isEnabled, glIsEnabled, cap);
 EJ_BIND_FUNCTION(isTexture, ctx, argc, argv) {
 	if( argc < 1 ) { return NULL; }
 	
-	ejectaInstance.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	
 	EJTexture *texture = [EJBindingWebGLTexture textureFromJSValue:argv[0]];
 	return JSValueMakeBoolean(ctx, glIsTexture(texture.textureId));
@@ -1149,7 +1158,7 @@ EJ_BIND_FUNCTION_DIRECT(lineWidth, glLineWidth, width);
 EJ_BIND_FUNCTION(linkProgram, ctx, argc, argv) {
 	if( argc < 1 ) { return NULL; }
 	
-	ejectaInstance.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	
 	GLuint program = [EJBindingWebGLProgram indexFromJSValue:argv[0]];
 	glLinkProgram(program);
@@ -1191,7 +1200,7 @@ EJ_BIND_FUNCTION(pixelStorei, ctx, argc, argv) {
 			break;
 			
 		default:
-			ejectaInstance.currentRenderingContext = renderingContext;
+			scriptView.currentRenderingContext = renderingContext;
 			glPixelStorei(pname, param);
 			break;
 	}
@@ -1210,7 +1219,7 @@ EJ_BIND_FUNCTION(readPixels, ctx, argc, argv) {
 		return NULL;
 	}
 	
-	ejectaInstance.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	
 	size_t size;
 	void *pixels = JSTypedArrayGetDataPtr(ctx, argv[6], &size);
@@ -1226,7 +1235,7 @@ EJ_BIND_FUNCTION(readPixels, ctx, argc, argv) {
 EJ_BIND_FUNCTION(renderbufferStorage, ctx, argc, argv) {
 	EJ_UNPACK_ARGV(GLenum target, GLenum internalformat, GLsizei width, GLsizei height);
 	
-	ejectaInstance.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	
 	EJTexture *targetTexture = NULL;
 	if( target == GL_TEXTURE_2D ) {
@@ -1252,7 +1261,7 @@ EJ_BIND_FUNCTION_DIRECT(scissor, glScissor, x, y, width, height);
 EJ_BIND_FUNCTION(shaderSource, ctx, argc, argv) {
 	if( argc < 2 ) { return NULL; }
 	
-	ejectaInstance.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	
 	GLuint shader = [EJBindingWebGLShader indexFromJSValue:argv[0]];
 	const GLchar *source = [JSValueToNSString(ctx, argv[1]) UTF8String];
@@ -1271,7 +1280,7 @@ EJ_BIND_FUNCTION_DIRECT(stencilOpSeparate, glStencilOpSeparate, face, fail, zfai
 EJ_BIND_FUNCTION(texImage2D, ctx, argc, argv) {
 	if( argc < 6 ) { return NULL; }
 	
-	ejectaInstance.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	
 	
 	// texImage2D has two signatures:
@@ -1293,6 +1302,9 @@ EJ_BIND_FUNCTION(texImage2D, ctx, argc, argv) {
 		targetTexture = activeTexture->cubeMap;
 		jsTargetTexture = activeTexture->jsCubeMap;
 		bindTarget = GL_TEXTURE_CUBE_MAP;
+	}
+	else {
+		return NULL;
 	}
 	
 	
@@ -1404,7 +1416,7 @@ EJ_BIND_FUNCTION(texImage2D, ctx, argc, argv) {
 EJ_BIND_FUNCTION(texSubImage2D, ctx, argc, argv) {
 	if( argc < 7 ) { return NULL; }
 	
-	ejectaInstance.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	
 	
 	// texSubImage2D has two signatures:
@@ -1426,6 +1438,9 @@ EJ_BIND_FUNCTION(texSubImage2D, ctx, argc, argv) {
 		targetTexture = activeTexture->cubeMap;
 		jsTargetTexture = activeTexture->jsCubeMap;
 		bindTarget = GL_TEXTURE_CUBE_MAP;
+	}
+	else {
+		return NULL;
 	}
 	
 	
@@ -1523,7 +1538,7 @@ EJ_BIND_FUNCTION(texSubImage2D, ctx, argc, argv) {
 EJ_BIND_FUNCTION(texParameterf, ctx, argc, argv) {
 	EJ_UNPACK_ARGV(GLenum target, GLenum pname, GLfloat param);
 	
-	ejectaInstance.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	
 	EJTexture *targetTexture = NULL;
 	if( target == GL_TEXTURE_2D ) {
@@ -1541,7 +1556,7 @@ EJ_BIND_FUNCTION(texParameterf, ctx, argc, argv) {
 EJ_BIND_FUNCTION(texParameteri, ctx, argc, argv) {
 	EJ_UNPACK_ARGV(GLenum target, GLenum pname, GLint param);
 	
-	ejectaInstance.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	
 	EJTexture *targetTexture = NULL;
 	if( target == GL_TEXTURE_2D ) {
@@ -1560,7 +1575,7 @@ EJ_BIND_FUNCTION(texParameteri, ctx, argc, argv) {
 #define EJ_BIND_UNIFORM(NAME, ... ) \
 	EJ_BIND_FUNCTION(uniform##NAME, ctx, argc, argv) { \
 		if( argc < EJ_ARGC(__VA_ARGS__)+1 ) { return NULL; } \
-		ejectaInstance.currentRenderingContext = renderingContext; \
+		scriptView.currentRenderingContext = renderingContext; \
 		GLuint uniform = [EJBindingWebGLUniformLocation indexFromJSValue:argv[0]]; \
 		glUniform##NAME( uniform, EJ_MAP_EXT(1, _EJ_COMMA, _EJ_BIND_FUNCTION_DIRECT_UNPACK, __VA_ARGS__) ); \
 		return NULL; \
@@ -1585,7 +1600,7 @@ EJ_BIND_FUNCTION(texParameteri, ctx, argc, argv) {
 		GLsizei count; \
 		TYPE *values = JSValueTo##TYPE##Array(ctx, argv[1], LENGTH, &count); \
 		if( values ) { \
-			ejectaInstance.currentRenderingContext = renderingContext; \
+			scriptView.currentRenderingContext = renderingContext; \
 			glUniform##NAME(uniform, count, values); \
 		} \
 		return NULL; \
@@ -1611,7 +1626,7 @@ EJ_BIND_FUNCTION(texParameteri, ctx, argc, argv) {
 		GLsizei count; \
 		TYPE *values = JSValueTo##TYPE##Array(ctx, argv[2], LENGTH, &count); \
 		if( values ) { \
-			ejectaInstance.currentRenderingContext = renderingContext; \
+			scriptView.currentRenderingContext = renderingContext; \
 			glUniformMatrix##NAME(uniform, count, transpose, values); \
 		} \
 		return NULL; \
@@ -1627,7 +1642,7 @@ EJ_BIND_FUNCTION(texParameteri, ctx, argc, argv) {
 EJ_BIND_FUNCTION(useProgram, ctx, argc, argv) {
 	if ( argc < 1 ) { return NULL; }
 	
-	ejectaInstance.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	
 	GLuint program = [EJBindingWebGLProgram indexFromJSValue:argv[0]];
 	glUseProgram(program);
@@ -1637,7 +1652,7 @@ EJ_BIND_FUNCTION(useProgram, ctx, argc, argv) {
 EJ_BIND_FUNCTION(validateProgram, ctx, argc, argv) {
 	if ( argc < 1 ) { return NULL; }
 	
-	ejectaInstance.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	
 	GLuint program = [EJBindingWebGLProgram indexFromJSValue:argv[0]];
 	glValidateProgram(program);
@@ -1658,7 +1673,7 @@ EJ_BIND_FUNCTION_DIRECT(vertexAttrib4f, glVertexAttrib4f, index, x, y, z, w);
 		GLsizei count; \
 		TYPE *values = JSValueTo##TYPE##Array(ctx, argv[1], LENGTH, &count); \
 		if( values ) { \
-			ejectaInstance.currentRenderingContext = renderingContext; \
+			scriptView.currentRenderingContext = renderingContext; \
 			glVertexAttrib##NAME(index, values); \
 		} \
 		return NULL; \
@@ -1675,7 +1690,7 @@ EJ_BIND_FUNCTION_DIRECT(vertexAttrib4f, glVertexAttrib4f, index, x, y, z, w);
 EJ_BIND_FUNCTION(vertexAttribPointer, ctx, argc, argv) {
 	EJ_UNPACK_ARGV(GLuint index, GLuint itemSize, GLenum type, GLboolean normalized, GLsizei stride, GLint offset);
 	
-	ejectaInstance.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	
 	glVertexAttribPointer(index, itemSize, type, normalized, stride, EJ_BUFFER_OFFSET(offset));
 	return NULL;
@@ -1684,7 +1699,7 @@ EJ_BIND_FUNCTION(vertexAttribPointer, ctx, argc, argv) {
 EJ_BIND_FUNCTION(viewport, ctx, argc, argv) {
 	EJ_UNPACK_ARGV(GLint x, GLint y, GLsizei w, GLsizei h);
 	
-	ejectaInstance.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	
 	float scale = renderingContext.backingStoreRatio;
 	glViewport(x * scale, y * scale, w * scale, h * scale);

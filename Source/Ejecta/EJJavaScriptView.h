@@ -4,10 +4,10 @@
 #import "EJConvert.h"
 #import "EJCanvasContext.h"
 #import "EJPresentable.h"
-#import "EJGLProgram2D.h"
-#import "EJGLProgram2DRadialGradient.h"
-#import "EJOpenALManager.h"
 
+#import "EJSharedOpenALManager.h"
+#import "EJSharedTextureCache.h"
+#import "EJSharedOpenGLContext.h"
 
 #define EJECTA_VERSION @"1.2"
 #define EJECTA_APP_FOLDER @"App/"
@@ -24,30 +24,39 @@
 - (void)pause;
 @end
 
+
+
+// "Weak proxy" to avoid retain loops - adapted from http://stackoverflow.com/a/13921278/1525473
+@interface EJNonRetainingProxy : NSObject {
+	id target;
+}
++ (EJNonRetainingProxy *)nonRetainingProxyWithTarget:(id)target;
+
+@end
+
+
 @class EJTimerCollection;
 @class EJClassLoader;
 
 @interface EJJavaScriptView : UIView {
 	BOOL pauseOnEnterBackground;
+	BOOL hasScreenCanvas;
 
 	BOOL isPaused;
 	float internalScaling;
+	
+	EJNonRetainingProxy	*proxy;
 
 	JSGlobalContextRef jsGlobalContext;
 	EJClassLoader *classLoader;
 
 	EJTimerCollection *timers;
-	NSMutableDictionary *textureCache;
-	EJOpenALManager *openALManager;
-	EJGLProgram2D *glProgram2DFlat;
-	EJGLProgram2D *glProgram2DTexture;
-	EJGLProgram2D *glProgram2DAlphaTexture;
-	EJGLProgram2D *glProgram2DPattern;
-	EJGLProgram2DRadialGradient *glProgram2DRadialGradient;
-	EJCanvasContext *currentRenderingContext;
 	
-	EAGLContext *glContext2D;
-	EAGLSharegroup *glSharegroup;
+	EJSharedOpenGLContext *openGLContext;
+	EJSharedTextureCache *textureCache;
+	EJSharedOpenALManager *openALManager;
+	
+	EJCanvasContext *currentRenderingContext;
 	EAGLContext *glCurrentContext;
 	
 	CADisplayLink *displayLink;
@@ -57,28 +66,19 @@
 	EJCanvasContext<EJPresentable> *screenRenderingContext;
 
 	NSOperationQueue *opQueue;
+	
+	// Public for fast access in bound functions
+	@public JSValueRef jsUndefined;
 }
 
-+ (EJJavaScriptView*)sharedView;
-
 @property (nonatomic, assign) BOOL pauseOnEnterBackground;
-
 @property (nonatomic, assign, getter = isPaused) BOOL isPaused; // Pauses drawing/updating of the JSView
+@property (nonatomic, assign) BOOL hasScreenCanvas;
+
 @property (nonatomic, assign) float internalScaling;
 
 @property (nonatomic, readonly) JSGlobalContextRef jsGlobalContext;
-
-@property (nonatomic, readonly) NSMutableDictionary *textureCache;
-@property (nonatomic, readonly) EJOpenALManager *openALManager;
-
-@property (nonatomic, readonly) EJGLProgram2D *glProgram2DFlat;
-@property (nonatomic, readonly) EJGLProgram2D *glProgram2DTexture;
-@property (nonatomic, readonly) EJGLProgram2D *glProgram2DAlphaTexture;
-@property (nonatomic, readonly) EJGLProgram2D *glProgram2DPattern;
-@property (nonatomic, readonly) EJGLProgram2DRadialGradient *glProgram2DRadialGradient;
-@property (nonatomic, readonly) EAGLContext *glContext2D;
-@property (nonatomic, readonly) EAGLSharegroup *glSharegroup;
-@property (nonatomic, readonly) EAGLContext *glCurrentContext;
+@property (nonatomic, readonly) EJSharedOpenGLContext *openGLContext;
 
 @property (nonatomic, retain) NSObject<EJLifecycleDelegate> *lifecycleDelegate;
 @property (nonatomic, retain) NSObject<EJTouchDelegate> *touchDelegate;

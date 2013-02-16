@@ -10,10 +10,10 @@
 @synthesize duration;
 
 + (id)cachedBufferWithPath:(NSString *)path {
-	EJOpenALBuffer *buffer = [[EJJavaScriptView sharedView].openALManager.buffers[path] retain];
+	EJOpenALBuffer *buffer = [EJSharedOpenALManager instance].buffers[path];
 	if( !buffer ) {
-		buffer = [[EJOpenALBuffer alloc] initWithPath:path];
-		[EJJavaScriptView sharedView].openALManager.buffers[path] = buffer;
+		buffer = [[[EJOpenALBuffer alloc] initWithPath:path] autorelease];
+		[EJSharedOpenALManager instance].buffers[path] = buffer;
 	}
 	return buffer;
 }
@@ -34,7 +34,7 @@
 }
 
 - (void)dealloc {
-	[[EJJavaScriptView sharedView].openALManager.buffers removeObjectForKey:path];
+	[[EJSharedOpenALManager instance].buffers removeObjectForKey:path];
 	[path release];
 	
 	if( bufferId ) {

@@ -7,9 +7,11 @@
 @synthesize backingStoreRatio;
 @synthesize scalingMode;
 
-- (id)initWithWidth:(short)widthp height:(short)heightp {
+- (id)initWithScriptView:(EJJavaScriptView *)scriptViewp width:(short)widthp height:(short)heightp {
 	if( self = [super init] ) {
-		glContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2 sharegroup:[EJJavaScriptView sharedView].glSharegroup];
+		scriptView = scriptViewp;
+		glContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2
+			sharegroup:scriptView.openGLContext.glSharegroup];
 		
 		bufferWidth = width = widthp;
 		bufferHeight = height = heightp;
@@ -24,7 +26,7 @@
 	// Work out the final screen size - this takes the scalingMode, canvas size,
 	// screen size and retina properties into account
 	CGRect frame = CGRectMake(0, 0, width, height);
-	CGSize screen = [EJJavaScriptView sharedView].bounds.size;
+	CGSize screen = scriptView.bounds.size;
 	float contentScale = (useRetinaResolution && [UIScreen mainScreen].scale == 2) ? 2 : 1;
 	float aspect = frame.size.width / frame.size.height;
 	
@@ -37,7 +39,7 @@
 		frame.size.height = screen.height;
 	}
 	float internalScaling = frame.size.width / (float)width;
-	[EJJavaScriptView sharedView].internalScaling = internalScaling;
+	scriptView.internalScaling = internalScaling;
 	
 	backingStoreRatio = internalScaling * contentScale;
 	
@@ -78,7 +80,7 @@
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 	// Append the OpenGL view to Impact's main view
-	[[EJJavaScriptView sharedView] addSubview:glview];
+	[scriptView addSubview:glview];
 }
 
 - (void)dealloc {
