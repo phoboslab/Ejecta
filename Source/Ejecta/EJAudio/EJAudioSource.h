@@ -11,7 +11,7 @@
 
 @property (nonatomic) float duration;
 @property (nonatomic) float currentTime;
-@property (nonatomic, assign) NSObject<EJAudioSourceDelegate> * delegate;
+@property (nonatomic, assign) NSObject<EJAudioSourceDelegate> *delegate;
 
 @end
 

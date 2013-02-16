@@ -16,7 +16,6 @@
 
 - (id)initWithCanvas:(JSObjectRef)canvas renderingContext:(EJCanvasContext2D *)renderingContextp {
 	if( self = [super initWithContext:NULL argc:0 argv:NULL] ) {
-		app = [EJApp instance]; // Keep a local copy - may be faster?
 		renderingContext = [renderingContextp retain];
 		jsCanvas = canvas;
 	}
@@ -74,12 +73,12 @@ EJ_BIND_ENUM(textBaseline, renderingContext.state->textBaseline,
 EJ_BIND_GET(fillStyle, ctx ) {
 	if( renderingContext.fillObject ) {
 		if( [renderingContext.fillObject isKindOfClass:[EJCanvasPattern class]] ) {
-			EJCanvasPattern * pattern = (EJCanvasPattern *)renderingContext.fillObject;
-			return [EJBindingCanvasPattern createJSObjectWithContext:ctx pattern:pattern];
+			EJCanvasPattern *pattern = (EJCanvasPattern *)renderingContext.fillObject;
+			return [EJBindingCanvasPattern createJSObjectWithContext:ctx scriptView:scriptView pattern:pattern];
 		}
 		else if( [renderingContext.fillObject isKindOfClass:[EJCanvasGradient class]] ) {
-			EJCanvasGradient * gradient = (EJCanvasGradient *)renderingContext.fillObject;
-			return [EJBindingCanvasGradient createJSObjectWithContext:ctx gradient:gradient];
+			EJCanvasGradient *gradient = (EJCanvasGradient *)renderingContext.fillObject;
+			return [EJBindingCanvasGradient createJSObjectWithContext:ctx scriptView:scriptView gradient:gradient];
 		}
 	}
 	else {
@@ -93,7 +92,7 @@ EJ_BIND_SET(fillStyle, ctx, value) {
 	if( JSValueIsObject(ctx, value) ) {
 		// Try CanvasPattern or CanvasGradient
 		
-		NSObject<EJFillable> * fillable;
+		NSObject<EJFillable> *fillable;
 		if( (fillable = [EJBindingCanvasPattern patternFromJSValue:value]) ) {
 			renderingContext.fillObject = fillable;
 		}
@@ -141,8 +140,8 @@ EJ_BIND_SET(miterLimit, ctx, value) {
 }
 
 EJ_BIND_GET(font, ctx) {
-	EJFontDescriptor * font = renderingContext.state->font;
-	NSString * name = [NSString stringWithFormat:@"%dpx %@", (int)font.size, font.name];
+	EJFontDescriptor *font = renderingContext.state->font;
+	NSString *name = [NSString stringWithFormat:@"%dpx %@", (int)font.size, font.name];
 	return NSStringToJSValue(ctx, name);
 }
 
@@ -161,7 +160,7 @@ EJ_BIND_SET(font, ctx, value) {
 		size = ceilf(size*4.0/3.0);
 	}
 	
-	EJFontDescriptor * font = [EJFontDescriptor descriptorWithName:[NSString stringWithUTF8String:name] size:size];
+	EJFontDescriptor *font = [EJFontDescriptor descriptorWithName:@(name) size:size];
 	if( font ) {
 		renderingContext.font = font;
 	}
@@ -170,7 +169,7 @@ EJ_BIND_SET(font, ctx, value) {
 }
 
 EJ_BIND_SET(imageSmoothingEnabled, ctx, value) {
-	app.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	renderingContext.imageSmoothingEnabled = JSValueToBoolean(ctx, value);
 }
 
@@ -223,10 +222,13 @@ EJ_BIND_FUNCTION(setTransform, ctx, argc, argv) {
 }
 
 EJ_BIND_FUNCTION(drawImage, ctx, argc, argv) {
-	if( argc < 3 || !JSValueIsObject(ctx, argv[0]) ) return NULL;
+	if( argc < 3 ) { return NULL; }
 	
-	NSObject<EJDrawable> * drawable = (NSObject<EJDrawable> *)JSObjectGetPrivate((JSObjectRef)argv[0]);
-	EJTexture * image = drawable.texture;
+	NSObject<EJDrawable> *drawable = (NSObject<EJDrawable> *)JSObjectGetPrivate((JSObjectRef)argv[0]);
+	EJTexture *image = drawable.texture;
+	
+	if( !image ) { return NULL; }
+	
 	float scale = image.contentScale;
 	
 	short sx = 0, sy = 0, sw, sh;
@@ -258,7 +260,7 @@ EJ_BIND_FUNCTION(drawImage, ctx, argc, argv) {
 		return NULL;
 	}
 	
-	app.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	[renderingContext drawImage:image sx:sx sy:sy sw:sw sh:sh dx:dx dy:dy dw:dw dh:dh];
 	
 	return NULL;
@@ -267,7 +269,7 @@ EJ_BIND_FUNCTION(drawImage, ctx, argc, argv) {
 EJ_BIND_FUNCTION(fillRect, ctx, argc, argv) {
 	EJ_UNPACK_ARGV(float dx, float dy, float w, float h);
 			
-	app.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	[renderingContext fillRectX:dx y:dy w:w h:h];
 	return NULL;
 }
@@ -275,7 +277,7 @@ EJ_BIND_FUNCTION(fillRect, ctx, argc, argv) {
 EJ_BIND_FUNCTION(strokeRect, ctx, argc, argv) {
 	EJ_UNPACK_ARGV(float dx, float dy, float w, float h);
 	
-	app.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	[renderingContext strokeRectX:dx y:dy w:w h:h];
 	return NULL;
 }
@@ -283,7 +285,7 @@ EJ_BIND_FUNCTION(strokeRect, ctx, argc, argv) {
 EJ_BIND_FUNCTION(clearRect, ctx, argc, argv) {
 	EJ_UNPACK_ARGV(float dx, float dy, float w, float h);
 	
-	app.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	[renderingContext clearRectX:dx y:dy w:w h:h];
 	return NULL;
 }
@@ -291,31 +293,31 @@ EJ_BIND_FUNCTION(clearRect, ctx, argc, argv) {
 EJ_BIND_FUNCTION(getImageData, ctx, argc, argv) {
 	EJ_UNPACK_ARGV(short sx, short sy, short sw, short sh);
 	
-	app.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	
-	EJImageData * imageData = [renderingContext getImageDataSx:sx sy:sy sw:sw sh:sh];
+	EJImageData *imageData = [renderingContext getImageDataSx:sx sy:sy sw:sw sh:sh];
 	
-	EJBindingImageData * binding = [[EJBindingImageData alloc] initWithImageData:imageData];
-	return [EJBindingImageData createJSObjectWithContext:ctx instance:binding];
+	EJBindingImageData *binding = [[[EJBindingImageData alloc] initWithImageData:imageData] autorelease];
+	return [EJBindingImageData createJSObjectWithContext:ctx scriptView:scriptView instance:binding];
 }
 
 EJ_BIND_FUNCTION(createImageData, ctx, argc, argv) {
 	EJ_UNPACK_ARGV(short sw, short sh);
 		
-	NSMutableData * pixels = [NSMutableData dataWithLength:sw * sh * 4];
-	EJImageData * imageData = [[[EJImageData alloc] initWithWidth:sw height:sh pixels:pixels] autorelease];
+	NSMutableData *pixels = [NSMutableData dataWithLength:sw * sh * 4];
+	EJImageData *imageData = [[[EJImageData alloc] initWithWidth:sw height:sh pixels:pixels] autorelease];
 	
-	EJBindingImageData * binding = [[EJBindingImageData alloc] initWithImageData:imageData];
-	return [EJBindingImageData createJSObjectWithContext:ctx instance:binding];
+	EJBindingImageData *binding = [[[EJBindingImageData alloc] initWithImageData:imageData] autorelease];
+	return [EJBindingImageData createJSObjectWithContext:ctx scriptView:scriptView instance:binding];
 }
 
 EJ_BIND_FUNCTION(putImageData, ctx, argc, argv) {
 	if( argc < 3 ) { return NULL; }
 	
-	EJBindingImageData * jsImageData = (EJBindingImageData *)JSObjectGetPrivate((JSObjectRef)argv[0]);
+	EJBindingImageData *jsImageData = (EJBindingImageData *)JSObjectGetPrivate((JSObjectRef)argv[0]);
 	EJ_UNPACK_ARGV_OFFSET(1, float dx, float dy);
 	
-	app.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	[renderingContext putImageData:jsImageData.imageData dx:dx dy:dy];
 	return NULL;
 }
@@ -323,31 +325,31 @@ EJ_BIND_FUNCTION(putImageData, ctx, argc, argv) {
 EJ_BIND_FUNCTION(getImageDataHD, ctx, argc, argv) {
 	EJ_UNPACK_ARGV(short sx, short sy, short sw, short sh);
 	
-	app.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	
-	EJImageData * imageData = [renderingContext getImageDataHDSx:sx sy:sy sw:sw sh:sh];
+	EJImageData *imageData = [renderingContext getImageDataHDSx:sx sy:sy sw:sw sh:sh];
 	
-	EJBindingImageData * binding = [[EJBindingImageData alloc] initWithImageData:imageData];
-	return [EJBindingImageData createJSObjectWithContext:ctx instance:binding];
+	EJBindingImageData *binding = [[[EJBindingImageData alloc] initWithImageData:imageData] autorelease];
+	return [EJBindingImageData createJSObjectWithContext:ctx scriptView:scriptView instance:binding];
 }
 
 EJ_BIND_FUNCTION(createImageDataHD, ctx, argc, argv) {
 	EJ_UNPACK_ARGV(short sw, short sh);
 		
-	NSMutableData * pixels = [NSMutableData dataWithLength:sw * sh * 4];
-	EJImageData * imageData = [[[EJImageData alloc] initWithWidth:sw height:sh pixels:pixels] autorelease];
+	NSMutableData *pixels = [NSMutableData dataWithLength:sw * sh * 4];
+	EJImageData *imageData = [[[EJImageData alloc] initWithWidth:sw height:sh pixels:pixels] autorelease];
 	
-	EJBindingImageData * binding = [[EJBindingImageData alloc] initWithImageData:imageData];
-	return [EJBindingImageData createJSObjectWithContext:ctx instance:binding];
+	EJBindingImageData *binding = [[[EJBindingImageData alloc] initWithImageData:imageData] autorelease];
+	return [EJBindingImageData createJSObjectWithContext:ctx scriptView:scriptView instance:binding];
 }
 
 EJ_BIND_FUNCTION(putImageDataHD, ctx, argc, argv) {
 	if( argc < 3 ) { return NULL; }
 	
-	EJBindingImageData * jsImageData = (EJBindingImageData *)JSObjectGetPrivate((JSObjectRef)argv[0]);
+	EJBindingImageData *jsImageData = (EJBindingImageData *)JSObjectGetPrivate((JSObjectRef)argv[0]);
 	EJ_UNPACK_ARGV_OFFSET(1, float dx, float dy);
 	
-	app.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	[renderingContext putImageDataHD:jsImageData.imageData dx:dx dy:dy];
 	return NULL;
 }
@@ -356,8 +358,8 @@ EJ_BIND_FUNCTION(createLinearGradient, ctx, argc, argv) {
 	EJVector2 p1, p2;
 	EJ_UNPACK_ARGV(p1.x, p1.y, p2.x, p2.y);
 	
-	EJCanvasGradient * gradient = [[[EJCanvasGradient alloc] initLinearGradientWithP1:p1 p2:p2] autorelease];
-	return [EJBindingCanvasGradient createJSObjectWithContext:ctx gradient:gradient];
+	EJCanvasGradient *gradient = [[[EJCanvasGradient alloc] initLinearGradientWithP1:p1 p2:p2] autorelease];
+	return [EJBindingCanvasGradient createJSObjectWithContext:ctx scriptView:scriptView gradient:gradient];
 }
 
 EJ_BIND_FUNCTION(createRadialGradient, ctx, argc, argv) {
@@ -365,20 +367,20 @@ EJ_BIND_FUNCTION(createRadialGradient, ctx, argc, argv) {
 	float r1, r2;
 	EJ_UNPACK_ARGV(p1.x, p1.y, r1, p2.x, p2.y, r2);
 	
-	EJCanvasGradient * gradient = [[[EJCanvasGradient alloc] initRadialGradientWithP1:p1 r1:r1 p2:p2 r2:r2] autorelease];
-	return [EJBindingCanvasGradient createJSObjectWithContext:ctx gradient:gradient];
+	EJCanvasGradient *gradient = [[[EJCanvasGradient alloc] initRadialGradientWithP1:p1 r1:r1 p2:p2 r2:r2] autorelease];
+	return [EJBindingCanvasGradient createJSObjectWithContext:ctx scriptView:scriptView gradient:gradient];
 }
 
 EJ_BIND_FUNCTION(createPattern, ctx, argc, argv) {
 	if( argc < 1 ) { return NULL; }
-	NSObject<EJDrawable> * drawable = (NSObject<EJDrawable> *)JSObjectGetPrivate((JSObjectRef)argv[0]);
-	EJTexture * image = drawable.texture;
+	NSObject<EJDrawable> *drawable = (NSObject<EJDrawable> *)JSObjectGetPrivate((JSObjectRef)argv[0]);
+	EJTexture *image = drawable.texture;
 	
 	if( !image ) { return NULL; }
 	
 	EJCanvasPatternRepeat repeat = kEJCanvasPatternRepeat;
 	if( argc > 1 ) {
-		NSString * repeatString = JSValueToNSString(ctx, argv[1]);
+		NSString *repeatString = JSValueToNSString(ctx, argv[1]);
 		if( [repeatString isEqualToString:@"repeat-x"] ) {
 			repeat = kEJCanvasPatternRepeatX;
 		}
@@ -389,8 +391,8 @@ EJ_BIND_FUNCTION(createPattern, ctx, argc, argv) {
 			repeat = kEJCanvasPatternNoRepeat;
 		}
 	}
-	EJCanvasPattern * pattern = [[[EJCanvasPattern alloc] initWithTexture:image repeat:repeat] autorelease];
-	return [EJBindingCanvasPattern createJSObjectWithContext:ctx pattern:pattern];
+	EJCanvasPattern *pattern = [[[EJCanvasPattern alloc] initWithTexture:image repeat:repeat] autorelease];
+	return [EJBindingCanvasPattern createJSObjectWithContext:ctx scriptView:scriptView pattern:pattern];
 }
 
 EJ_BIND_FUNCTION( beginPath, ctx, argc, argv ) {
@@ -404,13 +406,13 @@ EJ_BIND_FUNCTION( closePath, ctx, argc, argv ) {
 }
 
 EJ_BIND_FUNCTION( fill, ctx, argc, argv ) {
-	app.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	[renderingContext fill];
 	return NULL;
 }
 
 EJ_BIND_FUNCTION( stroke, ctx, argc, argv ) {
-	app.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	[renderingContext stroke];
 	return NULL;
 }
@@ -463,19 +465,19 @@ EJ_BIND_FUNCTION( arc, ctx, argc, argv ) {
 EJ_BIND_FUNCTION( measureText, ctx, argc, argv ) {
 	if( argc < 1 ) { return NULL; }
 	
-	NSString * string = JSValueToNSString(ctx, argv[0]);
+	NSString *string = JSValueToNSString(ctx, argv[0]);
 	EJTextMetrics metrics = [renderingContext measureText:string];
 	
-	return [EJBindingTextMetrics createJSObjectWithContext:ctx metrics:metrics];
+	return [EJBindingTextMetrics createJSObjectWithContext:ctx scriptView:scriptView metrics:metrics];
 }
 
 EJ_BIND_FUNCTION( fillText, ctx, argc, argv ) {
 	if( argc < 3 ) { return NULL; }
 	
-	NSString * string = JSValueToNSString(ctx, argv[0]);
+	NSString *string = JSValueToNSString(ctx, argv[0]);
 	EJ_UNPACK_ARGV_OFFSET(1, float x, float y);
 	
-	app.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	[renderingContext fillText:string x:x y:y];
 	return NULL;
 }
@@ -483,22 +485,22 @@ EJ_BIND_FUNCTION( fillText, ctx, argc, argv ) {
 EJ_BIND_FUNCTION( strokeText, ctx, argc, argv ) {
 	if( argc < 3 ) { return NULL; }
 	
-	NSString * string = JSValueToNSString(ctx, argv[0]);
+	NSString *string = JSValueToNSString(ctx, argv[0]);
 	EJ_UNPACK_ARGV_OFFSET(1, float x, float y);
 	
-	app.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	[renderingContext strokeText:string x:x y:y];
 	return NULL;
 }
 
 EJ_BIND_FUNCTION( clip, ctx, argc, argv ) {
-	app.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	[renderingContext clip];
 	return NULL;
 }
 
 EJ_BIND_FUNCTION( resetClip, ctx, argc, argv ) {
-	app.currentRenderingContext = renderingContext;
+	scriptView.currentRenderingContext = renderingContext;
 	[renderingContext resetClip];
 	return NULL;
 }

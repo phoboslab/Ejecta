@@ -10,13 +10,13 @@ typedef enum {
 } EJCanvasPatternRepeat;
 
 @interface EJCanvasPattern : NSObject <EJFillable> {
-	EJTexture * texture;
+	EJTexture *texture;
 	EJCanvasPatternRepeat repeat;
 }
 
 - (id)initWithTexture:(EJTexture *)texturep repeat:(EJCanvasPatternRepeat)repeatp;
 
-@property (readonly, nonatomic) EJTexture * texture;
+@property (readonly, nonatomic) EJTexture *texture;
 @property (readonly, nonatomic) EJCanvasPatternRepeat repeat;
 
 @end

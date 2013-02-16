@@ -4,62 +4,7 @@
 #import "lodepng/lodepng.h"
 #import "EJConvertWebGL.h"
 
-#import "EJApp.h"
-
-
-@implementation EJTextureStorage
-@synthesize textureId;
-@synthesize immutable;
-
-- (id)init {
-	if( self = [super init] ) {
-		glGenTextures(1, &textureId);
-		immutable = NO;
-	}
-	return self;
-}
-
-- (id)initImmutable {
-	if( self = [super init] ) {
-		glGenTextures(1, &textureId);
-		immutable = YES;
-	}
-	return self;
-}
-
-- (void)dealloc {
-	if( textureId ) {
-		glDeleteTextures(1, &textureId);
-	}
-	[super dealloc];
-}
-
-- (void)bindToTarget:(GLenum)target withParams:(EJTextureParam *)newParams {
-	glBindTexture(target, textureId);
-	
-	// Check if we have to set a param
-	if(params[kEJTextureParamMinFilter] != newParams[kEJTextureParamMinFilter]) {
-		params[kEJTextureParamMinFilter] = newParams[kEJTextureParamMinFilter];
-		glTexParameteri(target, GL_TEXTURE_MIN_FILTER, params[kEJTextureParamMinFilter]);
-	}
-	if(params[kEJTextureParamMagFilter] != newParams[kEJTextureParamMagFilter]) {
-		params[kEJTextureParamMagFilter] = newParams[kEJTextureParamMagFilter];
-		glTexParameteri(target, GL_TEXTURE_MAG_FILTER, params[kEJTextureParamMagFilter]);
-	}
-	if(params[kEJTextureParamWrapS] != newParams[kEJTextureParamWrapS]) {
-		params[kEJTextureParamWrapS] = newParams[kEJTextureParamWrapS];
-		glTexParameteri(target, GL_TEXTURE_WRAP_S, params[kEJTextureParamWrapS]);
-	}
-	if(params[kEJTextureParamWrapT] != newParams[kEJTextureParamWrapT]) {
-		params[kEJTextureParamWrapT] = newParams[kEJTextureParamWrapT];
-		glTexParameteri(target, GL_TEXTURE_WRAP_T, params[kEJTextureParamWrapT]);
-	}
-}
-
-@end
-
-
-
+#import "EJSharedTextureCache.h"
 
 
 @implementation EJTexture
@@ -91,23 +36,23 @@
 		fullPath = [path retain];
 		owningContext = kEJTextureOwningContextCanvas2D;
 		
-		NSMutableData * pixels = [self loadPixelsFromPath:path];
+		NSMutableData *pixels = [self loadPixelsFromPath:path];
 		[self createWithPixels:pixels format:GL_RGBA];
 	}
 
 	return self;
 }
 
-+ (id)cachedTextureWithPath:(NSString *)path callback:(void (^)(void))callback {
++ (id)cachedTextureWithPath:(NSString *)path loadOnQueue:(NSOperationQueue *)queue callback:(void (^)(void))callback {
 	// For loading on a background thread (non-blocking), but tries the cache first
 	
-	EJTexture * texture = [[EJApp instance].textureCache objectForKey:path];
+	EJTexture *texture = [EJSharedTextureCache instance].textures[path];
 	if( texture ) {
 		// We already have a texture, but it may hasn't finished loading yet. If
 		// the texture's loadCallback is still present, add it as an dependency
 		// for the current callback.
 		
-		NSBlockOperation * callbackOp = [NSBlockOperation blockOperationWithBlock:callback];
+		NSBlockOperation *callbackOp = [NSBlockOperation blockOperationWithBlock:callback];
 		if( texture->loadCallback ) {
 			[callbackOp addDependency:texture->loadCallback];
 		}
@@ -115,16 +60,16 @@
 	}
 	else {
 		// Create a new texture and add it to the cache
-		texture = [[EJTexture alloc] initWithPath:path callback:callback];
+		texture = [[EJTexture alloc] initWithPath:path loadOnQueue:queue callback:callback];
 		
-		[[EJApp instance].textureCache setObject:texture forKey:path];
+		[EJSharedTextureCache instance].textures[path] = texture;
 		[texture autorelease];
 		texture->cached = true;
 	}
 	return texture;
 }
 
-- (id)initWithPath:(NSString *)path callback:(void (^)(void))callback {
+- (id)initWithPath:(NSString *)path loadOnQueue:(NSOperationQueue *)queue callback:(void (^)(void))callback {
 	// For loading on a background thread (non-blocking)
 	if( self = [super init] ) {
 		contentScale = 1;
@@ -133,8 +78,8 @@
 		
 		// Load the image file in a background thread
 		loadCallback = [[NSBlockOperation blockOperationWithBlock:callback] retain];
-		[[EJApp instance].opQueue addOperationWithBlock:^{
-			NSMutableData * pixels = [self loadPixelsFromPath:path];
+		[queue addOperationWithBlock:^{
+			NSMutableData *pixels = [self loadPixelsFromPath:path];
 			
 			// Upload the pixel data in the main thread, otherwise the GLContext gets confused.	
 			// We could use a sharegroup here, but it turned out quite buggy and has little
@@ -194,7 +139,7 @@
 
 - (void)dealloc {
 	if( cached ) {
-		[[EJApp instance].textureCache removeObjectForKey:fullPath];
+		[[EJSharedTextureCache instance].textures removeObjectForKey:fullPath];
 	}
 	[fullPath release];
 	[textureStorage release];
@@ -209,7 +154,7 @@
 	
 		// Keep pixel data of the old TextureStorage when creating the new?
 		if( keepPixels ) {
-			NSMutableData * pixels = self.pixels;
+			NSMutableData *pixels = self.pixels;
 			if( pixels ) {
 				[self createWithPixels:pixels format:GL_RGBA target:target];
 			}
@@ -234,7 +179,7 @@
 }
 
 - (id)copyWithZone:(NSZone *)zone {
-	EJTexture * copy = [[EJTexture allocWithZone:zone] init];
+	EJTexture *copy = [[EJTexture allocWithZone:zone] init];
 	
 	// This retains the textureStorage object and sets the associated properties
 	[copy createWithTexture:self];
@@ -325,7 +270,7 @@
 		glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 		
 		int size = width * height * EJGetBytesPerPixel(GL_UNSIGNED_BYTE, format);
-		NSMutableData * data = [NSMutableData dataWithLength:size];
+		NSMutableData *data = [NSMutableData dataWithLength:size];
 		glReadPixels(0, 0, width, height, format, GL_UNSIGNED_BYTE, data.mutableBytes);
 		
 		glBindFramebuffer(GL_FRAMEBUFFER, boundFrameBuffer);
@@ -339,7 +284,7 @@
 - (NSMutableData *)loadPixelsFromPath:(NSString *)path {
 	// Try @2x texture?
 	if( [UIScreen mainScreen].scale == 2 ) {
-		NSString * path2x = [[[path stringByDeletingPathExtension]
+		NSString *path2x = [[[path stringByDeletingPathExtension]
 			stringByAppendingString:@"@2x"]
 			stringByAppendingPathExtension:[path pathExtension]];
 		
@@ -359,13 +304,13 @@
 }
 
 - (NSMutableData *)loadPixelsWithCGImageFromPath:(NSString *)path {	
-	UIImage * tmpImage = [[UIImage alloc] initWithContentsOfFile:path];
+	UIImage *tmpImage = [[UIImage alloc] initWithContentsOfFile:path];
 	CGImageRef image = tmpImage.CGImage;
 	
 	width = CGImageGetWidth(image);
 	height = CGImageGetHeight(image);
 	
-	NSMutableData * pixels = [NSMutableData dataWithLength:width*height*4];
+	NSMutableData *pixels = [NSMutableData dataWithLength:width*height*4];
 	CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
 	CGContextRef context = CGBitmapContextCreate(pixels.mutableBytes, width, height, 8, width * 4, colorSpace, kCGImageAlphaPremultipliedLast);
 	CGContextDrawImage(context, CGRectMake(0.0, 0.0, (CGFloat)width, (CGFloat)height), image);
@@ -378,7 +323,7 @@
 
 - (NSMutableData *)loadPixelsWithLodePNGFromPath:(NSString *)path {
 	unsigned int w, h;
-	unsigned char * pixels = NULL;
+	unsigned char *pixels = NULL;
 	unsigned int error = lodepng_decode32_file(&pixels, &w, &h, [path UTF8String]);
 	
 	if( error ) {

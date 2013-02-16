@@ -1,12 +1,11 @@
 #import "EJBindingLifecycle.h"
+#import "EJJavaScriptView.h"
 
 @implementation EJBindingLifecycle
 
-- (id)initWithContext:(JSContextRef)ctx argc:(size_t)argc argv:(const JSValueRef [])argv {
-	if( self = [super initWithContext:ctx argc:argc argv:argv] ) {
-		[EJApp instance].lifecycleDelegate = self;
-	}
-	return self;
+- (void)createWithJSObject:(JSObjectRef)obj scriptView:(EJJavaScriptView *)view {
+	[super createWithJSObject:obj scriptView:view];
+	scriptView.lifecycleDelegate = self;
 }
 
 - (void)pause {

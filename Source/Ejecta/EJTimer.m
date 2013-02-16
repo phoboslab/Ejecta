@@ -1,10 +1,13 @@
 #import "EJTimer.h"
+#import "EJJavaScriptView.h"
 
 
 @implementation EJTimerCollection
 
-- (id)init {
-	if( self = [super init] ) {
+
+- (id)initWithScriptView:(EJJavaScriptView *)scriptViewp {
+	if (self = [super init]) {
+		scriptView = scriptViewp;
 		timers = [[NSMutableDictionary alloc] init];
 	}
 	return self;
@@ -18,19 +21,19 @@
 - (int)scheduleCallback:(JSObjectRef)callback interval:(NSTimeInterval)interval repeat:(BOOL)repeat {
 	lastId++;
 	
-	EJTimer * timer = [[EJTimer alloc] initWithCallback:callback interval:interval repeat:repeat];
-	[timers setObject:timer forKey:[NSNumber numberWithInt:lastId]];
+	EJTimer *timer = [[EJTimer alloc] initWithScriptView:scriptView callback:callback interval:interval repeat:repeat];
+	timers[@(lastId)] = timer;
 	[timer release];
 	return lastId;
 }
 
 - (void)cancelId:(int)timerId {
-	[timers removeObjectForKey:[NSNumber numberWithInt:timerId]];
+	[timers removeObjectForKey:@(timerId)];
 }
 
 - (void)update {	
-	for( NSNumber * timerId in [timers allKeys]) {
-		EJTimer * timer = [timers objectForKey:timerId];
+	for( NSNumber *timerId in [timers allKeys]) {
+		EJTimer *timer = timers[timerId];
 		[timer check];
 		
 		if( !timer.active ) {
@@ -51,27 +54,33 @@
 @implementation EJTimer
 @synthesize active;
 
-- (id)initWithCallback:(JSObjectRef)callbackp interval:(NSTimeInterval)intervalp repeat:(BOOL)repeatp {
+- (id)initWithScriptView:(EJJavaScriptView *)scriptViewp
+	callback:(JSObjectRef)callbackp
+	interval:(NSTimeInterval)intervalp
+	repeat:(BOOL)repeatp
+{
 	if( self = [super init] ) {
+		scriptView = scriptViewp;
 		active = true;
 		interval = intervalp;
 		repeat = repeatp;
 		self.target = [NSDate dateWithTimeIntervalSinceNow:interval];
 		
 		callback = callbackp;
-		JSValueProtect([EJApp instance].jsGlobalContext, callback);
+		JSValueProtect(scriptView.jsGlobalContext, callback);
 	}
 	return self;
 }
 
 - (void)dealloc {
-	JSValueUnprotect([EJApp instance].jsGlobalContext, callback);
+	self.target = nil;
+	JSValueUnprotect(scriptView.jsGlobalContext, callback);
 	[super dealloc];
 }
 
 - (void)check {	
 	if( active && self.target.timeIntervalSinceNow <= 0 ) {
-		[[EJApp instance] invokeCallback:callback thisObject:NULL argc:0 argv:NULL];
+		[scriptView invokeCallback:callback thisObject:NULL argc:0 argv:NULL];
 		
 		if( repeat ) {
 			self.target = [NSDate dateWithTimeIntervalSinceNow:interval];

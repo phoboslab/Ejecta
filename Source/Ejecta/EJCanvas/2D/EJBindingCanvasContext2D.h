@@ -4,8 +4,7 @@
 
 @interface EJBindingCanvasContext2D : EJBindingBase {
 	JSObjectRef jsCanvas;
-	EJCanvasContext2D * renderingContext;
-	EJApp * app;
+	EJCanvasContext2D *renderingContext;
 }
 
 - (id)initWithCanvas:(JSObjectRef)canvas renderingContext:(EJCanvasContext2D *)renderingContextp;

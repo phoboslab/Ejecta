@@ -9,7 +9,7 @@
 	ALsizei size;
 	ALsizei sampleRate;
 	
-	NSString * path;
+	NSString *path;
 	float duration;
 }
 

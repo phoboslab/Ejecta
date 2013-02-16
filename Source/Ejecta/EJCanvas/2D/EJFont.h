@@ -23,22 +23,22 @@ typedef struct {
 	unsigned short textureIndex;
 	CGGlyph glyph;
 	float xpos;
-	EJFontGlyphInfo * info;
+	EJFontGlyphInfo *info;
 } EJFontGlyphLayout;
 
 
 
 @interface EJFontDescriptor : NSObject {
-	NSString * identFilled;
-	NSString * identOutlined;
-	NSString * name;
+	NSString *identFilled;
+	NSString *identOutlined;
+	NSString *name;
 	float size, contentScale;
 }
 + (id)descriptorWithName:(NSString *)name size:(float)size;
 
-@property (readonly, nonatomic) NSString * identFilled;
-@property (readonly, nonatomic) NSString * identOutlined;
-@property (readonly, nonatomic) NSString * name;
+@property (readonly, nonatomic) NSString *identFilled;
+@property (readonly, nonatomic) NSString *identOutlined;
+@property (readonly, nonatomic) NSString *name;
 @property (readonly, nonatomic) float size;
 
 @end
@@ -46,13 +46,13 @@ typedef struct {
 
 
 @interface EJFontLayout : NSObject {
-	NSData * glyphLayout;
+	NSData *glyphLayout;
 	EJTextMetrics metrics;
 	int glyphCount;
 }
 
 - (id)initWithGlyphLayout:(NSData *)layoutp glyphCount:(int)count metrics:(EJTextMetrics)metrics;
-@property (readonly, nonatomic) EJFontGlyphLayout * layout;
+@property (readonly, nonatomic) EJFontGlyphLayout *layout;
 @property (readonly, nonatomic) int glyphCount;
 @property (readonly, nonatomic) EJTextMetrics metrics;
 
@@ -60,11 +60,11 @@ typedef struct {
 
 
 
-int EJFontGlyphLayoutSortByTextureIndex(const void * a, const void * b);
+int EJFontGlyphLayoutSortByTextureIndex(const void *a, const void *b);
 
 @class EJCanvasContext2D;
 @interface EJFont : NSObject {
-	NSMutableArray * textures;
+	NSMutableArray *textures;
 	float txLineX, txLineY, txLineH;
 	
 	// Font preferences
@@ -76,10 +76,10 @@ int EJFontGlyphLayoutSortByTextureIndex(const void * a, const void * b);
 	CGFontRef cgMainFont;
 	
 	// Core text variables for line layout
-	CGGlyph * glyphsBuffer;
-	CGPoint * positionsBuffer;
+	CGGlyph *glyphsBuffer;
+	CGPoint *positionsBuffer;
 	
-	NSCache * layoutCache;
+	NSCache *layoutCache;
 }
 
 - (id)initWithDescriptor:(EJFontDescriptor *)desc fill:(BOOL)fill contentScale:(float)contentScale;

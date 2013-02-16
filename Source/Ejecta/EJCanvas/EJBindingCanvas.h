@@ -3,6 +3,8 @@
 #import "EJDrawable.h"
 #import "EJCanvasContext.h"
 
+@class EJJavaScriptView;
+
 typedef enum {
 	kEJCanvasContextModeInvalid,
 	kEJCanvasContextMode2D,
@@ -11,7 +13,7 @@ typedef enum {
 
 @interface EJBindingCanvas : EJBindingBase <EJDrawable> {
 	JSObjectRef jsCanvasContext;
-	EJCanvasContext * renderingContext;
+	EJCanvasContext *renderingContext;
 	EJCanvasContextMode contextMode;
 	short width, height;
 	
@@ -23,6 +25,6 @@ typedef enum {
 	int msaaSamples;
 }
 
-@property (readonly, nonatomic) EJTexture * texture;
+@property (readonly, nonatomic) EJTexture *texture;
 
 @end

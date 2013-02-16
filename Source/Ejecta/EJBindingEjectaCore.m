@@ -3,12 +3,14 @@
 #import <netinet/in.h>
 #import <SystemConfiguration/SystemConfiguration.h>
 
+#import "EJJavaScriptView.h"
+
 @implementation EJBindingEjectaCore
 
 - (void)dealloc {
 	[urlToOpen release];
 	if( getTextCallback ) {
-		JSValueUnprotect([EJApp instance].jsGlobalContext, getTextCallback);
+		JSValueUnprotect(scriptView.jsGlobalContext, getTextCallback);
 	}
 	[super dealloc];
 }
@@ -23,15 +25,15 @@ EJ_BIND_FUNCTION(log, ctx, argc, argv ) {
 EJ_BIND_FUNCTION(include, ctx, argc, argv ) {
 	if( argc < 1 ) { return NULL; }
 
-	[[EJApp instance] loadScriptAtPath:JSValueToNSString(ctx, argv[0])];
+	[scriptView loadScriptAtPath:JSValueToNSString(ctx, argv[0])];
 	return NULL;
 }
 
 EJ_BIND_FUNCTION(loadFont, ctx, argc, argv ) {
 	if( argc < 1 ) { return NULL; }
 
-	NSString * path = JSValueToNSString(ctx, argv[0]);
-	NSString * fullPath = [[EJApp instance] pathForResource:path];
+	NSString *path = JSValueToNSString(ctx, argv[0]);
+	NSString *fullPath = [scriptView pathForResource:path];
 	[EJFont loadFontAtPath:fullPath];
 	return NULL;
 }
@@ -39,7 +41,7 @@ EJ_BIND_FUNCTION(loadFont, ctx, argc, argv ) {
 EJ_BIND_FUNCTION(requireModule, ctx, argc, argv ) {
 	if( argc < 3 ) { return NULL; }
 	
-	return [[EJApp instance] loadModuleWithId:JSValueToNSString(ctx, argv[0]) module:argv[1] exports:argv[2]];
+	return [scriptView loadModuleWithId:JSValueToNSString(ctx, argv[0]) module:argv[1] exports:argv[2]];
 }
 
 EJ_BIND_FUNCTION(require, ctx, argc, argv ) {
@@ -47,20 +49,20 @@ EJ_BIND_FUNCTION(require, ctx, argc, argv ) {
 	if( argc < 1 ) { return NULL; }
 	NSLog(@"Warning: ejecta.require() is deprecated. Use ejecta.include() instead.");
 	
-	[[EJApp instance] loadScriptAtPath:JSValueToNSString(ctx, argv[0])];
+	[scriptView loadScriptAtPath:JSValueToNSString(ctx, argv[0])];
 	return NULL;
 }
 
 EJ_BIND_FUNCTION(openURL, ctx, argc, argv ) {
 	if( argc < 1 ) { return NULL; }
 	
-	NSString * url = JSValueToNSString( ctx, argv[0] );
+	NSString *url = JSValueToNSString( ctx, argv[0] );
 	if( argc == 2 ) {
 		[urlToOpen release];
 		urlToOpen = [url retain];
 		
-		NSString * confirm = JSValueToNSString( ctx, argv[1] );
-		UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Open Browser?" message:confirm delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Ok", nil];
+		NSString *confirm = JSValueToNSString( ctx, argv[1] );
+		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Open Browser?" message:confirm delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Ok", nil];
 		alert.tag = kEJCoreAlertViewOpenURL;
 		[alert show];
 		[alert release];
@@ -74,8 +76,8 @@ EJ_BIND_FUNCTION(openURL, ctx, argc, argv ) {
 EJ_BIND_FUNCTION(getText, ctx, argc, argv) {
 	if( argc < 3 ) { return NULL; }
 	
-	NSString * title = JSValueToNSString(ctx, argv[0]);
-	NSString * message = JSValueToNSString(ctx, argv[1]);
+	NSString *title = JSValueToNSString(ctx, argv[0]);
+	NSString *message = JSValueToNSString(ctx, argv[1]);
 	
 	if( getTextCallback ) {
 		JSValueUnprotect(ctx, getTextCallback);
@@ -83,7 +85,7 @@ EJ_BIND_FUNCTION(getText, ctx, argc, argv) {
 	getTextCallback = JSValueToObject(ctx, argv[2], NULL);
 	JSValueProtect(ctx, getTextCallback);
 	
-	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:title message:message delegate:self
+	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title message:message delegate:self
 		cancelButtonTitle:@"Cancel" otherButtonTitles:@"Ok", nil];
 	alert.alertViewStyle = UIAlertViewStylePlainTextInput;
 	alert.tag = kEJCoreAlertViewGetText;
@@ -102,35 +104,34 @@ EJ_BIND_FUNCTION(getText, ctx, argc, argv) {
 	}
 	
 	else if( alertView.tag == kEJCoreAlertViewGetText ) {
-		NSString * text = @"";
+		NSString *text = @"";
 		if( index == 1 ) {
 			text = [[alertView textFieldAtIndex:0] text];
 		}
-		JSValueRef params[] = { NSStringToJSValue([EJApp instance].jsGlobalContext, text) };
-		[[EJApp instance] invokeCallback:getTextCallback thisObject:NULL argc:1 argv:params];
+		JSValueRef params[] = { NSStringToJSValue(scriptView.jsGlobalContext, text) };
+		[scriptView invokeCallback:getTextCallback thisObject:NULL argc:1 argv:params];
 		
-		JSValueUnprotect([EJApp instance].jsGlobalContext, getTextCallback);
+		JSValueUnprotect(scriptView.jsGlobalContext, getTextCallback);
 		getTextCallback = NULL;
 	}
 }
 
 
 EJ_BIND_FUNCTION(setTimeout, ctx, argc, argv ) {
-	return [[EJApp instance] createTimer:ctx argc:argc argv:argv repeat:NO];
+	return [scriptView createTimer:ctx argc:argc argv:argv repeat:NO];
 }
 
 EJ_BIND_FUNCTION(setInterval, ctx, argc, argv ) {
-	return [[EJApp instance] createTimer:ctx argc:argc argv:argv repeat:YES];
+	return [scriptView createTimer:ctx argc:argc argv:argv repeat:YES];
 }
 
 EJ_BIND_FUNCTION(clearTimeout, ctx, argc, argv ) {
-	return [[EJApp instance] deleteTimer:ctx argc:argc argv:argv];
+	return [scriptView deleteTimer:ctx argc:argc argv:argv];
 }
 
 EJ_BIND_FUNCTION(clearInterval, ctx, argc, argv ) {
-	return [[EJApp instance] deleteTimer:ctx argc:argc argv:argv];
+	return [scriptView deleteTimer:ctx argc:argc argv:argv];
 }
-
 
 
 EJ_BIND_GET(devicePixelRatio, ctx ) {
@@ -138,15 +139,11 @@ EJ_BIND_GET(devicePixelRatio, ctx ) {
 }
 
 EJ_BIND_GET(screenWidth, ctx ) {
-	return JSValueMakeNumber( ctx, [EJApp instance].view.bounds.size.width );
+	return JSValueMakeNumber( ctx, scriptView.bounds.size.width );
 }
 
 EJ_BIND_GET(screenHeight, ctx ) {
-	return JSValueMakeNumber( ctx, [EJApp instance].view.bounds.size.height );
-}
-
-EJ_BIND_GET(landscapeMode, ctx ) {
-	return JSValueMakeBoolean( ctx, [EJApp instance].landscapeMode );
+	return JSValueMakeNumber( ctx, scriptView.bounds.size.height );
 }
 
 EJ_BIND_GET(userAgent, ctx ) {
@@ -166,9 +163,9 @@ EJ_BIND_GET(appVersion, ctx ) {
 
 EJ_BIND_GET(onLine, ctx) {
 	struct sockaddr_in zeroAddress;
-    bzero(&zeroAddress, sizeof(zeroAddress));
-    zeroAddress.sin_len = sizeof(zeroAddress);
-    zeroAddress.sin_family = AF_INET;
+	bzero(&zeroAddress, sizeof(zeroAddress));
+	zeroAddress.sin_len = sizeof(zeroAddress);
+	zeroAddress.sin_family = AF_INET;
 	
 	SCNetworkReachabilityRef reachability = SCNetworkReachabilityCreateWithAddress(
 		kCFAllocatorDefault,

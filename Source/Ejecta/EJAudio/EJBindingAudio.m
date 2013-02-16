@@ -1,5 +1,5 @@
 #import "EJBindingAudio.h"
-
+#import "EJJavaScriptView.h"
 
 @implementation EJBindingAudio
 
@@ -47,13 +47,13 @@
 	
 	// Protect this Audio object from garbage collection, as its callback function
 	// may be the only thing holding on to it
-	JSValueProtect([EJApp instance].jsGlobalContext, jsObject);
+	JSValueProtect(scriptView.jsGlobalContext, jsObject);
 	
-	NSString * fullPath = [[EJApp instance] pathForResource:path];
-	NSInvocationOperation * loadOp = [[NSInvocationOperation alloc] initWithTarget:self
+	NSString *fullPath = [scriptView pathForResource:path];
+	NSInvocationOperation *loadOp = [[NSInvocationOperation alloc] initWithTarget:self
 				selector:@selector(loadOperation:) object:fullPath];
 	loadOp.threadPriority = 0.2;
-	[[EJApp instance].opQueue addOperation:loadOp];
+	[scriptView.opQueue addOperation:loadOp];
 	[loadOp release];
 }
 
@@ -62,7 +62,7 @@
 		// Decide whether to load the sound as OpenAL or AVAudioPlayer source
 		unsigned long long size = [[[NSFileManager defaultManager] attributesOfItemAtPath:fullPath error:nil] fileSize];
 		
-		NSObject<EJAudioSource> * src;
+		NSObject<EJAudioSource> *src;
 		if( size <= EJ_AUDIO_OPENAL_MAX_SIZE ) {
 			NSLog(@"Loading Sound(OpenAL): %@", path);
 			src = [[EJAudioSourceOpenAL alloc] initWithPath:fullPath];
@@ -91,7 +91,7 @@
 	[self triggerEvent:@"canplaythrough" argc:0 argv:NULL];
 	[self triggerEvent:@"loadedmetadata" argc:0 argv:NULL];
 	
-	JSValueUnprotect([EJApp instance].jsGlobalContext, jsObject);
+	JSValueUnprotect(scriptView.jsGlobalContext, jsObject);
 }
 
 - (void)sourceDidFinishPlaying:(NSObject<EJAudioSource> *)source {
@@ -139,7 +139,7 @@ EJ_BIND_FUNCTION(load, ctx, argc, argv) {
 EJ_BIND_FUNCTION(canPlayType, ctx, argc, argv) {
 	if( argc != 1 ) return NULL;
 	
-	NSString * mime = JSValueToNSString(ctx, argv[0]);
+	NSString *mime = JSValueToNSString(ctx, argv[0]);
 	if( 
 		[mime hasPrefix:@"audio/x-caf"] ||
 		[mime hasPrefix:@"audio/mpeg"] ||
@@ -151,8 +151,8 @@ EJ_BIND_FUNCTION(canPlayType, ctx, argc, argv) {
 }
 
 EJ_BIND_FUNCTION(cloneNode, ctx, argc, argv) {
-	EJBindingAudio * audio = [[EJBindingAudio alloc] initWithContext:ctx argc:0 argv:NULL];
-	JSObjectRef clone = [EJBindingAudio createJSObjectWithContext:ctx instance:audio];
+	EJBindingAudio *audio = [[EJBindingAudio alloc] initWithContext:ctx argc:0 argv:NULL];
+	JSObjectRef clone = [EJBindingAudio createJSObjectWithContext:ctx scriptView:scriptView instance:audio];
 	
 	audio.loop = loop;
 	audio.volume = volume;
@@ -165,6 +165,7 @@ EJ_BIND_FUNCTION(cloneNode, ctx, argc, argv) {
 		[audio load];
 	}
 	
+	[audio release];
 	return clone;
 }
 

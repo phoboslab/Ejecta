@@ -3,28 +3,7 @@
 #import <OpenGLES/ES1/gl.h>
 #import <OpenGLES/ES1/glext.h>
 
-typedef enum {
-	kEJTextureParamMinFilter,
-	kEJTextureParamMagFilter,
-	kEJTextureParamWrapS,
-	kEJTextureParamWrapT,
-	kEJTextureParamLast
-} EJTextureParam;
-
-typedef EJTextureParam EJTextureParams[kEJTextureParamLast];
-
-
-@interface EJTextureStorage : NSObject {
-	EJTextureParams params;
-	GLuint textureId;
-	BOOL immutable;
-}
-- (id)init;
-- (id)initImmutable;
-- (void)bindToTarget:(GLenum)target withParams:(EJTextureParam *)newParams;
-@property (readonly, nonatomic) GLuint textureId;
-@property (readonly, nonatomic) BOOL immutable;
-@end
+#import "EJTextureStorage.h"
 
 
 typedef enum {
@@ -35,20 +14,20 @@ typedef enum {
 @interface EJTexture : NSObject <NSCopying> {
 	BOOL cached;
 	short width, height;
-	NSString * fullPath;
-	EJTextureStorage * textureStorage;
+	NSString *fullPath;
+	EJTextureStorage *textureStorage;
 	GLenum format;
 	GLuint fbo;
 	float contentScale;
 	
 	EJTextureOwningContext owningContext;
 	EJTextureParams params;
-	NSOperation * loadCallback;
+	NSOperation *loadCallback;
 }
 - (id)initEmptyForWebGL;
 - (id)initWithPath:(NSString *)path;
-+ (id)cachedTextureWithPath:(NSString *)path callback:(void (^)(void))callback;
-- (id)initWithPath:(NSString *)path callback:(void (^)(void))callback;
++ (id)cachedTextureWithPath:(NSString *)path loadOnQueue:(NSOperationQueue *)queue callback:(void (^)(void))callback;
+- (id)initWithPath:(NSString *)path loadOnQueue:(NSOperationQueue *)queue callback:(void (^)(void))callback;
 
 - (id)initWithWidth:(int)widthp height:(int)heightp;
 - (id)initWithWidth:(int)widthp height:(int)heightp format:(GLenum) format;
@@ -73,7 +52,7 @@ typedef enum {
 - (void)bindToTarget:(GLenum)target;
 
 @property (readonly, nonatomic) BOOL isDynamic;
-@property (readonly, nonatomic) NSMutableData * pixels;
+@property (readonly, nonatomic) NSMutableData *pixels;
 @property (readonly, nonatomic)	float contentScale;
 @property (readonly, nonatomic) GLuint textureId;
 @property (readonly, nonatomic) GLenum format;

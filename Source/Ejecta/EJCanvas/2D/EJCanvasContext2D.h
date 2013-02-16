@@ -5,12 +5,9 @@
 #import "EJCanvas2DTypes.h"
 #import "EJCanvasContext.h"
 #import "EJFont.h"
-#import "EJGLProgram2D.h"
+#import "EJSharedOpenGLContext.h"
 
 #define EJ_CANVAS_STATE_STACK_SIZE 16
-#define EJ_CANVAS_VERTEX_BUFFER_SIZE 1600 // 1600 * 20b = ~32kb
-
-extern EJVertex EJCanvasVertexBuffer[EJ_CANVAS_VERTEX_BUFFER_SIZE];
 
 typedef enum {
 	kEJLineCapButt,
@@ -62,7 +59,7 @@ typedef struct {
 	
 	EJCompositeOperation globalCompositeOperation;
 	EJColorRGBA fillColor;
-	NSObject<EJFillable> * fillObject;
+	NSObject<EJFillable> *fillObject;
 	EJColorRGBA strokeColor;
 	float globalAlpha;
 	
@@ -73,12 +70,12 @@ typedef struct {
 	
 	EJTextAlign textAlign;
 	EJTextBaseline textBaseline;
-	EJFontDescriptor * font;
+	EJFontDescriptor *font;
 	
-	EJPath * clipPath;
+	EJPath *clipPath;	
 } EJCanvasState;
 
-@class EJApp;
+@class EJJavaScriptView;
 @interface EJCanvasContext2D : EJCanvasContext {
 	GLuint viewFrameBuffer, viewRenderBuffer;
 	GLuint msaaFrameBuffer, msaaRenderBuffer;
@@ -88,25 +85,28 @@ typedef struct {
 	EJVector2 vertexScale, vertexTranslate;
 	
 	GLenum textureFilter;
-	EJTexture * currentTexture;
-	EJPath * path;
+	EJTexture *currentTexture;
+	EJPath *path;
 	
+	EJVertex *vertexBuffer;
+	int vertexBufferSize;
 	int vertexBufferIndex;
 	
 	int stateIndex;
 	EJCanvasState stateStack[EJ_CANVAS_STATE_STACK_SIZE];
-	EJCanvasState * state;
-    
+	EJCanvasState *state;
+	
 	BOOL useRetinaResolution;
 	float backingStoreRatio;
 	
-	NSCache * fontCache;
+	NSCache *fontCache;
 	
-	EJApp * app;
-	EJGLProgram2D * currentProgram;
+	EJJavaScriptView *scriptView;
+	EJGLProgram2D *currentProgram;
+	EJSharedOpenGLContext *sharedGLContext;
 }
 
-- (id)initWithWidth:(short)width height:(short)height;
+- (id)initWithScriptView:(EJJavaScriptView *)scriptViewp width:(short)widthp height:(short)heightp;
 - (void)create;
 - (void)createStencilBufferOnce;
 - (void)bindVertexBuffer;
@@ -114,9 +114,9 @@ typedef struct {
 - (void)setTexture:(EJTexture *)newTexture;
 - (void)setProgram:(EJGLProgram2D *)program;
 - (void)pushTriX1:(float)x1 y1:(float)y1 x2:(float)x2 y2:(float)y2
-			   x3:(float)x3 y3:(float)y3
-			 color:(EJColorRGBA)color
-	 withTransform:(CGAffineTransform)transform;
+	x3:(float)x3 y3:(float)y3
+	color:(EJColorRGBA)color
+	withTransform:(CGAffineTransform)transform;
 - (void)pushQuadV1:(EJVector2)v1 v2:(EJVector2)v2 v3:(EJVector2)v3 v4:(EJVector2)v4
 	color:(EJColorRGBA)color
 	withTransform:(CGAffineTransform)transform;
@@ -177,10 +177,10 @@ typedef struct {
 - (void)clip;
 - (void)resetClip;
 
-@property (nonatomic) EJCanvasState * state;
+@property (nonatomic) EJCanvasState *state;
 @property (nonatomic) EJCompositeOperation globalCompositeOperation;
-@property (nonatomic, retain) EJFontDescriptor * font;
-@property (nonatomic, retain) NSObject<EJFillable> * fillObject;
+@property (nonatomic, retain) EJFontDescriptor *font;
+@property (nonatomic, retain) NSObject<EJFillable> *fillObject;
 @property (nonatomic, assign) float backingStoreRatio;
 @property (nonatomic) BOOL useRetinaResolution;
 @property (nonatomic) BOOL imageSmoothingEnabled;

@@ -15,9 +15,9 @@ typedef enum {
 } EJAudioPreload;
 
 @interface EJBindingAudio : EJBindingEventedBase <EJAudioSourceDelegate> {
-	NSString * path;
+	NSString *path;
 	EJAudioPreload preload;
-	NSObject<EJAudioSource> * source;
+	NSObject<EJAudioSource> *source;
 	
 	BOOL loop, ended, paused;
 	BOOL loading, playAfterLoad;
@@ -30,7 +30,7 @@ typedef enum {
 @property (nonatomic) BOOL loop;
 @property (nonatomic) BOOL ended;
 @property (nonatomic) float volume;
-@property (nonatomic, retain) NSString * path;
+@property (nonatomic, retain) NSString *path;
 @property (nonatomic) EJAudioPreload preload;
 
 @end

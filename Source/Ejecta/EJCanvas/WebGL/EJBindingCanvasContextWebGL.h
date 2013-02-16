@@ -15,30 +15,30 @@
 #define EJ_BUFFER_OFFSET(i) ((char *)NULL + (i))
 
 typedef struct {
-	EJTexture * texture;
+	EJTexture *texture;
 	JSObjectRef jsTexture;
-	EJTexture * cubeMap;
+	EJTexture *cubeMap;
 	JSObjectRef jsCubeMap;
 } EJCanvasContextTextureUnit;
 
+@class EJJavaScriptView;
 @interface EJBindingCanvasContextWebGL : EJBindingBase {
 	
 	BOOL unpackFlipY;
 	BOOL premultiplyAlpha;
 	
 	JSObjectRef jsCanvas;
-	EJCanvasContextWebGL * renderingContext;
-	EJApp * ejectaInstance;
+	EJCanvasContextWebGL *renderingContext;
 	
-	NSMutableDictionary * renderbuffers;
-	NSMutableDictionary * framebuffers;
-	NSMutableDictionary * buffers;
-	NSMutableDictionary * textures;
-	NSMutableDictionary * programs;
-	NSMutableDictionary * shaders;
+	NSMutableDictionary *renderbuffers;
+	NSMutableDictionary *framebuffers;
+	NSMutableDictionary *buffers;
+	NSMutableDictionary *textures;
+	NSMutableDictionary *programs;
+	NSMutableDictionary *shaders;
 	
 	EJCanvasContextTextureUnit textureUnits[EJ_CANVAS_MAX_TEXTURE_UNITS];
-	EJCanvasContextTextureUnit * activeTexture;
+	EJCanvasContextTextureUnit *activeTexture;
 }
 
 - (id)initWithCanvas:(JSObjectRef)canvas renderingContext:(EJCanvasContextWebGL *)renderingContextp;

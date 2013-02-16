@@ -21,8 +21,8 @@ typedef struct {
 
 
 static inline EJVector2 EJVector2Make( float x, float y ) {
-  EJVector2 p = {x, y};
-  return p;
+	EJVector2 p = {x, y};
+	return p;
 }
 
 static inline EJVector2 EJVector2Add( EJVector2 a, EJVector2 b ) {

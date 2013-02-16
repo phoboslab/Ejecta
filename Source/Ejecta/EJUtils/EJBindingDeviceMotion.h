@@ -2,7 +2,7 @@
 #import <CoreMotion/CoreMotion.h>
 
 @interface EJBindingDeviceMotion : EJBindingEventedBase {
-	CMMotionManager * motionManager;
+	CMMotionManager *motionManager;
 	JSValueRef params[12];
 	float interval;
 }

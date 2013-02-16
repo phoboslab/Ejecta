@@ -6,16 +6,16 @@
 EJ_BIND_FUNCTION(getItem, ctx, argc, argv ) {
 	if( argc < 1 ) return NULL;
 	
-	NSString * key = JSValueToNSString( ctx, argv[0] );
-	NSString * value = [[NSUserDefaults standardUserDefaults] objectForKey:key];
+	NSString *key = JSValueToNSString( ctx, argv[0] );
+	NSString *value = [[NSUserDefaults standardUserDefaults] objectForKey:key];
 	return value ? NSStringToJSValue( ctx, value ) : JSValueMakeNull(ctx);
 }
 
 EJ_BIND_FUNCTION(setItem, ctx, argc, argv ) {
 	if( argc < 2 ) return NULL;
 	
-	NSString * key = JSValueToNSString( ctx, argv[0] );
-	NSString * value = JSValueToNSString( ctx, argv[1] );
+	NSString *key = JSValueToNSString( ctx, argv[0] );
+	NSString *value = JSValueToNSString( ctx, argv[1] );
 	
 	if( !key || !value ) return NULL;
 	[[NSUserDefaults standardUserDefaults] setObject:value forKey:key];
@@ -27,14 +27,14 @@ EJ_BIND_FUNCTION(setItem, ctx, argc, argv ) {
 EJ_BIND_FUNCTION(removeItem, ctx, argc, argv ) {
 	if( argc < 1 ) return NULL;
 	
-	NSString * key = JSValueToNSString( ctx, argv[0] );
+	NSString *key = JSValueToNSString( ctx, argv[0] );
 	[[NSUserDefaults standardUserDefaults] removeObjectForKey:key];
 	
 	return NULL;
 }
 
 EJ_BIND_FUNCTION(clear, ctx, argc, argv ) {
-	[[NSUserDefaults standardUserDefaults] setPersistentDomain:[NSDictionary dictionary] forName:[[NSBundle mainBundle] bundleIdentifier]];
+	[[NSUserDefaults standardUserDefaults] setPersistentDomain:@{} forName:[[NSBundle mainBundle] bundleIdentifier]];
 	return NULL;
 }
 

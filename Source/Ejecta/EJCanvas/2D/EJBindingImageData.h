@@ -3,13 +3,13 @@
 #import "EJDrawable.h"
 
 @interface EJBindingImageData : EJBindingBase <EJDrawable> {
-	EJImageData * imageData;
+	EJImageData *imageData;
 	JSObjectRef dataArray;
 }
 
 - (id)initWithImageData:(EJImageData *)data;
 
-@property (readonly, nonatomic) EJImageData * imageData;
-@property (readonly, nonatomic) EJTexture * texture;
+@property (readonly, nonatomic) EJImageData *imageData;
+@property (readonly, nonatomic) EJTexture *texture;
 
 @end

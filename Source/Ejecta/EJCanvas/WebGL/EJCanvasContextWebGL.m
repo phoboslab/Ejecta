@@ -1,5 +1,5 @@
 #import "EJCanvasContextWebGL.h"
-#import "EJApp.h"
+#import "EJJavaScriptView.h"
 
 @implementation EJCanvasContextWebGL
 
@@ -7,9 +7,11 @@
 @synthesize backingStoreRatio;
 @synthesize scalingMode;
 
-- (id)initWithWidth:(short)widthp height:(short)heightp {
+- (id)initWithScriptView:(EJJavaScriptView *)scriptViewp width:(short)widthp height:(short)heightp {
 	if( self = [super init] ) {
-		glContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2 sharegroup:[EJApp instance].glSharegroup];
+		scriptView = scriptViewp;
+		glContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2
+			sharegroup:scriptView.openGLContext.glSharegroup];
 		
 		bufferWidth = width = widthp;
 		bufferHeight = height = heightp;
@@ -24,8 +26,8 @@
 	// Work out the final screen size - this takes the scalingMode, canvas size,
 	// screen size and retina properties into account
 	CGRect frame = CGRectMake(0, 0, width, height);
-	CGSize screen = [EJApp instance].view.bounds.size;
-    float contentScale = (useRetinaResolution && [UIScreen mainScreen].scale == 2) ? 2 : 1;
+	CGSize screen = scriptView.bounds.size;
+	float contentScale = (useRetinaResolution && [UIScreen mainScreen].scale == 2) ? 2 : 1;
 	float aspect = frame.size.width / frame.size.height;
 	
 	if( scalingMode == kEJScalingModeFitWidth ) {
@@ -37,9 +39,9 @@
 		frame.size.height = screen.height;
 	}
 	float internalScaling = frame.size.width / (float)width;
-	[EJApp instance].internalScaling = internalScaling;
+	scriptView.internalScaling = internalScaling;
 	
-    backingStoreRatio = internalScaling * contentScale;
+	backingStoreRatio = internalScaling * contentScale;
 	
 	NSLog(
 		@"Creating ScreenCanvas (WebGL): "
@@ -54,45 +56,44 @@
 	
 	// Create the OpenGL UIView with final screen size and content scaling (retina)
 	glview = [[EAGLView alloc] initWithFrame:frame contentScale:contentScale retainedBacking:NO];
-    
+	
 	// Create the frame- and renderbuffers
-    glGenFramebuffers(1, &viewFrameBuffer);
+	glGenFramebuffers(1, &viewFrameBuffer);
 	glBindFramebuffer(GL_FRAMEBUFFER, viewFrameBuffer);
 	
 	glGenRenderbuffers(1, &viewRenderBuffer);
 	glBindRenderbuffer(GL_RENDERBUFFER, viewRenderBuffer);
-	   
+	
 	// Set up the renderbuffer and some initial OpenGL properties
 	[glContext renderbufferStorage:GL_RENDERBUFFER fromDrawable:(CAEAGLLayer *)glview.layer];
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, viewRenderBuffer);
 
-    glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &bufferWidth);
-    glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &bufferHeight);
+	glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &bufferWidth);
+	glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &bufferHeight);
 
-    glGenRenderbuffers(1, &depthRenderBuffer);
+	glGenRenderbuffers(1, &depthRenderBuffer);
 	glBindRenderbuffer(GL_RENDERBUFFER, depthRenderBuffer);
-    
+	
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, bufferWidth, bufferHeight);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRenderBuffer);
 	
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
+	
 	// Append the OpenGL view to Impact's main view
-	[[EJApp instance] hideLoadingScreen];
-	[[EJApp instance].view addSubview:glview];
+	[scriptView addSubview:glview];
 }
 
 - (void)dealloc {
 	// Make sure this rendering context is the current one, so all
 	// OpenGL objects can be deleted properly. Remember the currently bound
 	// Context, but only if it's not the context to be deleted
-	EAGLContext * oldContext = [EAGLContext currentContext];
+	EAGLContext *oldContext = [EAGLContext currentContext];
 	if( oldContext == glContext ) { oldContext = NULL; }
 	[EAGLContext setCurrentContext:glContext];
 	
-    if( viewFrameBuffer ) { glDeleteFramebuffers( 1, &viewFrameBuffer); }
+	if( viewFrameBuffer ) { glDeleteFramebuffers( 1, &viewFrameBuffer); }
 	if( viewRenderBuffer ) { glDeleteRenderbuffers(1, &viewRenderBuffer); }
-    if( depthRenderBuffer ) { glDeleteRenderbuffers(1, &depthRenderBuffer); }
+	if( depthRenderBuffer ) { glDeleteRenderbuffers(1, &depthRenderBuffer); }
 	[glview release];
 	[glContext release];
 	
@@ -101,8 +102,8 @@
 }
 
 - (void)prepare {	
-    glBindFramebuffer(GL_FRAMEBUFFER, viewFrameBuffer);
-    glBindRenderbuffer(GL_RENDERBUFFER, viewRenderBuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, viewFrameBuffer);
+	glBindRenderbuffer(GL_RENDERBUFFER, viewRenderBuffer);
 	
 	// Re-bind textures; they may have been changed in a different context
 	GLint boundTexture2D;
@@ -140,7 +141,7 @@
 }
 
 - (void)present {
-    [glContext presentRenderbuffer:GL_RENDERBUFFER];
+	[glContext presentRenderbuffer:GL_RENDERBUFFER];
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 }
 

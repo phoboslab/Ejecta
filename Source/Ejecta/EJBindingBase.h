@@ -1,9 +1,8 @@
 #import <Foundation/Foundation.h>
-#import "EJApp.h"
+#import "EJAppViewController.h"
+#import "EJJavaScriptView.h"
 
 #include <objc/message.h>
-
-extern JSValueRef ej_global_undefined;
 
 // (Not sure if clever hack or really stupid...)
 
@@ -19,6 +18,8 @@ extern JSValueRef ej_global_undefined;
 // to the particular C callback function - this way we can later inflect the objc class
 // and gather all function pointers.
 
+
+#define EJ_BINDING_CLASS_PREFIX "EJBinding"
 
 // The class method that returns a pointer to the static C callback function
 #define __EJ_GET_POINTER_TO(NAME) \
@@ -43,7 +44,7 @@ extern JSValueRef ej_global_undefined;
 	) { \
 		id instance = (id)JSObjectGetPrivate(object); \
 		JSValueRef ret = (JSValueRef)objc_msgSend(instance, @selector(_func_##NAME:argc:argv:), ctx, argc, argv); \
-		return ret ? ret : ej_global_undefined; \
+		return ret ? ret : ((EJBindingBase *)instance)->scriptView->jsUndefined; \
 	} \
 	__EJ_GET_POINTER_TO(_func_##NAME)\
 	\
@@ -113,7 +114,8 @@ extern JSValueRef ej_global_undefined;
 			NSLog(@"Warning: method " @ #NAME @" is not yet implemented!"); \
 			didShowWarning = true; \
 		} \
-		return ej_global_undefined; \
+		id instance = (id)JSObjectGetPrivate(object); \
+		return ((EJBindingBase *)instance)->scriptView->jsUndefined; \
 	} \
 	__EJ_GET_POINTER_TO(_func_##NAME)
 
@@ -124,7 +126,7 @@ extern JSValueRef ej_global_undefined;
 
 
 #define EJ_BIND_ENUM(NAME, TARGET, ...) \
-	static const char * _##NAME##EnumNames[] = {__VA_ARGS__}; \
+	static const char *_##NAME##EnumNames[] = {__VA_ARGS__}; \
 	EJ_BIND_GET(NAME, ctx) { \
 		JSStringRef src = JSStringCreateWithUTF8CString( _##NAME##EnumNames[TARGET] ); \
 		JSValueRef ret = JSValueMakeString(ctx, src); \
@@ -134,7 +136,7 @@ extern JSValueRef ej_global_undefined;
 	\
 	EJ_BIND_SET(NAME, ctx, value) { \
 		JSStringRef _str = JSValueToStringCopy(ctx, value, NULL); \
-		const JSChar * _strptr = JSStringGetCharactersPtr( _str ); \
+		const JSChar *_strptr = JSStringGetCharactersPtr( _str ); \
 		int _length = JSStringGetLength(_str)-1; \
 		const char ** _names = _##NAME##EnumNames; \
 		int _target; \
@@ -147,7 +149,7 @@ extern JSValueRef ej_global_undefined;
 #define _EJ_BIND_ENUM_COMPARE(INDEX, NAME) \
 	if( _length == sizeof(NAME)-2 && JSStrIsEqualToStr( _strptr, _names[INDEX], _length) ) { _target = INDEX; }
 	
-static inline bool JSStrIsEqualToStr( const JSChar * s1, const char * s2, int length ) {
+static inline bool JSStrIsEqualToStr( const JSChar *s1, const char *s2, int length ) {
 	for( int i = 0; i < length && *s1 == *s2; i++ ) {
 		s1++;
 		s2++;
@@ -193,7 +195,7 @@ static inline bool JSStrIsEqualToStr( const JSChar * s1, const char * s2, int le
 #define _EJ_EVAL0(...) __VA_ARGS__
 #define _EJ_EVAL1(...) _EJ_EVAL0( _EJ_EVAL0(__VA_ARGS__) )
 #define _EJ_EVAL2(...) _EJ_EVAL1( _EJ_EVAL1(__VA_ARGS__) )
-#define _EJ_EVAL(...)  _EJ_EVAL2( _EJ_EVAL2(__VA_ARGS__) )
+#define _EJ_EVAL(...) _EJ_EVAL2( _EJ_EVAL2(__VA_ARGS__) )
 
 #define _EJ_MAP_END(...)
 #define _EJ_MAP_OUT
@@ -229,14 +231,22 @@ static inline bool JSStrIsEqualToStr( const JSChar * s1, const char * s2, int le
 #define _EJ_UNPACK_NUMBER(INDEX, NAME) NAME = JSValueToNumberFast(ctx, argv[INDEX]);
 
 
+@class EJJavaScriptView;
 @interface EJBindingBase : NSObject {
 	JSObjectRef jsObject;
+	
+	// Puplic for fast access to instance->scriptView->jsUndefined in bound functions
+	@public	EJJavaScriptView *scriptView;
 }
 
 - (id)initWithContext:(JSContextRef)ctxp argc:(size_t)argc argv:(const JSValueRef [])argv;
-+ (JSClassRef)getJSClass;
-+ (void)clearJSClassCache;
-+ (JSClassRef)createJSClass;
-+ (JSObjectRef)createJSObjectWithContext:(JSContextRef)ctx instance:(EJBindingBase *)instance;
+- (void)createWithJSObject:(JSObjectRef)obj scriptView:(EJJavaScriptView *)view;
++ (JSObjectRef)createJSObjectWithContext:(JSContextRef)ctx
+	scriptView:(EJJavaScriptView *)scriptView
+	instance:(EJBindingBase *)instance;
+void EJBindingBaseFinalize(JSObjectRef object);
+
+@property (nonatomic, readonly) EJJavaScriptView *scriptView;
 
 @end
+

@@ -1,6 +1,6 @@
 #import <QuartzCore/QuartzCore.h>
 #import "EJCanvasContext2DScreen.h"
-#import "EJApp.h"
+#import "EJJavaScriptView.h"
 
 @implementation EJCanvasContext2DScreen
 
@@ -12,8 +12,8 @@
 	// screen size and retina properties into account
 	
 	CGRect frame = CGRectMake(0, 0, width, height);
-	CGSize screen = app.view.bounds.size;
-    float contentScale = (useRetinaResolution && [UIScreen mainScreen].scale == 2) ? 2 : 1;
+	CGSize screen = scriptView.bounds.size;
+	float contentScale = (useRetinaResolution && [UIScreen mainScreen].scale == 2) ? 2 : 1;
 	float aspect = frame.size.width / frame.size.height;
 	
 	if( scalingMode == kEJScalingModeFitWidth ) {
@@ -25,7 +25,7 @@
 		frame.size.height = screen.height;
 	}
 	float internalScaling = frame.size.width / (float)width;
-	app.internalScaling = internalScaling;
+	scriptView.internalScaling = internalScaling;
 	
 	backingStoreRatio = internalScaling * contentScale;
 	
@@ -62,14 +62,14 @@
 	[self prepare];
 	
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT);
 
-	// Append the OpenGL view to Impact's main view
-	[app hideLoadingScreen];
-	[app.view addSubview:glview];
+	// Append the OpenGL view to Ejecta's main view
+	[scriptView addSubview:glview];
 }
 
 - (void)dealloc {
+	[glview removeFromSuperview];
 	[glview release];
 	[super dealloc];
 }

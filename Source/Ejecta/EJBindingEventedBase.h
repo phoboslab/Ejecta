@@ -30,8 +30,8 @@
 	__EJ_GET_POINTER_TO(_set_on##NAME)
 	
 @interface EJBindingEventedBase : EJBindingBase {
-	NSMutableDictionary * eventListeners; // for addEventListener
-	NSMutableDictionary * onCallbacks; // for on* setters
+	NSMutableDictionary *eventListeners; // for addEventListener
+	NSMutableDictionary *onCallbacks; // for on* setters
 }
 
 - (JSObjectRef)getCallbackWith:(NSString *)name ctx:(JSContextRef)ctx;

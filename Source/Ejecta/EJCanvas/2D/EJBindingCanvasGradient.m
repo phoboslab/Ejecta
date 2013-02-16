@@ -3,17 +3,22 @@
 
 @implementation EJBindingCanvasGradient
 
-+ (JSObjectRef)createJSObjectWithContext:(JSContextRef)ctx gradient:(EJCanvasGradient *)gradient {
-	EJBindingCanvasGradient * binding = [[EJBindingCanvasGradient alloc] initWithContext:ctx argc:0 argv:NULL];
++ (JSObjectRef)createJSObjectWithContext:(JSContextRef)ctx
+	scriptView:(EJJavaScriptView *)view
+	gradient:(EJCanvasGradient *)gradient
+{
+	EJBindingCanvasGradient *binding = [[EJBindingCanvasGradient alloc] initWithContext:ctx argc:0 argv:NULL];
 	binding->gradient = [gradient retain];
 	
-	return [self createJSObjectWithContext:ctx instance:binding];
+	JSObjectRef obj = [self createJSObjectWithContext:ctx scriptView:view instance:binding];
+	[binding release];
+	return obj;
 }
 
 + (EJCanvasGradient *)gradientFromJSValue:(JSValueRef)value {
 	if( !value ) { return NULL; }
 	
-	EJBindingCanvasGradient * binding = (EJBindingCanvasGradient *)JSObjectGetPrivate((JSObjectRef)value);
+	EJBindingCanvasGradient *binding = (EJBindingCanvasGradient *)JSObjectGetPrivate((JSObjectRef)value);
 	return (binding && [binding isMemberOfClass:[EJBindingCanvasGradient class]]) ? binding->gradient : NULL;
 }
 
