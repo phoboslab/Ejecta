@@ -35,9 +35,7 @@
 		scriptView.hasScreenCanvas = NO;
 	}
 	[renderingContext release];
-	if( jsCanvasContext ) {
-		JSValueUnprotect(scriptView.jsGlobalContext, jsCanvasContext);
-	}
+	JSValueUnprotectSafe(scriptView.jsGlobalContext, jsCanvasContext);
 	[super dealloc];
 }
 

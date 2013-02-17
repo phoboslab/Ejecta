@@ -19,7 +19,7 @@
 	texture = [[EJTexture cachedTextureWithPath:fullPath loadOnQueue:scriptView.opQueue callback:^{
 		loading = NO;
 		[self triggerEvent:(texture.textureId ? @"load" : @"error") argc:0 argv:NULL];		
-		JSValueUnprotect(scriptView.jsGlobalContext, jsObject);
+		JSValueUnprotectSafe(scriptView.jsGlobalContext, jsObject);
 	}] retain];
 }
 

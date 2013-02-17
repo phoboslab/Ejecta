@@ -35,8 +35,8 @@
 - (void)dealloc {
 	JSContextRef ctx = scriptView.jsGlobalContext;
 	
-	JSValueUnprotect( ctx, jsRemainingTouches );
-	JSValueUnprotect( ctx, jsChangedTouches );
+	JSValueUnprotectSafe( ctx, jsRemainingTouches );
+	JSValueUnprotectSafe( ctx, jsChangedTouches );
 	JSStringRelease( jsLengthName );
 	
 	JSStringRelease( jsIdentifierName );
@@ -46,7 +46,7 @@
 	JSStringRelease( jsClientYName );
 	
 	for( int i = 0; i < EJ_TOUCH_INPUT_MAX_TOUCHES; i++ ) {
-		JSValueUnprotect( ctx, jsTouchesPool[i] );
+		JSValueUnprotectSafe( ctx, jsTouchesPool[i] );
 	}
 	
 	[super dealloc];

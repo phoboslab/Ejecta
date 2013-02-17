@@ -91,7 +91,7 @@
 	[self triggerEvent:@"canplaythrough" argc:0 argv:NULL];
 	[self triggerEvent:@"loadedmetadata" argc:0 argv:NULL];
 	
-	JSValueUnprotect(scriptView.jsGlobalContext, jsObject);
+	JSValueUnprotectSafe(scriptView.jsGlobalContext, jsObject);
 }
 
 - (void)sourceDidFinishPlaying:(NSObject<EJAudioSource> *)source {

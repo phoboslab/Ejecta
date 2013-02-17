@@ -69,11 +69,12 @@
 		[displayLink setFrameInterval:1];
 		[displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 		
-		// Create the global JS context and attach the 'Ejecta' object		
-		jsGlobalContext = JSGlobalContextCreate(NULL);
+		// Create the global JS context in its own group, so it can be released properly
+		jsGlobalContext = JSGlobalContextCreateInGroup(NULL, NULL);
 		jsUndefined = JSValueMakeUndefined(jsGlobalContext);
 		JSValueProtect(jsGlobalContext, jsUndefined);
 		
+		// Attach all native class constructors to 'Ejecta'
 		classLoader = [[EJClassLoader alloc] initWithScriptView:self name:@"Ejecta"];
 		
 		
@@ -96,8 +97,13 @@
 	// Careful, order is important! The JS context has to be released first;
 	// it will release the canvas objects which still need the openGLContext
 	// to be present, to release textures etc.
+	// Set 'jsGlobalContext' to null before releasing it, because it may be
+	// referenced by bound objects dealloc method
+	
 	JSValueUnprotect(jsGlobalContext, jsUndefined);
-	JSGlobalContextRelease(jsGlobalContext);
+	JSGlobalContextRef ctxref = jsGlobalContext;
+	jsGlobalContext = NULL;
+	JSGlobalContextRelease(ctxref);
 	
 	// Remove from notification center
 	self.pauseOnEnterBackground = false;
