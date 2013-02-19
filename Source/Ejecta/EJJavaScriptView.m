@@ -4,8 +4,6 @@
 #import "EJClassLoader.h"
 #import <objc/runtime.h>
 
-#import "AppDelegate.h"
-
 
 @implementation EJNonRetainingProxy
 + (EJNonRetainingProxy *)nonRetainingProxyWithTarget:(id)target {
