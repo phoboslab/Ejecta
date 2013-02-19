@@ -1,11 +1,11 @@
 
 #import "EJBindingKeyInput.h"
-#import "EJApp.h"
+#import "EJJavaScriptView.h"
 
 @implementation EJKeyInputResponder
 
 - (UIResponder*)nextResponder{
-    return [EJApp instance].view;
+    return [self.delegate nextResponderForKeyInput:self];
 }
 
 - (BOOL)canBecomeFirstResponder{
@@ -38,18 +38,14 @@
 
 @implementation EJBindingKeyInput
 
-- (id)initWithContext:(JSContextRef)ctxp argc:(size_t)argc argv:(const JSValueRef [])argv
-{
-    if( self = [super initWithContext:ctxp argc:argc argv:argv] ) {
-        self.inputController = [[EJKeyInputResponder alloc] init];
-        self.inputController.delegate = self;
-    }
-    return self;
+- (void)createWithJSObject:(JSObjectRef)obj scriptView:(EJJavaScriptView *)view {
+	[super createWithJSObject:obj scriptView:view];
+    self.inputController = [[EJKeyInputResponder alloc] init];
+    self.inputController.delegate = self;
 }
 
 - (void)dealloc
 {
-    self.inputController.delegate = nil;
     [self.inputController release];
     [super dealloc];
 }
@@ -71,8 +67,12 @@ EJ_BIND_FUNCTION(isFirstResponder, ctx, argc, argv){
 #pragma mark -
 #pragma mark EJKeyInput delegate
 
+- (UIResponder*)nextResponderForKeyInput:(EJKeyInputResponder *)keyInput{
+    return scriptView;
+}
+
 - (void)keyInput:(EJKeyInputResponder *)keyInput keyPressed:(unichar)keyChar{
-    JSValueRef params[] = { JSValueMakeNumber([EJApp instance].jsGlobalContext, keyChar) };
+    JSValueRef params[] = { JSValueMakeNumber(scriptView.jsGlobalContext, keyChar) };
     [self triggerEvent:@"keyPressed" argc:1 argv:params];
 }
 
