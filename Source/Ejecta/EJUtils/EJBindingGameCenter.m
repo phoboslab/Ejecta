@@ -59,7 +59,7 @@ EJ_BIND_FUNCTION( authenticate, ctx, argc, argv ) {
 			JSContextRef gctx = scriptView.jsGlobalContext;
 			JSValueRef params[] = { JSValueMakeBoolean(gctx, error) };
 			[scriptView invokeCallback:callback thisObject:NULL argc:1 argv:params];
-			JSValueUnprotect(gctx, callback);
+			JSValueUnprotectSafe(gctx, callback);
 		}
 	}];
 	return NULL;
@@ -99,7 +99,7 @@ EJ_BIND_FUNCTION( reportScore, ctx, argc, argv ) {
 				JSContextRef gctx = scriptView.jsGlobalContext;
 				JSValueRef params[] = { JSValueMakeBoolean(gctx, error) };
 				[scriptView invokeCallback:callback thisObject:NULL argc:1 argv:params];
-				JSValueUnprotect(gctx, callback);
+				JSValueUnprotectSafe(gctx, callback);
 			}
 		}];
 	}
@@ -160,7 +160,7 @@ EJ_BIND_FUNCTION( showLeaderboard, ctx, argc, argv ) {
 			JSContextRef gctx = scriptView.jsGlobalContext;
 			JSValueRef params[] = { JSValueMakeBoolean(gctx, error) };
 			[scriptView invokeCallback:callback thisObject:NULL argc:1 argv:params];
-			JSValueUnprotect(gctx, callback);
+			JSValueUnprotectSafe(gctx, callback);
 		}
 	}];
 }

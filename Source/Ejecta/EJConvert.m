@@ -39,3 +39,10 @@ double JSValueToNumberFast( JSContextRef ctx, JSValueRef v ) {
 		? decoded->payload.asDouble
 		: decoded->payload.asBits.asInt;
 }
+
+void JSValueUnprotectSafe( JSContextRef ctx, JSValueRef v ) {
+	if( ctx && v ) {
+		JSValueUnprotect(ctx, v);
+	}
+}
+

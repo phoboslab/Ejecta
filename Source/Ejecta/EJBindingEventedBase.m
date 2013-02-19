@@ -18,7 +18,7 @@
 	for( NSString *name in eventListeners ) {
 		NSArray *listeners = eventListeners[name];
 		for( NSValue *callbackValue in listeners ) {
-			JSValueUnprotect(ctx, [callbackValue pointerValue]);
+			JSValueUnprotectSafe(ctx, [callbackValue pointerValue]);
 		}
 	}
 	[eventListeners release];
@@ -26,7 +26,7 @@
 	// Unprotect all event callbacks
 	for( NSString *name in onCallbacks ) {
 		NSValue *listener = onCallbacks[name];
-		JSValueUnprotect(ctx, [(NSValue *)listener pointerValue]);
+		JSValueUnprotectSafe(ctx, [(NSValue *)listener pointerValue]);
 	}
 	[onCallbacks release];
 	
@@ -42,7 +42,7 @@
 	// remove old event listener?
 	JSObjectRef oldCallback = [self getCallbackWith:name ctx:ctx];
 	if( oldCallback ) {
-		JSValueUnprotect(ctx, oldCallback);
+		JSValueUnprotectSafe(ctx, oldCallback);
 		[onCallbacks removeObjectForKey:name];
 	}
 	

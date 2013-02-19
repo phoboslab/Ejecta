@@ -15,7 +15,7 @@
 
 - (void)dealloc {
 	if( dataArray ) {
-		JSValueUnprotect(scriptView.jsGlobalContext, dataArray);
+		JSValueUnprotectSafe(scriptView.jsGlobalContext, dataArray);
 	}
 	
 	[imageData release];

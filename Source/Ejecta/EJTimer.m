@@ -74,7 +74,7 @@
 
 - (void)dealloc {
 	self.target = nil;
-	JSValueUnprotect(scriptView.jsGlobalContext, callback);
+	JSValueUnprotectSafe(scriptView.jsGlobalContext, callback);
 	[super dealloc];
 }
 

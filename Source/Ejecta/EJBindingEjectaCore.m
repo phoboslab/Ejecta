@@ -9,9 +9,7 @@
 
 - (void)dealloc {
 	[urlToOpen release];
-	if( getTextCallback ) {
-		JSValueUnprotect(scriptView.jsGlobalContext, getTextCallback);
-	}
+	JSValueUnprotectSafe(scriptView.jsGlobalContext, getTextCallback);
 	[super dealloc];
 }
 
@@ -79,9 +77,7 @@ EJ_BIND_FUNCTION(getText, ctx, argc, argv) {
 	NSString *title = JSValueToNSString(ctx, argv[0]);
 	NSString *message = JSValueToNSString(ctx, argv[1]);
 	
-	if( getTextCallback ) {
-		JSValueUnprotect(ctx, getTextCallback);
-	}
+	JSValueUnprotectSafe(ctx, getTextCallback);
 	getTextCallback = JSValueToObject(ctx, argv[2], NULL);
 	JSValueProtect(ctx, getTextCallback);
 	
@@ -111,7 +107,7 @@ EJ_BIND_FUNCTION(getText, ctx, argc, argv) {
 		JSValueRef params[] = { NSStringToJSValue(scriptView.jsGlobalContext, text) };
 		[scriptView invokeCallback:getTextCallback thisObject:NULL argc:1 argv:params];
 		
-		JSValueUnprotect(scriptView.jsGlobalContext, getTextCallback);
+		JSValueUnprotectSafe(scriptView.jsGlobalContext, getTextCallback);
 		getTextCallback = NULL;
 	}
 }
