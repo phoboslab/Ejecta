@@ -22,7 +22,12 @@
 }
 
 - (void)loadView {
-	EJJavaScriptView *view = [[EJJavaScriptView alloc] initWithFrame:UIScreen.mainScreen.bounds];
+	CGRect frame = UIScreen.mainScreen.bounds;
+	if( landscapeMode ) {
+		frame.size = CGSizeMake(frame.size.height, frame.size.width);
+	}
+	
+	EJJavaScriptView *view = [[EJJavaScriptView alloc] initWithFrame:frame];
 	self.view = view;
 	
 	[view loadScriptAtPath:@"index.js"];
@@ -30,7 +35,7 @@
 }
 
 - (NSUInteger)supportedInterfaceOrientations {
-	if(landscapeMode) {
+	if( landscapeMode ) {
 		// Allow Landscape Left and Right
 		return UIInterfaceOrientationMaskLandscape;
 	}
@@ -50,7 +55,7 @@
 	// Deprecated in iOS6 - supportedInterfaceOrientations is the new way to do this
 	// We just use the mask returned by supportedInterfaceOrientations here to check if
 	// this particular orientation is allowed.
-	return (self.supportedInterfaceOrientations & (1 << orientation) );
+	return ( self.supportedInterfaceOrientations & (1 << orientation) );
 }
 
 @end
