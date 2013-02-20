@@ -7,6 +7,9 @@
 @synthesize backingStoreRatio;
 @synthesize scalingMode;
 
+- (BOOL)needsPresenting { return needsPresenting; }
+- (void)setNeedsPresenting:(BOOL)needsPresentingp { needsPresenting = needsPresentingp; }
+
 - (id)initWithScriptView:(EJJavaScriptView *)scriptViewp width:(short)widthp height:(short)heightp {
 	if( self = [super init] ) {
 		scriptView = scriptViewp;
@@ -142,8 +145,11 @@
 }
 
 - (void)present {
+	if( !needsPresenting ) { return; }
+	
 	[glContext presentRenderbuffer:GL_RENDERBUFFER];
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+	needsPresenting = NO;
 }
 
 @end

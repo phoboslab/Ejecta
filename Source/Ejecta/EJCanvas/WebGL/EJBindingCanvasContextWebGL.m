@@ -328,7 +328,14 @@ EJ_BIND_FUNCTION(checkFramebufferStatus, ctx, argc, argv) {
 	return JSValueMakeNumber(ctx, glCheckFramebufferStatus(target));
 }
 
-EJ_BIND_FUNCTION_DIRECT(clear, glClear, mask);
+EJ_BIND_FUNCTION(clear, ctx, argc, argv) {
+	EJ_UNPACK_ARGV(GLenum mask);
+	scriptView.currentRenderingContext = renderingContext;
+	renderingContext.needsPresenting = YES;
+	glClear(mask);
+	return NULL;
+}
+
 EJ_BIND_FUNCTION_DIRECT(clearColor, glClearColor, red, green, blue, alpha);
 EJ_BIND_FUNCTION_DIRECT(clearDepth, glClearDepthf, depth);
 EJ_BIND_FUNCTION_DIRECT(clearStencil, glClearStencil, s);
@@ -484,12 +491,22 @@ EJ_BIND_FUNCTION(detachShader, ctx, argc, argv) {
 
 EJ_BIND_FUNCTION_DIRECT(disable, glDisable, cap);
 EJ_BIND_FUNCTION_DIRECT(disableVertexAttribArray, glDisableVertexAttribArray, index);
-EJ_BIND_FUNCTION_DIRECT(drawArrays, glDrawArrays, mode, first, count);
+
+EJ_BIND_FUNCTION(drawArrays, ctx, argc, argv) {
+	EJ_UNPACK_ARGV(GLenum mode, GLint first, GLsizei count);
+	
+	scriptView.currentRenderingContext = renderingContext;
+	renderingContext.needsPresenting = YES;
+	
+	glDrawArrays(mode, first, count);
+	return NULL;
+}
 
 EJ_BIND_FUNCTION(drawElements, ctx, argc, argv) {
 	EJ_UNPACK_ARGV(GLenum mode, GLsizei count, GLenum type, GLint offset);
 	
 	scriptView.currentRenderingContext = renderingContext;
+	renderingContext.needsPresenting = YES;
 	
 	glDrawElements(mode, count, type, EJ_BUFFER_OFFSET(offset));
 	return NULL;
