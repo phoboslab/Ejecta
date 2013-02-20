@@ -146,8 +146,8 @@ int EJFontGlyphLayoutSortByTextureIndex(const void *a, const void *b) {
 	CTFontGetBoundingRectsForGlyphs(font, kCTFontDefaultOrientation, &glyph, &bbRect, 1);
 	
 	// Add some padding around the glyphs
-	glyphInfo->y = bbRect.origin.y - EJ_FONT_GLYPH_PADDING;
-	glyphInfo->x = bbRect.origin.x - EJ_FONT_GLYPH_PADDING;
+	glyphInfo->y = floorf(bbRect.origin.y) - EJ_FONT_GLYPH_PADDING;
+	glyphInfo->x = floorf(bbRect.origin.x) - EJ_FONT_GLYPH_PADDING;
 	glyphInfo->w = bbRect.size.width + EJ_FONT_GLYPH_PADDING * 2;
 	glyphInfo->h = bbRect.size.height + EJ_FONT_GLYPH_PADDING * 2;
 	
