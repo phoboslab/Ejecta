@@ -26,8 +26,8 @@ typedef enum {
 }
 - (id)initEmptyForWebGL;
 - (id)initWithPath:(NSString *)path;
-+ (id)cachedTextureWithPath:(NSString *)path loadOnQueue:(NSOperationQueue *)queue callback:(void (^)(void))callback;
-- (id)initWithPath:(NSString *)path loadOnQueue:(NSOperationQueue *)queue callback:(void (^)(void))callback;
++ (id)cachedTextureWithPath:(NSString *)path loadOnQueue:(NSOperationQueue *)queue callback:(NSOperation *)callback;
+- (id)initWithPath:(NSString *)path loadOnQueue:(NSOperationQueue *)queue callback:(NSOperation *)callback;
 
 - (id)initWithWidth:(int)widthp height:(int)heightp;
 - (id)initWithWidth:(int)widthp height:(int)heightp format:(GLenum) format;

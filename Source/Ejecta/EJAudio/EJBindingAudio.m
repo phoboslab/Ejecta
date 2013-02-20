@@ -1,5 +1,6 @@
 #import "EJBindingAudio.h"
 #import "EJJavaScriptView.h"
+#import "EJNonRetainingProxy.h"
 
 @implementation EJBindingAudio
 
@@ -21,6 +22,9 @@
 }
 
 - (void)dealloc {
+	[loadCallback cancel];
+	[loadCallback release];
+
 	[source release];
 	[path release];
 	[super dealloc];
@@ -49,37 +53,45 @@
 	// may be the only thing holding on to it
 	JSValueProtect(scriptView.jsGlobalContext, jsObject);
 	
-	NSString *fullPath = [scriptView pathForResource:path];
-	NSInvocationOperation *loadOp = [[NSInvocationOperation alloc] initWithTarget:self
-				selector:@selector(loadOperation:) object:fullPath];
-	loadOp.threadPriority = 0.2;
-	[scriptView.opQueue addOperation:loadOp];
+	
+	EJNonRetainingProxy *proxy = [EJNonRetainingProxy proxyWithTarget:self];
+	
+	loadCallback = [[NSInvocationOperation alloc]
+		initWithTarget:proxy selector:@selector(endLoad) object:nil];
+	
+	NSOperation *loadOp = [[NSInvocationOperation alloc]
+		initWithTarget:proxy selector:@selector(backgroundLoad) object:nil];
+		
+	[scriptView.backgroundQueue addOperation:loadOp];
 	[loadOp release];
 }
 
-- (void)loadOperation:(NSString *)fullPath {
-	@autoreleasepool {	
-		// Decide whether to load the sound as OpenAL or AVAudioPlayer source
-		unsigned long long size = [[[NSFileManager defaultManager] attributesOfItemAtPath:fullPath error:nil] fileSize];
-		
-		NSObject<EJAudioSource> *src;
-		if( size <= EJ_AUDIO_OPENAL_MAX_SIZE ) {
-			NSLog(@"Loading Sound(OpenAL): %@", path);
-			src = [[EJAudioSourceOpenAL alloc] initWithPath:fullPath];
-		}
-		else {
-			NSLog(@"Loading Sound(AVAudio): %@", path);
-			src = [[EJAudioSourceAVAudio alloc] initWithPath:fullPath];
-		}
-		src.delegate = self;
-		[src autorelease];
-		
-		[self performSelectorOnMainThread:@selector(endLoad:) withObject:src waitUntilDone:NO];
-	}
+- (void)prepareGarbageCollection {
+	[loadCallback cancel];
 }
 
-- (void)endLoad:(NSObject<EJAudioSource> *)src {
-	source = [src retain];
+- (void)backgroundLoad {
+	// Decide whether to load the sound as OpenAL or AVAudioPlayer source
+	NSString *fullPath = [scriptView pathForResource:path];
+	unsigned long long size = [[[NSFileManager defaultManager] attributesOfItemAtPath:fullPath error:nil] fileSize];
+	
+	if( size <= EJ_AUDIO_OPENAL_MAX_SIZE ) {
+		NSLog(@"Loading Sound(OpenAL): %@", path);
+		source = [[EJAudioSourceOpenAL alloc] initWithPath:fullPath];
+	}
+	else {
+		NSLog(@"Loading Sound(AVAudio): %@", path);
+		source = [[EJAudioSourceAVAudio alloc] initWithPath:fullPath];
+	}
+
+	[NSOperationQueue.mainQueue addOperation:loadCallback];
+}
+
+- (void)endLoad {
+	[loadCallback release];
+	loadCallback = nil;
+		
+	source.delegate = self;
 	[source setLooping:loop];
 	[source setVolume:volume];
 	

@@ -7,25 +7,30 @@
 	[super createWithJSObject:obj scriptView:view];
 	interval = 1.0f/60.0f;
 	motionManager = [[CMMotionManager alloc] init];
-	NSOperationQueue *queue = scriptView.opQueue;
 	
 	// Has Gyro? (iPhone4 and newer)
 	if( motionManager.isDeviceMotionAvailable ) {
 		motionManager.deviceMotionUpdateInterval = interval;
-		[motionManager startDeviceMotionUpdatesToQueue:queue withHandler:
-			^(CMDeviceMotion *motion, NSError *error) {
-				[self triggerEventWithMotion:motion];
-			}];
+		[motionManager startDeviceMotionUpdates];
 	}
 	
 	// Only basic accelerometer data
 	else {
 		motionManager.accelerometerUpdateInterval = interval;
-		[motionManager startAccelerometerUpdatesToQueue:queue withHandler:
-			^(CMAccelerometerData *accelerometerData, NSError *error) {
-				[self triggerEventWithAccelerometerData:accelerometerData];
-			}];
+		[motionManager startAccelerometerUpdates];
 	}
+	
+	scriptView.deviceMotionDelegate	= self;
+}
+
+- (void)prepareGarbageCollection {
+	[motionManager stopDeviceMotionUpdates];
+	[motionManager stopAccelerometerUpdates];
+}
+
+- (void)dealloc {
+	[motionManager release];
+	[super dealloc];
 }
 
 
@@ -67,6 +72,15 @@ static const float radToDeg = (180/M_PI);
 	params[2] = JSValueMakeNumber(ctx, accel.acceleration.z * g);
 	
 	[self triggerEvent:@"acceleration" argc:3 argv:params];
+}
+
+- (void)triggerDeviceMotionEvents {
+	if( motionManager.isDeviceMotionAvailable ) {
+		[self triggerEventWithMotion:motionManager.deviceMotion];
+	}
+	else {
+		[self triggerEventWithAccelerometerData:motionManager.accelerometerData];
+	}
 }
 
 EJ_BIND_GET(interval, ctx) {

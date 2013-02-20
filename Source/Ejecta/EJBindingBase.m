@@ -17,6 +17,11 @@
 	scriptView = view;
 }
 
+- (void)prepareGarbageCollection {
+	// Called in EJBindingBaseFinalize before sending 'release'.
+	// Cancel loading callbacks and the like here.
+}
+
 + (JSObjectRef)createJSObjectWithContext:(JSContextRef)ctx
 	scriptView:(EJJavaScriptView *)scriptViewp
 	instance:(EJBindingBase *)instance
@@ -32,7 +37,8 @@
 }
 
 void EJBindingBaseFinalize(JSObjectRef object) {
-	id instance = (id)JSObjectGetPrivate(object);
+	EJBindingBase *instance = (EJBindingBase *)JSObjectGetPrivate(object);
+	[instance prepareGarbageCollection];
 	[instance release];
 }
 

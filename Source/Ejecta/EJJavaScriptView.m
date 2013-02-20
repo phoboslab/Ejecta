@@ -5,24 +5,6 @@
 #import <objc/runtime.h>
 
 
-@implementation EJNonRetainingProxy
-+ (EJNonRetainingProxy *)nonRetainingProxyWithTarget:(id)target {
-    EJNonRetainingProxy *proxy = [[[self alloc] init] autorelease];
-    proxy->target = target;
-    return proxy;
-}
-
-- (BOOL)respondsToSelector:(SEL)sel {
-    return [target respondsToSelector:sel] || [super respondsToSelector:sel];
-}
-
-- (id)forwardingTargetForSelector:(SEL)sel {
-    return target;
-}
-
-@end
-
-
 #pragma mark -
 #pragma mark Ejecta view Implementation
 
@@ -39,9 +21,10 @@
 
 @synthesize lifecycleDelegate;
 @synthesize touchDelegate;
+@synthesize deviceMotionDelegate;
 @synthesize screenRenderingContext;
 
-@synthesize opQueue;
+@synthesize backgroundQueue;
 
 - (id)initWithFrame:(CGRect)frame {
 	if( self = [super initWithFrame:frame] ) {		
@@ -53,13 +36,13 @@
 		// from the outside.
 		// So we're using a "weak proxy" that doesn't retain the scriptView; we can
 		// then just invalidate the CADisplayLink in our dealloc and be done with it.
-		proxy = [[EJNonRetainingProxy nonRetainingProxyWithTarget:self] retain];
+		proxy = [[EJNonRetainingProxy proxyWithTarget:self] retain];
 		
 		self.pauseOnEnterBackground = YES;
 		
 		// Limit all background operations (image & sound loading) to one thread
-		opQueue = [[NSOperationQueue alloc] init];
-		opQueue.maxConcurrentOperationCount = 1;
+		backgroundQueue = [[NSOperationQueue alloc] init];
+		backgroundQueue.maxConcurrentOperationCount = 1;
 		
 		timers = [[EJTimerCollection alloc] initWithScriptView:self];
 		
@@ -92,12 +75,17 @@
 }
 
 - (void)dealloc {
+	// Wait until all background operations are finished. If we would just release the
+	// backgroundQueue it would cancel running operations (such as texture loading) and
+	// could keep some dependencies dangeling
+	[backgroundQueue waitUntilAllOperationsAreFinished];
+	[backgroundQueue release];
+	
 	// Careful, order is important! The JS context has to be released first;
 	// it will release the canvas objects which still need the openGLContext
 	// to be present, to release textures etc.
 	// Set 'jsGlobalContext' to null before releasing it, because it may be
 	// referenced by bound objects dealloc method
-	
 	JSValueUnprotect(jsGlobalContext, jsUndefined);
 	JSGlobalContextRef ctxref = jsGlobalContext;
 	jsGlobalContext = NULL;
@@ -114,14 +102,13 @@
 	[openALManager release];
 	[classLoader release];
 	
-	[currentRenderingContext release];
+	[screenRenderingContext finish];
 	[screenRenderingContext release];
+	[currentRenderingContext release];
 	
 	[touchDelegate release];
 	[lifecycleDelegate release];
-	
-	[opQueue cancelAllOperations];
-	[opQueue release];
+	[deviceMotionDelegate release];
 	
 	[timers release];
 	
@@ -226,6 +213,8 @@
 }
 
 - (JSValueRef)invokeCallback:(JSObjectRef)callback thisObject:(JSObjectRef)thisObject argc:(size_t)argc argv:(const JSValueRef [])argv {
+	if( !jsGlobalContext ) { return NULL; } // May already have been released
+	
 	JSValueRef exception = NULL;
 	JSValueRef result = JSObjectCallAsFunction(jsGlobalContext, callback, thisObject, argc, argv, &exception );
 	[self logException:exception ctx:jsGlobalContext];
@@ -259,6 +248,10 @@
 
 - (void)run:(CADisplayLink *)sender {
 	if(isPaused) { return; }
+	
+	// We rather poll for device motion updates at the beginning of each frame
+	// instead of spamming out updates that will never be seen.
+	[deviceMotionDelegate triggerDeviceMotionEvents];
 	
 	// Check all timers
 	[timers update];
