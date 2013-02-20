@@ -11,6 +11,11 @@
 	return self;
 }
 
+- (void)prepareGarbageCollection {
+	[self clearRequest];
+	[self clearConnection];
+}
+
 - (void) dealloc {
 	[requestHeaders release];
 	[self clearRequest];

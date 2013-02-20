@@ -178,6 +178,8 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 	else {
 		glDepthFunc(GL_ALWAYS);
 	}
+	
+	needsPresenting = YES;
 }
 
 - (void)setTexture:(EJTexture *)newTexture {
@@ -457,6 +459,7 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 	if( vertexBufferIndex == 0 ) { return; }
 	
 	glDrawArrays(GL_TRIANGLES, 0, vertexBufferIndex);
+	needsPresenting = YES;
 	vertexBufferIndex = 0;
 }
 

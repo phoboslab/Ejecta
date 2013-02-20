@@ -11,7 +11,7 @@
     
 	// Optionally set the idle timer disabled, this prevents the device from sleep when
 	// not being interacted with by touch. ie. games with motion control.
-	[application setIdleTimerDisabled:YES];
+	application.idleTimerDisabled = YES;
 	
 	EJAppViewController *vc = [[EJAppViewController alloc] init];
     window.rootViewController = vc;

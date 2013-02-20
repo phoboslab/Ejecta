@@ -104,6 +104,8 @@
 - (void)present {
 	[self flushBuffers];
 	
+	if( !needsPresenting ) { return; }
+	
 	if( msaaEnabled ) {
 		//Bind the MSAA and View frameBuffers and resolve
 		glBindFramebuffer(GL_READ_FRAMEBUFFER_APPLE, msaaFrameBuffer);
@@ -116,7 +118,8 @@
 	}
 	else {
 		[glContext presentRenderbuffer:GL_RENDERBUFFER];
-	}	
+	}
+	needsPresenting = NO;
 }
 
 @end

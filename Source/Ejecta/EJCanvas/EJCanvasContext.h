@@ -5,6 +5,7 @@
 	short width, height;
 	
 	BOOL msaaEnabled;
+	BOOL needsPresenting;
 	int msaaSamples;
 	EAGLContext *glContext;
 }

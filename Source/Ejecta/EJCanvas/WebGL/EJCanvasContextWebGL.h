@@ -24,6 +24,7 @@
 - (void)create;
 - (void)prepare;
 
+@property (nonatomic) BOOL needsPresenting;
 @property (nonatomic) BOOL useRetinaResolution;
 @property (nonatomic) EJScalingMode scalingMode;
 @property (nonatomic,readonly) float backingStoreRatio;

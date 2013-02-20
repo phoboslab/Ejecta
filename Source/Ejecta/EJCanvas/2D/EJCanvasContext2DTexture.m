@@ -69,6 +69,7 @@
 	width = newWidth;
 	[self recreate];
 	bufferWidth = texture.width;
+	needsPresenting = YES;
 }
 
 - (void)setHeight:(short)newHeight {
@@ -78,21 +79,14 @@
 	height = newHeight;
 	[self recreate];
 	bufferHeight = texture.height;
-}
-
-- (void)prepare {
-	[super prepare];
-	
-	// When this Canvas context is made active and it's using MSAA, set
-	// a flag so that we know it's contents may have been modified.
-	msaaNeedsResolving = msaaEnabled;
+	needsPresenting = YES;
 }
 
 - (EJTexture *)texture {
 
 	// If this texture Canvas uses MSAA, we need to resolve the MSAA first,
 	// before we can use the texture for drawing.
-	if( msaaNeedsResolving ) {
+	if( msaaEnabled && needsPresenting ) {
 		GLint boundFrameBuffer;
 		glGetIntegerv( GL_FRAMEBUFFER_BINDING, &boundFrameBuffer );
 		
@@ -102,8 +96,7 @@
 		glResolveMultisampleFramebufferAPPLE();
 		
 		glBindFramebuffer(GL_FRAMEBUFFER, boundFrameBuffer);
-		
-		msaaNeedsResolving = NO;
+		needsPresenting = NO;
 	}
 	
 	return texture;

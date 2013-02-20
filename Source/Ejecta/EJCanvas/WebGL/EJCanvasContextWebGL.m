@@ -7,6 +7,9 @@
 @synthesize backingStoreRatio;
 @synthesize scalingMode;
 
+- (BOOL)needsPresenting { return needsPresenting; }
+- (void)setNeedsPresenting:(BOOL)needsPresentingp { needsPresenting = needsPresentingp; }
+
 - (id)initWithScriptView:(EJJavaScriptView *)scriptViewp width:(short)widthp height:(short)heightp {
 	if( self = [super init] ) {
 		scriptView = scriptViewp;
@@ -78,6 +81,7 @@
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRenderBuffer);
 	
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glViewport(0, 0, width * backingStoreRatio, height * backingStoreRatio);
 	
 	// Append the OpenGL view to Impact's main view
 	[scriptView addSubview:glview];
@@ -141,8 +145,11 @@
 }
 
 - (void)present {
+	if( !needsPresenting ) { return; }
+	
 	[glContext presentRenderbuffer:GL_RENDERBUFFER];
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+	needsPresenting = NO;
 }
 
 @end

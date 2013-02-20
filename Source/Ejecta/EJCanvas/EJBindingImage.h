@@ -6,6 +6,7 @@
 	EJTexture *texture;
 	NSString *path;
 	BOOL loading;
+	NSOperation *loadCallback;
 }
 
 @property (readonly, nonatomic) EJTexture *texture;

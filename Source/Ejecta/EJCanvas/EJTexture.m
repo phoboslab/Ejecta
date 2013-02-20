@@ -43,7 +43,7 @@
 	return self;
 }
 
-+ (id)cachedTextureWithPath:(NSString *)path loadOnQueue:(NSOperationQueue *)queue callback:(void (^)(void))callback {
++ (id)cachedTextureWithPath:(NSString *)path loadOnQueue:(NSOperationQueue *)queue callback:(NSOperation *)callback {
 	// For loading on a background thread (non-blocking), but tries the cache first
 	
 	EJTexture *texture = [EJSharedTextureCache instance].textures[path];
@@ -52,11 +52,10 @@
 		// the texture's loadCallback is still present, add it as an dependency
 		// for the current callback.
 		
-		NSBlockOperation *callbackOp = [NSBlockOperation blockOperationWithBlock:callback];
 		if( texture->loadCallback ) {
-			[callbackOp addDependency:texture->loadCallback];
+			[callback addDependency:texture->loadCallback];
 		}
-		[[NSOperationQueue mainQueue] addOperation:callbackOp];
+		[NSOperationQueue.mainQueue addOperation:callback];
 	}
 	else {
 		// Create a new texture and add it to the cache
@@ -69,7 +68,7 @@
 	return texture;
 }
 
-- (id)initWithPath:(NSString *)path loadOnQueue:(NSOperationQueue *)queue callback:(void (^)(void))callback {
+- (id)initWithPath:(NSString *)path loadOnQueue:(NSOperationQueue *)queue callback:(NSOperation *)callback {
 	// For loading on a background thread (non-blocking)
 	if( self = [super init] ) {
 		contentScale = 1;
@@ -77,20 +76,20 @@
 		owningContext = kEJTextureOwningContextCanvas2D;
 		
 		// Load the image file in a background thread
-		loadCallback = [[NSBlockOperation blockOperationWithBlock:callback] retain];
 		[queue addOperationWithBlock:^{
 			NSMutableData *pixels = [self loadPixelsFromPath:path];
 			
 			// Upload the pixel data in the main thread, otherwise the GLContext gets confused.	
 			// We could use a sharegroup here, but it turned out quite buggy and has little
 			// benefits - the main bottleneck is loading the image file.
-			[[NSOperationQueue mainQueue] addOperation:[NSBlockOperation blockOperationWithBlock:^{
+			loadCallback = [NSBlockOperation blockOperationWithBlock:^{
 				[self createWithPixels:pixels format:GL_RGBA];
-				[loadCallback start];
-				[loadCallback release];
-				loadCallback = NULL;
-			}]];
+				loadCallback = nil;
+			}];
+			[callback addDependency:loadCallback];
 			
+			[NSOperationQueue.mainQueue addOperation:loadCallback];
+			[NSOperationQueue.mainQueue addOperation:callback];
 		}];
 	}
 	return self;
@@ -141,6 +140,7 @@
 	if( cached ) {
 		[[EJSharedTextureCache instance].textures removeObjectForKey:fullPath];
 	}
+	
 	[fullPath release];
 	[textureStorage release];
 	[super dealloc];

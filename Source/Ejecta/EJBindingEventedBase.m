@@ -90,7 +90,7 @@ EJ_BIND_FUNCTION(removeEventListener, ctx, argc, argv) {
 	return NULL;
 }
 
-- (void)triggerEvent:(NSString *)name argc:(int)argc argv:(JSValueRef[])argv {	
+- (void)triggerEvent:(NSString *)name argc:(int)argc argv:(JSValueRef[])argv {
 	NSArray *listeners = eventListeners[name];
 	if( listeners ) {
 		for( NSValue *callbackValue in listeners ) {

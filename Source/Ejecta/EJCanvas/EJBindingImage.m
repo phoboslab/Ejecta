@@ -1,5 +1,6 @@
 #import "EJBindingImage.h"
 #import "EJJavaScriptView.h"
+#import "EJNonRetainingProxy.h"
 
 @implementation EJBindingImage
 @synthesize texture;
@@ -16,17 +17,38 @@
 	NSLog(@"Loading Image: %@", path);
 	NSString *fullPath = [scriptView pathForResource:path];
 	
-	texture = [[EJTexture cachedTextureWithPath:fullPath loadOnQueue:scriptView.opQueue callback:^{
-		loading = NO;
-		[self triggerEvent:(texture.textureId ? @"load" : @"error") argc:0 argv:NULL];		
-		JSValueUnprotectSafe(scriptView.jsGlobalContext, jsObject);
-	}] retain];
+	// Use a non-retaining proxy for the callback operation and take care that the
+	// loadCallback is always cancelled when dealloc'ing
+	loadCallback = [[NSInvocationOperation alloc]
+		initWithTarget:[EJNonRetainingProxy proxyWithTarget:self]
+		selector:@selector(endLoad) object:nil];
+	
+	texture = [[EJTexture cachedTextureWithPath:fullPath
+		loadOnQueue:scriptView.backgroundQueue callback:loadCallback] retain];
+}
+
+- (void)prepareGarbageCollection {
+	[loadCallback cancel];
+	[loadCallback release];
+	loadCallback = nil;
 }
 
 - (void)dealloc {
+	[loadCallback cancel];
+	[loadCallback release];
+	
 	[texture release];
 	[path release];
 	[super dealloc];
+}
+
+- (void)endLoad {
+	loading = NO;
+	[loadCallback release];
+	loadCallback = nil;
+	
+	[self triggerEvent:(texture.textureId ? @"load" : @"error") argc:0 argv:NULL];		
+	JSValueUnprotect(scriptView.jsGlobalContext, jsObject);
 }
 
 EJ_BIND_GET(src, ctx ) { 
