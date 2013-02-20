@@ -19,10 +19,8 @@
 }
 
 - (void)insertText:(NSString *)text{
-    for (int i = 0; i < [text length]; i++){
-        if (self.delegate && [self.delegate respondsToSelector:@selector(keyInput:keyPressed:)]) {
-            [self.delegate keyInput:self keyPressed:[text characterAtIndex:i]];
-        }
+    if ([self.delegate respondsToSelector:@selector(keyInput:insertText:)]) {
+        [self.delegate keyInput:self insertText:text];
     }
 }
 
@@ -34,14 +32,18 @@
 
 @interface EJBindingKeyInput ()
 @property (nonatomic, strong) EJKeyInputResponder *inputController;
+@property (nonatomic, assign) BOOL sendChunkedInput;
 @end
 
 @implementation EJBindingKeyInput
+
+static NSString *keyInputEvent = @"keyInput";
 
 - (void)createWithJSObject:(JSObjectRef)obj scriptView:(EJJavaScriptView *)view {
 	[super createWithJSObject:obj scriptView:view];
     self.inputController = [[EJKeyInputResponder alloc] init];
     self.inputController.delegate = self;
+    self.sendChunkedInput = YES;
 }
 
 - (void)dealloc
@@ -52,17 +54,29 @@
 
 //TODO: maybe accept a context in which it becomes the first responder,
 //in which case when key input occurs, we pass back the context/object so that JS can identify
-EJ_BIND_FUNCTION(becomeFirstResponder, ctx, argc, argv){    
+EJ_BIND_FUNCTION(open, ctx, argc, argv){
     return JSValueMakeBoolean(ctx, [self.inputController becomeFirstResponder]);
 }
 
-EJ_BIND_FUNCTION(resignFirstResponder, ctx, argc, argv){
+EJ_BIND_FUNCTION(close, ctx, argc, argv){
     return JSValueMakeBoolean(ctx, [self.inputController resignFirstResponder]);
 }
 
-EJ_BIND_FUNCTION(isFirstResponder, ctx, argc, argv){
+EJ_BIND_FUNCTION(isOpen, ctx, argc, argv){
     return JSValueMakeBoolean(ctx, [self.inputController isFirstResponder]);
 }
+
+//If set to YES
+EJ_BIND_SET(sendChunkedInput, ctx, value){
+    self.sendChunkedInput = JSValueToBoolean(ctx, value);
+}
+
+EJ_BIND_GET(sendChunkedInput, ctx){
+    return JSValueMakeBoolean(ctx, self.sendChunkedInput);
+}
+
+//When keyboard opens or closes, send message 'keyboardToggled'
+//true if open false is closed
 
 #pragma mark -
 #pragma mark EJKeyInput delegate
@@ -71,13 +85,21 @@ EJ_BIND_FUNCTION(isFirstResponder, ctx, argc, argv){
     return scriptView;
 }
 
-- (void)keyInput:(EJKeyInputResponder *)keyInput keyPressed:(unichar)keyChar{
-    JSValueRef params[] = { JSValueMakeNumber(scriptView.jsGlobalContext, keyChar) };
-    [self triggerEvent:@"keyPressed" argc:1 argv:params];
+- (void)keyInput:(EJKeyInputResponder *)keyInput insertText:(NSString *)text
+{
+    if (self.sendChunkedInput) {
+        JSValueRef params[] = { NSStringToJSValue(scriptView.jsGlobalContext, text) };
+        [self triggerEvent:keyInputEvent argc:1 argv:params];
+    } else {
+        for (int i = 0; i < [text length]; i++){
+            JSValueRef params[] = { NSStringToJSValue(scriptView.jsGlobalContext, [NSString stringWithCharacters:[text characterAtIndex:i] length:1]) };
+            [self triggerEvent:keyInputEvent argc:1 argv:params];
+        }
+    }
 }
 
 - (void)keyInputDidDeleteBackwards:(EJKeyInputResponder *)keyInput{
-    [self triggerEvent:@"deleteBackward" argc:0 argv:NULL];
+    [self triggerEvent:@"delete" argc:0 argv:NULL];
 }
 
 @end

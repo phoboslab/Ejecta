@@ -7,7 +7,7 @@
 @protocol EJKeyInputDelegate <NSObject>
 - (UIResponder*)nextResponderForKeyInput:(EJKeyInputResponder*)keyInput;
 @optional
-- (void)keyInput:(EJKeyInputResponder*)keyInput keyPressed:(unichar)keyChar;
+- (void)keyInput:(EJKeyInputResponder*)keyInput insertText:(NSString*)text;
 - (void)keyInputDidDeleteBackwards:(EJKeyInputResponder*)keyInput;
 @end
 
