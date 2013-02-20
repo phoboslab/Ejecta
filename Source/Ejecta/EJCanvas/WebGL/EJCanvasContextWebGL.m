@@ -78,6 +78,7 @@
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRenderBuffer);
 	
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glViewport(0, 0, width * backingStoreRatio, height * backingStoreRatio);
 	
 	// Append the OpenGL view to Impact's main view
 	[scriptView addSubview:glview];
