@@ -8,8 +8,25 @@
     return [self.delegate nextResponderForKeyInput:self];
 }
 
+- (BOOL)becomeFirstResponder{
+    BOOL current = [self isFirstResponder];
+    BOOL become = [super becomeFirstResponder];
+    if (become && !current && [self.delegate respondsToSelector:@selector(keyInputDidBecomeFirstResponder:)]) {
+        [self.delegate keyInputDidBecomeFirstResponder:self];
+    }
+    return become;
+}
+
 - (BOOL)canBecomeFirstResponder{
     return YES;
+}
+
+- (BOOL)resignFirstResponder{
+    BOOL resign = [super resignFirstResponder];
+    if (resign && [self.delegate respondsToSelector:@selector(keyInputDidResignFirstResponderStatus:)]) {
+        [self.delegate keyInputDidResignFirstResponderStatus:self];
+    }
+    return [super resignFirstResponder];
 }
 
 - (void)deleteBackward{
@@ -41,19 +58,18 @@ static NSString *keyInputEvent = @"keyInput";
 
 - (void)createWithJSObject:(JSObjectRef)obj scriptView:(EJJavaScriptView *)view {
 	[super createWithJSObject:obj scriptView:view];
-    self.inputController = [[EJKeyInputResponder alloc] init];
+    self.inputController = [[[EJKeyInputResponder alloc] init] autorelease];
     self.inputController.delegate = self;
     self.sendChunkedInput = YES;
 }
 
 - (void)dealloc
 {
-    [self.inputController release];
+    self.inputController.delegate = nil;
+    self.inputController = nil;
     [super dealloc];
 }
 
-//TODO: maybe accept a context in which it becomes the first responder,
-//in which case when key input occurs, we pass back the context/object so that JS can identify
 EJ_BIND_FUNCTION(open, ctx, argc, argv){
     return JSValueMakeBoolean(ctx, [self.inputController becomeFirstResponder]);
 }
@@ -66,7 +82,8 @@ EJ_BIND_FUNCTION(isOpen, ctx, argc, argv){
     return JSValueMakeBoolean(ctx, [self.inputController isFirstResponder]);
 }
 
-//If set to YES
+//If set to NO, sends one-char strings as opposed to full length strings (occurs when pasting text for example)
+//default == YES
 EJ_BIND_SET(sendChunkedInput, ctx, value){
     self.sendChunkedInput = JSValueToBoolean(ctx, value);
 }
@@ -74,9 +91,6 @@ EJ_BIND_SET(sendChunkedInput, ctx, value){
 EJ_BIND_GET(sendChunkedInput, ctx){
     return JSValueMakeBoolean(ctx, self.sendChunkedInput);
 }
-
-//When keyboard opens or closes, send message 'keyboardToggled'
-//true if open false is closed
 
 #pragma mark -
 #pragma mark EJKeyInput delegate
@@ -100,6 +114,16 @@ EJ_BIND_GET(sendChunkedInput, ctx){
 
 - (void)keyInputDidDeleteBackwards:(EJKeyInputResponder *)keyInput{
     [self triggerEvent:@"delete" argc:0 argv:NULL];
+}
+
+- (void)keyInputDidResignFirstResponderStatus:(EJKeyInputResponder *)keyInput{
+    JSValueRef params[] = {JSValueMakeBoolean(scriptView.jsGlobalContext, self.inputController.isFirstResponder)};
+    [self triggerEvent:@"keyboardToggled" argc:1 argv:params];
+}
+
+- (void)keyInputDidBecomeFirstResponder:(EJKeyInputResponder *)keyInput{
+    JSValueRef params[] = {JSValueMakeBoolean(scriptView.jsGlobalContext, self.inputController.isFirstResponder)};
+    [self triggerEvent:@"keyboardToggled" argc:1 argv:params];
 }
 
 @end
