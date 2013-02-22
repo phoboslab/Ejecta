@@ -49,9 +49,6 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 		bufferWidth = width = widthp;
 		bufferHeight = height = heightp;
 		
-		vertexScale = EJVector2Make(2.0f/width, 2.0f/height);
-		vertexTranslate = EJVector2Make(-1.0f, -1.0f);
-		
 		path = [[EJPath alloc] init];
 		backingStoreRatio = 1;
 		
@@ -198,8 +195,7 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 	currentProgram = newProgram;
 	
 	glUseProgram(currentProgram.program);
-	glUniform2f(currentProgram.scale, vertexScale.x, vertexScale.y);
-	glUniform2f(currentProgram.translate, vertexTranslate.x, vertexTranslate.y);
+	glUniform2f(currentProgram.screen, width, height * (upsideDown ? -1 : 1));
 }
 
 - (void)pushTriX1:(float)x1 y1:(float)y1 x2:(float)x2 y2:(float)y2
@@ -672,11 +668,11 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 }
 
 - (EJImageData*)getImageDataSx:(short)sx sy:(short)sy sw:(short)sw sh:(short)sh {
-	return [self getImageDataScaled:backingStoreRatio flipped:NO sx:sx sy:sy sw:sw sh:sh];
+	return [self getImageDataScaled:backingStoreRatio flipped:upsideDown sx:sx sy:sy sw:sw sh:sh];
 }
 
 - (EJImageData*)getImageDataHDSx:(short)sx sy:(short)sy sw:(short)sw sh:(short)sh {
-	return [self getImageDataScaled:1 flipped:NO sx:sx sy:sy sw:sw sh:sh];
+	return [self getImageDataScaled:1 flipped:upsideDown sx:sx sy:sy sw:sw sh:sh];
 }
 
 - (void)putImageData:(EJImageData*)imageData scaled:(float)scale dx:(float)dx dy:(float)dy {

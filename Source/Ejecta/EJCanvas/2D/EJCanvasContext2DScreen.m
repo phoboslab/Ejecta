@@ -56,8 +56,7 @@
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, viewRenderBuffer);
 	
 	// Flip the screen - OpenGL has the origin in the bottom left corner. We want the top left.
-	vertexScale = EJVector2Make(2.0f/width, 2.0f/-height);
-	vertexTranslate = EJVector2Make(-1.0f, 1.0f);
+	upsideDown = true;
 	
 	[self prepare];
 	
@@ -85,16 +84,6 @@
 	if( newHeight != height ) {
 		NSLog(@"Warning: Can't change size of the screen rendering context");
 	}
-}
-
-- (EJImageData*)getImageDataSx:(short)sx sy:(short)sy sw:(short)sw sh:(short)sh {
-	// Take care of the flipped screen layout
-	return [self getImageDataScaled:backingStoreRatio flipped:YES sx:sx sy:sy sw:sw sh:sh];
-}
-
-- (EJImageData*)getImageDataHDSx:(short)sx sy:(short)sy sw:(short)sw sh:(short)sh {
-	// Take care of the flipped screen layout
-	return [self getImageDataScaled:1 flipped:YES sx:sx sy:sy sw:sw sh:sh];
 }
 
 - (void)finish {

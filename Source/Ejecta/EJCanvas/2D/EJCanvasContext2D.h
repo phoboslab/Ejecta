@@ -82,7 +82,6 @@ typedef struct {
 	GLuint stencilBuffer;
 	
 	short bufferWidth, bufferHeight;
-	EJVector2 vertexScale, vertexTranslate;
 	
 	GLenum textureFilter;
 	EJTexture *currentTexture;
@@ -96,6 +95,7 @@ typedef struct {
 	EJCanvasState stateStack[EJ_CANVAS_STATE_STACK_SIZE];
 	EJCanvasState *state;
 	
+	BOOL upsideDown;
 	BOOL useRetinaResolution;
 	float backingStoreRatio;
 	
