@@ -47,7 +47,6 @@
 	
 	// Create the OpenGL UIView with final screen size and content scaling (retina)
 	glview = [[EAGLView alloc] initWithFrame:frame contentScale:contentScale retainedBacking:YES];
-    glview.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
 
 	// This creates the frame- and renderbuffers
 	[super create];
