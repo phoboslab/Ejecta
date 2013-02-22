@@ -48,6 +48,9 @@ typedef enum {
 	kEJCompositeOperationXOR
 } EJCompositeOperation;
 
+typedef struct { GLenum source; GLenum destination; float alphaFactor; } EJCompositeOperationFunc;
+extern const EJCompositeOperationFunc EJCompositeOperationFuncs[];
+
 @class EJCanvasPattern;
 @class EJCanvasGradient;
 
@@ -74,6 +77,31 @@ typedef struct {
 	
 	EJPath *clipPath;	
 } EJCanvasState;
+
+static inline EJColorRGBA EJCanvasBlendColor( EJCanvasState *state, EJColorRGBA color ) {
+	float alpha = state->globalAlpha * (float)color.rgba.a/255.0f;
+	return (EJColorRGBA){ .rgba = {
+		.r = (float)color.rgba.r * alpha,
+		.g = (float)color.rgba.g * alpha,
+		.b = (float)color.rgba.b * alpha,
+		.a = EJCompositeOperationFuncs[state->globalCompositeOperation].alphaFactor *
+			 (float)color.rgba.a * state->globalAlpha
+	}};
+}
+
+static inline EJColorRGBA EJCanvasBlendWhiteColor( EJCanvasState *state ) {
+	return EJCanvasBlendColor(state, (EJColorRGBA){.hex = 0xffffffff});
+}
+
+static inline EJColorRGBA EJCanvasBlendFillColor( EJCanvasState *state ) {
+	return EJCanvasBlendColor(state, state->fillColor);
+}
+
+static inline EJColorRGBA EJCanvasBlendStrokeColor( EJCanvasState *state ) {
+	return EJCanvasBlendColor(state, state->strokeColor);
+}
+
+
 
 @class EJJavaScriptView;
 @interface EJCanvasContext2D : EJCanvasContext {

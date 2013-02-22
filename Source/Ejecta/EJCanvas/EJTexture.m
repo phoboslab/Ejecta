@@ -1,7 +1,6 @@
 #import <QuartzCore/QuartzCore.h>
 #import <OpenGLES/EAGLDrawable.h>
 #import "EJTexture.h"
-#import "lodepng/lodepng.h"
 #import "EJConvertWebGL.h"
 
 #import "EJSharedTextureCache.h"
@@ -294,16 +293,6 @@
 		}
 	}
 	
-	// All CGImage functions return pixels with premultiplied alpha and there's no
-	// way to opt-out - thanks Apple, awesome idea.
-	// So, for PNG images we use the lodepng library instead.
-	
-	return [[path pathExtension] isEqualToString:@"png"]
-		? [self loadPixelsWithLodePNGFromPath:path]
-		: [self loadPixelsWithCGImageFromPath:path];
-}
-
-- (NSMutableData *)loadPixelsWithCGImageFromPath:(NSString *)path {	
 	UIImage *tmpImage = [[UIImage alloc] initWithContentsOfFile:path];
 	CGImageRef image = tmpImage.CGImage;
 	
@@ -319,20 +308,6 @@
 	[tmpImage release];
 	
 	return pixels;
-}
-
-- (NSMutableData *)loadPixelsWithLodePNGFromPath:(NSString *)path {
-	unsigned int w, h;
-	unsigned char *pixels = NULL;
-	unsigned int error = lodepng_decode32_file(&pixels, &w, &h, [path UTF8String]);
-	
-	if( error ) {
-		NSLog(@"Error Loading image %@ - %u: %s", path, error, lodepng_error_text(error));
-	}
-	width = w;
-	height = h;
-	
-	return [NSMutableData dataWithBytesNoCopy:pixels length:w*h*4];
 }
 
 - (GLint)getParam:(GLenum)pname {

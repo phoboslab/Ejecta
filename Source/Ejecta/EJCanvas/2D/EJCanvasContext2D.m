@@ -7,14 +7,14 @@
 
 @implementation EJCanvasContext2D
 
-static const struct { GLenum source; GLenum destination; } EJCompositeOperationFuncs[] = {
-	[kEJCompositeOperationSourceOver] = {GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA},
-	[kEJCompositeOperationLighter] = {GL_SRC_ALPHA, GL_ONE},
-	[kEJCompositeOperationDarker] = {GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA},
-	[kEJCompositeOperationDestinationOut] = {GL_ZERO, GL_ONE_MINUS_SRC_ALPHA},
-	[kEJCompositeOperationDestinationOver] = {GL_ONE_MINUS_DST_ALPHA, GL_ONE},
-	[kEJCompositeOperationSourceAtop] = {GL_DST_ALPHA, GL_ONE_MINUS_SRC_ALPHA},
-	[kEJCompositeOperationXOR] = {GL_ONE_MINUS_DST_ALPHA, GL_ONE_MINUS_SRC_ALPHA}
+const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
+	[kEJCompositeOperationSourceOver] = {GL_ONE, GL_ONE_MINUS_SRC_ALPHA, 1},
+	[kEJCompositeOperationLighter] = {GL_ONE, GL_ONE_MINUS_SRC_ALPHA, 0},
+	[kEJCompositeOperationDarker] = {GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA, 1},
+	[kEJCompositeOperationDestinationOut] = {GL_ZERO, GL_ONE_MINUS_SRC_ALPHA, 1},
+	[kEJCompositeOperationDestinationOver] = {GL_ONE_MINUS_DST_ALPHA, GL_ONE, 1},
+	[kEJCompositeOperationSourceAtop] = {GL_DST_ALPHA, GL_ONE_MINUS_SRC_ALPHA, 1},
+	[kEJCompositeOperationXOR] = {GL_ONE_MINUS_DST_ALPHA, GL_ONE_MINUS_SRC_ALPHA, 1}
 };
 
 
@@ -469,11 +469,20 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 }
 
 - (void)setGlobalCompositeOperation:(EJCompositeOperation)op {
-	if( op == state->globalCompositeOperation ) { return; }
+	// Same composite operation or switching between SourceOver <> Lighter? We don't
+	// have to flush and set the blend mode then, but we still need to update the state,
+	// as the alphaFactor may be different.
+	if(
+		op == state->globalCompositeOperation ||
+		(op == kEJCompositeOperationLighter && state->globalCompositeOperation == kEJCompositeOperationSourceOver) ||
+		(op == kEJCompositeOperationSourceOver && state->globalCompositeOperation == kEJCompositeOperationLighter)
+	) {
+		state->globalCompositeOperation = op;
+		return;
+	}
 	
 	[self flushBuffers];
 	glBlendFunc( EJCompositeOperationFuncs[op].source, EJCompositeOperationFuncs[op].destination );
-	state->globalCompositeOperation = op;
 }
 
 - (EJCompositeOperation)globalCompositeOperation {
@@ -577,23 +586,23 @@ static const struct { GLenum source; GLenum destination; } EJCompositeOperationF
 	float tw = texture.width;
 	float th = texture.height;
 	
-	EJColorRGBA color = {.rgba = {255, 255, 255, 255 * state->globalAlpha}};
 	[self setProgram:sharedGLContext.glProgram2DTexture];
 	[self setTexture:texture];
-	[self pushTexturedRectX:dx y:dy w:dw h:dh tx:sx/tw ty:sy/th tw:sw/tw th:sh/th color:color withTransform:state->transform];
+	[self pushTexturedRectX:dx y:dy w:dw h:dh tx:sx/tw ty:sy/th tw:sw/tw th:sh/th
+		color:EJCanvasBlendWhiteColor(state) withTransform:state->transform];
 }
 
 - (void)fillRectX:(float)x y:(float)y w:(float)w h:(float)h {
 	if( state->fillObject ) {
-		EJColorRGBA color = {.rgba = {255, 255, 255, 255 * state->globalAlpha}};
-		[self pushFilledRectX:x y:y w:w h:h fillable:state->fillObject color:color withTransform:state->transform];
+		[self pushFilledRectX:x y:y w:w h:h fillable:state->fillObject
+			color:EJCanvasBlendWhiteColor(state) withTransform:state->transform];
 	}
 	else {
 		[self setProgram:sharedGLContext.glProgram2DFlat];
 		
-		EJColorRGBA color = state->fillColor;
-		color.rgba.a = (float)color.rgba.a * state->globalAlpha;
-		[self pushRectX:x y:y w:w h:h color:color withTransform:state->transform];
+		EJColorRGBA cc = EJCanvasBlendFillColor(state);
+		[self pushRectX:x y:y w:w h:h
+			color:cc withTransform:state->transform];
 	}
 }
 
