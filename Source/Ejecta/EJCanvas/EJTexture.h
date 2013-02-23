@@ -22,7 +22,7 @@ typedef enum {
 	
 	EJTextureOwningContext owningContext;
 	EJTextureParams params;
-	NSOperation *loadCallback;
+	NSBlockOperation *loadCallback;
 }
 - (id)initEmptyForWebGL;
 - (id)initWithPath:(NSString *)path;
@@ -51,6 +51,7 @@ typedef enum {
 
 + (void)premultiplyPixels:(const GLubyte *)inPixels to:(GLubyte *)outPixels byteLength:(int)byteLength format:(GLenum)format;
 + (void)unPremultiplyPixels:(const GLubyte *)inPixels to:(GLubyte *)outPixels byteLength:(int)byteLength format:(GLenum)format;
++ (void)flipPixelsY:(GLubyte *)pixels bytesPerRow:(int)bytesPerRow rows:(int)rows;
 
 @property (readonly, nonatomic) BOOL isDynamic;
 @property (readonly, nonatomic) NSMutableData *pixels;

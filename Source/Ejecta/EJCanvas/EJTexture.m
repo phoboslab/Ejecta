@@ -74,6 +74,8 @@
 		fullPath = [path retain];
 		owningContext = kEJTextureOwningContextCanvas2D;
 		
+		loadCallback = [[NSBlockOperation alloc] init];
+		
 		// Load the image file in a background thread
 		[queue addOperationWithBlock:^{
 			NSMutableData *pixels = [self loadPixelsFromPath:path];
@@ -81,8 +83,9 @@
 			// Upload the pixel data in the main thread, otherwise the GLContext gets confused.	
 			// We could use a sharegroup here, but it turned out quite buggy and has little
 			// benefits - the main bottleneck is loading the image file.
-			loadCallback = [NSBlockOperation blockOperationWithBlock:^{
+			[loadCallback addExecutionBlock:^{
 				[self createWithPixels:pixels format:GL_RGBA];
+				[loadCallback release];
 				loadCallback = nil;
 			}];
 			[callback addDependency:loadCallback];
@@ -139,6 +142,7 @@
 	if( cached ) {
 		[[EJSharedTextureCache instance].textures removeObjectForKey:fullPath];
 	}
+	[loadCallback release];
 	
 	[fullPath release];
 	[textureStorage release];
@@ -379,6 +383,40 @@
 			unsigned short a = inPixels[i+1] * 256;
 			outPixels[i+0] = unPremultiplyTable[ a + inPixels[i+0] ];
 			outPixels[i+1] = inPixels[i+1];
+		}
+	}
+}
+
++ (void)flipPixelsY:(GLubyte *)pixels bytesPerRow:(int)bytesPerRow rows:(int)rows {
+	if( !pixels ) { return; }
+	
+	GLuint middle = rows/2;
+	GLuint intsPerRow = bytesPerRow / sizeof(GLuint);
+	GLuint remainingBytes = bytesPerRow - intsPerRow * sizeof(GLuint);
+	
+	for( GLuint rowTop = 0, rowBottom = rows-1; rowTop < middle; rowTop++, rowBottom-- ) {
+		
+		// Swap bytes in packs of sizeof(GLuint) bytes
+		GLuint *iTop = (GLuint *)(pixels + rowTop * bytesPerRow);
+		GLuint *iBottom = (GLuint *)(pixels + rowBottom * bytesPerRow);
+		
+		GLuint itmp;
+		GLint n = intsPerRow;
+		do {
+			itmp = *iTop;
+			*iTop++ = *iBottom;
+			*iBottom++ = itmp;
+		} while(--n > 0);
+		
+		// Swap the remaining bytes
+		GLubyte *bTop = (GLubyte *)iTop;
+		GLubyte *bBottom = (GLubyte *)iBottom;
+		
+		GLubyte btmp;
+		switch( remainingBytes ) {
+			case 3: btmp = *bTop; *bTop++ = *bBottom; *bBottom++ = btmp;
+			case 2: btmp = *bTop; *bTop++ = *bBottom; *bBottom++ = btmp;
+			case 1: btmp = *bTop; *bTop = *bBottom; *bBottom = btmp;
 		}
 	}
 }
