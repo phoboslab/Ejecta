@@ -382,8 +382,9 @@ int EJFontGlyphLayoutSortByTextureIndex(const void *a, const void *b) {
 	
 	// Fill or stroke color?
 	EJCanvasState *state = context.state;
-	EJColorRGBA color = fill ? state->fillColor : state->strokeColor;
-	color.rgba.a = (float)color.rgba.a * state->globalAlpha;
+	EJColorRGBA color = fill
+		? EJCanvasBlendFillColor(state)
+		: EJCanvasBlendStrokeColor(state);
 	
 	// Go through all glyphs - bind textures as needed - and draw
 	EJFontGlyphLayout *layoutBuffer = layout.glyphLayout;
