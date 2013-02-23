@@ -3,7 +3,7 @@
 @implementation EJGLProgram2D
 
 @synthesize program;
-@synthesize scale, translate;
+@synthesize screen;
 
 - (id)initWithVertexShader:(NSString *)vertexShaderFile fragmentShader:(NSString *)fragmentShaderFile {
 	if( self = [super init] ) {
@@ -41,8 +41,7 @@
 }
 
 - (void)getUniforms {
-	scale = glGetUniformLocation(program, "scale");
-	translate = glGetUniformLocation(program, "translate");
+	screen = glGetUniformLocation(program, "screen");
 }
 
 + (GLint)compileShaderFile:(NSString *)file type:(GLenum)type {

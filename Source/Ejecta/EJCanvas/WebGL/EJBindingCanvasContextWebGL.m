@@ -1188,26 +1188,10 @@ EJ_BIND_FUNCTION(pixelStorei, ctx, argc, argv) {
 	switch( pname ) {
 		case GL_UNPACK_FLIP_Y_WEBGL:
 			unpackFlipY = param;
-			static BOOL showedFlipYWarning;
-			if( param && !showedFlipYWarning ) {
-				NSLog(
-					@"Warning: Enabling UNPACK_FLIP_Y_WEBGL makes texture loading slow and "
-					@"memory inefficient. Leave it disabled if you can."
-				);
-				showedFlipYWarning = YES;
-			}
 			break;
 			
 		case GL_UNPACK_PREMULTIPLY_ALPHA_WEBGL:
 			premultiplyAlpha = param;
-			static BOOL showedPremultiplyAlphaWarning;
-			if( param && !showedPremultiplyAlphaWarning ) {
-				NSLog(
-					@"Warning: Enabling UNPACK_PREMULTIPLY_ALPHA_WEBGL makes texture loading "
-					@"slow and memory inefficient. Leave it disabled if you can."
-				);
-				showedPremultiplyAlphaWarning = YES;
-			}
 			break;
 		
 		case GL_UNPACK_COLORSPACE_CONVERSION_WEBGL:
@@ -1341,10 +1325,10 @@ EJ_BIND_FUNCTION(texImage2D, ctx, argc, argv) {
 		// FIXME?
 		if(	targetTexture && sourceTexture && internalformat && format && type ) {
 				
-			// The fast case - no flipping, no premultiply, mip level == 0, TEXTURE_2D target
+			// The fast case - no flipping, premultiplied, mip level == 0, TEXTURE_2D target
 			// and the source was loaded from a static image -> we can just use the source
 			if(
-				!unpackFlipY && !premultiplyAlpha &&
+				!unpackFlipY && premultiplyAlpha &&
 				level == 0 && target == GL_TEXTURE_2D &&
 				!sourceTexture.isDynamic
 			) {
@@ -1359,10 +1343,10 @@ EJ_BIND_FUNCTION(texImage2D, ctx, argc, argv) {
 					short width = sourceTexture.width;
 					short height = sourceTexture.height;
 					if( unpackFlipY ) {
-						EJFlipPixelsY(width * 4, height, pixels);
+						[EJTexture flipPixelsY:pixels bytesPerRow:(width * 4) rows:height];
 					}
-					if( premultiplyAlpha ) {
-						EJPremultiplyAlpha(width, height, GL_RGBA, pixels);
+					if( !premultiplyAlpha ) {
+						[EJTexture unPremultiplyPixels:pixels to:pixels byteLength:(width * height * 4) format:GL_RGBA];
 					}
 					
 					// If we write mip level 0, there's no point in keeping pixels
@@ -1390,10 +1374,10 @@ EJ_BIND_FUNCTION(texImage2D, ctx, argc, argv) {
 			
 			if( bytesPerPixel && byteLength >= width * height * bytesPerPixel ) {
 				if( unpackFlipY ) {
-					EJFlipPixelsY(width * bytesPerPixel, height, pixels);
+					[EJTexture flipPixelsY:pixels bytesPerRow:(width * bytesPerPixel) rows:height];
 				}
 				if( premultiplyAlpha ) {
-					EJPremultiplyAlpha(width, height, format, pixels);
+					[EJTexture premultiplyPixels:pixels to:pixels byteLength:(width * height * bytesPerPixel) format:format];
 				}
 				
 				// If we write mip level 0, there's no point in keeping pixels
@@ -1485,10 +1469,10 @@ EJ_BIND_FUNCTION(texSubImage2D, ctx, argc, argv) {
 				short width = sourceTexture.width;
 				short height = sourceTexture.height;
 				if( unpackFlipY ) {
-					EJFlipPixelsY(width * 4, height, pixels);
+					[EJTexture flipPixelsY:pixels bytesPerRow:(width * 4) rows:height];
 				}
-				if( premultiplyAlpha ) {
-					EJPremultiplyAlpha(width, height, GL_RGBA, pixels);
+				if( !premultiplyAlpha ) {
+					[EJTexture unPremultiplyPixels:pixels to:pixels byteLength:(width * height * 4) format:GL_RGBA];
 				}
 				
 				// Always keep previous pixels when ensuring mutability, as we're just updating
@@ -1514,10 +1498,10 @@ EJ_BIND_FUNCTION(texSubImage2D, ctx, argc, argv) {
 			
 			if( bytesPerPixel && byteLength >= width * height * bytesPerPixel ) {
 				if( unpackFlipY ) {
-					EJFlipPixelsY(width * bytesPerPixel, height, pixels);
+					[EJTexture flipPixelsY:pixels bytesPerRow:(width * bytesPerPixel) rows:height];
 				}
 				if( premultiplyAlpha ) {
-					EJPremultiplyAlpha(width, height, format, pixels);
+					[EJTexture premultiplyPixels:pixels to:pixels byteLength:width*height*bytesPerPixel format:format];
 				}
 				
 				// Always keep previous pixels when ensuring mutability, as we're just updating

@@ -1,7 +1,6 @@
 #import <QuartzCore/QuartzCore.h>
 #import <OpenGLES/EAGLDrawable.h>
 #import "EJTexture.h"
-#import "lodepng/lodepng.h"
 #import "EJConvertWebGL.h"
 
 #import "EJSharedTextureCache.h"
@@ -75,6 +74,8 @@
 		fullPath = [path retain];
 		owningContext = kEJTextureOwningContextCanvas2D;
 		
+		loadCallback = [[NSBlockOperation alloc] init];
+		
 		// Load the image file in a background thread
 		[queue addOperationWithBlock:^{
 			NSMutableData *pixels = [self loadPixelsFromPath:path];
@@ -82,8 +83,9 @@
 			// Upload the pixel data in the main thread, otherwise the GLContext gets confused.	
 			// We could use a sharegroup here, but it turned out quite buggy and has little
 			// benefits - the main bottleneck is loading the image file.
-			loadCallback = [NSBlockOperation blockOperationWithBlock:^{
+			[loadCallback addExecutionBlock:^{
 				[self createWithPixels:pixels format:GL_RGBA];
+				[loadCallback release];
 				loadCallback = nil;
 			}];
 			[callback addDependency:loadCallback];
@@ -140,6 +142,7 @@
 	if( cached ) {
 		[[EJSharedTextureCache instance].textures removeObjectForKey:fullPath];
 	}
+	[loadCallback release];
 	
 	[fullPath release];
 	[textureStorage release];
@@ -294,17 +297,12 @@
 		}
 	}
 	
-	// All CGImage functions return pixels with premultiplied alpha and there's no
-	// way to opt-out - thanks Apple, awesome idea.
-	// So, for PNG images we use the lodepng library instead.
-	
-	return [[path pathExtension] isEqualToString:@"png"]
-		? [self loadPixelsWithLodePNGFromPath:path]
-		: [self loadPixelsWithCGImageFromPath:path];
-}
-
-- (NSMutableData *)loadPixelsWithCGImageFromPath:(NSString *)path {	
 	UIImage *tmpImage = [[UIImage alloc] initWithContentsOfFile:path];
+	if( !tmpImage ) {
+		NSLog(@"Error Loading image %@ - not found.", path);
+		return NULL;
+	}
+	
 	CGImageRef image = tmpImage.CGImage;
 	
 	width = CGImageGetWidth(image);
@@ -319,20 +317,6 @@
 	[tmpImage release];
 	
 	return pixels;
-}
-
-- (NSMutableData *)loadPixelsWithLodePNGFromPath:(NSString *)path {
-	unsigned int w, h;
-	unsigned char *pixels = NULL;
-	unsigned int error = lodepng_decode32_file(&pixels, &w, &h, [path UTF8String]);
-	
-	if( error ) {
-		NSLog(@"Error Loading image %@ - %u: %s", path, error, lodepng_error_text(error));
-	}
-	width = w;
-	height = h;
-	
-	return [NSMutableData dataWithBytesNoCopy:pixels length:w*h*4];
 }
 
 - (GLint)getParam:(GLenum)pname {
@@ -360,6 +344,82 @@
 	[textureStorage bindToTarget:target withParams:params];
 }
 
+
++ (void)premultiplyPixels:(const GLubyte *)inPixels to:(GLubyte *)outPixels byteLength:(int)byteLength format:(GLenum)format {
+	const GLubyte *premultiplyTable = [EJSharedTextureCache instance].premultiplyTable.bytes;
+	
+	if( format == GL_RGBA ) {
+		for( int i = 0; i < byteLength; i += 4 ) {
+			unsigned short a = inPixels[i+3] * 256;
+			outPixels[i+0] = premultiplyTable[ a + inPixels[i+0] ];
+			outPixels[i+1] = premultiplyTable[ a + inPixels[i+1] ];
+			outPixels[i+2] = premultiplyTable[ a + inPixels[i+2] ];
+			outPixels[i+3] = inPixels[i+3];
+		}
+	}
+	else if ( format == GL_LUMINANCE_ALPHA ) {		
+		for( int i = 0; i < byteLength; i += 2 ) {
+			unsigned short a = inPixels[i+1] * 256;
+			outPixels[i+0] = premultiplyTable[ a + inPixels[i+0] ];
+			outPixels[i+1] = inPixels[i+1];
+		}
+	}
+}
+
++ (void)unPremultiplyPixels:(const GLubyte *)inPixels to:(GLubyte *)outPixels byteLength:(int)byteLength format:(GLenum)format {
+	const GLubyte *unPremultiplyTable = [EJSharedTextureCache instance].unPremultiplyTable.bytes;
+	
+	if( format == GL_RGBA ) {
+		for( int i = 0; i < byteLength; i += 4 ) {
+			unsigned short a = inPixels[i+3] * 256;
+			outPixels[i+0] = unPremultiplyTable[ a + inPixels[i+0] ];
+			outPixels[i+1] = unPremultiplyTable[ a + inPixels[i+1] ];
+			outPixels[i+2] = unPremultiplyTable[ a + inPixels[i+2] ];
+			outPixels[i+3] = inPixels[i+3];
+		}
+	}
+	else if ( format == GL_LUMINANCE_ALPHA ) {		
+		for( int i = 0; i < byteLength; i += 2 ) {
+			unsigned short a = inPixels[i+1] * 256;
+			outPixels[i+0] = unPremultiplyTable[ a + inPixels[i+0] ];
+			outPixels[i+1] = inPixels[i+1];
+		}
+	}
+}
+
++ (void)flipPixelsY:(GLubyte *)pixels bytesPerRow:(int)bytesPerRow rows:(int)rows {
+	if( !pixels ) { return; }
+	
+	GLuint middle = rows/2;
+	GLuint intsPerRow = bytesPerRow / sizeof(GLuint);
+	GLuint remainingBytes = bytesPerRow - intsPerRow * sizeof(GLuint);
+	
+	for( GLuint rowTop = 0, rowBottom = rows-1; rowTop < middle; rowTop++, rowBottom-- ) {
+		
+		// Swap bytes in packs of sizeof(GLuint) bytes
+		GLuint *iTop = (GLuint *)(pixels + rowTop * bytesPerRow);
+		GLuint *iBottom = (GLuint *)(pixels + rowBottom * bytesPerRow);
+		
+		GLuint itmp;
+		GLint n = intsPerRow;
+		do {
+			itmp = *iTop;
+			*iTop++ = *iBottom;
+			*iBottom++ = itmp;
+		} while(--n > 0);
+		
+		// Swap the remaining bytes
+		GLubyte *bTop = (GLubyte *)iTop;
+		GLubyte *bBottom = (GLubyte *)iBottom;
+		
+		GLubyte btmp;
+		switch( remainingBytes ) {
+			case 3: btmp = *bTop; *bTop++ = *bBottom; *bBottom++ = btmp;
+			case 2: btmp = *bTop; *bTop++ = *bBottom; *bBottom++ = btmp;
+			case 1: btmp = *bTop; *bTop = *bBottom; *bBottom = btmp;
+		}
+	}
+}
 
 
 @end

@@ -52,9 +52,6 @@
 		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, msaaRenderBuffer);
 	}
 	
-	vertexScale = EJVector2Make(2.0f/width, 2.0f/height);
-	vertexTranslate = EJVector2Make(-1.0f, -1.0f);
-	
 	[self prepare];
 	
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);

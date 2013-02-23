@@ -24,11 +24,13 @@
 
 - (EJImageData *)imageData {
 	if( dataArray ) {
-		// Copy values from the JSArray back into the imageData
-		int count = imageData.width * imageData.height * 4;
+		// Copy values from the JSArray back into the imageData and premultiply it
+		int byteLength = imageData.width * imageData.height * 4;
 		
-		void *data = JSTypedArrayGetDataPtr(scriptView.jsGlobalContext, dataArray, NULL);
-		memcpy(imageData.pixels.mutableBytes, data, count);
+		[EJTexture
+			premultiplyPixels:JSTypedArrayGetDataPtr(scriptView.jsGlobalContext, dataArray, NULL)
+			to:imageData.pixels.mutableBytes
+			byteLength:byteLength format:GL_RGBA];
 	}
 	
 	return imageData;
@@ -40,13 +42,16 @@
 
 EJ_BIND_GET(data, ctx ) {
 	if( !dataArray ) {
-		int count = imageData.width * imageData.height * 4;
+		// Copy values from image data into a JSArray and unpremultiply it
+		int byteLength = imageData.width * imageData.height * 4;
 		
-		dataArray = JSTypedArrayMake(ctx, kJSTypedArrayTypeUint8ClampedArray, count);
+		dataArray = JSTypedArrayMake(ctx, kJSTypedArrayTypeUint8ClampedArray, byteLength);
 		JSValueProtect(ctx, dataArray);
 		
-		void *data = JSTypedArrayGetDataPtr(ctx, dataArray, NULL);
-		memcpy(data, imageData.pixels.bytes, count);
+		[EJTexture
+			unPremultiplyPixels:imageData.pixels.bytes
+			to:JSTypedArrayGetDataPtr(ctx, dataArray, NULL)
+			byteLength:byteLength format:GL_RGBA];
 	}
 	return dataArray;
 }

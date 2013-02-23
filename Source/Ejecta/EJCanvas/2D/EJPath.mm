@@ -321,9 +321,7 @@ typedef std::vector<subpath_t> path_t;
 	if( longestSubpath < 3 ) { return; }
 	
 	EJCanvasState *state = context.state;
-	EJColorRGBA color = state->fillColor;
-	color.rgba.a = (float)color.rgba.a * state->globalAlpha;
-	
+	EJColorRGBA white = { .hex = 0xffffffff };
 	
 	// For potentially concave polygons (those with more than 3 unique vertices), we
 	// need to draw to the context twice: first to create a stencil mask, and then again
@@ -351,7 +349,7 @@ typedef std::vector<subpath_t> path_t;
 	glStencilOp(GL_ZERO, GL_ZERO, GL_ZERO);
 	[context
 		pushRectX:minPos.x y:minPos.y w:maxPos.x-minPos.x h:maxPos.y-minPos.y
-		color:color	withTransform:CGAffineTransformIdentity];
+		color:white withTransform:CGAffineTransformIdentity];
 	[context flushBuffers];
 	
 	
@@ -406,15 +404,15 @@ typedef std::vector<subpath_t> path_t;
 		EJVector2 tmin = { MIN(p1.x, MIN(p2.x,MIN(p3.x, p4.x))), MIN(p1.y, MIN(p2.y,MIN(p3.y, p4.y))) };
 		EJVector2 tmax = { MAX(p1.x, MAX(p2.x,MAX(p3.x, p4.x))), MAX(p1.y, MAX(p2.y,MAX(p3.y, p4.y))) };
 		
-		color = (EJColorRGBA){.rgba = {255, 255, 255, 255 * state->globalAlpha}};
 		[context
 			pushFilledRectX:tmin.x y:tmin.y w:tmax.x-tmin.x h:tmax.y-tmin.y
-			fillable:state->fillObject color:color withTransform:transform];
+			fillable:state->fillObject
+			color:EJCanvasBlendWhiteColor(state) withTransform:transform];
 	}
 	else {
 		[context
 			pushRectX:minPos.x y:minPos.y w:maxPos.x-minPos.x h:maxPos.y-minPos.y
-			color:color	withTransform:CGAffineTransformIdentity];
+			color:EJCanvasBlendFillColor(state) withTransform:CGAffineTransformIdentity];
 	}
 	
 	[context flushBuffers];
@@ -507,8 +505,7 @@ typedef std::vector<subpath_t> path_t;
 	BOOL addMiter = (state->lineJoin == kEJLineJoinMiter);
 	float miterLimit = (state->miterLimit * width2);
 	
-	EJColorRGBA color = state->strokeColor;
-	color.rgba.a = (float)color.rgba.a * state->globalAlpha;
+	EJColorRGBA color = EJCanvasBlendStrokeColor(state);
 	
 	// Enable stencil test when drawing transparent lines.
 	// Cycle through all bits, so that the stencil buffer only has to be cleared after eight stroke operations

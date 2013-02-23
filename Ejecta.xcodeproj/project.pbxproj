@@ -50,7 +50,6 @@
 		B64CE67D166682700087CF94 /* EJBindingLocalStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE64C166682700087CF94 /* EJBindingLocalStorage.m */; };
 		B64CE67E166682700087CF94 /* EJBindingTouchInput.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE64E166682700087CF94 /* EJBindingTouchInput.m */; };
 		B64CE67F166682700087CF94 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE651166682700087CF94 /* AppDelegate.m */; };
-		B64CE681166682700087CF94 /* lodepng.c in Sources */ = {isa = PBXBuildFile; fileRef = B64CE65F166682700087CF94 /* lodepng.c */; };
 		B64CE682166682700087CF94 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE661166682700087CF94 /* main.m */; };
 		B64CE68F166682B10087CF94 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B64CE684166682B10087CF94 /* Default-568h@2x.png */; };
 		B64CE690166682B10087CF94 /* Default-Landscape.png in Resources */ = {isa = PBXBuildFile; fileRef = B64CE685166682B10087CF94 /* Default-Landscape.png */; };
@@ -179,8 +178,6 @@
 		B64CE65A166682700087CF94 /* JSStringRefCF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSStringRefCF.h; sourceTree = "<group>"; };
 		B64CE65B166682700087CF94 /* JSValueRef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSValueRef.h; sourceTree = "<group>"; };
 		B64CE65C166682700087CF94 /* WebKitAvailability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebKitAvailability.h; sourceTree = "<group>"; };
-		B64CE65F166682700087CF94 /* lodepng.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lodepng.c; sourceTree = "<group>"; };
-		B64CE660166682700087CF94 /* lodepng.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lodepng.h; sourceTree = "<group>"; };
 		B64CE661166682700087CF94 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		B64CE684166682B10087CF94 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		B64CE685166682B10087CF94 /* Default-Landscape.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape.png"; sourceTree = "<group>"; };
@@ -452,7 +449,6 @@
 			isa = PBXGroup;
 			children = (
 				B64CE653166682700087CF94 /* JavaScriptCore */,
-				B64CE65E166682700087CF94 /* lodepng */,
 			);
 			path = lib;
 			sourceTree = "<group>";
@@ -472,15 +468,6 @@
 				B64CE65C166682700087CF94 /* WebKitAvailability.h */,
 			);
 			path = JavaScriptCore;
-			sourceTree = "<group>";
-		};
-		B64CE65E166682700087CF94 /* lodepng */ = {
-			isa = PBXGroup;
-			children = (
-				B64CE65F166682700087CF94 /* lodepng.c */,
-				B64CE660166682700087CF94 /* lodepng.h */,
-			);
-			path = lodepng;
 			sourceTree = "<group>";
 		};
 		B64CE683166682B10087CF94 /* Resources */ = {
@@ -660,7 +647,6 @@
 				B64CE67D166682700087CF94 /* EJBindingLocalStorage.m in Sources */,
 				B64CE67E166682700087CF94 /* EJBindingTouchInput.m in Sources */,
 				B64CE67F166682700087CF94 /* AppDelegate.m in Sources */,
-				B64CE681166682700087CF94 /* lodepng.c in Sources */,
 				B64CE682166682700087CF94 /* main.m in Sources */,
 				B6F9AFC0169F81D400ABD91A /* EJBindingLifecycle.m in Sources */,
 				B6F114DF1676B4FE001F1324 /* EJBindingCanvas.m in Sources */,
@@ -700,7 +686,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				COMPRESS_PNG_FILES = NO;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -725,7 +710,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				COMPRESS_PNG_FILES = NO;
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Source/Prefix.pch;

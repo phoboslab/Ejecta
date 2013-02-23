@@ -5,12 +5,11 @@ attribute vec4 color;
 varying lowp vec4 vColor;
 varying mediump vec2 vUv;
 
-uniform highp vec2 scale;
-uniform highp vec2 translate;
+uniform highp vec2 screen;
 
 void main() {
 	vColor = color;
 	vUv = uv;
 	
-	gl_Position = vec4(pos * scale + translate, 0.0, 1.0);
+	gl_Position = vec4(pos * (vec2(2,2)/screen) - clamp(screen,-1.0,1.0), 0.0, 1.0);
 }
