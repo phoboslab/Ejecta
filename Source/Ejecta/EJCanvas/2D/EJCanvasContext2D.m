@@ -483,6 +483,7 @@ const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
 	
 	[self flushBuffers];
 	glBlendFunc( EJCompositeOperationFuncs[op].source, EJCompositeOperationFuncs[op].destination );
+	state->globalCompositeOperation = op;
 }
 
 - (EJCompositeOperation)globalCompositeOperation {
