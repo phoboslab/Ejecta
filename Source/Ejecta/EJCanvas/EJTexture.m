@@ -294,6 +294,11 @@
 	}
 	
 	UIImage *tmpImage = [[UIImage alloc] initWithContentsOfFile:path];
+	if( !tmpImage ) {
+		NSLog(@"Error Loading image %@ - not found.", path);
+		return NULL;
+	}
+	
 	CGImageRef image = tmpImage.CGImage;
 	
 	width = CGImageGetWidth(image);
@@ -335,6 +340,48 @@
 	[textureStorage bindToTarget:target withParams:params];
 }
 
+
++ (void)premultiplyPixels:(const GLubyte *)inPixels to:(GLubyte *)outPixels byteLength:(int)byteLength format:(GLenum)format {
+	const GLubyte *premultiplyTable = [EJSharedTextureCache instance].premultiplyTable.bytes;
+	
+	if( format == GL_RGBA ) {
+		for( int i = 0; i < byteLength; i += 4 ) {
+			unsigned short a = inPixels[i+3] * 256;
+			outPixels[i+0] = premultiplyTable[ a + inPixels[i+0] ];
+			outPixels[i+1] = premultiplyTable[ a + inPixels[i+1] ];
+			outPixels[i+2] = premultiplyTable[ a + inPixels[i+2] ];
+			outPixels[i+3] = inPixels[i+3];
+		}
+	}
+	else if ( format == GL_LUMINANCE_ALPHA ) {		
+		for( int i = 0; i < byteLength; i += 2 ) {
+			unsigned short a = inPixels[i+1] * 256;
+			outPixels[i+0] = premultiplyTable[ a + inPixels[i+0] ];
+			outPixels[i+1] = inPixels[i+1];
+		}
+	}
+}
+
++ (void)unPremultiplyPixels:(const GLubyte *)inPixels to:(GLubyte *)outPixels byteLength:(int)byteLength format:(GLenum)format {
+	const GLubyte *unPremultiplyTable = [EJSharedTextureCache instance].unPremultiplyTable.bytes;
+	
+	if( format == GL_RGBA ) {
+		for( int i = 0; i < byteLength; i += 4 ) {
+			unsigned short a = inPixels[i+3] * 256;
+			outPixels[i+0] = unPremultiplyTable[ a + inPixels[i+0] ];
+			outPixels[i+1] = unPremultiplyTable[ a + inPixels[i+1] ];
+			outPixels[i+2] = unPremultiplyTable[ a + inPixels[i+2] ];
+			outPixels[i+3] = inPixels[i+3];
+		}
+	}
+	else if ( format == GL_LUMINANCE_ALPHA ) {		
+		for( int i = 0; i < byteLength; i += 2 ) {
+			unsigned short a = inPixels[i+1] * 256;
+			outPixels[i+0] = unPremultiplyTable[ a + inPixels[i+0] ];
+			outPixels[i+1] = inPixels[i+1];
+		}
+	}
+}
 
 
 @end

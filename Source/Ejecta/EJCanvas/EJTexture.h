@@ -49,6 +49,9 @@ typedef enum {
 - (void)bindWithFilter:(GLenum)filter;
 - (void)bindToTarget:(GLenum)target;
 
++ (void)premultiplyPixels:(const GLubyte *)inPixels to:(GLubyte *)outPixels byteLength:(int)byteLength format:(GLenum)format;
++ (void)unPremultiplyPixels:(const GLubyte *)inPixels to:(GLubyte *)outPixels byteLength:(int)byteLength format:(GLenum)format;
+
 @property (readonly, nonatomic) BOOL isDynamic;
 @property (readonly, nonatomic) NSMutableData *pixels;
 @property (readonly, nonatomic)	float contentScale;
