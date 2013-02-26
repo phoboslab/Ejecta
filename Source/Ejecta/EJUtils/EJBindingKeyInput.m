@@ -22,11 +22,12 @@
 }
 
 - (BOOL)resignFirstResponder{
+    BOOL current = [self isFirstResponder];
     BOOL resign = [super resignFirstResponder];
-    if (resign && [self.delegate respondsToSelector:@selector(keyInputDidResignFirstResponderStatus:)]) {
+    if (resign && !current && [self.delegate respondsToSelector:@selector(keyInputDidResignFirstResponderStatus:)]) {
         [self.delegate keyInputDidResignFirstResponderStatus:self];
     }
-    return [super resignFirstResponder];
+    return resign;
 }
 
 - (void)deleteBackward{
@@ -48,19 +49,17 @@
 @end
 
 @interface EJBindingKeyInput ()
-@property (nonatomic, strong) EJKeyInputResponder *inputController;
-@property (nonatomic, assign) BOOL sendChunkedInput;
+@property (nonatomic, retain) EJKeyInputResponder *inputController;
+@property (nonatomic, retain) NSMutableString *value;
 @end
 
 @implementation EJBindingKeyInput
-
-static NSString *keyInputEvent = @"keyInput";
 
 - (void)createWithJSObject:(JSObjectRef)obj scriptView:(EJJavaScriptView *)view {
 	[super createWithJSObject:obj scriptView:view];
     self.inputController = [[[EJKeyInputResponder alloc] init] autorelease];
     self.inputController.delegate = self;
-    self.sendChunkedInput = YES;
+    self.value = [NSMutableString string];
 }
 
 - (void)dealloc
@@ -70,11 +69,11 @@ static NSString *keyInputEvent = @"keyInput";
     [super dealloc];
 }
 
-EJ_BIND_FUNCTION(open, ctx, argc, argv){
+EJ_BIND_FUNCTION(focus, ctx, argc, argv){
     return JSValueMakeBoolean(ctx, [self.inputController becomeFirstResponder]);
 }
 
-EJ_BIND_FUNCTION(close, ctx, argc, argv){
+EJ_BIND_FUNCTION(blur, ctx, argc, argv){
     return JSValueMakeBoolean(ctx, [self.inputController resignFirstResponder]);
 }
 
@@ -82,15 +81,18 @@ EJ_BIND_FUNCTION(isOpen, ctx, argc, argv){
     return JSValueMakeBoolean(ctx, [self.inputController isFirstResponder]);
 }
 
-//If set to NO, sends one-char strings as opposed to full length strings (occurs when pasting text for example)
-//default == YES
-EJ_BIND_SET(sendChunkedInput, ctx, value){
-    self.sendChunkedInput = JSValueToBoolean(ctx, value);
+EJ_BIND_GET(value, ctx){
+    return NSStringToJSValue(ctx, self.value);
 }
 
-EJ_BIND_GET(sendChunkedInput, ctx){
-    return JSValueMakeBoolean(ctx, self.sendChunkedInput);
+EJ_BIND_SET(value, ctx, value){
+    [self.value setString:JSValueToNSString(ctx, value)];
 }
+
+EJ_BIND_EVENT(focus);
+EJ_BIND_EVENT(blur);
+EJ_BIND_EVENT(delete);
+EJ_BIND_EVENT(change);
 
 #pragma mark -
 #pragma mark EJKeyInput delegate
@@ -101,15 +103,12 @@ EJ_BIND_GET(sendChunkedInput, ctx){
 
 - (void)keyInput:(EJKeyInputResponder *)keyInput insertText:(NSString *)text
 {
-    if (self.sendChunkedInput) {
-        JSValueRef params[] = { NSStringToJSValue(scriptView.jsGlobalContext, text) };
-        [self triggerEvent:keyInputEvent argc:1 argv:params];
-    } else {
-        for (int i = 0; i < [text length]; i++){
-            JSValueRef params[] = { NSStringToJSValue(scriptView.jsGlobalContext, [NSString stringWithCharacters:[text characterAtIndex:i] length:1]) };
-            [self triggerEvent:keyInputEvent argc:1 argv:params];
-        }
-    }
+    [self.value appendString:text];
+
+    JSValueRef params[] = { NSStringToJSValue(scriptView.jsGlobalContext, text) };
+    [self triggerEvent:@"keypress" argc:1 argv:params];
+    
+    [self triggerEvent:@"change" argc:0 argv:NULL];
 }
 
 - (void)keyInputDidDeleteBackwards:(EJKeyInputResponder *)keyInput{
@@ -117,13 +116,11 @@ EJ_BIND_GET(sendChunkedInput, ctx){
 }
 
 - (void)keyInputDidResignFirstResponderStatus:(EJKeyInputResponder *)keyInput{
-    JSValueRef params[] = {JSValueMakeBoolean(scriptView.jsGlobalContext, self.inputController.isFirstResponder)};
-    [self triggerEvent:@"keyboardToggled" argc:1 argv:params];
+    [self triggerEvent:@"blur" argc:0 argv:NULL];
 }
 
 - (void)keyInputDidBecomeFirstResponder:(EJKeyInputResponder *)keyInput{
-    JSValueRef params[] = {JSValueMakeBoolean(scriptView.jsGlobalContext, self.inputController.isFirstResponder)};
-    [self triggerEvent:@"keyboardToggled" argc:1 argv:params];
+    [self triggerEvent:@"focus" argc:0 argv:NULL];
 }
 
 @end
