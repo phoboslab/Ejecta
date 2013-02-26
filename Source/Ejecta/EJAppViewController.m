@@ -7,7 +7,8 @@
 
 - (id)init{
 	if( self = [super init] ) {
-		landscapeMode = [[[NSBundle mainBundle] infoDictionary][@"UIInterfaceOrientation"] hasPrefix:@"UIInterfaceOrientationLandscape"];
+		landscapeMode = [[[NSBundle mainBundle] infoDictionary][@"UIInterfaceOrientation"]
+			hasPrefix:@"UIInterfaceOrientationLandscape"];
 	}
 	return self;
 }

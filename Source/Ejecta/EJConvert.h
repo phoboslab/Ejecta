@@ -8,7 +8,6 @@ extern "C" {
 
 NSString *JSValueToNSString( JSContextRef ctx, JSValueRef v );
 JSValueRef NSStringToJSValue( JSContextRef ctx, NSString *string );
-JSValueRef NSStringToJSValueProtect( JSContextRef ctx, NSString *string );
 double JSValueToNumberFast( JSContextRef ctx, JSValueRef v );
 void JSValueUnprotectSafe( JSContextRef ctx, JSValueRef v );
 

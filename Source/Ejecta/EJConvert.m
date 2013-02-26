@@ -18,12 +18,6 @@ JSValueRef NSStringToJSValue( JSContextRef ctx, NSString *string ) {
 	return ret;
 }
 
-JSValueRef NSStringToJSValueProtect( JSContextRef ctx, NSString *string ) {
-	JSValueRef ret = NSStringToJSValue( ctx, string );
-	JSValueProtect(ctx, ret);
-	return ret;
-}
-
 double JSValueToNumberFast( JSContextRef ctx, JSValueRef v ) {
 	// This struct represents the memory layout of a C++ JSValue instance
 	// See JSC/runtime/JSValue.h for an explanation of the tagging

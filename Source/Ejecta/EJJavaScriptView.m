@@ -77,15 +77,15 @@
 - (void)dealloc {
 	// Wait until all background operations are finished. If we would just release the
 	// backgroundQueue it would cancel running operations (such as texture loading) and
-	// could keep some dependencies dangeling
+	// could keep some dependencies dangling
 	[backgroundQueue waitUntilAllOperationsAreFinished];
 	[backgroundQueue release];
 	
-	// Careful, order is important! The JS context has to be released first;
-	// it will release the canvas objects which still need the openGLContext
-	// to be present, to release textures etc.
-	// Set 'jsGlobalContext' to null before releasing it, because it may be
-	// referenced by bound objects dealloc method
+	// Careful, order is important! The JS context has to be released first; it will release
+	// the canvas objects which still need the openGLContext to be present, to release
+	// textures etc.
+	// Set 'jsGlobalContext' to null before releasing it, because it may be referenced by
+	// bound objects' dealloc method
 	JSValueUnprotect(jsGlobalContext, jsUndefined);
 	JSGlobalContextRef ctxref = jsGlobalContext;
 	jsGlobalContext = NULL;
@@ -117,11 +117,15 @@
 }
 
 - (void)setPauseOnEnterBackground:(BOOL)pauses {
-	NSArray *pauseN = @[UIApplicationWillResignActiveNotification,
+	NSArray *pauseN = @[
+		UIApplicationWillResignActiveNotification,
 		UIApplicationDidEnterBackgroundNotification,
-		UIApplicationWillTerminateNotification];
-	NSArray *resumeN = @[UIApplicationWillEnterForegroundNotification,
-		UIApplicationDidBecomeActiveNotification];
+		UIApplicationWillTerminateNotification
+	];
+	NSArray *resumeN = @[
+		UIApplicationWillEnterForegroundNotification,
+		UIApplicationDidBecomeActiveNotification
+	];
 	
 	if (pauses) {
 		[self observeKeyPaths:pauseN selector:@selector(pause)];
@@ -158,7 +162,8 @@
 }
 
 - (void)loadScriptAtPath:(NSString *)path {
-	NSString *script = [NSString stringWithContentsOfFile:[self pathForResource:path] encoding:NSUTF8StringEncoding error:NULL];
+	NSString *script = [NSString stringWithContentsOfFile:[self pathForResource:path]
+		encoding:NSUTF8StringEncoding error:NULL];
 	
 	if( !script ) {
 		NSLog(@"Error: Can't Find Script %@", path );
@@ -179,7 +184,8 @@
 
 - (JSValueRef)loadModuleWithId:(NSString *)moduleId module:(JSValueRef)module exports:(JSValueRef)exports {
 	NSString *path = [moduleId stringByAppendingString:@".js"];
-	NSString *script = [NSString stringWithContentsOfFile:[self pathForResource:path] encoding:NSUTF8StringEncoding error:NULL];
+	NSString *script = [NSString stringWithContentsOfFile:[self pathForResource:path]
+		encoding:NSUTF8StringEncoding error:NULL];
 	
 	if( !script ) {
 		NSLog(@"Error: Can't Find Module %@", moduleId );
@@ -249,8 +255,8 @@
 - (void)run:(CADisplayLink *)sender {
 	if(isPaused) { return; }
 	
-	// We rather poll for device motion updates at the beginning of each frame
-	// instead of spamming out updates that will never be seen.
+	// We rather poll for device motion updates at the beginning of each frame instead of
+	// spamming out updates that will never be seen.
 	[deviceMotionDelegate triggerDeviceMotionEvents];
 	
 	// Check all timers

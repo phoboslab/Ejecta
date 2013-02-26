@@ -228,7 +228,7 @@ static inline bool JSStrIsEqualToStr( const JSChar *s1, const char *s2, int leng
 	} \
 	EJ_MAP_EXT(OFFSET, _EJ_LITERAL(;), _EJ_UNPACK_NUMBER, __VA_ARGS__)
 	
-#define _EJ_UNPACK_NUMBER(INDEX, NAME) NAME = JSValueToNumberFast(ctx, argv[INDEX]);
+#define _EJ_UNPACK_NUMBER(INDEX, NAME) NAME = JSValueToNumberFast(ctx, argv[INDEX])
 
 
 @class EJJavaScriptView;
