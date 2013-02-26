@@ -128,6 +128,9 @@ window.document = {
 		else if( name === 'img' ) {
 			return new window.Image();
 		}
+		else if (name === 'input' || name === 'textarea') {
+  			return new Ejecta.KeyInput();
+ 		}
 		return new HTMLElement( name );
 	},
 	
