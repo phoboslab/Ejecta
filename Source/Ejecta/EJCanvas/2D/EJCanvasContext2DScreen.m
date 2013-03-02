@@ -15,12 +15,20 @@
 	CGSize screen = scriptView.bounds.size;
 	float contentScale = (useRetinaResolution && [UIScreen mainScreen].scale == 2) ? 2 : 1;
 	float aspect = frame.size.width / frame.size.height;
+	float screenAspect = screen.width / screen.height;
 	
-	if( scalingMode == kEJScalingModeFitWidth ) {
+	// Scale to fit with borders, or zoom borderless
+	if(
+		(scalingMode == kEJScalingModeFit && aspect >= screenAspect) ||
+		(scalingMode == kEJScalingModeZoom && aspect <= screenAspect)
+	) {
 		frame.size.width = screen.width;
 		frame.size.height = screen.width / aspect;
 	}
-	else if( scalingMode == kEJScalingModeFitHeight ) {
+	else if (
+		(scalingMode == kEJScalingModeFit && aspect < screenAspect) ||
+		(scalingMode == kEJScalingModeZoom && aspect > screenAspect)
+	) {
 		frame.size.width = screen.height * aspect;
 		frame.size.height = screen.height;
 	}

@@ -14,7 +14,7 @@
 - (void)createWithJSObject:(JSObjectRef)obj scriptView:(EJJavaScriptView *)view {
 	[super createWithJSObject:obj scriptView:view];
 				
-	scalingMode = kEJScalingModeFitWidth;
+	scalingMode = kEJScalingModeFit;
 	useRetinaResolution = true;
 	msaaEnabled = false;
 	msaaSamples = 2;
@@ -49,9 +49,9 @@
 }
 
 EJ_BIND_ENUM(scalingMode, scalingMode,
-	"none",			// kEJScalingModeNone
-	"fit-width",	// kEJScalingModeFitWidth
-	"fit-height"	// FitHeight
+	"none",	// kEJScalingModeNone
+	"fit",	// kEJScalingModeFit
+	"zoom"	// FitHeight
 );
 
 EJ_BIND_GET(width, ctx) {

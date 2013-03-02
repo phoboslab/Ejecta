@@ -2,8 +2,10 @@
 
 typedef enum {
 	kEJScalingModeNone,
-	kEJScalingModeFitWidth,
-	kEJScalingModeFitHeight
+	kEJScalingModeFit,
+	kEJScalingModeZoom,
+	// TODO: implement a scaling mode that doesn't preserve aspect ratio
+	// and just stretches; needs support for touch input as well
 } EJScalingMode;
 
 @protocol EJPresentable
