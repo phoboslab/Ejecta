@@ -32,6 +32,11 @@
 		frame.size.width = screen.height * aspect;
 		frame.size.height = screen.height;
 	}
+	
+	// Center view
+	frame.origin.x = (screen.width - frame.size.width)/2;
+	frame.origin.y = (screen.height - frame.size.height)/2;
+		
 	float internalScaling = frame.size.width / (float)width;
 	scriptView.internalScaling = internalScaling;
 	
