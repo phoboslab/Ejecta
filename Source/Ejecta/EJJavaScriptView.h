@@ -33,6 +33,9 @@
 @class EJClassLoader;
 
 @interface EJJavaScriptView : UIView {
+	NSString *appFolder;
+	NSString *bootJS;
+	
 	BOOL pauseOnEnterBackground;
 	BOOL hasScreenCanvas;
 
@@ -66,6 +69,9 @@
 	@public JSValueRef jsUndefined;
 }
 
+@property (nonatomic, copy) NSString *appFolder;
+@property (nonatomic, copy) NSString *bootJS;
+
 @property (nonatomic, assign) BOOL pauseOnEnterBackground;
 @property (nonatomic, assign, getter = isPaused) BOOL isPaused; // Pauses drawing/updating of the JSView
 @property (nonatomic, assign) BOOL hasScreenCanvas;
@@ -83,6 +89,8 @@
 @property (nonatomic, retain) EJCanvasContext<EJPresentable> *screenRenderingContext;
 
 @property (nonatomic, retain) NSOperationQueue *backgroundQueue;
+
+- (id)initWithFrame:(CGRect)frame andAppFolder:(NSString *)folder withBootJS:(NSString *)js;
 
 - (void)loadScriptAtPath:(NSString *)path;
 - (void)loadScript:(NSString *)script sourceURL:(NSString *)sourceURL;

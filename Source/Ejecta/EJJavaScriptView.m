@@ -10,6 +10,9 @@
 
 @implementation EJJavaScriptView
 
+@synthesize appFolder;
+@synthesize bootJS;
+
 @synthesize pauseOnEnterBackground;
 @synthesize isPaused;
 @synthesize hasScreenCanvas;
@@ -27,7 +30,14 @@
 @synthesize backgroundQueue;
 
 - (id)initWithFrame:(CGRect)frame {
-	if( self = [super initWithFrame:frame] ) {		
+	return [self initWithFrame:frame andAppFolder:EJECTA_APP_FOLDER withBootJS:EJECTA_BOOT_JS];
+}
+
+- (id)initWithFrame:(CGRect)frame andAppFolder:(NSString *)folder withBootJS:(NSString *)js {
+	if( self = [super initWithFrame:frame] ) {
+		appFolder = folder;
+		bootJS = js;
+		
 		isPaused = false;
 		internalScaling = 1;
 
@@ -69,7 +79,7 @@
 		glCurrentContext = openGLContext.glContext2D;
 		[EAGLContext setCurrentContext:glCurrentContext];
 		
-		[self loadScriptAtPath:EJECTA_BOOT_JS];
+		[self loadScriptAtPath:bootJS];
 	}
 	return self;
 }
@@ -154,7 +164,7 @@
 
 //TODO: should not couple to app folder
 - (NSString *)pathForResource:(NSString *)path {
-	return [NSString stringWithFormat:@"%@/" EJECTA_APP_FOLDER "%@", [[NSBundle mainBundle] resourcePath], path];
+	return [NSString stringWithFormat:@"%@/%@%@", [[NSBundle mainBundle] resourcePath], appFolder, path];
 }
 
 - (void)loadScriptAtPath:(NSString *)path {
