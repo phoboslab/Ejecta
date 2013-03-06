@@ -10,6 +10,9 @@
 
 @implementation EJJavaScriptView
 
+@synthesize appFolder;
+@synthesize bootJS;
+
 @synthesize pauseOnEnterBackground;
 @synthesize isPaused;
 @synthesize hasScreenCanvas;
@@ -27,7 +30,14 @@
 @synthesize backgroundQueue;
 
 - (id)initWithFrame:(CGRect)frame {
-	if( self = [super initWithFrame:frame] ) {		
+	return [self initWithFrame:frame andAppFolder:EJECTA_APP_FOLDER withBootJS:EJECTA_BOOT_JS];
+}
+
+- (id)initWithFrame:(CGRect)frame andAppFolder:(NSString *)folder withBootJS:(NSString *)js {
+	if( self = [super initWithFrame:frame] ) {
+		appFolder = folder;
+		bootJS = js;
+		
 		isPaused = false;
 		internalScaling = 1;
 
@@ -69,7 +79,7 @@
 		glCurrentContext = openGLContext.glContext2D;
 		[EAGLContext setCurrentContext:glCurrentContext];
 		
-		[self loadScriptAtPath:EJECTA_BOOT_JS];
+		[self loadScriptAtPath:bootJS];
 	}
 	return self;
 }
@@ -154,27 +164,37 @@
 
 //TODO: should not couple to app folder
 - (NSString *)pathForResource:(NSString *)path {
-	return [NSString stringWithFormat:@"%@/" EJECTA_APP_FOLDER "%@", [[NSBundle mainBundle] resourcePath], path];
+	return [NSString stringWithFormat:@"%@/%@%@", [[NSBundle mainBundle] resourcePath], appFolder, path];
 }
 
 - (void)loadScriptAtPath:(NSString *)path {
 	NSString *script = [NSString stringWithContentsOfFile:[self pathForResource:path] encoding:NSUTF8StringEncoding error:NULL];
-	
-	if( !script ) {
-		NSLog(@"Error: Can't Find Script %@", path );
+	[self loadScript:script
+		   sourceURL:path];
+}
+
+- (void)loadScript:(NSString *)script sourceURL:(NSString *)sourceURL {
+	if( [script length] == 0 ) {
+		NSLog(@"Error: No or empty script given");
 		return;
 	}
-	
-	NSLog(@"Loading Script: %@", path );
+    
 	JSStringRef scriptJS = JSStringCreateWithCFString((CFStringRef)script);
-	JSStringRef pathJS = JSStringCreateWithCFString((CFStringRef)path);
-	
+	JSStringRef sourceURLJS = NULL;
+    
+	if( [sourceURL length] > 0 ) {
+		sourceURLJS = JSStringCreateWithCFString((CFStringRef)sourceURL);
+	}
+    
 	JSValueRef exception = NULL;
-	JSEvaluateScript(jsGlobalContext, scriptJS, NULL, pathJS, 0, &exception );
+	JSEvaluateScript(jsGlobalContext, scriptJS, NULL, sourceURLJS, 0, &exception );
 	[self logException:exception ctx:jsGlobalContext];
 	
 	JSStringRelease( scriptJS );
-	JSStringRelease( pathJS );
+    
+	if ( sourceURLJS ) {
+		JSStringRelease( sourceURLJS );
+	}
 }
 
 - (JSValueRef)loadModuleWithId:(NSString *)moduleId module:(JSValueRef)module exports:(JSValueRef)exports {
