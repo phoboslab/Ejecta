@@ -11,7 +11,7 @@
 #import "EJNonRetainingProxy.h"
 
 #define EJECTA_VERSION @"1.2"
-#define EJECTA_APP_FOLDER @"App/"
+#define EJECTA_DEFAULT_APP_FOLDER @"App/"
 
 #define EJECTA_BOOT_JS @"../Ejecta.js"
 
@@ -33,6 +33,8 @@
 @class EJClassLoader;
 
 @interface EJJavaScriptView : UIView {
+	NSString *appFolder;
+	
 	BOOL pauseOnEnterBackground;
 	BOOL hasScreenCanvas;
 
@@ -66,6 +68,8 @@
 	@public JSValueRef jsUndefined;
 }
 
+@property (nonatomic, copy) NSString *appFolder;
+
 @property (nonatomic, assign) BOOL pauseOnEnterBackground;
 @property (nonatomic, assign, getter = isPaused) BOOL isPaused; // Pauses drawing/updating of the JSView
 @property (nonatomic, assign) BOOL hasScreenCanvas;
@@ -84,7 +88,10 @@
 
 @property (nonatomic, retain) NSOperationQueue *backgroundQueue;
 
+- (id)initWithFrame:(CGRect)frame appFolder:(NSString *)folder;
+
 - (void)loadScriptAtPath:(NSString *)path;
+- (void)loadScript:(NSString *)script sourceURL:(NSString *)sourceURL;
 
 - (void)clearCaches;
 
