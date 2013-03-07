@@ -82,6 +82,7 @@ window.Image = Ejecta.Image;
 window.Audio = Ejecta.Audio;
 window.XMLHttpRequest = Ejecta.HttpRequest;
 window.localStorage = new Ejecta.LocalStorage();
+window.WebSocket = Ejecta.WebSocket;
 
 
 // Set up a "fake" HTMLElement
