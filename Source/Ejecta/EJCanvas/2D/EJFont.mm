@@ -416,7 +416,7 @@ int EJFontGlyphLayoutSortByTextureIndex(const void *a, const void *b) {
 	float yOffset = [self getYOffsetForBaseline:context.state->textBaseline];
 	EJTextMetrics metrics = [self getLayoutForString:string].metrics;
 	
-	metrics.width = ceilf(metrics.width);
+	metrics.width = metrics.width;
 	metrics.ascent += yOffset;
 	metrics.descent += yOffset;
 	
