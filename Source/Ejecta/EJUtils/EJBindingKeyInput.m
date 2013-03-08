@@ -9,9 +9,9 @@
 }
 
 - (BOOL)becomeFirstResponder{
-    BOOL current = [self isFirstResponder];
+    BOOL isCurrent = [self isFirstResponder];
     BOOL become = [super becomeFirstResponder];
-    if (become && !current && [self.delegate respondsToSelector:@selector(keyInputDidBecomeFirstResponder:)]) {
+    if (become && !isCurrent && [self.delegate respondsToSelector:@selector(keyInputDidBecomeFirstResponder:)]) {
         [self.delegate keyInputDidBecomeFirstResponder:self];
     }
     return become;
@@ -22,9 +22,9 @@
 }
 
 - (BOOL)resignFirstResponder{
-    BOOL current = [self isFirstResponder];
+    BOOL isCurrent = [self isFirstResponder];
     BOOL resign = [super resignFirstResponder];
-    if (resign && !current && [self.delegate respondsToSelector:@selector(keyInputDidResignFirstResponderStatus:)]) {
+    if (resign && isCurrent && [self.delegate respondsToSelector:@selector(keyInputDidResignFirstResponderStatus:)]) {
         [self.delegate keyInputDidResignFirstResponderStatus:self];
     }
     return resign;
@@ -65,7 +65,8 @@
 - (void)dealloc
 {
     self.inputController.delegate = nil;
-    self.inputController = nil;
+    [_inputController release];
+    [_value release];
     [super dealloc];
 }
 
