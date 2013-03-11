@@ -170,6 +170,7 @@ EJ_BIND_FUNCTION(close, ctx, argc, argv) {
 	return NULL;
 }
 
+EJ_BIND_EVENT(message);
 EJ_BIND_EVENT(open);
 EJ_BIND_EVENT(error);
 EJ_BIND_EVENT(close);
