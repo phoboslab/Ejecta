@@ -876,7 +876,13 @@ EJ_BIND_FUNCTION(getShaderParameter, ctx, argc, argv) {
 	
 	GLint value;
 	glGetShaderiv(shader, pname, &value);
-	return JSValueMakeNumber(ctx, value);
+	
+	if( pname == GL_DELETE_STATUS || pname == GL_COMPILE_STATUS ) {
+		return JSValueMakeBoolean(ctx, value);
+	}
+	else { // GL_SHADER_TYPE || GL_INFO_LOG_LENGTH || GL_SHADER_SOURCE_LENGTH
+		return JSValueMakeNumber(ctx, value);
+	}
 }
 
 EJ_BIND_FUNCTION(getShaderPrecisionFormat, ctx, argc, argv) {
