@@ -29,6 +29,7 @@
 	}
 	
 	EJJavaScriptView *view = [[EJJavaScriptView alloc] initWithFrame:frame];
+    view.delegate = self;
 	self.view = view;
 	
 	[view loadScriptAtPath:@"index.js"];
@@ -57,6 +58,14 @@
 	// We just use the mask returned by supportedInterfaceOrientations here to check if
 	// this particular orientation is allowed.
 	return ( self.supportedInterfaceOrientations & (1 << orientation) );
+}
+
+#pragma mark -
+#pragma mark EJJavaScriptView delegate
+
+- (void)javaScriptView:(EJJavaScriptView *)jsview didCreateObject:(id)object
+{
+    //If you're integrating EJJavaScriptView with Obj-C code, this is a good place to get notified about new objects your JSView/.js app is creating
 }
 
 @end

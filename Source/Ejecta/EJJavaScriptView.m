@@ -125,6 +125,13 @@
 	[super dealloc];
 }
 
+- (void)didCreateNewObject:(id)obj
+{
+    if (self.delegate && [self.delegate respondsToSelector:@selector(javaScriptView:didCreateObject:)]) {
+        [self.delegate javaScriptView:self didCreateObject:obj];
+    }
+}
+
 - (void)setPauseOnEnterBackground:(BOOL)pauses {
 	NSArray *pauseN = @[
 		UIApplicationWillResignActiveNotification,
