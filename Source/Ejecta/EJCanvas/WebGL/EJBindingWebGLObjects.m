@@ -117,6 +117,12 @@
 }
 @end
 
+@implementation EJBindingWebGLVertexArrayObjectOES
+- (void)dealloc {
+	[webglContext deleteVertexArray:index];
+	[super dealloc];
+}
+@end
 
 @implementation EJBindingWebGLActiveInfo
 

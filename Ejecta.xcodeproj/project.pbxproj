@@ -99,6 +99,7 @@
 		B6F11556167BD59D001F1324 /* EJBindingWebGLObjects.m in Sources */ = {isa = PBXBuildFile; fileRef = B6F11555167BD59B001F1324 /* EJBindingWebGLObjects.m */; };
 		B6F463A41636C3FB00FC89C1 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6F463A31636C3FA00FC89C1 /* SystemConfiguration.framework */; };
 		B6F9AFC0169F81D400ABD91A /* EJBindingLifecycle.m in Sources */ = {isa = PBXBuildFile; fileRef = B6F9AFBF169F81D400ABD91A /* EJBindingLifecycle.m */; };
+		B870BDE916F2E11A00827F01 /* EJBindingWebGLExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = B870BDE816F2E11A00827F01 /* EJBindingWebGLExtensions.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -267,6 +268,8 @@
 		B6F463A31636C3FA00FC89C1 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		B6F9AFBE169F81D400ABD91A /* EJBindingLifecycle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingLifecycle.h; sourceTree = "<group>"; };
 		B6F9AFBF169F81D400ABD91A /* EJBindingLifecycle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingLifecycle.m; sourceTree = "<group>"; };
+		B870BDE716F2E10400827F01 /* EJBindingWebGLExtensions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = EJBindingWebGLExtensions.h; path = WebGL/EJBindingWebGLExtensions.h; sourceTree = "<group>"; };
+		B870BDE816F2E11A00827F01 /* EJBindingWebGLExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EJBindingWebGLExtensions.m; path = WebGL/EJBindingWebGLExtensions.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -576,6 +579,8 @@
 				B6F1154F167A7DA1001F1324 /* EJCanvasContextWebGL.m */,
 				B6F11554167BD599001F1324 /* EJBindingWebGLObjects.h */,
 				B6F11555167BD59B001F1324 /* EJBindingWebGLObjects.m */,
+				B870BDE716F2E10400827F01 /* EJBindingWebGLExtensions.h */,
+				B870BDE816F2E11A00827F01 /* EJBindingWebGLExtensions.m */,
 				B68036FF1682A58200833604 /* EJConvertWebGL.h */,
 				B68037001682A58200833604 /* EJConvertWebGL.m */,
 			);
@@ -718,6 +723,7 @@
 				B63D256516E8DE23007E6034 /* NSData+SRB64Additions.m in Sources */,
 				B63D256616E8DE23007E6034 /* SRWebSocket.m in Sources */,
 				B63D256D16E8E0EE007E6034 /* EJBindingWebSocket.m in Sources */,
+				B870BDE916F2E11A00827F01 /* EJBindingWebGLExtensions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
