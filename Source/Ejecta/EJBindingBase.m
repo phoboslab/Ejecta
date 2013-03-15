@@ -15,7 +15,6 @@
 - (void)createWithJSObject:(JSObjectRef)obj scriptView:(EJJavaScriptView *)view {
 	jsObject = obj;
 	scriptView = view;
-    [view didCreateNewObject:self];
 }
 
 - (void)prepareGarbageCollection {
@@ -33,7 +32,9 @@
 	// The JSObject retains the instance; it will be released by EJBindingBaseFinalize
 	JSObjectSetPrivate( obj, (void *)[instance retain] );
 	[instance createWithJSObject:obj scriptView:scriptViewp];
-    	
+    
+    [scriptViewp didCreateNewObject:self];
+    
 	return obj;
 }
 
