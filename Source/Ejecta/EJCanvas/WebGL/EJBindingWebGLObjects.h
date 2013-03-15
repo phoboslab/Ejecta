@@ -48,6 +48,8 @@
 @interface EJBindingWebGLFramebuffer : EJBindingWebGLObject
 @end
 
+@interface EJBindingWebGLVertexArrayObjectOES : EJBindingWebGLObject
+@end
 
 @interface EJBindingWebGLActiveInfo : EJBindingBase {
 	GLint size;
@@ -75,5 +77,3 @@
 
 @interface EJBindingWebGLContextAttributes : EJBindingBase
 @end
-
-

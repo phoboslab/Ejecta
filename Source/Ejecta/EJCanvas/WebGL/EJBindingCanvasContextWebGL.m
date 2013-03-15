@@ -1,5 +1,6 @@
 #import "EJBindingCanvasContextWebGL.h"
 #import "EJBindingWebGLObjects.h"
+#import "EJBindingWebGLExtensions.h"
 #import "EJDrawable.h"
 #import "EJTexture.h"
 #import "EJConvertWebGL.h"
@@ -9,6 +10,7 @@
 
 
 @implementation EJBindingCanvasContextWebGL
+@synthesize renderingContext;
 
 - (id)initWithCanvas:(JSObjectRef)canvas renderingContext:(EJCanvasContextWebGL *)renderingContextp {
 	if( self = [super initWithContext:NULL argc:0 argv:NULL] ) {
@@ -21,6 +23,8 @@
 		shaders = [NSMutableDictionary new];
 		framebuffers = [NSMutableDictionary new];
 		renderbuffers = [NSMutableDictionary new];
+
+        vertexArrays = [NSMutableDictionary new];
 		
 		activeTexture = &textureUnits[0];
 	}
@@ -50,6 +54,15 @@
 	
 	[textures release];
 	
+    if( availableNativeExtensions ) {
+        [availableNativeExtensions release];
+    }
+    
+    [activeExtensions release];
+    
+    for( NSNumber *n in vertexArrays ) { GLuint array = n.intValue; glDeleteVertexArraysOES(1, &array); }
+	[vertexArrays release];
+    
 	[EAGLContext setCurrentContext:oldContext];
 	
 	[renderingContext release];
@@ -125,6 +138,35 @@
 
 }
 
+- (BOOL) isExtensionAvailable:(NSString *)name {
+    NSString *openGLName;
+    if( (openGLName = getOpenGLExtensionNameFromWebGL(name)) ) {
+        if( !availableNativeExtensions ) {
+            NSString *extensionsString = [NSString stringWithCString:(char *)glGetString(GL_EXTENSIONS)
+                encoding: NSASCIIStringEncoding];
+            availableNativeExtensions = [extensionsString componentsSeparatedByString:@" "];
+        }
+        return [availableNativeExtensions containsObject:openGLName];
+    }
+    return false;
+}
+
+- (BOOL)isExtensionActive:(NSString *)name {
+    return ([activeExtensions objectForKey:name]);
+}
+
+- (void)addVertexArray:(GLuint)vertexArray obj:(JSObjectRef)objp {
+    vertexArrays[@(vertexArray)] = [NSValue valueWithPointer:objp];
+}
+
+- (void)deleteVertexArray:(GLuint)vertexArray {
+	NSNumber *key = @(vertexArray);
+	if( vertexArrays[key] ) {
+		scriptView.currentRenderingContext = renderingContext;
+		glDeleteVertexArraysOES(1, &vertexArray);
+		[vertexArrays removeObjectForKey:key];
+	}
+}
 
 
 EJ_BIND_GET(canvas, ctx) {
@@ -166,15 +208,51 @@ EJ_BIND_FUNCTION(isContextLost, ctx, argc, argv) {
 }
 
 EJ_BIND_FUNCTION(getSupportedExtensions, ctx, argc, argv) {
-	return JSObjectMakeArray(ctx, 0, NULL, NULL);
+    scriptView.currentRenderingContext = renderingContext;
+    
+    const NSArray *extensions = getWebGLExtensions();
+    JSValueRef *args = malloc(extensions.count * sizeof(JSObjectRef));
+    int count = 0;
+    
+    for( NSString *s in extensions ) {
+        if( [self isExtensionAvailable:s] ) {
+            args[count++] = NSStringToJSValue(ctx, s);
+        }
+    }
+    JSObjectRef array = JSObjectMakeArray(ctx, count, args, NULL);
+    free(args);
+    return array;
 }
 
 EJ_BIND_FUNCTION(getExtension, ctx, argc, argv) {
+    if( argc < 1 ) { return NULL; }
+
+    scriptView.currentRenderingContext = renderingContext;
+    
+    NSString *name = JSValueToNSString(ctx, argv[0]);
+    
+    // If extension has been activated before just return the same extension object
+    if( activeExtensions[name] ) {
+        return (JSObjectRef)activeExtensions[name];
+    }
+  
+    // Make sure the platform supports the extension
+    if( [self isExtensionAvailable:name] ) {
+        JSObjectRef jsExtension;
+        NSString *fullClassName = [@EJ_BINDING_CLASS_PREFIX stringByAppendingString:(NSString *)name];
+        Class class = NSClassFromString(fullClassName);
+        
+        if( class && [class isSubclassOfClass:EJBindingWebGLExtension.class] ) {
+            jsExtension = [class createJSObjectWithContext:ctx scriptView:scriptView webglContext:self];
+            activeExtensions[name] = [NSValue valueWithPointer:jsExtension];
+            return jsExtension;
+        }
+    }
 	return NULL;
 }
 
 EJ_BIND_FUNCTION(activeTexture, ctx, argc, argv) {
-	if ( argc < 1 ) { return NULL; }
+	if( argc < 1 ) { return NULL; }
 	
 	scriptView.currentRenderingContext = renderingContext;
 	
@@ -1722,8 +1800,6 @@ EJ_BIND_FUNCTION(viewport, ctx, argc, argv) {
 // ------------------------------------------------------------------------------------
 // Constants
 
-
-#define EJ_BIND_CONST_GL(NAME) EJ_BIND_CONST(NAME, GL_##NAME)
 
 // ClearBufferMask
 EJ_BIND_CONST_GL(DEPTH_BUFFER_BIT);
