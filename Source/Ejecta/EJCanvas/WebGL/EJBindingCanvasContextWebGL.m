@@ -25,6 +25,7 @@
 		renderbuffers = [NSMutableDictionary new];
 
         vertexArrays = [NSMutableDictionary new];
+		activeExtensions = [NSMutableDictionary new];
 		
 		activeTexture = &textureUnits[0];
 	}
@@ -54,10 +55,7 @@
 	
 	[textures release];
 	
-    if( availableNativeExtensions ) {
-        [availableNativeExtensions release];
-    }
-    
+	[availableNativeExtensions release];
     [activeExtensions release];
     
     for( NSNumber *n in vertexArrays ) { GLuint array = n.intValue; glDeleteVertexArraysOES(1, &array); }
@@ -144,7 +142,7 @@
         if( !availableNativeExtensions ) {
             NSString *extensionsString = [NSString stringWithCString:(char *)glGetString(GL_EXTENSIONS)
                 encoding: NSASCIIStringEncoding];
-            availableNativeExtensions = [extensionsString componentsSeparatedByString:@" "];
+            availableNativeExtensions = [[extensionsString componentsSeparatedByString:@" "] retain];
         }
         return [availableNativeExtensions containsObject:openGLName];
     }
@@ -152,7 +150,7 @@
 }
 
 - (BOOL)isExtensionActive:(NSString *)name {
-    return ([activeExtensions objectForKey:name]);
+    return !!activeExtensions[name];
 }
 
 - (void)addVertexArray:(GLuint)vertexArray obj:(JSObjectRef)objp {
@@ -233,7 +231,7 @@ EJ_BIND_FUNCTION(getExtension, ctx, argc, argv) {
     
     // If extension has been activated before just return the same extension object
     if( activeExtensions[name] ) {
-        return (JSObjectRef)activeExtensions[name];
+        return (JSObjectRef)[activeExtensions[name] pointerValue];
     }
   
     // Make sure the platform supports the extension
