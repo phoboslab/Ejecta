@@ -9,7 +9,7 @@ static void addToMap(NSMutableDictionary **dict, NSString *key, NSString *value)
         *dict = [NSMutableDictionary new];
     }
     
-    (*dict)[key] = value;
+    [(*dict) setObject:value forKey:key];
 }
 
 static void addOpenGLToWebGL(NSString *openGLName, NSString *webGLName) {
