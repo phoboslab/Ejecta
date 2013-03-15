@@ -6,6 +6,11 @@ More info & Documentation: http://impactjs.com/ejecta
 
 Ejecta is published under the [MIT Open Source License](http://opensource.org/licenses/mit-license.php).
 
+
+## Recent Breaking Changes
+
+ - 2013-03-15 - `canvas.scaleMode` was removed in favor of the `canvas.style` property. To scale and position your canvas independently from its internal resolution, use the style's `width`, `height`, `top` and `left` properties. I.e. to always scale to fullscreen: `canvas.style.width = window.innerWidth; `canvas.style.height = window.innerHeight`. Appending `px` suffixes is ok.
+
 ## WebGL Support
 
 Recently WebGL support has been merged into the main branch. It's quite buggy at the moment, but we intend to fix it. Don't expect your WebGL App to run. At all.
