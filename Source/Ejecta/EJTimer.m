@@ -33,12 +33,13 @@
 
 - (void)update {	
 	for( NSNumber *timerId in [timers allKeys]) {
-		EJTimer *timer = timers[timerId];
+		EJTimer *timer = [timers[timerId] retain];
 		[timer check];
 		
 		if( !timer.active ) {
 			[timers removeObjectForKey:timerId];
-		}		
+		}
+        [timer release];
 	}
 }
 
