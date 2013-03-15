@@ -33,7 +33,7 @@
 	JSObjectSetPrivate( obj, (void *)[instance retain] );
 	[instance createWithJSObject:obj scriptView:scriptViewp];
     
-    [scriptViewp didCreateNewObject:self];
+    [scriptViewp didCreateNewObject:instance];
     
 	return obj;
 }
