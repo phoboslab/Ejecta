@@ -15,7 +15,6 @@
 @synthesize pauseOnEnterBackground;
 @synthesize isPaused;
 @synthesize hasScreenCanvas;
-@synthesize internalScaling;
 @synthesize jsGlobalContext;
 
 @synthesize currentRenderingContext;
@@ -37,7 +36,6 @@
 		appFolder = [folder retain];
 		
 		isPaused = false;
-		internalScaling = 1;
 
 		// CADisplayLink (and NSNotificationCenter?) retains it's target, but this
 		// is causing a retain loop - we can't completely release the scriptView

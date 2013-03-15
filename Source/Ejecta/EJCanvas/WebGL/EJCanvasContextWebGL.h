@@ -13,10 +13,11 @@
 	
 	float backingStoreRatio;
 	BOOL useRetinaResolution;
-	EJScalingMode scalingMode;
+	
+	CGRect style;
 }
 
-- (id)initWithScriptView:(EJJavaScriptView *)scriptView width:(short)width height:(short)height;
+- (id)initWithScriptView:(EJJavaScriptView *)scriptView width:(short)width height:(short)height style:(CGRect)style;
 - (void)bindRenderbuffer;
 - (void)bindFramebuffer;
 - (void)present;
@@ -24,9 +25,10 @@
 - (void)create;
 - (void)prepare;
 
+@property (nonatomic) CGRect style;
+
 @property (nonatomic) BOOL needsPresenting;
 @property (nonatomic) BOOL useRetinaResolution;
-@property (nonatomic) EJScalingMode scalingMode;
 @property (nonatomic,readonly) float backingStoreRatio;
 
 @end

@@ -9,12 +9,14 @@
 
 #import "EJJavaScriptView.h"
 
+
 @implementation EJBindingCanvas
+@synthesize styleWidth, styleHeight;
+@synthesize styleLeft, styleTop;
 
 - (void)createWithJSObject:(JSObjectRef)obj scriptView:(EJJavaScriptView *)view {
 	[super createWithJSObject:obj scriptView:view];
-				
-	scalingMode = kEJScalingModeFit;
+	
 	useRetinaResolution = true;
 	msaaEnabled = false;
 	msaaSamples = 2;
@@ -28,6 +30,12 @@
 	CGSize screen = scriptView.bounds.size;
 	width = screen.width;
 	height = screen.height;
+	
+	JSContextRef ctx = scriptView.jsGlobalContext;
+	styleObject = [[EJBindingCanvasStyle alloc] init];
+	styleObject.binding = self;
+	[EJBindingCanvasStyle createJSObjectWithContext:scriptView.jsGlobalContext scriptView:scriptView instance:styleObject];
+	JSValueProtect(ctx, styleObject.jsObject);
 }
 
 - (void)dealloc {
@@ -36,6 +44,11 @@
 	}
 	[renderingContext release];
 	JSValueUnprotectSafe(scriptView.jsGlobalContext, jsCanvasContext);
+	
+	JSValueUnprotectSafe(scriptView.jsGlobalContext, styleObject.jsObject);
+	styleObject.binding = nil;
+	[styleObject release];
+	
 	[super dealloc];
 }
 
@@ -48,11 +61,22 @@
 	}
 }
 
-EJ_BIND_ENUM(scalingMode, scalingMode,
-	"none",	// kEJScalingModeNone
-	"fit",	// kEJScalingModeFit
-	"zoom"	// FitHeight
-);
+#define EJ_SET_STYLE(NAME, TARGET) \
+	- (void)NAME:(float)value { \
+		TARGET = value; \
+		if( renderingContext && [renderingContext conformsToProtocol:@protocol(EJPresentable)] ) { \
+			scriptView.currentRenderingContext = renderingContext; \
+			((NSObject<EJPresentable> *)renderingContext).style = style; \
+		} \
+	} \
+	
+	EJ_SET_STYLE(setStyleWidth, style.size.width);
+	EJ_SET_STYLE(setStyleHeight, style.size.height);
+	EJ_SET_STYLE(setStyleLeft, style.origin.x);
+	EJ_SET_STYLE(setStyleTop, style.origin.y);
+
+#undef EJ_SET_STYLE
+
 
 EJ_BIND_GET(width, ctx) {
 	return JSValueMakeNumber(ctx, width);
@@ -87,12 +111,24 @@ EJ_BIND_SET(height, ctx, value) {
 	}
 }
 
+EJ_BIND_GET(style, ctx) {
+	return styleObject.jsObject;
+}
+
 EJ_BIND_GET(offsetLeft, ctx) {
-	return JSValueMakeNumber(ctx, 0);
+	return JSValueMakeNumber(ctx, style.origin.x);
 }
 
 EJ_BIND_GET(offsetTop, ctx) {
-	return JSValueMakeNumber(ctx, 0);
+	return JSValueMakeNumber(ctx, style.origin.y);
+}
+
+EJ_BIND_GET(offsetWidth, ctx) {
+	return JSValueMakeNumber(ctx, style.size.width ? style.size.width : width);
+}
+
+EJ_BIND_GET(offsetHeight, ctx) {
+	return JSValueMakeNumber(ctx, style.size.height ? style.size.height : height);
 }
 
 EJ_BIND_SET(retinaResolutionEnabled, ctx, value) {
@@ -158,9 +194,8 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 	if( newContextMode == kEJCanvasContextMode2D ) {
 		if( isScreenCanvas ) {
 			EJCanvasContext2DScreen *sc = [[EJCanvasContext2DScreen alloc]
-				initWithScriptView:scriptView width:width height:height];
+				initWithScriptView:scriptView width:width height:height style:style];
 			sc.useRetinaResolution = useRetinaResolution;
-			sc.scalingMode = scalingMode;
 			
 			scriptView.screenRenderingContext = sc;
 			renderingContext = sc;
@@ -183,9 +218,8 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 	
 	else if( newContextMode == kEJCanvasContextModeWebGL ) {
 		EJCanvasContextWebGL *sc = [[EJCanvasContextWebGL alloc]
-			initWithScriptView:scriptView width:width height:height];
+			initWithScriptView:scriptView width:width height:height style:style];
 		sc.useRetinaResolution = useRetinaResolution;
-		sc.scalingMode = scalingMode;
 		
 		scriptView.screenRenderingContext = sc;
 		renderingContext = sc;

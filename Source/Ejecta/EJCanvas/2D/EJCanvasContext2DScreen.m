@@ -3,13 +3,48 @@
 #import "EJJavaScriptView.h"
 
 @implementation EJCanvasContext2DScreen
+@synthesize style;
 
-@synthesize scalingMode;
+- (id)initWithScriptView:(EJJavaScriptView *)scriptViewp width:(short)widthp height:(short)heightp style:(CGRect)stylep {
+	if( self = [super initWithScriptView:scriptViewp width:widthp height:heightp] ) {
+		style = stylep;
+	}
+	return self;
+}
 
 - (void)dealloc {
 	[glview removeFromSuperview];
 	[glview release];
 	[super dealloc];
+}
+
+- (void)setStyle:(CGRect)newStyle {
+	if(
+		(style.size.width ? style.size.width : width) != newStyle.size.width ||
+		(style.size.height ? style.size.height : height) != newStyle.size.height
+	) {
+		// Must resize
+		style = newStyle;
+		[self resizeToWidth:width height:height];
+	}
+	else {
+		// Just reposition
+		style = newStyle;
+		if( glview ) {
+			glview.frame = self.frame;
+		}
+	}
+}
+
+- (CGRect)frame {
+	// Returns the view frame with the current style. If the style's witdth/height
+	// is zero, the canvas width/height is used
+	return CGRectMake(
+		style.origin.x,
+		style.origin.y,
+		(style.size.width ? style.size.width : width),
+		(style.size.height ? style.size.height : height)
+	);
 }
 
 - (void)resizeToWidth:(short)newWidth height:(short)newHeight {
@@ -19,51 +54,22 @@
 	height = newHeight;
 	
 	
-	// Work out the final screen size - this takes the scalingMode, canvas size, 
-	// screen size and retina properties into account
+	CGRect frame = self.frame;
 	
-	CGRect frame = CGRectMake(0, 0, width, height);
-	CGSize screen = scriptView.bounds.size;
 	float contentScale = (useRetinaResolution && [UIScreen mainScreen].scale == 2) ? 2 : 1;
-	float aspect = frame.size.width / frame.size.height;
-	float screenAspect = screen.width / screen.height;
-	
-	// Scale to fit with borders, or zoom borderless
-	if(
-		(scalingMode == kEJScalingModeFit && aspect >= screenAspect) ||
-		(scalingMode == kEJScalingModeZoom && aspect <= screenAspect)
-	) {
-		frame.size.width = screen.width;
-		frame.size.height = screen.width / aspect;
-	}
-	else if (
-		(scalingMode == kEJScalingModeFit && aspect < screenAspect) ||
-		(scalingMode == kEJScalingModeZoom && aspect > screenAspect)
-	) {
-		frame.size.width = screen.height * aspect;
-		frame.size.height = screen.height;
-	}
-	
-	// Center view
-	frame.origin.x = (screen.width - frame.size.width)/2;
-	frame.origin.y = (screen.height - frame.size.height)/2;
-		
-	float internalScaling = frame.size.width / (float)width;
-	scriptView.internalScaling = internalScaling;
-	
-	backingStoreRatio = internalScaling * contentScale;
+	backingStoreRatio = (frame.size.width / (float)width) * contentScale;
 	
 	bufferWidth = frame.size.width * contentScale;
 	bufferHeight = frame.size.height * contentScale;
 	
 	NSLog(
 		@"Creating ScreenCanvas (2D): "
-			@"size: %dx%d, aspect ratio: %.3f, "
-			@"scaled: %.3f = %.0fx%.0f, "
+			@"size: %dx%d, "
+			@"style: %.0fx%.0f, "
 			@"retina: %@ = %.0fx%.0f, "
 			@"msaa: %@",
-		width, height, aspect, 
-		internalScaling, frame.size.width, frame.size.height,
+		width, height, 
+		frame.size.width, frame.size.height,
 		(useRetinaResolution ? @"yes" : @"no"),
 		frame.size.width * contentScale, frame.size.height * contentScale,
 		(msaaEnabled ? [NSString stringWithFormat:@"yes (%d samples)", msaaSamples] : @"no")

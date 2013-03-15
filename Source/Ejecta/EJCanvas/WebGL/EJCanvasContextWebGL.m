@@ -3,21 +3,23 @@
 
 @implementation EJCanvasContextWebGL
 
+@synthesize style;
 @synthesize useRetinaResolution;
 @synthesize backingStoreRatio;
-@synthesize scalingMode;
 
 - (BOOL)needsPresenting { return needsPresenting; }
 - (void)setNeedsPresenting:(BOOL)needsPresentingp { needsPresenting = needsPresentingp; }
 
-- (id)initWithScriptView:(EJJavaScriptView *)scriptViewp width:(short)widthp height:(short)heightp {
+- (id)initWithScriptView:(EJJavaScriptView *)scriptViewp width:(short)widthp height:(short)heightp style:(CGRect)stylep {
 	if( self = [super init] ) {
 		scriptView = scriptViewp;
 		glContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2
 			sharegroup:scriptView.openGLContext.glSharegroup];
 		
+		backingStoreRatio = 1;
 		bufferWidth = width = widthp;
 		bufferHeight = height = heightp;
+		style = stylep;
 		
 		msaaEnabled = NO;
 		msaaSamples = 2;
@@ -25,79 +27,108 @@
 	return self;
 }
 
-- (void)create {
-	// Work out the final screen size - this takes the scalingMode, canvas size,
-	// screen size and retina properties into account
-	CGRect frame = CGRectMake(0, 0, width, height);
-	CGSize screen = scriptView.bounds.size;
-	float contentScale = (useRetinaResolution && [UIScreen mainScreen].scale == 2) ? 2 : 1;
-	float aspect = frame.size.width / frame.size.height;
-	float screenAspect = screen.width / screen.height;
-	
-	// Scale to fit with borders, or zoom borderless
+- (void)setStyle:(CGRect)newStyle {
 	if(
-		(scalingMode == kEJScalingModeFit && aspect >= screenAspect) ||
-		(scalingMode == kEJScalingModeZoom && aspect <= screenAspect)
+		(style.size.width ? style.size.width : width) != newStyle.size.width ||
+		(style.size.height ? style.size.height : height) != newStyle.size.height
 	) {
-		frame.size.width = screen.width;
-		frame.size.height = screen.width / aspect;
+		// Must resize
+		style = newStyle;
+		[self resizeToWidth:width height:height];
 	}
-	else if (
-		(scalingMode == kEJScalingModeFit && aspect < screenAspect) ||
-		(scalingMode == kEJScalingModeZoom && aspect > screenAspect)
-	) {
-		frame.size.width = screen.height * aspect;
-		frame.size.height = screen.height;
+	else {
+		// Just reposition
+		style = newStyle;
+		if( glview ) {
+			glview.frame = self.frame;
+		}
 	}
+}
+
+- (CGRect)frame {
+	// Returns the view frame with the current style. If the style's witdth/height
+	// is zero, the canvas width/height is used
+	return CGRectMake(
+		style.origin.x,
+		style.origin.y,
+		(style.size.width ? style.size.width : width),
+		(style.size.height ? style.size.height : height)
+	);
+}
+
+- (void)resizeToWidth:(short)newWidth height:(short)newHeight {
+	[self flushBuffers];
 	
-	// Center view
-	frame.origin.x = (screen.width - frame.size.width)/2;
-	frame.origin.y = (screen.height - frame.size.height)/2;
+	bufferWidth = width = newWidth;
+	bufferHeight = height = newHeight;
 	
-	float internalScaling = frame.size.width / (float)width;
-	scriptView.internalScaling = internalScaling;
-	
-	backingStoreRatio = internalScaling * contentScale;
+	CGRect frame = self.frame;
+	float contentScale = bufferWidth / frame.size.width;
 	
 	NSLog(
 		@"Creating ScreenCanvas (WebGL): "
-			@"size: %dx%d, aspect ratio: %.3f, "
-			@"scaled: %.3f = %.0fx%.0f, "
-			@"retina: %@ = %.0fx%.0f",
-		width, height, aspect,
-		internalScaling, frame.size.width, frame.size.height,
-		(useRetinaResolution ? @"yes" : @"no"),
-		frame.size.width * contentScale, frame.size.height * contentScale
+			@"size: %dx%d, "
+			@"style: %.0fx%.0f",
+		width, height, 
+		frame.size.width, frame.size.height
 	);
 	
-	// Create the OpenGL UIView with final screen size and content scaling (retina)
-	glview = [[EAGLView alloc] initWithFrame:frame contentScale:contentScale retainedBacking:NO];
+	if( contentScale != 1 && contentScale != 2 ) {
+		NSLog(
+			@"Warning: contentScale for the WebGL ScreenCanvas is %f."
+			@"You'll likely get a blank screen. The canvas's style width and height"
+			@"must be 1x or 2x the internal width and height.",
+			contentScale
+		);
+	}
 	
-	// Create the frame- and renderbuffers
-	glGenFramebuffers(1, &viewFrameBuffer);
+	if( !glview ) {
+		// Create the OpenGL UIView with final screen size and content scaling (retina)
+		glview = [[EAGLView alloc] initWithFrame:frame contentScale:contentScale retainedBacking:YES];
+		
+		// Append the OpenGL view to Ejecta's main view
+		[scriptView addSubview:glview];
+	}
+	else {
+		// Resize an existing view
+		glview.frame = frame;
+		glview.contentScaleFactor = contentScale;
+		glview.layer.contentsScale = contentScale;
+	}
+	
+	GLint previousFrameBuffer;
+	GLint previousRenderBuffer;
+	glGetIntegerv( GL_FRAMEBUFFER_BINDING, &previousFrameBuffer );
+	glGetIntegerv( GL_RENDERBUFFER_BINDING, &previousRenderBuffer );
+	
 	glBindFramebuffer(GL_FRAMEBUFFER, viewFrameBuffer);
-	
-	glGenRenderbuffers(1, &viewRenderBuffer);
 	glBindRenderbuffer(GL_RENDERBUFFER, viewRenderBuffer);
 	
 	// Set up the renderbuffer and some initial OpenGL properties
 	[glContext renderbufferStorage:GL_RENDERBUFFER fromDrawable:(CAEAGLLayer *)glview.layer];
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, viewRenderBuffer);
-
-	glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &bufferWidth);
-	glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &bufferHeight);
-
-	glGenRenderbuffers(1, &depthRenderBuffer);
-	glBindRenderbuffer(GL_RENDERBUFFER, depthRenderBuffer);
 	
+	// Set up the depth buffer
+	glBindRenderbuffer(GL_RENDERBUFFER, depthRenderBuffer);
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, bufferWidth, bufferHeight);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRenderBuffer);
 	
+	// Clear
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glViewport(0, 0, width * backingStoreRatio, height * backingStoreRatio);
+	glViewport(0, 0, width, height);
 	
-	// Append the OpenGL view to Impact's main view
-	[scriptView addSubview:glview];
+	// Reset to the previously bound frame and renderbuffers
+	glBindFramebuffer(GL_FRAMEBUFFER, previousFrameBuffer);
+	glBindRenderbuffer(GL_RENDERBUFFER, previousRenderBuffer);
+}
+
+- (void)create {
+	// Create the frame- and renderbuffers
+	glGenFramebuffers(1, &viewFrameBuffer);	
+	glGenRenderbuffers(1, &viewRenderBuffer);
+	glGenRenderbuffers(1, &depthRenderBuffer);
+	
+	[self resizeToWidth:width height:height];
 }
 
 - (void)dealloc {
@@ -140,17 +171,14 @@
 	glBindFramebuffer(GL_FRAMEBUFFER, viewFrameBuffer);
 }
 
-
 - (void)setWidth:(short)newWidth {
-	if( newWidth != width ) {
-		NSLog(@"Warning: Can't change size of the screen rendering context");
-	}
+	if( newWidth == width ) { return; }
+	[self resizeToWidth:newWidth height:height];
 }
 
 - (void)setHeight:(short)newHeight {
-	if( newHeight != height ) {
-		NSLog(@"Warning: Can't change size of the screen rendering context");
-	}
+	if( newHeight == height ) { return; }
+	[self resizeToWidth:width height:newHeight];
 }
 
 - (void)finish {

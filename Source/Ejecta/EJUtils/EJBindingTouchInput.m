@@ -54,7 +54,6 @@
 
 - (void)triggerEvent:(NSString *)name all:(NSSet *)all changed:(NSSet *)changed remaining:(NSSet *)remaining {
 	JSContextRef ctx = scriptView.jsGlobalContext;
-	float scale = scriptView.internalScaling;
 	
 	JSObjectSetProperty(ctx, jsRemainingTouches, jsLengthName, JSValueMakeNumber(ctx, remaining.count), kJSPropertyAttributeNone, NULL);
 	JSObjectSetProperty(ctx, jsChangedTouches, jsLengthName, JSValueMakeNumber(ctx, changed.count), kJSPropertyAttributeNone, NULL);
@@ -68,8 +67,8 @@
 		CGPoint pos = [touch locationInView:touch.view];
 		
 		JSValueRef identifier = JSValueMakeNumber(ctx, [touch hash] );
-		JSValueRef x = JSValueMakeNumber(ctx, pos.x / scale );
-		JSValueRef y = JSValueMakeNumber(ctx, pos.y / scale );
+		JSValueRef x = JSValueMakeNumber(ctx, pos.x);
+		JSValueRef y = JSValueMakeNumber(ctx, pos.y);
 		
 		JSObjectRef jsTouch = jsTouchesPool[poolIndex++];
 		JSObjectSetProperty( ctx, jsTouch, jsIdentifierName, identifier, kJSPropertyAttributeNone, NULL );

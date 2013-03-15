@@ -3,13 +3,14 @@
 #import "EJPresentable.h"
 
 @interface EJCanvasContext2DScreen : EJCanvasContext2D <EJPresentable> {
-	EAGLView *glview;	
-	EJScalingMode scalingMode;
+	EAGLView *glview;
+	CGRect style;
 }
 
+- (id)initWithScriptView:(EJJavaScriptView *)scriptViewp width:(short)widthp height:(short)heightp style:(CGRect)stylep;
 - (void)present;
 - (void)finish;
 
-@property (nonatomic) EJScalingMode scalingMode;
+@property (nonatomic) CGRect style;
 
 @end
