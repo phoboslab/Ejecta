@@ -6,8 +6,19 @@
 
 @synthesize scalingMode;
 
+- (void)dealloc {
+	[glview removeFromSuperview];
+	[glview release];
+	[super dealloc];
+}
 
-- (void)create {
+- (void)resizeToWidth:(short)newWidth height:(short)newHeight {
+	[self flushBuffers];
+	
+	width = newWidth;
+	height = newHeight;
+	
+	
 	// Work out the final screen size - this takes the scalingMode, canvas size, 
 	// screen size and retina properties into account
 	
@@ -58,45 +69,27 @@
 		(msaaEnabled ? [NSString stringWithFormat:@"yes (%d samples)", msaaSamples] : @"no")
 	);
 	
-	// Create the OpenGL UIView with final screen size and content scaling (retina)
-	glview = [[EAGLView alloc] initWithFrame:frame contentScale:contentScale retainedBacking:YES];
-
-	// This creates the frame- and renderbuffers
-	[super create];
 	
-	// Set up the renderbuffer and some initial OpenGL properties
+	if( !glview ) {
+		// Create the OpenGL UIView with final screen size and content scaling (retina)
+		glview = [[EAGLView alloc] initWithFrame:frame contentScale:contentScale retainedBacking:YES];
+		
+		// Append the OpenGL view to Ejecta's main view
+		[scriptView addSubview:glview];
+	}
+	else {
+		// Resize an existing view
+		glview.frame = frame;
+	}
+	
+	// Set up the renderbuffer
 	[glContext renderbufferStorage:GL_RENDERBUFFER fromDrawable:(CAEAGLLayer *)glview.layer];
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, viewRenderBuffer);
 	
 	// Flip the screen - OpenGL has the origin in the bottom left corner. We want the top left.
 	upsideDown = true;
 	
-	[self prepare];
-	
-	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
-
-	// Append the OpenGL view to Ejecta's main view
-	[scriptView addSubview:glview];
-}
-
-- (void)dealloc {
-	[glview removeFromSuperview];
-	[glview release];
-	[super dealloc];
-}
-
-
-- (void)setWidth:(short)newWidth {
-	if( newWidth != width ) {
-		NSLog(@"Warning: Can't change size of the screen rendering context");
-	}
-}
-
-- (void)setHeight:(short)newHeight {
-	if( newHeight != height ) {
-		NSLog(@"Warning: Can't change size of the screen rendering context");
-	}
+	[super resetFramebuffer];
 }
 
 - (void)finish {

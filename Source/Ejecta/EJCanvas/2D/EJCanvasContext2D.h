@@ -136,6 +136,8 @@ static inline EJColorRGBA EJCanvasBlendStrokeColor( EJCanvasState *state ) {
 
 - (id)initWithScriptView:(EJJavaScriptView *)scriptViewp width:(short)widthp height:(short)heightp;
 - (void)create;
+- (void)resizeToWidth:(short)newWidth height:(short)newHeight;
+- (void)resetFramebuffer;
 - (void)createStencilBufferOnce;
 - (void)bindVertexBuffer;
 - (void)prepare;

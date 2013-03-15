@@ -92,13 +92,7 @@ const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
 - (void)create {
 	if( msaaEnabled ) {
 		glGenFramebuffers(1, &msaaFrameBuffer);
-		glBindFramebuffer(GL_FRAMEBUFFER, msaaFrameBuffer);
-		
 		glGenRenderbuffers(1, &msaaRenderBuffer);
-		glBindRenderbuffer(GL_RENDERBUFFER, msaaRenderBuffer);
-		
-		glRenderbufferStorageMultisampleAPPLE(GL_RENDERBUFFER, msaaSamples, GL_RGBA8_OES, bufferWidth, bufferHeight);
-		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, msaaRenderBuffer);
 	}
 	
 	glGenFramebuffers(1, &viewFrameBuffer);
@@ -112,6 +106,45 @@ const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
 	
 	glEnable(GL_BLEND);
 	glDepthFunc(GL_ALWAYS);
+	
+	[self resizeToWidth:width height:height];
+}
+
+- (void)resizeToWidth:(short)newWidth height:(short)newHeight {
+	// This function is a stub - Overwritten in both subclasses
+	width = newWidth;
+	height = newHeight;
+	
+	backingStoreRatio = (useRetinaResolution && [UIScreen mainScreen].scale == 2) ? 2 : 1;
+	bufferWidth = width * backingStoreRatio;
+	bufferHeight = height * backingStoreRatio;
+	
+	[self resetFramebuffer];
+}
+
+- (void)resetFramebuffer {
+	// Delete stencil buffer if present; it will be re-created when needed
+	if( stencilBuffer ) {
+		glDeleteRenderbuffers(1, &stencilBuffer);
+		stencilBuffer = 0;
+	}
+	
+	// Resize the MSAA buffer
+	if( msaaEnabled && msaaFrameBuffer && msaaRenderBuffer ) {
+		glBindFramebuffer(GL_FRAMEBUFFER, msaaFrameBuffer);
+		glBindRenderbuffer(GL_RENDERBUFFER, msaaRenderBuffer);
+		
+		glRenderbufferStorageMultisampleAPPLE(GL_RENDERBUFFER, msaaSamples, GL_RGBA8_OES, bufferWidth, bufferHeight);
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, msaaRenderBuffer);
+	}
+	
+	[self prepare];
+	
+	// Clear to transparent
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
+	
+	needsPresenting = YES;
 }
 
 - (void)createStencilBufferOnce {
@@ -177,6 +210,16 @@ const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
 	}
 	
 	needsPresenting = YES;
+}
+
+- (void)setWidth:(short)newWidth {
+	if( newWidth == width ) { return; }
+	[self resizeToWidth:newWidth height:height];
+}
+
+- (void)setHeight:(short)newHeight {
+	if( newHeight == height ) { return; }
+	[self resizeToWidth:width height:newHeight];
 }
 
 - (void)setTexture:(EJTexture *)newTexture {
