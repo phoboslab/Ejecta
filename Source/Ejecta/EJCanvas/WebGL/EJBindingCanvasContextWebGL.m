@@ -136,21 +136,12 @@
 
 }
 
-- (BOOL) isExtensionAvailable:(NSString *)name {
-    NSString *openGLName;
-    if( (openGLName = getOpenGLExtensionNameFromWebGL(name)) ) {
-        if( !availableNativeExtensions ) {
-            NSString *extensionsString = [NSString stringWithCString:(char *)glGetString(GL_EXTENSIONS)
-                encoding: NSASCIIStringEncoding];
-            availableNativeExtensions = [[extensionsString componentsSeparatedByString:@" "] retain];
-        }
-        return [availableNativeExtensions containsObject:openGLName];
-    }
-    return false;
-}
-
-- (BOOL)isExtensionActive:(NSString *)name {
-    return !!activeExtensions[name];
+- (BOOL) isExtensionAvailable:(NSString *)name {	
+	if( !availableNativeExtensions ) {
+		NSString *extensionsString = [NSString stringWithUTF8String:(char *)glGetString(GL_EXTENSIONS)];
+		availableNativeExtensions = [[extensionsString componentsSeparatedByString:@" "] retain];
+	}
+	return [availableNativeExtensions containsObject:[@"GL_" stringByAppendingString:name]];
 }
 
 - (void)addVertexArray:(GLuint)vertexArray obj:(JSObjectRef)objp {
@@ -208,16 +199,17 @@ EJ_BIND_FUNCTION(isContextLost, ctx, argc, argv) {
 EJ_BIND_FUNCTION(getSupportedExtensions, ctx, argc, argv) {
     scriptView.currentRenderingContext = renderingContext;
     
-    const NSArray *extensions = getWebGLExtensions();
-    JSValueRef *args = malloc(extensions.count * sizeof(JSObjectRef));
+    JSValueRef *args = malloc(EJWebGLExtensionsCount * sizeof(JSObjectRef));
     int count = 0;
     
-    for( NSString *s in extensions ) {
-        if( [self isExtensionAvailable:s] ) {
-            args[count++] = NSStringToJSValue(ctx, s);
-        }
-    }
-    JSObjectRef array = JSObjectMakeArray(ctx, count, args, NULL);
+	for( int i = 0; i < EJWebGLExtensionsCount; i++ ) {
+		NSString *name = [NSString stringWithUTF8String:EJWebGLExtensions[i]];
+		if( [self isExtensionAvailable:name] ) {
+			args[count++] = NSStringToJSValue(ctx, name);
+		}
+	}
+	JSObjectRef array = JSObjectMakeArray(ctx, count, args, NULL);
+	
     free(args);
     return array;
 }
@@ -237,7 +229,7 @@ EJ_BIND_FUNCTION(getExtension, ctx, argc, argv) {
     // Make sure the platform supports the extension
     if( [self isExtensionAvailable:name] ) {
         JSObjectRef jsExtension;
-        NSString *fullClassName = [@EJ_BINDING_CLASS_PREFIX stringByAppendingString:(NSString *)name];
+        NSString *fullClassName = [@"EJBindingWebGLExtension" stringByAppendingString:(NSString *)name];
         Class class = NSClassFromString(fullClassName);
         
         if( class && [class isSubclassOfClass:EJBindingWebGLExtension.class] ) {

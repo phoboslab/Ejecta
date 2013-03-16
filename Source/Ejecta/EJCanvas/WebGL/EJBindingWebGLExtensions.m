@@ -1,36 +1,16 @@
 #import "EJBindingWebGLExtensions.h"
 #import "EJBindingCanvasContextWebGL.h"
 
-static NSMutableDictionary *openGLToWebGLMap = nil;
-static NSMutableDictionary *webGLToOpenGLMap = nil;
 
-static void addToMap(NSMutableDictionary **dict, NSString *key, NSString *value) {
-    if( !(*dict) ) {
-        *dict = [NSMutableDictionary new];
-    }
-    
-    [(*dict) setObject:value forKey:key];
-}
+const char *EJWebGLExtensions[] = {
+	"EXT_texture_filter_anisotropic",
+	"OES_texture_float",
+	"OES_texture_half_float",
+	"OES_standard_derivatives",
+	"OES_vertex_array_object"
+};
+const int EJWebGLExtensionsCount = sizeof(EJWebGLExtensions) / sizeof(char *);
 
-static void addOpenGLToWebGL(NSString *openGLName, NSString *webGLName) {
-    addToMap(&openGLToWebGLMap, openGLName, webGLName);
-}
-
-static void addWebGLToOpenGL(NSString *webGLName, NSString *openGLName) {
-    addToMap(&webGLToOpenGLMap, webGLName, openGLName);
-}
-
-NSString *getWebGLExtensionNameFromOpenGL(NSString *openGLName) {
-    return openGLToWebGLMap[openGLName];
-}
-
-NSString *getOpenGLExtensionNameFromWebGL(NSString *webGLName) {
-    return webGLToOpenGLMap[webGLName];
-}
-
-const NSArray *getWebGLExtensions() {
-    return [webGLToOpenGLMap allKeys];
-}
 
 @implementation EJBindingWebGLExtension
 
@@ -47,8 +27,8 @@ const NSArray *getWebGLExtensions() {
 }
 
 + (JSObjectRef)createJSObjectWithContext:(JSContextRef)ctx
-                              scriptView:(EJJavaScriptView *)view
-                            webglContext:(EJBindingCanvasContextWebGL *)webglContext
+	scriptView:(EJJavaScriptView *)view
+	webglContext:(EJBindingCanvasContextWebGL *)webglContext
 {
 	id native = [[self alloc] initWithWebGLContext:webglContext];
 	
@@ -60,64 +40,63 @@ const NSArray *getWebGLExtensions() {
 @end
 
 
-@EJ_GL_EXTENSION_IMPLEMENTATION(EXT_texture_filter_anisotropic)
-
+@implementation EJBindingWebGLExtensionEXT_texture_filter_anisotropic
 EJ_BIND_CONST_GL(MAX_TEXTURE_MAX_ANISOTROPY_EXT);
 EJ_BIND_CONST_GL(TEXTURE_MAX_ANISOTROPY_EXT);
-
-@EJ_GL_EXTENSION_END
-
-
-@EJ_GL_EXTENSION_IMPLEMENTATION(OES_texture_float)
-@EJ_GL_EXTENSION_END
+@end
 
 
-@EJ_GL_EXTENSION_IMPLEMENTATION(OES_texture_half_float)
+@implementation EJBindingWebGLExtensionOES_texture_float
+@end
 
+
+@implementation EJBindingWebGLExtensionOES_texture_half_float
 EJ_BIND_CONST_GL(HALF_FLOAT_OES);
-
-@EJ_GL_EXTENSION_END
-
-
-@EJ_GL_EXTENSION_IMPLEMENTATION(OES_standard_derivatives)
-@EJ_GL_EXTENSION_END
+@end
 
 
-@EJ_GL_EXTENSION_IMPLEMENTATION(OES_vertex_array_object)
+@implementation EJBindingWebGLExtensionOES_standard_derivatives
+@end
+
+
+@implementation EJBindingWebGLExtensionOES_vertex_array_object
 
 EJ_BIND_FUNCTION(createVertexArrayOES, ctx, argc, argv) {
-    GLuint vertexArray;
-    scriptView.currentRenderingContext = webglContext.renderingContext;
-    glGenVertexArraysOES(1, &vertexArray);
+	GLuint vertexArray;
+	scriptView.currentRenderingContext = webglContext.renderingContext;
+	glGenVertexArraysOES(1, &vertexArray);
 	JSObjectRef obj = [EJBindingWebGLVertexArrayObjectOES createJSObjectWithContext:ctx
-        scriptView:scriptView webglContext:webglContext index:vertexArray];
-    [webglContext addVertexArray:vertexArray obj:obj];
-    return obj;
+		scriptView:scriptView webglContext:webglContext index:vertexArray];
+	[webglContext addVertexArray:vertexArray obj:obj];
+	return obj;
 }
 
 EJ_BIND_FUNCTION(deleteVertexArrayOES, ctx, argc, argv) { \
-    if( argc < 1 ) { return NULL; }
-    GLuint index = [EJBindingWebGLVertexArrayObjectOES indexFromJSValue:argv[0]];
-    [webglContext deleteVertexArray:index];
-    return NULL;
+	if( argc < 1 ) { return NULL; }
+
+	GLuint index = [EJBindingWebGLVertexArrayObjectOES indexFromJSValue:argv[0]];
+	[webglContext deleteVertexArray:index];
+	return NULL;
 }
 
 EJ_BIND_FUNCTION(isVertexArrayOES, ctx, argc, argv) {
-    if( argc < 1 ) { return NULL; }
-    scriptView.currentRenderingContext = webglContext.renderingContext;
-    GLuint index = [EJBindingWebGLVertexArrayObjectOES indexFromJSValue:argv[0]];
-    return JSValueMakeBoolean(ctx, glIsVertexArrayOES(index));
+	if( argc < 1 ) { return NULL; }
+
+	scriptView.currentRenderingContext = webglContext.renderingContext;
+	GLuint index = [EJBindingWebGLVertexArrayObjectOES indexFromJSValue:argv[0]];
+	return JSValueMakeBoolean(ctx, glIsVertexArrayOES(index));
 }
 
 EJ_BIND_FUNCTION(bindVertexArrayOES, ctx, argc, argv) {
-    if( argc < 1 ) { return NULL; }
-    scriptView.currentRenderingContext = webglContext.renderingContext;
-    GLuint index = [EJBindingWebGLVertexArrayObjectOES indexFromJSValue:argv[0]];
-    glBindVertexArrayOES(index);
-    return NULL;
+	if( argc < 1 ) { return NULL; }
+
+	scriptView.currentRenderingContext = webglContext.renderingContext;
+	GLuint index = [EJBindingWebGLVertexArrayObjectOES indexFromJSValue:argv[0]];
+	glBindVertexArrayOES(index);
+	return NULL;
 }
 
 // Constants
 EJ_BIND_CONST_GL(VERTEX_ARRAY_BINDING_OES);
 
-@EJ_GL_EXTENSION_END
+@end

@@ -57,8 +57,6 @@ typedef struct {
 - (void)deleteProgram:(GLuint)program;
 - (void)deleteShader:(GLuint)shader;
 
-- (BOOL)isExtensionActive:(NSString *)name;
-
 - (void)addVertexArray:(GLuint)vertexArray obj:(JSObjectRef)objp;
 - (void)deleteVertexArray:(GLuint)vertexArray;
 
