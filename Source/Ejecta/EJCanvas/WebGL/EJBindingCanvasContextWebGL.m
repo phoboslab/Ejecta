@@ -55,7 +55,8 @@
 	
 	[textures release];
 	
-    [extensions release];
+	for( NSValue *v in extensions ) { JSValueUnprotectSafe(scriptView.jsGlobalContext, v.pointerValue); }
+	[extensions release];
     
     for( NSNumber *n in vertexArrays ) { GLuint array = n.intValue; glDeleteVertexArraysOES(1, &array); }
 	[vertexArrays release];
@@ -241,6 +242,7 @@ EJ_BIND_FUNCTION(getExtension, ctx, argc, argv) {
 	if( class && [class isSubclassOfClass:EJBindingWebGLExtension.class] ) {
 		jsExtension = [class createJSObjectWithContext:ctx scriptView:scriptView webglContext:self];
 		extensions[name] = [NSValue valueWithPointer:jsExtension];
+		JSValueProtect(ctx, jsExtension);
 		return jsExtension;
 	}
 	return NULL;
