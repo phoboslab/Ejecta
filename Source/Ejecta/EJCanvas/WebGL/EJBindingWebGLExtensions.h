@@ -2,7 +2,12 @@
 #import "EJBindingBase.h"
 #import "EJBindingWebGLObjects.h"
 
-extern const char *EJWebGLExtensions[];
+typedef struct {
+    const char *exposedName;
+    const char *internalName;
+} EJWebGLExtensionName;
+
+extern const EJWebGLExtensionName EJWebGLExtensions[];
 extern const int EJWebGLExtensionsCount;
 
 
@@ -15,8 +20,6 @@ extern const int EJWebGLExtensionsCount;
 + (JSObjectRef)createJSObjectWithContext:(JSContextRef)ctx
     scriptView:(EJJavaScriptView *)view
     webglContext:(EJBindingCanvasContextWebGL *)webglContext;
-
-@property (readonly, nonatomic) NSString *openGLName;
 
 @end
 

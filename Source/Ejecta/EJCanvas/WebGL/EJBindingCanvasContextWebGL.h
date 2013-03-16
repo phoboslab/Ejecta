@@ -39,8 +39,7 @@ typedef struct {
 	NSMutableDictionary *programs;
 	NSMutableDictionary *shaders;
 	
-    NSArray *availableNativeExtensions;
-    NSMutableDictionary *activeExtensions;
+    NSMutableDictionary *extensions;
     
     NSMutableDictionary *vertexArrays;
     

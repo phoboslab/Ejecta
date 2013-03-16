@@ -25,7 +25,7 @@
 		renderbuffers = [NSMutableDictionary new];
 
         vertexArrays = [NSMutableDictionary new];
-		activeExtensions = [NSMutableDictionary new];
+		extensions = [NSMutableDictionary new];
 		
 		activeTexture = &textureUnits[0];
 	}
@@ -55,8 +55,7 @@
 	
 	[textures release];
 	
-	[availableNativeExtensions release];
-    [activeExtensions release];
+    [extensions release];
     
     for( NSNumber *n in vertexArrays ) { GLuint array = n.intValue; glDeleteVertexArraysOES(1, &array); }
 	[vertexArrays release];
@@ -136,14 +135,6 @@
 
 }
 
-- (BOOL) isExtensionAvailable:(NSString *)name {	
-	if( !availableNativeExtensions ) {
-		NSString *extensionsString = [NSString stringWithUTF8String:(char *)glGetString(GL_EXTENSIONS)];
-		availableNativeExtensions = [[extensionsString componentsSeparatedByString:@" "] retain];
-	}
-	return [availableNativeExtensions containsObject:[@"GL_" stringByAppendingString:name]];
-}
-
 - (void)addVertexArray:(GLuint)vertexArray obj:(JSObjectRef)objp {
     vertexArrays[@(vertexArray)] = [NSValue valueWithPointer:objp];
 }
@@ -199,13 +190,13 @@ EJ_BIND_FUNCTION(isContextLost, ctx, argc, argv) {
 EJ_BIND_FUNCTION(getSupportedExtensions, ctx, argc, argv) {
     scriptView.currentRenderingContext = renderingContext;
     
-    JSValueRef *args = malloc(EJWebGLExtensionsCount * sizeof(JSObjectRef));
+	const char *allExtension = (const char *)glGetString(GL_EXTENSIONS);
+	
+	JSValueRef *args = malloc(EJWebGLExtensionsCount * sizeof(JSObjectRef));
     int count = 0;
-    
 	for( int i = 0; i < EJWebGLExtensionsCount; i++ ) {
-		NSString *name = [NSString stringWithUTF8String:EJWebGLExtensions[i]];
-		if( [self isExtensionAvailable:name] ) {
-			args[count++] = NSStringToJSValue(ctx, name);
+		if( strstr(allExtension, EJWebGLExtensions[i].internalName) ) {
+			args[count++] = NSStringToJSValue(ctx, @(EJWebGLExtensions[i].exposedName));
 		}
 	}
 	JSObjectRef array = JSObjectMakeArray(ctx, count, args, NULL);
@@ -222,22 +213,36 @@ EJ_BIND_FUNCTION(getExtension, ctx, argc, argv) {
     NSString *name = JSValueToNSString(ctx, argv[0]);
     
     // If extension has been activated before just return the same extension object
-    if( activeExtensions[name] ) {
-        return (JSObjectRef)[activeExtensions[name] pointerValue];
+    if( extensions[name] ) {
+        return (JSObjectRef)[extensions[name] pointerValue];
     }
-  
-    // Make sure the platform supports the extension
-    if( [self isExtensionAvailable:name] ) {
-        JSObjectRef jsExtension;
-        NSString *fullClassName = [@"EJBindingWebGLExtension" stringByAppendingString:(NSString *)name];
-        Class class = NSClassFromString(fullClassName);
-        
-        if( class && [class isSubclassOfClass:EJBindingWebGLExtension.class] ) {
-            jsExtension = [class createJSObjectWithContext:ctx scriptView:scriptView webglContext:self];
-            activeExtensions[name] = [NSValue valueWithPointer:jsExtension];
-            return jsExtension;
-        }
-    }
+	
+	// Find the internal name for the extension and check if it's available
+	BOOL extensionAvialable = false;
+	const char *exposedName = name.UTF8String;
+	for( int i = 0; i < EJWebGLExtensionsCount; i++ ) {
+		
+		if( strcmp(exposedName, EJWebGLExtensions[i].exposedName) == 0 ) {
+			const char *allExtension = (const char *)glGetString(GL_EXTENSIONS);
+			extensionAvialable = strstr(allExtension, EJWebGLExtensions[i].internalName);
+			break;
+		}
+	}
+	
+	if( !extensionAvialable ) {
+		return NULL;
+	}
+	
+	// Construct the extension binding and return it
+	JSObjectRef jsExtension;
+	NSString *fullClassName = [@"EJBindingWebGLExtension" stringByAppendingString:(NSString *)name];
+	Class class = NSClassFromString(fullClassName);
+
+	if( class && [class isSubclassOfClass:EJBindingWebGLExtension.class] ) {
+		jsExtension = [class createJSObjectWithContext:ctx scriptView:scriptView webglContext:self];
+		extensions[name] = [NSValue valueWithPointer:jsExtension];
+		return jsExtension;
+	}
 	return NULL;
 }
 
