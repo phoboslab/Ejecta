@@ -13,6 +13,12 @@
 - (id)initWithScriptView:(EJJavaScriptView *)scriptViewp width:(short)widthp height:(short)heightp style:(CGRect)stylep {
 	if( self = [super init] ) {
 		scriptView = scriptViewp;
+		
+		// Flush the previous context - if any - before creating a new one
+		if( [EAGLContext currentContext] ) {
+			glFlush();
+		}
+		
 		glContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2
 			sharegroup:scriptView.openGLContext.glSharegroup];
 		
