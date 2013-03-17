@@ -3,8 +3,8 @@
 #import "EJBindingWebGLObjects.h"
 
 typedef struct {
-    const char *exposedName;
-    const char *internalName;
+	const char *exposedName;
+	const char *internalName;
 } EJWebGLExtensionName;
 
 extern const EJWebGLExtensionName EJWebGLExtensions[];
@@ -12,14 +12,14 @@ extern const int EJWebGLExtensionsCount;
 
 
 @interface EJBindingWebGLExtension : EJBindingBase {
-     EJBindingCanvasContextWebGL *webglContext;
+	 EJBindingCanvasContextWebGL *webglContext;
 }
 
 - (id)initWithWebGLContext:(EJBindingCanvasContextWebGL *)webglContext;
 
 + (JSObjectRef)createJSObjectWithContext:(JSContextRef)ctx
-    scriptView:(EJJavaScriptView *)view
-    webglContext:(EJBindingCanvasContextWebGL *)webglContext;
+	scriptView:(EJJavaScriptView *)view
+	webglContext:(EJBindingCanvasContextWebGL *)webglContext;
 
 @end
 
