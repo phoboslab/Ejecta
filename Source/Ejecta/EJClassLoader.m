@@ -54,6 +54,19 @@ void EJConstructorFinalize(JSObjectRef object) {
 	free(classWithScriptView);
 }
 
+bool EJConstructorHasInstance(JSContextRef ctx, JSObjectRef constructor, JSValueRef possibleInstance, JSValueRef* exception) {
+
+	// Unpack the class and instance from private data
+	EJClassWithScriptView *classWithScriptView = (EJClassWithScriptView *)JSObjectGetPrivate(constructor);
+	id instance = JSObjectGetPrivate((JSObjectRef)possibleInstance);
+	
+	if( !classWithScriptView || !instance ) {
+		return false;
+	}
+	
+	return [instance isKindOfClass:classWithScriptView->class];
+}
+
 
 @implementation EJClassLoader
 
@@ -158,6 +171,7 @@ void EJConstructorFinalize(JSObjectRef object) {
 		if( !EJGlobalConstructorClass ) {
 			JSClassDefinition constructorClassDef = kJSClassDefinitionEmpty;
 			constructorClassDef.callAsConstructor = EJCallAsConstructor;
+			constructorClassDef.hasInstance = EJConstructorHasInstance;
 			constructorClassDef.finalize = EJConstructorFinalize;
 			EJGlobalConstructorClass = JSClassCreate(&constructorClassDef);
 		}
