@@ -308,6 +308,7 @@ EJ_BIND_FUNCTION(bindBuffer, ctx, argc, argv) {
 		else { \
 			[renderingContext bind##NAME]; \
 		} \
+		renderingContext.bound##NAME = index; \
 		return NULL; \
 	}
 

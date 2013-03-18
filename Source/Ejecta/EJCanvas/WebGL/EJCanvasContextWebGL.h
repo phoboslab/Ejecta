@@ -7,6 +7,9 @@
 	GLuint viewFrameBuffer, viewRenderBuffer;
 	GLuint depthRenderBuffer;
 	
+	GLuint boundFramebuffer;
+	GLuint boundRenderbuffer;
+	
 	GLint bufferWidth, bufferHeight;
 	EAGLView *glview;
 	EJJavaScriptView *scriptView;
@@ -30,5 +33,8 @@
 @property (nonatomic) BOOL needsPresenting;
 @property (nonatomic) BOOL useRetinaResolution;
 @property (nonatomic,readonly) float backingStoreRatio;
+
+@property (nonatomic) GLuint boundFramebuffer;
+@property (nonatomic) GLuint boundRenderbuffer;
 
 @end

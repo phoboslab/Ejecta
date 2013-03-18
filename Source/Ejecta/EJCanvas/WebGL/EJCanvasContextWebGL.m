@@ -7,6 +7,9 @@
 @synthesize useRetinaResolution;
 @synthesize backingStoreRatio;
 
+@synthesize boundFramebuffer;
+@synthesize boundRenderbuffer;
+
 - (BOOL)needsPresenting { return needsPresenting; }
 - (void)setNeedsPresenting:(BOOL)needsPresentingp { needsPresenting = needsPresentingp; }
 
@@ -29,6 +32,9 @@
 		
 		msaaEnabled = NO;
 		msaaSamples = 2;
+		
+		boundFramebuffer = 0;
+		boundRenderbuffer = 0;
 	}
 	return self;
 }
@@ -155,9 +161,12 @@
 	[super dealloc];
 }
 
-- (void)prepare {	
-	glBindFramebuffer(GL_FRAMEBUFFER, viewFrameBuffer);
-	glBindRenderbuffer(GL_RENDERBUFFER, viewRenderBuffer);
+- (void)prepare {
+	// Bind to the frame/render buffer last bound on this context
+	GLuint framebuffer = boundFramebuffer ? boundFramebuffer : viewFrameBuffer;
+	GLuint renderbuffer = boundRenderbuffer ? boundRenderbuffer : viewRenderBuffer;
+	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+	glBindRenderbuffer(GL_RENDERBUFFER, renderbuffer);
 	
 	// Re-bind textures; they may have been changed in a different context
 	GLint boundTexture2D;
@@ -195,7 +204,6 @@
 	if( !needsPresenting ) { return; }
 	
 	[glContext presentRenderbuffer:GL_RENDERBUFFER];
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 	needsPresenting = NO;
 }
 
