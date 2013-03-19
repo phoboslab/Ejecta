@@ -179,7 +179,7 @@ EJ_BIND_FUNCTION(getProducts, ctx, argc, argv) {
 		[productIds addObject:JSValueToNSString(ctx, JSObjectGetPropertyAtIndex(ctx, jsProductIds, i, NULL))];
 	}
 	
-	NSLog(@"IAP: Requesting product info %@", productIds);
+	NSLog(@"IAP: Requesting product info: %@", [[productIds allObjects] componentsJoinedByString:@", "]);
 	
 	// Construct the request and insert it together with the callback into the
 	// productRequestCallbacks dict
