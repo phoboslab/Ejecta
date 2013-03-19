@@ -80,6 +80,10 @@
 		B6A0F4B416AB0B4600477789 /* EJBindingCanvasGradient.m in Sources */ = {isa = PBXBuildFile; fileRef = B6A0F4B316AB0B4500477789 /* EJBindingCanvasGradient.m */; };
 		B6AC4A061359E7A5003C4982 /* iAd.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6AC4A051359E7A5003C4982 /* iAd.framework */; };
 		B6CFCCD91332F152001F17AF /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6CFCCD81332F152001F17AF /* AVFoundation.framework */; };
+		B6D6E09A16F7D03F009AB75F /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6D6E09916F7D03C009AB75F /* StoreKit.framework */; };
+		B6D6E0A016F7E7B4009AB75F /* EJBindingIAPManager.m in Sources */ = {isa = PBXBuildFile; fileRef = B6D6E09F16F7E7B4009AB75F /* EJBindingIAPManager.m */; };
+		B6D6E0A316F7E7D8009AB75F /* EJBindingIAPTransaction.m in Sources */ = {isa = PBXBuildFile; fileRef = B6D6E0A216F7E7D8009AB75F /* EJBindingIAPTransaction.m */; };
+		B6D6E0A616F7E81B009AB75F /* EJBindingIAPProduct.m in Sources */ = {isa = PBXBuildFile; fileRef = B6D6E0A516F7E81B009AB75F /* EJBindingIAPProduct.m */; };
 		B6E02BC016D4110D00616925 /* EJNonRetainingProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E02BBF16D4110900616925 /* EJNonRetainingProxy.m */; };
 		B6F114DF1676B4FE001F1324 /* EJBindingCanvas.m in Sources */ = {isa = PBXBuildFile; fileRef = B6F114DE1676B4FE001F1324 /* EJBindingCanvas.m */; };
 		B6F114E31676BAFB001F1324 /* EJCanvasContext.m in Sources */ = {isa = PBXBuildFile; fileRef = B6F114E21676BAF9001F1324 /* EJCanvasContext.m */; };
@@ -230,6 +234,13 @@
 		B6A0F4B316AB0B4500477789 /* EJBindingCanvasGradient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingCanvasGradient.m; sourceTree = "<group>"; };
 		B6AC4A051359E7A5003C4982 /* iAd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iAd.framework; path = System/Library/Frameworks/iAd.framework; sourceTree = SDKROOT; };
 		B6CFCCD81332F152001F17AF /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		B6D6E09916F7D03C009AB75F /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		B6D6E09E16F7E7B4009AB75F /* EJBindingIAPManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingIAPManager.h; sourceTree = "<group>"; };
+		B6D6E09F16F7E7B4009AB75F /* EJBindingIAPManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingIAPManager.m; sourceTree = "<group>"; };
+		B6D6E0A116F7E7D8009AB75F /* EJBindingIAPTransaction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingIAPTransaction.h; sourceTree = "<group>"; };
+		B6D6E0A216F7E7D8009AB75F /* EJBindingIAPTransaction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingIAPTransaction.m; sourceTree = "<group>"; };
+		B6D6E0A416F7E81B009AB75F /* EJBindingIAPProduct.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingIAPProduct.h; sourceTree = "<group>"; };
+		B6D6E0A516F7E81B009AB75F /* EJBindingIAPProduct.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingIAPProduct.m; sourceTree = "<group>"; };
 		B6E02BBE16D4110600616925 /* EJNonRetainingProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJNonRetainingProxy.h; sourceTree = "<group>"; };
 		B6E02BBF16D4110900616925 /* EJNonRetainingProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJNonRetainingProxy.m; sourceTree = "<group>"; };
 		B6F114D016760EDA001F1324 /* JSTypedArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSTypedArray.h; sourceTree = "<group>"; };
@@ -280,6 +291,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B6D6E09A16F7D03F009AB75F /* StoreKit.framework in Frameworks */,
 				B63D256A16E8DF33007E6034 /* Security.framework in Frameworks */,
 				B63D256816E8DF23007E6034 /* CFNetwork.framework in Frameworks */,
 				B6F1151C1677FCF5001F1324 /* CoreMotion.framework in Frameworks */,
@@ -330,6 +342,7 @@
 				B64CE60C1666825F0087CF94 /* libJavaScriptCore.a */,
 				B66F1E7F1476B6A40090D208 /* libstdc++.dylib */,
 				B66F1E771476B3AC0090D208 /* libicucore.dylib */,
+				B6D6E09916F7D03C009AB75F /* StoreKit.framework */,
 				B63D256916E8DF33007E6034 /* Security.framework */,
 				B63D256716E8DF23007E6034 /* CFNetwork.framework */,
 				B6F1151B1677FCF2001F1324 /* CoreMotion.framework */,
@@ -468,6 +481,7 @@
 		B64CE642166682700087CF94 /* EJUtils */ = {
 			isa = PBXGroup;
 			children = (
+				B6D6E09D16F7E7B2009AB75F /* IAP */,
 				3EBC19BC16CECE190036F9F3 /* EJBindingKeyInput.h */,
 				3EBC19BD16CECE190036F9F3 /* EJBindingKeyInput.m */,
 				B6F115181677F086001F1324 /* EJBindingDeviceMotion.h */,
@@ -532,6 +546,19 @@
 				B64CE68E166682B10087CF94 /* MainWindow.xib */,
 			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		B6D6E09D16F7E7B2009AB75F /* IAP */ = {
+			isa = PBXGroup;
+			children = (
+				B6D6E09E16F7E7B4009AB75F /* EJBindingIAPManager.h */,
+				B6D6E09F16F7E7B4009AB75F /* EJBindingIAPManager.m */,
+				B6D6E0A116F7E7D8009AB75F /* EJBindingIAPTransaction.h */,
+				B6D6E0A216F7E7D8009AB75F /* EJBindingIAPTransaction.m */,
+				B6D6E0A416F7E81B009AB75F /* EJBindingIAPProduct.h */,
+				B6D6E0A516F7E81B009AB75F /* EJBindingIAPProduct.m */,
+			);
+			path = IAP;
 			sourceTree = "<group>";
 		};
 		B6F114E91676BD40001F1324 /* 2D */ = {
@@ -730,6 +757,9 @@
 				B63D256D16E8E0EE007E6034 /* EJBindingWebSocket.m in Sources */,
 				B6F629D116F353C800F16BAC /* EJBindingCanvasStyle.m in Sources */,
 				B870BDE916F2E11A00827F01 /* EJBindingWebGLExtensions.m in Sources */,
+				B6D6E0A016F7E7B4009AB75F /* EJBindingIAPManager.m in Sources */,
+				B6D6E0A316F7E7D8009AB75F /* EJBindingIAPTransaction.m in Sources */,
+				B6D6E0A616F7E81B009AB75F /* EJBindingIAPProduct.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
