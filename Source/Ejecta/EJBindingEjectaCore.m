@@ -1,11 +1,51 @@
 #import "EJBindingEjectaCore.h"
 
 #import <netinet/in.h>
+#import <sys/utsname.h>
 #import <SystemConfiguration/SystemConfiguration.h>
 
 #import "EJJavaScriptView.h"
 
 @implementation EJBindingEjectaCore
+
+NSString* getDeviceName() {
+	struct utsname systemInfo;
+	uname( &systemInfo );
+	
+	NSString* platform = [NSString stringWithCString:systemInfo.machine encoding:NSUTF8StringEncoding];
+	
+	// iPhone
+	if( [platform isEqualToString:@"iPhone1,1"] )	return @"iPhone 1G";
+	if( [platform isEqualToString:@"iPhone1,2"] )	return @"iPhone 3G";
+	if( [platform hasPrefix:@"iPhone2"] )			return @"iPhone 3GS";
+	if( [platform hasPrefix:@"iPhone3"] )			return @"iPhone 4";
+	if( [platform hasPrefix:@"iPhone4"] )			return @"iPhone 4S";
+	if( [platform hasPrefix:@"iPhone5"] )			return @"iPhone 5";
+	
+	// iPod
+	if( [platform hasPrefix:@"iPod1"] )				return @"iPod 1G";
+	if( [platform hasPrefix:@"iPod2"] )				return @"iPod 2G";
+	if( [platform hasPrefix:@"iPod3"] )				return @"iPod 3G";
+	if( [platform hasPrefix:@"iPod4"] )				return @"iPod 4G";
+	
+	// iPad
+	if( [platform hasPrefix:@"iPad1"] )				return @"iPad 1G";
+	if( [platform hasPrefix:@"iPad2"] )				return @"iPad 2G";
+	if( [platform hasPrefix:@"iPad3"] )				return @"iPad 3G";
+	if( [platform hasPrefix:@"iPad4"] )				return @"iPad 4G";
+	
+	// Apple TV
+	if( [platform hasPrefix:@"AppleTV2"] )			return @"Apple TV 2G";
+	if( [platform hasPrefix:@"AppleTV3"] )			return @"Apple TV 3G";
+	
+	// Unknown
+	if( [platform hasPrefix:@"iPhone"] )			return @"Unknown iPhone";
+	if( [platform hasPrefix:@"iPod"] )				return @"Unknown iPod";
+	if( [platform hasPrefix:@"iPad"] )				return @"Unknown iPad";
+	if( [platform hasPrefix:@"AppleTV"] )			return @"Unknown Apple TV";
+	
+	return @"Unknown device";
+}
 
 - (void)dealloc {
 	[urlToOpen release];
@@ -142,14 +182,10 @@ EJ_BIND_GET(screenHeight, ctx ) {
 	return JSValueMakeNumber( ctx, scriptView.bounds.size.height );
 }
 
-EJ_BIND_GET(userAgent, ctx ) {
-	// FIXME?! iPhone3/4/5 and iPod all have the same user agent string ('iPhone')
-	// Only iPad is different
-	
-	return NSStringToJSValue(ctx,
-		(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
-			? @"iPad"
-			: @"iPhone"
+EJ_BIND_GET(userAgent, ctx ) {	
+	return NSStringToJSValue(
+		ctx,
+		[NSString stringWithFormat: @"%@, OS %@", getDeviceName(), [[UIDevice currentDevice] systemVersion]]
 	);
 }
 
