@@ -153,6 +153,10 @@ EJ_BIND_GET(userAgent, ctx ) {
 	);
 }
 
+EJ_BIND_GET(language, ctx) {
+	return NSStringToJSValue( ctx, [[NSLocale preferredLanguages] objectAtIndex:0] );
+}
+
 EJ_BIND_GET(appVersion, ctx ) {
 	return NSStringToJSValue( ctx, EJECTA_VERSION );
 }
