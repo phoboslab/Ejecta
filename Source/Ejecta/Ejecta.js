@@ -80,6 +80,7 @@ window.requestAnimationFrame = function(cb, element){ return ej.setTimeout(cb, 1
 // The native Image, Audio, HttpRequest and LocalStorage class mimic the real elements
 window.Image = Ejecta.Image;
 window.Audio = Ejecta.Audio;
+window.Video = Ejecta.Video;
 window.XMLHttpRequest = Ejecta.HttpRequest;
 window.localStorage = new Ejecta.LocalStorage();
 window.WebSocket = Ejecta.WebSocket;
@@ -125,6 +126,9 @@ window.document = {
 		}
 		else if( name == 'audio' ) {
 			return new Ejecta.Audio();
+		}
+		else if( name == 'video' ) {
+			return new Ejecta.Video();
 		}
 		else if( name === 'img' ) {
 			return new window.Image();

@@ -19,6 +19,8 @@
 		B607AD0A132EB51000D7C3EA /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B607AD09132EB51000D7C3EA /* OpenGLES.framework */; };
 		B607AD10132EB52400D7C3EA /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B607AD0F132EB52400D7C3EA /* QuartzCore.framework */; };
 		B609F2D416AD877E00A3B2B9 /* RadialGradient.fsh in Resources */ = {isa = PBXBuildFile; fileRef = B609F2CE16AD873A00A3B2B9 /* RadialGradient.fsh */; };
+		B60FA92817021E0900078D20 /* EJBindingVideo.m in Sources */ = {isa = PBXBuildFile; fileRef = B60FA92717021E0900078D20 /* EJBindingVideo.m */; };
+		B60FA92A1702297C00078D20 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B60FA9291702297C00078D20 /* MediaPlayer.framework */; };
 		B6243666166684420046B8C7 /* libJavaScriptCore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B64CE60C1666825F0087CF94 /* libJavaScriptCore.a */; };
 		B62436681666851E0046B8C7 /* Ejecta.js in Resources */ = {isa = PBXBuildFile; fileRef = B64CE63F166682700087CF94 /* Ejecta.js */; };
 		B630048916C1A2390036D8D4 /* EJBindingTextMetrics.m in Sources */ = {isa = PBXBuildFile; fileRef = B630048816C1A1960036D8D4 /* EJBindingTextMetrics.m */; };
@@ -123,6 +125,9 @@
 		B607AD09132EB51000D7C3EA /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		B607AD0F132EB52400D7C3EA /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		B609F2CE16AD873A00A3B2B9 /* RadialGradient.fsh */ = {isa = PBXFileReference; explicitFileType = sourcecode.glsl; fileEncoding = 4; path = RadialGradient.fsh; sourceTree = "<group>"; };
+		B60FA92617021E0900078D20 /* EJBindingVideo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingVideo.h; sourceTree = "<group>"; };
+		B60FA92717021E0900078D20 /* EJBindingVideo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingVideo.m; sourceTree = "<group>"; };
+		B60FA9291702297C00078D20 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		B630048716C1A1960036D8D4 /* EJBindingTextMetrics.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EJBindingTextMetrics.h; sourceTree = "<group>"; };
 		B630048816C1A1960036D8D4 /* EJBindingTextMetrics.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EJBindingTextMetrics.m; sourceTree = "<group>"; };
 		B630048A16CB097F0036D8D4 /* EJClassLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJClassLoader.h; sourceTree = "<group>"; };
@@ -291,6 +296,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B60FA92A1702297C00078D20 /* MediaPlayer.framework in Frameworks */,
 				B6D6E09A16F7D03F009AB75F /* StoreKit.framework in Frameworks */,
 				B63D256A16E8DF33007E6034 /* Security.framework in Frameworks */,
 				B63D256816E8DF23007E6034 /* CFNetwork.framework in Frameworks */,
@@ -342,6 +348,7 @@
 				B64CE60C1666825F0087CF94 /* libJavaScriptCore.a */,
 				B66F1E7F1476B6A40090D208 /* libstdc++.dylib */,
 				B66F1E771476B3AC0090D208 /* libicucore.dylib */,
+				B60FA9291702297C00078D20 /* MediaPlayer.framework */,
 				B6D6E09916F7D03C009AB75F /* StoreKit.framework */,
 				B63D256916E8DF33007E6034 /* Security.framework */,
 				B63D256716E8DF23007E6034 /* CFNetwork.framework */,
@@ -429,6 +436,8 @@
 				B64CE63F166682700087CF94 /* Ejecta.js */,
 				B6E02BBE16D4110600616925 /* EJNonRetainingProxy.h */,
 				B6E02BBF16D4110900616925 /* EJNonRetainingProxy.m */,
+				B60FA92617021E0900078D20 /* EJBindingVideo.h */,
+				B60FA92717021E0900078D20 /* EJBindingVideo.m */,
 			);
 			path = Ejecta;
 			sourceTree = "<group>";
@@ -760,6 +769,7 @@
 				B6D6E0A016F7E7B4009AB75F /* EJBindingIAPManager.m in Sources */,
 				B6D6E0A316F7E7D8009AB75F /* EJBindingIAPTransaction.m in Sources */,
 				B6D6E0A616F7E81B009AB75F /* EJBindingIAPProduct.m in Sources */,
+				B60FA92817021E0900078D20 /* EJBindingVideo.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
