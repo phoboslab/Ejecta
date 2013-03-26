@@ -174,6 +174,11 @@ static inline unsigned int ColorHashForString( const JSChar *s, int length ) {
 };
 
 static EJColorRGBA HSLAtoColorRGBA(float h, float s, float l, float a) {
+	h = fmodf(h, 1); // wrap around
+	s = MAX(0,MIN(s,1));
+	l = MAX(0,MIN(l,1));
+	a = MAX(0,MIN(a,1));
+	
 	float r = l; // default to gray
 	float g = l;
 	float b = l;
