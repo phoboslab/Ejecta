@@ -8,11 +8,24 @@
 
 @implementation EJBindingEjectaCore
 
-NSString* getDeviceName() {
+- (NSString*) deviceName {
 	struct utsname systemInfo;
 	uname( &systemInfo );
 	
-	return [NSString stringWithCString:systemInfo.machine encoding:NSUTF8StringEncoding];
+	NSString *machine = [NSString stringWithCString:systemInfo.machine encoding:NSUTF8StringEncoding];
+	
+	if( [machine isEqualToString: @"i386"] ||
+	    [machine isEqualToString: @"x86_64"] ) {
+		
+		NSString *deviceType = ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
+			? @"iPad"
+			: @"iPhone";
+		
+		return [NSString stringWithFormat: @"%@ Simulator", deviceType];
+		
+	} else {
+		return machine;
+	}
 }
 
 - (void)dealloc {
@@ -153,7 +166,7 @@ EJ_BIND_GET(screenHeight, ctx ) {
 EJ_BIND_GET(userAgent, ctx ) {	
 	return NSStringToJSValue(
 		ctx,
-		[NSString stringWithFormat: @"Ejecta/%@ (%@; OS %@)", EJECTA_VERSION, getDeviceName(), [[UIDevice currentDevice] systemVersion]]
+		[NSString stringWithFormat: @"Ejecta/%@ (%@; OS %@)", EJECTA_VERSION, [self deviceName], [[UIDevice currentDevice] systemVersion]]
 	);
 }
 

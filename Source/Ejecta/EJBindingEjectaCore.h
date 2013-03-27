@@ -10,6 +10,7 @@ enum {
 @interface EJBindingEjectaCore : EJBindingBase {
 	NSString *urlToOpen;
 	JSObjectRef getTextCallback;
+	NSString *deviceName;
 }
 
 @end
