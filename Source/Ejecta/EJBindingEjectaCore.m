@@ -1,11 +1,32 @@
 #import "EJBindingEjectaCore.h"
 
 #import <netinet/in.h>
+#import <sys/utsname.h>
 #import <SystemConfiguration/SystemConfiguration.h>
 
 #import "EJJavaScriptView.h"
 
 @implementation EJBindingEjectaCore
+
+- (NSString*) deviceName {
+	struct utsname systemInfo;
+	uname( &systemInfo );
+	
+	NSString *machine = [NSString stringWithCString:systemInfo.machine encoding:NSUTF8StringEncoding];
+	
+	if( [machine isEqualToString: @"i386"] ||
+	    [machine isEqualToString: @"x86_64"] ) {
+		
+		NSString *deviceType = ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
+			? @"iPad"
+			: @"iPhone";
+		
+		return [NSString stringWithFormat: @"%@ Simulator", deviceType];
+		
+	} else {
+		return machine;
+	}
+}
 
 - (void)dealloc {
 	[urlToOpen release];
@@ -142,15 +163,15 @@ EJ_BIND_GET(screenHeight, ctx ) {
 	return JSValueMakeNumber( ctx, scriptView.bounds.size.height );
 }
 
-EJ_BIND_GET(userAgent, ctx ) {
-	// FIXME?! iPhone3/4/5 and iPod all have the same user agent string ('iPhone')
-	// Only iPad is different
-	
-	return NSStringToJSValue(ctx,
-		(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
-			? @"iPad"
-			: @"iPhone"
+EJ_BIND_GET(userAgent, ctx ) {	
+	return NSStringToJSValue(
+		ctx,
+		[NSString stringWithFormat: @"Ejecta/%@ (%@; OS %@)", EJECTA_VERSION, [self deviceName], [[UIDevice currentDevice] systemVersion]]
 	);
+}
+
+EJ_BIND_GET(language, ctx) {
+	return NSStringToJSValue( ctx, [[NSLocale preferredLanguages] objectAtIndex:0] );
 }
 
 EJ_BIND_GET(appVersion, ctx ) {
