@@ -15,6 +15,12 @@
 
 #define EJECTA_BOOT_JS @"../Ejecta.js"
 
+@class EJJavaScriptView;
+@protocol EJJavaScriptViewDelegate <NSObject>
+// Called when a new object is created by javascript.
+@optional
+- (void)javaScriptView:(EJJavaScriptView *)jsview didCreateObject:(id)object;
+@end
 
 @protocol EJTouchDelegate
 - (void)triggerEvent:(NSString *)name all:(NSSet *)all changed:(NSSet *)changed remaining:(NSSet *)remaining;
@@ -76,6 +82,8 @@
 @property (nonatomic, readonly) JSGlobalContextRef jsGlobalContext;
 @property (nonatomic, readonly) EJSharedOpenGLContext *openGLContext;
 
+@property (nonatomic, assign) NSObject<EJJavaScriptViewDelegate> *delegate;
+
 @property (nonatomic, retain) NSObject<EJLifecycleDelegate> *lifecycleDelegate;
 @property (nonatomic, retain) NSObject<EJTouchDelegate> *touchDelegate;
 @property (nonatomic, retain) NSObject<EJDeviceMotionDelegate> *deviceMotionDelegate;
@@ -86,6 +94,8 @@
 @property (nonatomic, retain) NSOperationQueue *backgroundQueue;
 
 - (id)initWithFrame:(CGRect)frame appFolder:(NSString *)folder;
+
+- (void)didCreateNewObject:(id)obj;
 
 - (void)loadScriptAtPath:(NSString *)path;
 - (void)loadScript:(NSString *)script sourceURL:(NSString *)sourceURL;

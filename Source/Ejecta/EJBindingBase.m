@@ -32,7 +32,9 @@
 	// The JSObject retains the instance; it will be released by EJBindingBaseFinalize
 	JSObjectSetPrivate( obj, (void *)[instance retain] );
 	[instance createWithJSObject:obj scriptView:scriptViewp];
-	
+    
+    [scriptViewp didCreateNewObject:instance];
+    
 	return obj;
 }
 
