@@ -30,14 +30,14 @@ typedef struct {
 
 @interface EJFontDescriptor : NSObject {
 	NSString *identFilled;
-	NSString *identOutlined;
 	NSString *name;
 	float size, contentScale;
 }
 + (id)descriptorWithName:(NSString *)name size:(float)size;
 
-@property (readonly, nonatomic) NSString *identFilled;
-@property (readonly, nonatomic) NSString *identOutlined;
+- (NSString *)identFilled;
+- (NSString *)identOutlinedWithWidth:(float)width;
+
 @property (readonly, nonatomic) NSString *name;
 @property (readonly, nonatomic) float size;
 
@@ -68,8 +68,9 @@ int EJFontGlyphLayoutSortByTextureIndex(const void *a, const void *b);
 	float txLineX, txLineY, txLineH;
 	
 	// Font preferences
-	float pointSize, ascent, ascentDelta, descent, leading, lineHeight, contentScale;
+	float pointSize, ascent, ascentDelta, descent, leading, lineHeight, contentScale, glyphPadding;
 	BOOL fill;
+	float lineWidth;
 	
 	// Font references
 	CTFontRef ctMainFont;
@@ -82,7 +83,7 @@ int EJFontGlyphLayoutSortByTextureIndex(const void *a, const void *b);
 	NSCache *layoutCache;
 }
 
-- (id)initWithDescriptor:(EJFontDescriptor *)desc fill:(BOOL)fill contentScale:(float)contentScale;
+- (id)initWithDescriptor:(EJFontDescriptor *)desc fill:(BOOL)fillp lineWidth:(float)lineWidthp contentScale:(float)contentScalep;
 + (void)loadFontAtPath:(NSString *)path;
 - (void)drawString:(NSString *)string toContext:(EJCanvasContext2D *)context x:(float)x y:(float)y;
 - (EJTextMetrics)measureString:(NSString *)string forContext:(EJCanvasContext2D *)context;

@@ -5,7 +5,7 @@
 
 
 @implementation EJFontDescriptor
-@synthesize identFilled, identOutlined, name, size;
+@synthesize name, size;
 
 + (id)descriptorWithName:(NSString *)name size:(float)size {
 	// Check if the font exists
@@ -17,17 +17,22 @@
 	descriptor->name = [name retain];
 	descriptor->size = size;
 	
-	descriptor->identFilled = [[NSString stringWithFormat:@"%@:F:%.2f", name, size] retain];
-	descriptor->identOutlined = [[NSString stringWithFormat:@"%@:O:%.2f", name, size] retain];
-	
+	descriptor->identFilled = [[NSString stringWithFormat:@"%@:F:%.2f", name, size] retain];	
 	return [descriptor autorelease];
 }
 
 - (void)dealloc {
 	[identFilled release];
-	[identOutlined release];
 	[name release];
 	[super dealloc];
+}
+
+- (NSString *)identFilled {
+	return identFilled;
+}
+
+- (NSString *)identOutlinedWithWidth:(float)width {
+	return [NSString stringWithFormat:@"%@:O:%.2f:%.2f", name, size, width];
 }
 
 @end
@@ -73,7 +78,7 @@ int EJFontGlyphLayoutSortByTextureIndex(const void *a, const void *b) {
 
 @implementation EJFont
 
-- (id)initWithDescriptor:(EJFontDescriptor *)desc fill:(BOOL)fillp contentScale:(float)contentScalep {
+- (id)initWithDescriptor:(EJFontDescriptor *)desc fill:(BOOL)fillp lineWidth:(float)lineWidthp contentScale:(float)contentScalep {
 	self = [super init];
 	if(self) {
 		positionsBuffer = NULL;
@@ -81,6 +86,8 @@ int EJFontGlyphLayoutSortByTextureIndex(const void *a, const void *b) {
 		
 		contentScale = contentScalep;
 		fill = fillp;
+		lineWidth = lineWidthp;
+		glyphPadding = EJ_FONT_GLYPH_PADDING + (fill ? 0 : lineWidth);
 		
 		ctMainFont = CTFontCreateWithName((CFStringRef)desc.name, desc.size, NULL);
 		cgMainFont = CTFontCopyGraphicsFont(ctMainFont, NULL);
@@ -146,10 +153,10 @@ int EJFontGlyphLayoutSortByTextureIndex(const void *a, const void *b) {
 	CTFontGetBoundingRectsForGlyphs(font, kCTFontDefaultOrientation, &glyph, &bbRect, 1);
 	
 	// Add some padding around the glyphs
-	glyphInfo->y = floorf(bbRect.origin.y) - EJ_FONT_GLYPH_PADDING;
-	glyphInfo->x = floorf(bbRect.origin.x) - EJ_FONT_GLYPH_PADDING;
-	glyphInfo->w = bbRect.size.width + EJ_FONT_GLYPH_PADDING * 2;
-	glyphInfo->h = bbRect.size.height + EJ_FONT_GLYPH_PADDING * 2;
+	glyphInfo->y = floorf(bbRect.origin.y) - glyphPadding;
+	glyphInfo->x = floorf(bbRect.origin.x) - glyphPadding;
+	glyphInfo->w = bbRect.size.width + glyphPadding * 2;
+	glyphInfo->h = bbRect.size.height + glyphPadding * 2;
 	
 	// Size needed for this glyph in pixels; must be a multiple of 8 for CG
 	int pxWidth = floorf((glyphInfo->w * contentScale) / 8 + 1) * 8;
@@ -213,7 +220,7 @@ int EJFontGlyphLayoutSortByTextureIndex(const void *a, const void *b) {
 	else {
 		CGContextSetTextDrawingMode(context, kCGTextStroke);
 		CGContextSetGrayStrokeColor(context, 1.0, 1.0);
-		CGContextSetLineWidth(context, 1);
+		CGContextSetLineWidth(context, lineWidth);
 	}
 	
 	// Render glyph and update the texture
@@ -317,8 +324,8 @@ int EJFontGlyphLayoutSortByTextureIndex(const void *a, const void *b) {
 				gl->textureIndex = [self createGlyph:gl->glyph withFont:runFont];
 			}
 			
-			metrics.ascent = MAX(metrics.ascent, gl->info->h + gl->info->y - EJ_FONT_GLYPH_PADDING);
-			metrics.descent = MAX(metrics.descent, -gl->info->y - EJ_FONT_GLYPH_PADDING);
+			metrics.ascent = MAX(metrics.ascent, gl->info->h + gl->info->y - glyphPadding);
+			metrics.descent = MAX(metrics.descent, -gl->info->y - glyphPadding);
 			layoutIndex++;
 		}		
 	}	

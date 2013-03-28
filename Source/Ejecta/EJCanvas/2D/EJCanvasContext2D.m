@@ -806,10 +806,13 @@ const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
 }
 
 - (EJFont *)getFontWithDescriptor:(EJFontDescriptor *)desc filled:(BOOL)filled {
-	NSString *cacheKey = (filled ? desc.identFilled : desc.identOutlined);
+	NSString *cacheKey = (filled)
+		? [desc identFilled]
+		: [desc identOutlinedWithWidth:state->lineWidth];
+		
 	EJFont *font = [fontCache objectForKey:cacheKey];
 	if( !font ) {
-		font = [[EJFont alloc] initWithDescriptor:desc fill:filled contentScale:backingStoreRatio];
+		font = [[EJFont alloc] initWithDescriptor:desc fill:filled lineWidth:state->lineWidth contentScale:backingStoreRatio];
 		[fontCache setObject:font forKey:cacheKey];
 		[font autorelease];
 	}
