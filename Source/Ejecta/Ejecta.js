@@ -23,6 +23,7 @@ window.screen = {
 };
 
 window.navigator = {
+	language: ej.language,
 	userAgent: ej.userAgent,
 	appVersion: ej.appVersion,
 	get onLine() { return ej.onLine; } // re-evaluate on each get
