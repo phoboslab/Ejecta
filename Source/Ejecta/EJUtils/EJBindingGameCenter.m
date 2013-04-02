@@ -26,11 +26,11 @@
 }
 
 - (void)leaderboardViewControllerDidFinish:(GKLeaderboardViewController *)viewController {
-	[scriptView.window.rootViewController dismissModalViewControllerAnimated:YES];
+	[viewController.presentingViewController dismissModalViewControllerAnimated:YES];
 }
 
 - (void)achievementViewControllerDidFinish:(GKAchievementViewController *)viewController {
-	[scriptView.window.rootViewController dismissModalViewControllerAnimated:YES];
+	[viewController.presentingViewController dismissModalViewControllerAnimated:YES];	
 }
 
 
