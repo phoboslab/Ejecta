@@ -91,8 +91,14 @@ EJ_BIND_GET(src, ctx) {
 }
 
 EJ_BIND_SET(src, ctx, value) {
-	[player stop]; [player release]; player = nil;
-	[path release]; path = nil;
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
+	[player stop];
+	[player.view removeFromSuperview];
+	[player release];
+	player = nil;
+	
+	[path release];
+	path = nil;
 	
 	path = [JSValueToNSString(ctx, value) retain];
 	
