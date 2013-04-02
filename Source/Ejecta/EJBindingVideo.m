@@ -19,12 +19,12 @@ static const EJVideoScalingMode EJVideoToMPMovieScalingMode[] = {
 }
 
 - (void)prepareGarbageCollection {
-	[player stop];
-	[player.view removeFromSuperview];
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)dealloc {
 	[player stop];
+	[player.view removeFromSuperview];
 	[player release];
 	[path release];
 	[super dealloc];
@@ -94,7 +94,7 @@ EJ_BIND_SET(src, ctx, value) {
 	[player stop]; [player release]; player = nil;
 	[path release]; path = nil;
 	
-	path = JSValueToNSString(ctx, value);
+	path = [JSValueToNSString(ctx, value) retain];
 	
 	NSURL *url = [NSURL URLWithString:path];
 	if( !url.host ) {
@@ -109,7 +109,7 @@ EJ_BIND_SET(src, ctx, value) {
 	
 	UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc]
 		initWithTarget:self action:@selector(didTap:)];
-    tapGesture.delegate = self;
+	tapGesture.delegate = self;
 	tapGesture.numberOfTapsRequired = 1;
 	[player.view addGestureRecognizer:tapGesture];
 	[tapGesture release];
