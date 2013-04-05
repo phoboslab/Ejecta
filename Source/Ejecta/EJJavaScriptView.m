@@ -26,6 +26,7 @@
 @synthesize screenRenderingContext;
 
 @synthesize backgroundQueue;
+@synthesize classLoader;
 
 - (id)initWithFrame:(CGRect)frame {
 	return [self initWithFrame:frame appFolder:EJECTA_DEFAULT_APP_FOLDER];

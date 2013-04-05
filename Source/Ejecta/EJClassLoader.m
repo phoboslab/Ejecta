@@ -3,7 +3,6 @@
 #import "EJJavaScriptView.h"
 
 
-static JSClassRef EJGlobalConstructorClass;
 static NSMutableDictionary *EJGlobalJSClassCache;
 
 typedef struct {
@@ -27,7 +26,7 @@ JSValueRef EJGetNativeClass(JSContextRef ctx, JSObjectRef object, JSStringRef pr
 		classWithScriptView->class = class;
 		classWithScriptView->scriptView = scriptView;
 		
-		obj = JSObjectMake( ctx, EJGlobalConstructorClass, (void *)classWithScriptView );
+		obj = JSObjectMake( ctx, scriptView.classLoader.jsConstructorClass, (void *)classWithScriptView );
 	}
 	
 	CFRelease(className);
@@ -69,6 +68,7 @@ bool EJConstructorHasInstance(JSContextRef ctx, JSObjectRef constructor, JSValue
 
 
 @implementation EJClassLoader
+@synthesize jsConstructorClass;
 
 + (JSClassRef)getJSClass:(id)class {
 	NSAssert(EJGlobalJSClassCache != nil, @"Attempt to access class cache without a loader present.");
@@ -167,17 +167,11 @@ bool EJConstructorHasInstance(JSContextRef ctx, JSObjectRef constructor, JSValue
 	if( self = [super init] ) {
 		JSGlobalContextRef context = scriptView.jsGlobalContext;
 		
-		// Create or retain the global constructor class
-		if( !EJGlobalConstructorClass ) {
-			JSClassDefinition constructorClassDef = kJSClassDefinitionEmpty;
-			constructorClassDef.callAsConstructor = EJCallAsConstructor;
-			constructorClassDef.hasInstance = EJConstructorHasInstance;
-			constructorClassDef.finalize = EJConstructorFinalize;
-			EJGlobalConstructorClass = JSClassCreate(&constructorClassDef);
-		}
-		else {
-			JSClassRetain(EJGlobalConstructorClass);
-		}
+		// Create the constructor class
+		JSClassDefinition constructorClassDef = kJSClassDefinitionEmpty;
+		constructorClassDef.callAsConstructor = EJCallAsConstructor;
+		constructorClassDef.finalize = EJConstructorFinalize;
+		jsConstructorClass = JSClassCreate(&constructorClassDef);
 		
 		// Create the collection class and attach it to the global context with
 		// the given name
@@ -219,7 +213,7 @@ bool EJConstructorHasInstance(JSContextRef ctx, JSObjectRef constructor, JSValue
 		[EJGlobalJSClassCache release];
 	}
 	
-	JSClassRelease(EJGlobalConstructorClass);
+	JSClassRelease(jsConstructorClass);
 	[super dealloc];
 }
 
