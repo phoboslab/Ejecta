@@ -2,9 +2,6 @@
 #import "EJBindingBase.h"
 #import "EJJavaScriptView.h"
 
-
-static NSMutableDictionary *EJGlobalJSClassCache;
-
 typedef struct {
 	Class class;
 	EJJavaScriptView *scriptView;
@@ -70,22 +67,60 @@ bool EJConstructorHasInstance(JSContextRef ctx, JSObjectRef constructor, JSValue
 @implementation EJClassLoader
 @synthesize jsConstructorClass;
 
-+ (JSClassRef)getJSClass:(id)class {
-	NSAssert(EJGlobalJSClassCache != nil, @"Attempt to access class cache without a loader present.");
-	
+- (id)initWithScriptView:(EJJavaScriptView *)scriptView name:(NSString *)name {
+	if( self = [super init] ) {
+		JSGlobalContextRef context = scriptView.jsGlobalContext;
+		
+		// Create the constructor class
+		JSClassDefinition constructorClassDef = kJSClassDefinitionEmpty;
+		constructorClassDef.callAsConstructor = EJCallAsConstructor;
+		constructorClassDef.finalize = EJConstructorFinalize;
+		jsConstructorClass = JSClassCreate(&constructorClassDef);
+		
+		// Create the collection class and attach it to the global context with
+		// the given name
+		JSClassDefinition loaderClassDef = kJSClassDefinitionEmpty;
+		loaderClassDef.getProperty = EJGetNativeClass;
+		JSClassRef loaderClass = JSClassCreate(&loaderClassDef);
+		
+		JSObjectRef global = JSContextGetGlobalObject(context);
+		
+		JSObjectRef loader = JSObjectMake(context, loaderClass, scriptView);
+		JSStringRef jsName = JSStringCreateWithUTF8CString(name.UTF8String);
+		JSObjectSetProperty(
+			context, global, jsName, loader,
+			(kJSPropertyAttributeDontDelete | kJSPropertyAttributeReadOnly),
+			NULL
+		);
+		JSStringRelease(jsName);
+		
+		
+		// Create Class cache dict
+		classCache = [[NSMutableDictionary alloc] initWithCapacity:16];
+	}
+	return self;
+}
+
+- (void)dealloc {
+	[classCache release];
+	JSClassRelease(jsConstructorClass);
+	[super dealloc];
+}
+
+- (JSClassRef)getJSClass:(id)class {	
 	// Try the cache first
-	JSClassRef jsClass = [EJGlobalJSClassCache[class] pointerValue];
+	JSClassRef jsClass = [classCache[class] pointerValue];
 	if( jsClass ) {
 		return jsClass;
 	}
 	
 	// Still here? Create and insert into cache
 	jsClass = [self createJSClass:class];
-	EJGlobalJSClassCache[class] = [NSValue valueWithPointer:jsClass];
+	classCache[class] = [NSValue valueWithPointer:jsClass];
 	return jsClass;
 }
 
-+ (JSClassRef)createJSClass:(id)class {
+- (JSClassRef)createJSClass:(id)class {
 	// Gather all class methods that return C callbacks for this class or it's parents
 	NSMutableArray *methods = [[NSMutableArray alloc] init];
 	NSMutableArray *properties = [[NSMutableArray alloc] init];
@@ -162,61 +197,6 @@ bool EJConstructorHasInstance(JSContextRef ctx, JSObjectRef constructor, JSValue
 	
 	return jsClass;
 }
-
-- (id)initWithScriptView:(EJJavaScriptView *)scriptView name:(NSString *)name {
-	if( self = [super init] ) {
-		JSGlobalContextRef context = scriptView.jsGlobalContext;
-		
-		// Create the constructor class
-		JSClassDefinition constructorClassDef = kJSClassDefinitionEmpty;
-		constructorClassDef.callAsConstructor = EJCallAsConstructor;
-		constructorClassDef.finalize = EJConstructorFinalize;
-		jsConstructorClass = JSClassCreate(&constructorClassDef);
-		
-		// Create the collection class and attach it to the global context with
-		// the given name
-		JSClassDefinition loaderClassDef = kJSClassDefinitionEmpty;
-		loaderClassDef.getProperty = EJGetNativeClass;
-		JSClassRef loaderClass = JSClassCreate(&loaderClassDef);
-		
-		JSObjectRef global = JSContextGetGlobalObject(context);
-		
-		JSObjectRef loader = JSObjectMake(context, loaderClass, scriptView);
-		JSStringRef jsName = JSStringCreateWithUTF8CString(name.UTF8String);
-		JSObjectSetProperty(
-			context, global, jsName, loader,
-			(kJSPropertyAttributeDontDelete | kJSPropertyAttributeReadOnly),
-			NULL
-		);
-		JSStringRelease(jsName);
-		
-		
-		// Create or retain the global Class cache
-		if( !EJGlobalJSClassCache ) {
-			EJGlobalJSClassCache = [[NSMutableDictionary alloc] initWithCapacity:16];
-		}
-		else {
-			[EJGlobalJSClassCache retain];
-		}
-	}
-	return self;
-}
-
-- (void)dealloc {
-	// If we are the last Collection to hold on to the Class cache, release it and
-	// set it to nil, so it can be properly re-created if needed.
-	if( EJGlobalJSClassCache.retainCount == 1 ) {
-		[EJGlobalJSClassCache release];
-		EJGlobalJSClassCache = nil;
-	}
-	else {
-		[EJGlobalJSClassCache release];
-	}
-	
-	JSClassRelease(jsConstructorClass);
-	[super dealloc];
-}
-
 
 @end
 

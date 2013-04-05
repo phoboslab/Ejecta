@@ -4,10 +4,11 @@
 @class EJJavaScriptView;
 @interface EJClassLoader : NSObject {
 	JSClassRef jsConstructorClass;
+	NSMutableDictionary *classCache;
 }
 
-+ (JSClassRef)getJSClass:(id)class;
-+ (JSClassRef)createJSClass:(id)class;
+- (JSClassRef)getJSClass:(id)class;
+- (JSClassRef)createJSClass:(id)class;
 
 - (id)initWithScriptView:(EJJavaScriptView *)scriptView name:(NSString *)name;
 
