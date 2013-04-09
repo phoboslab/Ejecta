@@ -11,6 +11,6 @@
 	JSObjectRef jsTouchesPool[EJ_TOUCH_INPUT_MAX_TOUCHES];
 }
 
-- (void)triggerEvent:(NSString *)name all:(NSSet *)all changed:(NSSet *)changed remaining:(NSSet *)remaining;
+- (void)triggerEvent:(NSString *)name all:(NSSet *)all changed:(NSSet *)changed remaining:(NSSet *)remaining scale:(float)scale;
 
 @end

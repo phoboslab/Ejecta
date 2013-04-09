@@ -219,14 +219,17 @@ var touchEvent = {
 	targetTouches: null,
 	changedTouches: null,
 	preventDefault: function(){},
-	stopPropagation: function(){}
+	stopPropagation: function(){},
+	scale: 1.0
 };
 
-var publishTouchEvent = function( type, all, changed ) {
+var publishTouchEvent = function( type, all, changed, scale ) {
 	touchEvent.touches = all;
 	touchEvent.targetTouches = all;
 	touchEvent.changedTouches = changed;
 	touchEvent.type = type;
+ 
+	touchEvent.scale = scale;
 	
 	document._publishEvent( touchEvent );
 };
@@ -234,9 +237,9 @@ eventInit.touchstart = eventInit.touchend = eventInit.touchmove = function() {
 	if( touchInput ) { return; }
 
 	touchInput = new Ejecta.TouchInput();
-	touchInput.ontouchstart = function( all, changed ){ publishTouchEvent( 'touchstart', all, changed ); };
-	touchInput.ontouchend = function( all, changed ){ publishTouchEvent( 'touchend', all, changed ); };
-	touchInput.ontouchmove = function( all, changed ){ publishTouchEvent( 'touchmove', all, changed ); };
+	touchInput.ontouchstart = function( all, changed, scale ){ publishTouchEvent( 'touchstart', all, changed, scale ); };
+	touchInput.ontouchend = function( all, changed, scale ){ publishTouchEvent( 'touchend', all, changed, scale ); };
+	touchInput.ontouchmove = function( all, changed, scale ){ publishTouchEvent( 'touchmove', all, changed, scale ); };
 };
 
 
