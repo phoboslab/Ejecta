@@ -68,7 +68,7 @@ int EJFontGlyphLayoutSortByTextureIndex(const void *a, const void *b);
 	float txLineX, txLineY, txLineH;
 	
 	// Font preferences
-	float pointSize, ascent, ascentDelta, descent, leading, lineHeight, contentScale, glyphPadding;
+	float pointSize, ascent, descent, leading, contentScale, glyphPadding;
 	BOOL fill;
 	float lineWidth;
 	
