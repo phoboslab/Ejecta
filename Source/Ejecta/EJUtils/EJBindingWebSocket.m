@@ -78,7 +78,7 @@
 	
 	// String?
 	if( [message isKindOfClass:[NSString class]] ){
-		jsMessage = NSStringToJSValue(scriptView.jsGlobalContext, message);
+		jsMessage = NSStringToJSValue(ctx, message);
 	}
 	
 	// TypedArray

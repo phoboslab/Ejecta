@@ -439,7 +439,7 @@ typedef std::vector<subpath_t> path_t;
 	// calculate starting angle for arc
 	float angle1 = atan2(1,0) - atan2(v1.x,-v1.y);
 	
-	// calculate smalles angle between both vectors
+	// calculate smallest angle between both vectors
 	// colinear vectors (for caps) need to be handled seperately
 	float angle2;
 	if( v1.x == -v2.x && v1.y == -v2.y ) {
