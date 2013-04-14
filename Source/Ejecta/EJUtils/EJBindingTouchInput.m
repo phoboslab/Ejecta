@@ -44,7 +44,7 @@
 	JSStringRelease( jsPageYName );
 	JSStringRelease( jsClientXName );
 	JSStringRelease( jsClientYName );
-	
+
 	for( int i = 0; i < EJ_TOUCH_INPUT_MAX_TOUCHES; i++ ) {
 		JSValueUnprotectSafe( ctx, jsTouchesPool[i] );
 	}
@@ -52,7 +52,7 @@
 	[super dealloc];
 }
 
-- (void)triggerEvent:(NSString *)name all:(NSSet *)all changed:(NSSet *)changed remaining:(NSSet *)remaining {
+- (void)triggerEvent:(NSString *)name all:(NSSet *)all changed:(NSSet *)changed remaining:(NSSet *)remaining scale:(float)scale {
 	JSContextRef ctx = scriptView.jsGlobalContext;
 	
 	JSObjectSetProperty(ctx, jsRemainingTouches, jsLengthName, JSValueMakeNumber(ctx, remaining.count), kJSPropertyAttributeNone, NULL);
@@ -88,7 +88,7 @@
 		if( poolIndex >= EJ_TOUCH_INPUT_MAX_TOUCHES ) { break; }
 	}
 	
-	[self triggerEvent:name argc:2 argv:(JSValueRef[]){ jsRemainingTouches, jsChangedTouches }];
+	[self triggerEvent:name argc:3 argv:(JSValueRef[]){ jsRemainingTouches, jsChangedTouches, JSValueMakeNumber(ctx, scale)}];
 }
 
 EJ_BIND_EVENT(touchstart);

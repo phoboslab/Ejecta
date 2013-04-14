@@ -327,16 +327,36 @@
 
 #pragma mark -
 #pragma mark Touch handlers
+float initialDistance = 0.0f;
+float scale = 1.0f;
+
+- (float)distanceBetweenPoint:(CGPoint)fromPoint toPoint:(CGPoint)toPoint {
+	float x = toPoint.x - fromPoint.x;
+	float y = toPoint.y - fromPoint.y;
+
+	return sqrt(x * x + y * y);
+}
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-	[touchDelegate triggerEvent:@"touchstart" all:event.allTouches changed:touches remaining:event.allTouches];
+	if ( [touches count] > 1 ) {
+		UITouch *touch1 = [[touches allObjects] objectAtIndex:0];
+		UITouch *touch2 = [[touches allObjects] objectAtIndex:1];
+		initialDistance = [self distanceBetweenPoint:[touch1 locationInView:self] toPoint:[touch2 locationInView:self]];
+
+    }
+	[touchDelegate triggerEvent:@"touchstart" all:event.allTouches changed:touches remaining:event.allTouches scale:scale];
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
 	NSMutableSet *remaining = [event.allTouches mutableCopy];
 	[remaining minusSet:touches];
 	
-	[touchDelegate triggerEvent:@"touchend" all:event.allTouches changed:touches remaining:remaining];
+	if ( [remaining count] < 2 ) {
+		scale = 1.0f;
+		initialDistance = 0.0f;
+	}
+	
+	[touchDelegate triggerEvent:@"touchend" all:event.allTouches changed:touches remaining:remaining scale:scale];
 	[remaining release];
 }
 
@@ -345,7 +365,17 @@
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-	[touchDelegate triggerEvent:@"touchmove" all:event.allTouches changed:touches remaining:event.allTouches];
+	if (( [touches count] > 1 ) && ( initialDistance > 0 ) ) {
+		UITouch *touch1 = [[touches allObjects] objectAtIndex:0];
+		UITouch *touch2 = [[touches allObjects] objectAtIndex:1];
+		float currentDistance = [self distanceBetweenPoint:[touch1 locationInView:self] toPoint:[touch2 locationInView:self]];
+		
+		if (currentDistance > initialDistance)
+			scale = 1.0f + (currentDistance - initialDistance) / initialDistance;
+		else
+			scale = 1.0f - (initialDistance - currentDistance) / initialDistance;
+    }
+	[touchDelegate triggerEvent:@"touchmove" all:event.allTouches changed:touches remaining:event.allTouches scale:scale];
 }
 
 
