@@ -27,10 +27,12 @@
 
 - (void)leaderboardViewControllerDidFinish:(GKLeaderboardViewController *)viewController {
 	[viewController.presentingViewController dismissModalViewControllerAnimated:YES];
+	viewIsActive = false;
 }
 
 - (void)achievementViewControllerDidFinish:(GKAchievementViewController *)viewController {
-	[viewController.presentingViewController dismissModalViewControllerAnimated:YES];	
+	[viewController.presentingViewController dismissModalViewControllerAnimated:YES];
+	viewIsActive = false;
 }
 
 
@@ -118,11 +120,12 @@ EJ_BIND_FUNCTION( reportScore, ctx, argc, argv ) {
 }
 
 EJ_BIND_FUNCTION( showLeaderboard, ctx, argc, argv ) {
-	if( argc < 1 ) { return NULL; }
+	if( argc < 1 || viewIsActive ) { return NULL; }
 	if( !authed ) { NSLog(@"GameKit Error: Not authed. Can't show leaderboard."); return NULL; }
 	
 	GKLeaderboardViewController *leaderboard = [[[GKLeaderboardViewController alloc] init] autorelease];
 	if( leaderboard ) {
+		viewIsActive = true;
 		leaderboard.leaderboardDelegate = self;
 		leaderboard.category = JSValueToNSString(ctx, argv[0]);
 		
@@ -206,10 +209,12 @@ EJ_BIND_FUNCTION( reportAchievementAdd, ctx, argc, argv ) {
 }
 
 EJ_BIND_FUNCTION( showAchievements, ctx, argc, argv ) {
+	if( viewIsActive ) { return NULL; }
 	if( !authed ) { NSLog(@"GameKit Error: Not authed. Can't show achievements."); return NULL; }
 	
 	GKAchievementViewController *achievementView = [[[GKAchievementViewController alloc] init] autorelease];
 	if( achievementView ) {
+		viewIsActive = true;
 		achievementView.achievementDelegate = self;
 		[scriptView.window.rootViewController presentModalViewController:achievementView animated:YES];
 	}

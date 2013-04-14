@@ -11,6 +11,7 @@ static NSString *kEJGameCenterAutoAuth = @"EJGameCenter.AutoAuth";
 
 @interface EJBindingGameCenter : EJBindingBase <GKLeaderboardViewControllerDelegate,GKAchievementViewControllerDelegate> {
 	BOOL authed;
+	BOOL viewIsActive;
 	NSMutableDictionary *achievements;
 }
 
