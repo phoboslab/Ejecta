@@ -77,8 +77,12 @@ EJ_BIND_FUNCTION( softAuthenticate, ctx, argc, argv ) {
 	) {
 		[self _func_authenticate:ctx argc:argc argv:argv];
 	}
-	else if( argc > 0 ) {
+	else if( argc > 0 && JSValueIsObject(ctx, argv[0]) ) {
 		NSLog(@"GameKit: Skipping soft auth.");
+		
+		JSObjectRef callback = JSValueToObject(ctx, argv[0], NULL);
+		JSValueRef params[] = { JSValueMakeBoolean(ctx, true) };
+		[scriptView invokeCallback:callback thisObject:NULL argc:1 argv:params];
 	}
 	return NULL;
 }
