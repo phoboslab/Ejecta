@@ -97,14 +97,6 @@ int EJFontGlyphLayoutSortByTextureIndex(const void *a, const void *b) {
 			leading	= CTFontGetLeading(ctMainFont);
 			ascent = CTFontGetAscent(ctMainFont);
 			descent = CTFontGetDescent(ctMainFont);
-			lineHeight = leading + ascent + descent;
-			if( leading == 0 ) {
-				ascentDelta = floor (0.2 * lineHeight + 0.5);
-				lineHeight += ascentDelta;
-			}
-			else {
-				ascentDelta = 0.0f;
-			}
 			
 			textures = [[NSMutableArray alloc] initWithCapacity:1];
 			layoutCache = [[NSCache alloc] init];
@@ -357,9 +349,9 @@ int EJFontGlyphLayoutSortByTextureIndex(const void *a, const void *b) {
 			return 0;
 		case kEJTextBaselineTop:
 		case kEJTextBaselineHanging:
-			return (ascent + ascentDelta);
+			return ascent;
 		case kEJTextBaselineMiddle:
-			return (ascent - 0.5 * pointSize);
+			return (ascent - descent)/2;
 		case kEJTextBaselineBottom:
 			return -descent;
 	}
