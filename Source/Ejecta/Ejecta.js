@@ -186,7 +186,7 @@ window.document = {
 	},
 	
 	_eventInitializers: {},
-	_publishEvent: function( event ) {
+	dispatchEvent: function( event ) {
 		var listeners = this.events[ event.type ];
 		if( !listeners ) { return; }
 		
@@ -228,7 +228,7 @@ var publishTouchEvent = function( type, all, changed ) {
 	touchEvent.changedTouches = changed;
 	touchEvent.type = type;
 	
-	document._publishEvent( touchEvent );
+	document.dispatchEvent( touchEvent );
 };
 eventInit.touchstart = eventInit.touchend = eventInit.touchmove = function() {
 	if( touchInput ) { return; }
@@ -286,14 +286,14 @@ eventInit.deviceorientation = eventInit.devicemotion = function() {
 		deviceMotionEvent.rotationRate.beta = ry;
 		deviceMotionEvent.rotationRate.gamma = rz;
 
-		document._publishEvent( deviceMotionEvent );
+		document.dispatchEvent( deviceMotionEvent );
 
 
 		deviceOrientationEvent.alpha = ox;
 		deviceOrientationEvent.beta = oy;
 		deviceOrientationEvent.gamma = oz;
 
-		document._publishEvent( deviceOrientationEvent );
+		document.dispatchEvent( deviceOrientationEvent );
 	};
 	
 	// Callback for Devices that only have an accelerometer
@@ -305,7 +305,7 @@ eventInit.deviceorientation = eventInit.devicemotion = function() {
 		deviceMotionEvent.acceleration = null;
 		deviceMotionEvent.rotationRate = null;
 	
-		document._publishEvent( deviceMotionEvent );
+		document.dispatchEvent( deviceMotionEvent );
 	}
 };
 
@@ -327,11 +327,11 @@ eventInit.pagehide = eventInit.pageshow = function() {
 		
 		lifecycle.onpagehide = function() {
 			lifecycleEvent.type = 'pagehide';
-			document._publishEvent( lifecycleEvent );
+			document.dispatchEvent( lifecycleEvent );
 		};
 		lifecycle.onpageshow = function() {
 			lifecycleEvent.type = 'pageshow';
-			document._publishEvent( lifecycleEvent );
+			document.dispatchEvent( lifecycleEvent );
 		}
 	}
 };
