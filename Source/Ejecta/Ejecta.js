@@ -335,5 +335,17 @@ eventInit.pagehide = eventInit.pageshow = function() {
 		}
 	}
 };
+ 
+ej.addEventListener('resize', function () {
+    window.innerWidth = ej.screenWidth;
+    window.innerHeight = ej.screenHeight;
+    var resizeEvent = {
+        type: 'resize',
+        target: window,
+         preventDefault: function(){},
+         stopPropagation: function(){}
+    };
+    document._publishEvent(resizeEvent);
+});
 
 })(this);

@@ -1,5 +1,5 @@
 #import <Foundation/Foundation.h>
-#import "EJBindingBase.h"
+#import "EJBindingEventedBase.h"
 #import "EJFont.h"
 
 enum {
@@ -7,7 +7,7 @@ enum {
 	kEJCoreAlertViewGetText
 };
 
-@interface EJBindingEjectaCore : EJBindingBase {
+@interface EJBindingEjectaCore : EJBindingEventedBase {
 	NSString *urlToOpen;
 	JSObjectRef getTextCallback;
 	NSString *deviceName;
