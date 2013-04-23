@@ -7,10 +7,19 @@ enum {
 	kEJCoreAlertViewGetText
 };
 
+typedef enum {
+	kEJCoreAudioSessionAmbient,
+	kEJCoreAudioSessionSoloAmbient,
+	kEJCoreAudioSessionPlayback
+} EJCoreAudioSession;
+
 @interface EJBindingEjectaCore : EJBindingEventedBase {
 	NSString *urlToOpen;
 	JSObjectRef getTextCallback;
 	NSString *deviceName;
+	EJCoreAudioSession audioSession;
 }
+
+@property (readwrite, nonatomic) EJCoreAudioSession audioSession;
 
 @end

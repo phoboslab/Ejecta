@@ -3,6 +3,7 @@
 #import <netinet/in.h>
 #import <sys/utsname.h>
 #import <SystemConfiguration/SystemConfiguration.h>
+#import <AVFoundation/AVFoundation.h>
 
 #import "EJJavaScriptView.h"
 
@@ -226,6 +227,43 @@ EJ_BIND_GET(onLine, ctx) {
 	}
 	
 	return JSValueMakeBoolean(ctx, false);
+}
+
+EJ_BIND_GET(otherAudioPlaying, ctx) {
+	// Make sure we have an AudioSession instance
+	[AVAudioSession sharedInstance];
+	
+	UInt32 otherAudioPlaying = 0;
+	UInt32 propertySize = sizeof(UInt32);
+	AudioSessionGetProperty(kAudioSessionProperty_OtherAudioIsPlaying, &propertySize, &otherAudioPlaying);
+	return JSValueMakeBoolean(ctx, otherAudioPlaying);
+}
+
+EJ_BIND_ENUM(audioSession, self.audioSession,
+	"ambient",		// kEJCoreAudioSessionAmbient
+	"solo-ambient", // kEJCoreAudioSessionSoloAmbient,
+	"playback"		// kEJCoreAudioSessionPlayback
+);
+
+- (EJCoreAudioSession)audioSession {
+	return audioSession;
+}
+
+- (void)setAudioSession:(EJCoreAudioSession)session {
+	audioSession = session;
+	AVAudioSession *instance = [AVAudioSession sharedInstance];
+	
+	switch(audioSession) {
+		case kEJCoreAudioSessionAmbient:
+			[instance setCategory:AVAudioSessionCategoryAmbient error:NULL];
+			break;
+		case kEJCoreAudioSessionSoloAmbient:
+			[instance setCategory:AVAudioSessionCategorySoloAmbient error:NULL];
+			break;
+		case kEJCoreAudioSessionPlayback:
+			[instance setCategory:AVAudioSessionCategoryPlayback error:NULL];
+			break;
+	}
 }
 
 @end
