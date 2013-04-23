@@ -55,7 +55,7 @@ typedef enum {
 
 @property (readonly, nonatomic) BOOL isDynamic;
 @property (readonly, nonatomic) NSMutableData *pixels;
-@property (readonly, nonatomic)	float contentScale;
+@property (readwrite, nonatomic) float contentScale;
 @property (readonly, nonatomic) GLuint textureId;
 @property (readonly, nonatomic) GLenum format;
 @property (readonly, nonatomic) short width, height;

@@ -53,8 +53,8 @@
 }
 
 - (EJTexture *)texture {
-	if( [renderingContext isKindOfClass:[EJCanvasContext2DTexture class]] ) {
-		return ((EJCanvasContext2DTexture *)renderingContext).texture;
+	if( [renderingContext respondsToSelector:@selector(texture)] ) {
+		return [(id)renderingContext texture];
 	}
 	else {
 		return nil;
