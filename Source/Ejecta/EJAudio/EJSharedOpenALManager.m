@@ -1,7 +1,6 @@
 #import "EJSharedOpenALManager.h"
 
 @implementation EJSharedOpenALManager
-@synthesize buffers;
 
 static EJSharedOpenALManager *sharedOpenALManager;
 
@@ -12,26 +11,28 @@ static EJSharedOpenALManager *sharedOpenALManager;
     return sharedOpenALManager;
 }
 
-- (id)init {
-	if( self = [super init] ) {
+- (NSMutableDictionary*)buffers {
+	if( !buffers ) {
 		// Create a non-retaining Dictionary to hold the cached buffers
 		buffers = (NSMutableDictionary*)CFDictionaryCreateMutable(NULL, 8, &kCFCopyStringDictionaryKeyCallBacks, NULL);
 		
+		// Create the OpenAL device when .buffers is first accessed
 		device = alcOpenDevice(NULL);
 		if( device ) {
 			context = alcCreateContext( device, NULL );
 			alcMakeContextCurrent( context );
 		}
 	}
-	return self;
+	
+	return buffers;
 }
 
 - (void)dealloc {
 	sharedOpenALManager = nil;
 	[buffers release];
 	
-	alcDestroyContext( context );
-	alcCloseDevice( device );
+	if( context ) { alcDestroyContext( context ); }
+	if( device ) { alcCloseDevice( device ); }
 	[super dealloc];
 }
 
