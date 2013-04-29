@@ -24,15 +24,17 @@
 - (void)triggerDeviceMotionEvents;
 @end
 
-@protocol EJLifecycleDelegate
+@protocol EJWindowEventsDelegate
 - (void)resume;
 - (void)pause;
+- (void)resize;
 @end
 
 @class EJTimerCollection;
 @class EJClassLoader;
 
 @interface EJJavaScriptView : UIView {
+	CGSize oldSize;
 	NSString *appFolder;
 	
 	BOOL pauseOnEnterBackground;
@@ -56,7 +58,7 @@
 	
 	CADisplayLink *displayLink;
 
-	NSObject<EJLifecycleDelegate> *lifecycleDelegate;
+	NSObject<EJWindowEventsDelegate> *windowEventsDelegate;
 	NSObject<EJTouchDelegate> *touchDelegate;
 	NSObject<EJDeviceMotionDelegate> *deviceMotionDelegate;
 	EJCanvasContext<EJPresentable> *screenRenderingContext;
@@ -76,7 +78,7 @@
 @property (nonatomic, readonly) JSGlobalContextRef jsGlobalContext;
 @property (nonatomic, readonly) EJSharedOpenGLContext *openGLContext;
 
-@property (nonatomic, retain) NSObject<EJLifecycleDelegate> *lifecycleDelegate;
+@property (nonatomic, retain) NSObject<EJWindowEventsDelegate> *windowEventsDelegate;
 @property (nonatomic, retain) NSObject<EJTouchDelegate> *touchDelegate;
 @property (nonatomic, retain) NSObject<EJDeviceMotionDelegate> *deviceMotionDelegate;
 

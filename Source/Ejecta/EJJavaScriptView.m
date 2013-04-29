@@ -20,7 +20,7 @@
 @synthesize currentRenderingContext;
 @synthesize openGLContext;
 
-@synthesize lifecycleDelegate;
+@synthesize windowEventsDelegate;
 @synthesize touchDelegate;
 @synthesize deviceMotionDelegate;
 @synthesize screenRenderingContext;
@@ -34,6 +34,7 @@
 
 - (id)initWithFrame:(CGRect)frame appFolder:(NSString *)folder {
 	if( self = [super initWithFrame:frame] ) {
+		oldSize = frame.size;
 		appFolder = [folder retain];
 		
 		isPaused = false;
@@ -114,7 +115,7 @@
 	[currentRenderingContext release];
 	
 	[touchDelegate release];
-	[lifecycleDelegate release];
+	[windowEventsDelegate release];
 	[deviceMotionDelegate release];
 	
 	[timers release];
@@ -157,6 +158,17 @@
 	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
 	for( NSString *name in keyPaths ) {
 		[nc addObserver:proxy selector:selector name:name object:nil];
+	}
+}
+
+- (void)layoutSubviews {
+	[super layoutSubviews];
+	
+	// Check if we did resize
+	CGSize newSize = self.bounds.size;
+	if( newSize.width != oldSize.width || newSize.height != oldSize.height ) {
+		[windowEventsDelegate resize];
+		oldSize = newSize;
 	}
 }
 
@@ -288,7 +300,7 @@
 - (void)pause {
 	if( isPaused ) { return; }
 	
-	[lifecycleDelegate pause];
+	[windowEventsDelegate pause];
 	[displayLink removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 	[screenRenderingContext finish];
 	isPaused = true;
@@ -297,7 +309,7 @@
 - (void)resume {
 	if( !isPaused ) { return; }
 	
-	[lifecycleDelegate resume];
+	[windowEventsDelegate resume];
 	[EAGLContext setCurrentContext:glCurrentContext];
 	[displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 	isPaused = false;

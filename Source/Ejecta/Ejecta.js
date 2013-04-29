@@ -311,9 +311,10 @@ eventInit.deviceorientation = eventInit.devicemotion = function() {
 
 
 
-// Application lifecycle events (pagehide/pageshow)
+// Window events (resize/pagehide/pageshow)
 
-var lifecycle = null;
+var windowEvents = null;
+
 var lifecycleEvent = {
 	type: 'pagehide',
 	target: window.document,
@@ -321,31 +322,32 @@ var lifecycleEvent = {
 	stopPropagation: function(){}
 };
 
-eventInit.pagehide = eventInit.pageshow = function() {
-	if( !lifecycle ) {
-		lifecycle = new Ejecta.Lifecycle();
-		
-		lifecycle.onpagehide = function() {
-			lifecycleEvent.type = 'pagehide';
-			document.dispatchEvent( lifecycleEvent );
-		};
-		lifecycle.onpageshow = function() {
-			lifecycleEvent.type = 'pageshow';
-			document.dispatchEvent( lifecycleEvent );
-		}
-	}
+var resizeEvent = {
+	type: 'resize',
+	target: window,
+	preventDefault: function(){},
+	stopPropagation: function(){}
 };
- 
-ej.addEventListener('resize', function () {
-	window.innerWidth = ej.screenWidth;
-	window.innerHeight = ej.screenHeight;
-	var resizeEvent = {
-		type: 'resize',
-		target: window,
-		preventDefault: function(){},
-		stopPropagation: function(){}
+
+eventInit.pagehide = eventInit.pageshow = eventInit.resize = function() {
+	if( windowEvents ) { return; }
+	
+	windowEvents = new Ejecta.WindowEvents();
+	
+	windowEvents.onpagehide = function() {
+		lifecycleEvent.type = 'pagehide';
+		document.dispatchEvent( lifecycleEvent );
 	};
-	document.dispatchEvent(resizeEvent);
-});
+	windowEvents.onpageshow = function() {
+		lifecycleEvent.type = 'pageshow';
+		document.dispatchEvent( lifecycleEvent );
+	};
+
+	windowEvents.onresize = function() {
+		window.innerWidth = ej.screenWidth;
+		window.innerHeight = ej.screenHeight;
+		document.dispatchEvent(resizeEvent);
+	};
+};
 
 })(this);

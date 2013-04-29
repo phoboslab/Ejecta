@@ -9,19 +9,6 @@
 
 @implementation EJBindingEjectaCore
 
-- (void)createWithJSObject:(JSObjectRef)obj scriptView:(EJJavaScriptView *)view {
-    [super createWithJSObject:obj scriptView:view];
-    
-    [view addObserver:self forKeyPath:@"frame" options:NSKeyValueObservingOptionNew context:NULL];
-}
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
-{
-    if (object == self.scriptView && [keyPath isEqualToString:@"frame"]) {
-        [self triggerEvent:@"resize" argc:0 argv:NULL];
-    }
-}
-
 - (NSString*) deviceName {
 	struct utsname systemInfo;
 	uname( &systemInfo );
