@@ -31,7 +31,6 @@
 
 - (void)dealloc {
 	[urlToOpen release];
-    [self.scriptView removeObserver:self forKeyPath:@"frame"];
 	JSValueUnprotectSafe(scriptView.jsGlobalContext, getTextCallback);
 	[super dealloc];
 }
