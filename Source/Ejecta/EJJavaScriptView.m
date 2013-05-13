@@ -184,13 +184,17 @@
 	NSString *script = [NSString stringWithContentsOfFile:[self pathForResource:path]
 		encoding:NSUTF8StringEncoding error:NULL];
 	
-	[self loadScript:script sourceURL:path];
+	[self evaluateScript:script sourceURL:path];
 }
 
-- (void)loadScript:(NSString *)script sourceURL:(NSString *)sourceURL {
+- (JSValueRef)evaluateScript:(NSString *)script {
+	return [self evaluateScript:script sourceURL:NULL];
+}
+
+- (JSValueRef)evaluateScript:(NSString *)script sourceURL:(NSString *)sourceURL {
 	if( !script || script.length == 0 ) {
 		NSLog(@"Error: No or empty script given");
-		return;
+		return NULL;
 	}
     
 	JSStringRef scriptJS = JSStringCreateWithCFString((CFStringRef)script);
@@ -201,7 +205,7 @@
 	}
     
 	JSValueRef exception = NULL;
-	JSEvaluateScript(jsGlobalContext, scriptJS, NULL, sourceURLJS, 0, &exception );
+	JSValueRef ret = JSEvaluateScript(jsGlobalContext, scriptJS, NULL, sourceURLJS, 0, &exception );
 	[self logException:exception ctx:jsGlobalContext];
 	
 	JSStringRelease( scriptJS );
@@ -209,6 +213,7 @@
 	if ( sourceURLJS ) {
 		JSStringRelease( sourceURLJS );
 	}
+	return ret;
 }
 
 - (JSValueRef)loadModuleWithId:(NSString *)moduleId module:(JSValueRef)module exports:(JSValueRef)exports {

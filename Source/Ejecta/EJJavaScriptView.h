@@ -91,7 +91,8 @@
 - (id)initWithFrame:(CGRect)frame appFolder:(NSString *)folder;
 
 - (void)loadScriptAtPath:(NSString *)path;
-- (void)loadScript:(NSString *)script sourceURL:(NSString *)sourceURL;
+- (JSValueRef)evaluateScript:(NSString *)script;
+- (JSValueRef)evaluateScript:(NSString *)script sourceURL:(NSString *)sourceURL;
 
 - (void)clearCaches;
 
