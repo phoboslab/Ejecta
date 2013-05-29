@@ -64,15 +64,6 @@ EJ_BIND_FUNCTION(requireModule, ctx, argc, argv ) {
 	return [scriptView loadModuleWithId:JSValueToNSString(ctx, argv[0]) module:argv[1] exports:argv[2]];
 }
 
-EJ_BIND_FUNCTION(require, ctx, argc, argv ) {
-	// TODO: remove entirely for next release
-	if( argc < 1 ) { return NULL; }
-	NSLog(@"Warning: ejecta.require() is deprecated. Use ejecta.include() instead.");
-	
-	[scriptView loadScriptAtPath:JSValueToNSString(ctx, argv[0])];
-	return NULL;
-}
-
 EJ_BIND_FUNCTION(openURL, ctx, argc, argv ) {
 	if( argc < 1 ) { return NULL; }
 	
