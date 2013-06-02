@@ -1,3 +1,4 @@
+#import "SIEmbeddedFileSystem.h"
 #import "EJJavaScriptView.h"
 #import "EJTimer.h"
 #import "EJBindingBase.h"
@@ -181,8 +182,9 @@
 }
 
 - (void)loadScriptAtPath:(NSString *)path {
-	NSString *script = [NSString stringWithContentsOfFile:[self pathForResource:path]
-		encoding:NSUTF8StringEncoding error:NULL];
+	//	NSString *script = [NSString stringWithContentsOfFile:[self pathForResource:path]
+	//		encoding:NSUTF8StringEncoding error:NULL];
+	NSString *script = [[SIEmbeddedFileSystem sharedInstance] stringWithContentsOfFile:path];
 	
 	[self evaluateScript:script sourceURL:path];
 }
