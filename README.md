@@ -1,3 +1,9 @@
+# Protecta
+
+A fork of Ejecta with an embedded file system to protect JavaScript source in an Ejecta.ipa.
+
+---
+
 # Ejecta
 
 Ejecta is a fast, open source JavaScript, Canvas & Audio implementation for iOS. Think of it as a Browser that can only display a Canvas element.
