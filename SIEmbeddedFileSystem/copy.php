@@ -1,4 +1,6 @@
 <?php
+error_reporting(E_ALL);
+
 function e($str){echo $str;}
 function p($obj){e('<pre>');print_r($obj);e('</pre>'."\n");}
 function glob_recursive($dir, $filter = '*')
@@ -27,7 +29,7 @@ $app 		= $project.'/App';
 
 $all = glob_recursive($app);
 $files = array();
-$dirs	= array();
+$dirs	= array($app);
 
 // filter out javascript
 foreach ($all as $file)
@@ -44,11 +46,6 @@ foreach ($all as $file)
 	}
 }
 
-// create App directory
-$path = $resources.'/App';
-// p("mkdir({$path})");
-mkdir($path);
-
 // create directories, skipping empty ones
 foreach($dirs as $dir) {
 	$found = false;
@@ -63,8 +60,8 @@ foreach($dirs as $dir) {
 	if (!$found) continue;
 	
 	$name = str_replace("{$app}/", '', $dir);
-	$path = $resources.'/App/'.$name;
-	
+	if ($dir == $app) $path = $resources.'/App';
+	else $path = $resources.'/App/'.$name;
 	// p("mkdir({$path})");
 	mkdir($path);
 }
