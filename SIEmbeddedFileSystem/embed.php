@@ -1,4 +1,6 @@
 <?php
+error_reporting(E_ALL);
+
 function e($str){echo $str;}
 function p($obj){e('<pre>');print_r($obj);e('</pre>'."\n");}
 function glob_recursive($dir, $filter = '*')
@@ -30,6 +32,9 @@ $path_to_var = array();
 foreach ($files as $file)
 {
 	$path = str_replace("{$app}/", '', $file);
+	
+	if ($path == 'Desktop/ejecta.js' || $path == 'Desktop/touche.js') continue; // skip Ejecta Desktop Polyfill
+	
 	$output = array();
 	exec("cd {$app}; xxd -i {$path}", $output);
 	
