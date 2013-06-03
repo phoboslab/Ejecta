@@ -26,6 +26,10 @@
 		jsEvent = JSObjectMake(ctx, NULL, NULL);
 		JSValueProtect(ctx, jsEvent);
 		jsDataName = JSStringCreateWithUTF8CString("data");
+        
+        jsMessageName = JSStringCreateWithUTF8CString("message");
+        jsTargetName = JSStringCreateWithUTF8CString("target");
+        JSObjectSetProperty( scriptView.jsGlobalContext, jsEvent, jsTargetName, jsObject, kJSPropertyAttributeNone, NULL );
 	}
 	return self;
 }
@@ -50,7 +54,9 @@
 - (void) dealloc {
 	JSValueUnprotectSafe(scriptView.jsGlobalContext, jsEvent);
 	JSStringRelease(jsDataName);
-	
+    JSStringRelease(jsTargetName);
+    JSStringRelease(jsMessageName);
+    
 	[url release];
 	[socket release];
 	[super dealloc];
@@ -59,15 +65,22 @@
 - (void)webSocketDidOpen:(SRWebSocket *)webSocket {
 	readyState = kEJWebSocketReadyStateOpen;
 	
-	[self triggerEvent:@"open" argc:0 argv:NULL];
+	[self triggerEvent:@"open" argc:1 argv:(JSValueRef[]){ jsEvent }];
 }
 
 - (void)webSocket:(SRWebSocket *)webSocket didFailWithError:(NSError *)error {
 	readyState = kEJWebSocketReadyStateClosed;
 	
 	JSValueRef jsError = NSStringToJSValue(scriptView.jsGlobalContext, error.localizedDescription);
-	[self triggerEvent:@"error" argc:1 argv:(JSValueRef[]){jsError}];
-	
+    
+     JSObjectSetProperty( scriptView.jsGlobalContext, jsEvent, jsMessageName, jsError, kJSPropertyAttributeNone, NULL );
+    
+    // jsEvent is like an Error Object in this case
+    
+	[self triggerEvent:@"error" argc:1 argv:(JSValueRef[]){jsEvent}];
+    
+	JSObjectDeleteProperty(scriptView.jsGlobalContext, jsEvent, jsMessageName, NULL);
+    
 	[socket release];
 	socket = nil;
 }
@@ -101,7 +114,7 @@
 
 - (void)webSocket:(SRWebSocket *)webSocket didCloseWithCode:(NSInteger)code reason:(NSString *)reason wasClean:(BOOL)wasClean {
 	readyState = kEJWebSocketReadyStateClosed;
-	[self triggerEvent:@"close" argc:0 argv:NULL];
+	[self triggerEvent:@"close" argc:1 argv:(JSValueRef[]){ jsEvent }];
 	
 	
 	// Unprotect self from garbage collection
