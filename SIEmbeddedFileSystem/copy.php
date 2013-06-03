@@ -62,8 +62,7 @@ foreach($dirs as $dir) {
 	$name = str_replace("{$app}/", '', $dir);
 	if ($dir == $app) $path = $resources.'/App';
 	else $path = $resources.'/App/'.$name;
-	// p("mkdir({$path})");
-	mkdir($path);
+	if (!is_dir($path)) mkdir($path);
 }
 
 // now copy over files
@@ -71,6 +70,5 @@ foreach($files as $file)
 {
 	$name = str_replace("{$app}/", '', $file);
 	$path = $resources.'/App/'.$name;
-	// p("copy({$file}, {$path})");
 	copy($file, $path);
 }
