@@ -69,24 +69,6 @@ foreach ($path_to_var as $path=>$var)
 OBJC;
 }
 
-$c = <<<CSRC
-//
-//  SIEmbeddedFiles.h
-//  EmbeddedFileSystem
-//
-//  Created by Shaun Inman on 6/1/13.
-//  Copyright (c) 2013 Shaun Inman. All rights reserved.
-//
-
-#ifndef EmbeddedFileSystem_SIEmbeddedFiles_h
-#define EmbeddedFileSystem_SIEmbeddedFiles_h
-
-{$c}
-
-#endif
-
-CSRC;
-
 $m = <<<OBJC
 //
 //  SIEmbeddedFileSystem.m
@@ -97,7 +79,8 @@ $m = <<<OBJC
 //
 
 #import "SIEmbeddedFileSystem.h"
-#import "SIEmbeddedFiles.h"
+
+{$c}
 
 @implementation SIEmbeddedFileSystem
 
@@ -133,5 +116,6 @@ $m = <<<OBJC
 
 OBJC;
 
-file_put_contents('SIEmbeddedFileSystem/SIEmbeddedFiles.h', $c);
-file_put_contents('SIEmbeddedFileSystem/SIEmbeddedFileSystem.m', $m);
+$efs = 'SIEmbeddedFileSystem/SIEmbeddedFileSystem.m';
+file_put_contents($efs, $m);
+touch($efs, time()+5); // force Xcode to notice changes
