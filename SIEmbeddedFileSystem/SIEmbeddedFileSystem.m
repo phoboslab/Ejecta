@@ -7,7 +7,8 @@
 //
 
 #import "SIEmbeddedFileSystem.h"
-#import "SIEmbeddedFiles.h"
+
+// BUILD PHASE SCRIPT WILL WORK MAGIC HERE
 
 @implementation SIEmbeddedFileSystem
 
