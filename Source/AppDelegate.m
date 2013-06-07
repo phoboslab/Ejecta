@@ -15,6 +15,7 @@
 	
 	EJAppViewController *vc = [[EJAppViewController alloc] init];
     window.rootViewController = vc;
+	[window makeKeyWindow];
 	[vc release];
 	
     return YES;

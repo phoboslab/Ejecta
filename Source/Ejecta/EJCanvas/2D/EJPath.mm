@@ -317,8 +317,8 @@ typedef std::vector<subpath_t> path_t;
 }
 
 - (void)drawPolygonsToContext:(EJCanvasContext2D *)context target:(EJPathPolygonTarget)target {
-	[self endSubPath];
-	if( longestSubpath < 3 ) { return; }
+	//[self endSubPath];
+	if( longestSubpath < 3 && currentPath.points.size()<3) { return; }
 	
 	EJCanvasState *state = context.state;
 	EJColorRGBA white = { .hex = 0xffffffff };
@@ -358,16 +358,20 @@ typedef std::vector<subpath_t> path_t;
 	// 2) for all front-facing polygons, decrease the stencil value
 	
 	glEnable(GL_CULL_FACE);
-	for( path_t::iterator sp = paths.begin(); sp != paths.end(); ++sp ) {
-		glVertexAttribPointer(kEJGLProgram2DAttributePos, 2, GL_FLOAT, GL_FALSE, 0, &(sp->points).front());
+	for( path_t::iterator sp = paths.begin(); ; ++sp ) {
+		subpath_t &path = sp==paths.end()?currentPath:*sp;
+		
+		glVertexAttribPointer(kEJGLProgram2DAttributePos, 2, GL_FLOAT, GL_FALSE, 0, &(path.points).front());
 		
 		glCullFace(GL_BACK);
 		glStencilOp(GL_INCR_WRAP, GL_KEEP, GL_INCR_WRAP);
-		glDrawArrays(GL_TRIANGLE_FAN, 0, sp->points.size());
+		glDrawArrays(GL_TRIANGLE_FAN, 0, path.points.size());
 		
 		glCullFace(GL_FRONT);
 		glStencilOp(GL_DECR_WRAP, GL_KEEP, GL_DECR_WRAP);
-		glDrawArrays(GL_TRIANGLE_FAN, 0, sp->points.size());
+		glDrawArrays(GL_TRIANGLE_FAN, 0, path.points.size());
+		
+		if(sp==paths.end()) break;
 	}
 	glDisable(GL_CULL_FACE);
 	[context bindVertexBuffer];
@@ -489,7 +493,7 @@ typedef std::vector<subpath_t> path_t;
 }
 
 - (void)drawLinesToContext:(EJCanvasContext2D *)context {
-	[self endSubPath];
+	//[self endSubPath];
 	
 	EJCanvasState *state = context.state;
 	
@@ -542,8 +546,13 @@ typedef std::vector<subpath_t> path_t;
 		currentEdge, currentExt,	// Current edge and its normal * width/2
 		nextEdge, nextExt;			// Next edge and its normal * width/2
 	
-	for( path_t::iterator sp = paths.begin(); sp != paths.end(); ++sp ) {
-		BOOL subPathIsClosed = sp->isClosed;
+	
+	
+	for( path_t::iterator sp = paths.begin(); ; ++sp ) {
+		subpath_t &path = sp==paths.end()?currentPath:*sp;
+		if(sp==paths.end()&&currentPath.points.size()<=1) break;
+		
+		BOOL subPathIsClosed = path.isClosed;
 		BOOL ignoreFirstSegment = addMiter && subPathIsClosed;
 		BOOL firstInSubPath = true;
 		BOOL miterLimitExceeded = NO, firstMiterLimitExceeded = NO;
@@ -555,11 +564,11 @@ typedef std::vector<subpath_t> path_t;
 		// the first segment will be computed and used to draw the first segment's first
 		// miter, as well as the last segment's last miter outside the loop.
 		if( addMiter && subPathIsClosed ) {
-			transNext = &sp->points.at(sp->points.size()-2);
+			transNext = &path.points.at(path.points.size()-2);
 			next = EJVector2ApplyTransform( *transNext, inverseTransform );
 		}
 
-		for( points_t::iterator vertex = sp->points.begin(); vertex != sp->points.end(); ++vertex) {
+		for( points_t::iterator vertex = path.points.begin(); vertex != path.points.end(); ++vertex) {
 			transCurrent = transNext;
 			transNext = &(*vertex);
 			
@@ -689,7 +698,7 @@ typedef std::vector<subpath_t> path_t;
 			miter12 = firstMiter2;
 		}
 		else {
-			EJVector2 untransformedBack = EJVector2ApplyTransform(sp->points.back(), inverseTransform);
+			EJVector2 untransformedBack = EJVector2ApplyTransform(path.points.back(), inverseTransform);
 			miter11 = EJVector2Add(untransformedBack, nextExt);
 			miter12 = EJVector2Sub(untransformedBack, nextExt);
 		}
@@ -742,6 +751,8 @@ typedef std::vector<subpath_t> path_t;
 				[self drawArcToContext:context atPoint:next v1:miter11 v2:miter12 color:color];
 			}
 		}
+		
+		if(sp==paths.end()) break;
 	} // for each path
 	
 	// disable stencil test when drawing transparent lines

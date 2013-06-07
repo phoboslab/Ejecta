@@ -696,7 +696,7 @@ const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
 		int internalWidth = sw * scale;
 		int internalHeight = sh * scale;
 		int internalX = sx * scale;
-		int internalY = (height-sy-sh) * scale;
+		int internalY = ((bufferHeight/scale)-sy-sh) * scale;
 		
 		EJColorRGBA *internalPixels = malloc( internalWidth * internalHeight * sizeof(EJColorRGBA));
 		glReadPixels( internalX, internalY, internalWidth, internalHeight, GL_RGBA, GL_UNSIGNED_BYTE, internalPixels );

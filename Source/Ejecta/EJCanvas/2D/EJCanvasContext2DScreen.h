@@ -12,5 +12,6 @@
 - (void)finish;
 
 @property (nonatomic) CGRect style;
+@property (readonly, nonatomic) EJTexture *texture;
 
 @end

@@ -10,7 +10,7 @@
 #import "EJSharedOpenGLContext.h"
 #import "EJNonRetainingProxy.h"
 
-#define EJECTA_VERSION @"1.2"
+#define EJECTA_VERSION @"1.3"
 #define EJECTA_DEFAULT_APP_FOLDER @"App/"
 
 #define EJECTA_BOOT_JS @"../Ejecta.js"
@@ -24,15 +24,17 @@
 - (void)triggerDeviceMotionEvents;
 @end
 
-@protocol EJLifecycleDelegate
+@protocol EJWindowEventsDelegate
 - (void)resume;
 - (void)pause;
+- (void)resize;
 @end
 
 @class EJTimerCollection;
 @class EJClassLoader;
 
 @interface EJJavaScriptView : UIView {
+	CGSize oldSize;
 	NSString *appFolder;
 	
 	BOOL pauseOnEnterBackground;
@@ -56,7 +58,7 @@
 	
 	CADisplayLink *displayLink;
 
-	NSObject<EJLifecycleDelegate> *lifecycleDelegate;
+	NSObject<EJWindowEventsDelegate> *windowEventsDelegate;
 	NSObject<EJTouchDelegate> *touchDelegate;
 	NSObject<EJDeviceMotionDelegate> *deviceMotionDelegate;
 	EJCanvasContext<EJPresentable> *screenRenderingContext;
@@ -76,7 +78,7 @@
 @property (nonatomic, readonly) JSGlobalContextRef jsGlobalContext;
 @property (nonatomic, readonly) EJSharedOpenGLContext *openGLContext;
 
-@property (nonatomic, retain) NSObject<EJLifecycleDelegate> *lifecycleDelegate;
+@property (nonatomic, retain) NSObject<EJWindowEventsDelegate> *windowEventsDelegate;
 @property (nonatomic, retain) NSObject<EJTouchDelegate> *touchDelegate;
 @property (nonatomic, retain) NSObject<EJDeviceMotionDelegate> *deviceMotionDelegate;
 
@@ -89,7 +91,8 @@
 - (id)initWithFrame:(CGRect)frame appFolder:(NSString *)folder;
 
 - (void)loadScriptAtPath:(NSString *)path;
-- (void)loadScript:(NSString *)script sourceURL:(NSString *)sourceURL;
+- (JSValueRef)evaluateScript:(NSString *)script;
+- (JSValueRef)evaluateScript:(NSString *)script sourceURL:(NSString *)sourceURL;
 
 - (void)clearCaches;
 

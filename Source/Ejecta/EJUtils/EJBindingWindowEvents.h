@@ -1,9 +1,10 @@
 #import "EJBindingEventedBase.h"
 #import "EJJavaScriptView.h"
 
-@interface EJBindingLifecycle : EJBindingEventedBase <EJLifecycleDelegate>
+@interface EJBindingWindowEvents : EJBindingEventedBase <EJWindowEventsDelegate>
 
 - (void)pause;
 - (void)resume;
+- (void)resize;
 
 @end

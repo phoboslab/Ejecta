@@ -224,6 +224,11 @@ EJ_BIND_FUNCTION(setTransform, ctx, argc, argv) {
 EJ_BIND_FUNCTION(drawImage, ctx, argc, argv) {
 	if( argc < 3 ) { return NULL; }
 	
+	// Set the currentRenderingContext before getting the texture, so we can
+	// correctly treat the case where the currentRenderingContext is the same
+	// as the image being drawn; i.e. a texture canvas drawing into itself.
+	scriptView.currentRenderingContext = renderingContext;
+	
 	NSObject<EJDrawable> *drawable = (NSObject<EJDrawable> *)JSObjectGetPrivate((JSObjectRef)argv[0]);
 	EJTexture *image = drawable.texture;
 	
@@ -260,9 +265,7 @@ EJ_BIND_FUNCTION(drawImage, ctx, argc, argv) {
 		return NULL;
 	}
 	
-	scriptView.currentRenderingContext = renderingContext;
 	[renderingContext drawImage:image sx:sx sy:sy sw:sw sh:sh dx:dx dy:dy dw:dw dh:dh];
-	
 	return NULL;
 }
 

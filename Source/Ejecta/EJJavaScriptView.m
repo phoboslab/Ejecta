@@ -20,7 +20,7 @@
 @synthesize currentRenderingContext;
 @synthesize openGLContext;
 
-@synthesize lifecycleDelegate;
+@synthesize windowEventsDelegate;
 @synthesize touchDelegate;
 @synthesize deviceMotionDelegate;
 @synthesize screenRenderingContext;
@@ -34,6 +34,7 @@
 
 - (id)initWithFrame:(CGRect)frame appFolder:(NSString *)folder {
 	if( self = [super initWithFrame:frame] ) {
+		oldSize = frame.size;
 		appFolder = [folder retain];
 		
 		isPaused = false;
@@ -114,7 +115,7 @@
 	[currentRenderingContext release];
 	
 	[touchDelegate release];
-	[lifecycleDelegate release];
+	[windowEventsDelegate release];
 	[deviceMotionDelegate release];
 	
 	[timers release];
@@ -160,6 +161,17 @@
 	}
 }
 
+- (void)layoutSubviews {
+	[super layoutSubviews];
+	
+	// Check if we did resize
+	CGSize newSize = self.bounds.size;
+	if( newSize.width != oldSize.width || newSize.height != oldSize.height ) {
+		[windowEventsDelegate resize];
+		oldSize = newSize;
+	}
+}
+
 
 #pragma mark -
 #pragma mark Script loading and execution
@@ -172,13 +184,17 @@
 	NSString *script = [NSString stringWithContentsOfFile:[self pathForResource:path]
 		encoding:NSUTF8StringEncoding error:NULL];
 	
-	[self loadScript:script sourceURL:path];
+	[self evaluateScript:script sourceURL:path];
 }
 
-- (void)loadScript:(NSString *)script sourceURL:(NSString *)sourceURL {
+- (JSValueRef)evaluateScript:(NSString *)script {
+	return [self evaluateScript:script sourceURL:NULL];
+}
+
+- (JSValueRef)evaluateScript:(NSString *)script sourceURL:(NSString *)sourceURL {
 	if( !script || script.length == 0 ) {
 		NSLog(@"Error: No or empty script given");
-		return;
+		return NULL;
 	}
     
 	JSStringRef scriptJS = JSStringCreateWithCFString((CFStringRef)script);
@@ -189,7 +205,7 @@
 	}
     
 	JSValueRef exception = NULL;
-	JSEvaluateScript(jsGlobalContext, scriptJS, NULL, sourceURLJS, 0, &exception );
+	JSValueRef ret = JSEvaluateScript(jsGlobalContext, scriptJS, NULL, sourceURLJS, 0, &exception );
 	[self logException:exception ctx:jsGlobalContext];
 	
 	JSStringRelease( scriptJS );
@@ -197,6 +213,7 @@
 	if ( sourceURLJS ) {
 		JSStringRelease( sourceURLJS );
 	}
+	return ret;
 }
 
 - (JSValueRef)loadModuleWithId:(NSString *)moduleId module:(JSValueRef)module exports:(JSValueRef)exports {
@@ -288,7 +305,7 @@
 - (void)pause {
 	if( isPaused ) { return; }
 	
-	[lifecycleDelegate pause];
+	[windowEventsDelegate pause];
 	[displayLink removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 	[screenRenderingContext finish];
 	isPaused = true;
@@ -297,7 +314,7 @@
 - (void)resume {
 	if( !isPaused ) { return; }
 	
-	[lifecycleDelegate resume];
+	[windowEventsDelegate resume];
 	[EAGLContext setCurrentContext:glCurrentContext];
 	[displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 	isPaused = false;
