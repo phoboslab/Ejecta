@@ -55,9 +55,6 @@
 - (void)triggerEvent:(NSString *)name all:(NSSet *)all changed:(NSSet *)changed remaining:(NSSet *)remaining {
 	JSContextRef ctx = scriptView.jsGlobalContext;
 	
-	JSObjectSetProperty(ctx, jsRemainingTouches, jsLengthName, JSValueMakeNumber(ctx, remaining.count), kJSPropertyAttributeNone, NULL);
-	JSObjectSetProperty(ctx, jsChangedTouches, jsLengthName, JSValueMakeNumber(ctx, changed.count), kJSPropertyAttributeNone, NULL);
-	
 	int
 		poolIndex = 0,
 		remainingIndex = 0,
@@ -78,16 +75,22 @@
 		JSObjectSetProperty( ctx, jsTouch, jsClientYName, y, kJSPropertyAttributeNone, NULL );
 		
 		if( [remaining member:touch] ) {
-			JSObjectSetPropertyAtIndex(ctx, jsRemainingTouches, remainingIndex++, jsTouch, NULL);
+			JSObjectSetPropertyAtIndex(ctx, jsRemainingTouches, remainingIndex, jsTouch, NULL);
 		}
 		
 		if( [changed member:touch] ) {
-			JSObjectSetPropertyAtIndex(ctx, jsChangedTouches, changedIndex++, jsTouch, NULL);
+			JSObjectSetPropertyAtIndex(ctx, jsChangedTouches, changedIndex, jsTouch, NULL);
 		}
 		
 		if( poolIndex >= EJ_TOUCH_INPUT_MAX_TOUCHES ) { break; }
+
+		remainingIndex++;
+		changedIndex++;
 	}
 	
+	JSObjectSetProperty(ctx, jsRemainingTouches, jsLengthName, JSValueMakeNumber(ctx, remainingIndex), kJSPropertyAttributeNone, NULL);
+	JSObjectSetProperty(ctx, jsChangedTouches, jsLengthName, JSValueMakeNumber(ctx, changedIndex), kJSPropertyAttributeNone, NULL);
+
 	[self triggerEvent:name argc:2 argv:(JSValueRef[]){ jsRemainingTouches, jsChangedTouches }];
 }
 

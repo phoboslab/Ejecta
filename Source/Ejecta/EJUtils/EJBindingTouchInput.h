@@ -2,7 +2,7 @@
 #import "EJBindingEventedBase.h"
 #import "EJJavaScriptView.h"
 
-#define EJ_TOUCH_INPUT_MAX_TOUCHES 5
+#define EJ_TOUCH_INPUT_MAX_TOUCHES 16
 
 @interface EJBindingTouchInput : EJBindingEventedBase <EJTouchDelegate> {
 	JSStringRef jsLengthName;
