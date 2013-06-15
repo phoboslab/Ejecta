@@ -208,10 +208,8 @@ var eventInit = document._eventInitializers;
 
 // Touch events
 
-// report that this is touch capable for feature detection
-window.ontouchstart = null;
-window.ontouchend = null;
-window.ontouchmove = null;
+// Set touch event properties for feature detection
+window.ontouchstart = window.ontouchend = window.ontouchmove = null;
 
 // Setting up the 'event' object for touch events in native code is quite
 // a bit of work, so instead we do it here in JavaScript and have the native
