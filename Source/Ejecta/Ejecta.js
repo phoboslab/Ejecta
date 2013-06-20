@@ -6,6 +6,7 @@
 
 // Make 'window' the global scope
 self = window = this;
+window.top = window;
 
 (function(window) {
 
