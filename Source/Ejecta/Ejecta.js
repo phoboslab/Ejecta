@@ -6,7 +6,7 @@
 
 // Make 'window' the global scope
 self = window = this;
-window.top = window;
+window.top = window.parent = window;
 
 (function(window) {
 
