@@ -55,7 +55,6 @@ typedef enum {
 + (void)unPremultiplyPixels:(const GLubyte *)inPixels to:(GLubyte *)outPixels byteLength:(int)byteLength format:(GLenum)format;
 + (void)flipPixelsY:(GLubyte *)pixels bytesPerRow:(int)bytesPerRow rows:(int)rows;
 
-
 @property (readonly, nonatomic) BOOL isDynamic;
 @property (readonly, nonatomic) NSMutableData *pixels;
 @property (readwrite, nonatomic) float contentScale;
