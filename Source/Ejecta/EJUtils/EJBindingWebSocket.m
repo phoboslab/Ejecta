@@ -29,7 +29,7 @@
         
         jsMessageName = JSStringCreateWithUTF8CString("message");
         jsTargetName = JSStringCreateWithUTF8CString("target");
-        JSObjectSetProperty( scriptView.jsGlobalContext, jsEvent, jsTargetName, jsObject, kJSPropertyAttributeNone, NULL );
+
 	}
 	return self;
 }
@@ -37,6 +37,8 @@
 - (void)createWithJSObject:(JSObjectRef)obj scriptView:(EJJavaScriptView *)view {
 	[super createWithJSObject:obj scriptView:view];
 	
+    JSObjectSetProperty( scriptView.jsGlobalContext, jsEvent, jsTargetName, jsObject, kJSPropertyAttributeNone, NULL );
+    
 	if( readyState != kEJWebSocketReadyStateClosed ) {
 		// Protect self from garbage collection; the event handlers may be the only
 		// thing holding on to us.
