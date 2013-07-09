@@ -10,7 +10,8 @@ JSValueRef EJBlockFunctionCallAsFunction(
 	JSContextRef ctx, JSObjectRef function, JSObjectRef thisObject, size_t argc, const JSValueRef argv[], JSValueRef* exception
 ) {
 	JSValueRef (^block)(JSContextRef ctx, size_t argc, const JSValueRef argv[]) = JSObjectGetPrivate(function);
-	return block(ctx, argc, argv);
+	JSValueRef ret = block(ctx, argc, argv);
+	return ret ? ret : JSValueMakeUndefined(ctx);
 }
 
 void EJBlockFunctionFinalize(JSObjectRef object) {
