@@ -344,41 +344,39 @@
 	[textureStorage bindToTarget:target withParams:params];
 }
 
-- (UIImage *)imageFromPixels
-{
-    unsigned char *rawImageData = (unsigned char *)[self.pixels bytes];
-    UIImage *newImage = nil;
+- (UIImage *)imageFromPixels {
+	UIImage *newImage = nil;
 
-    int scaledWidth = self.width  * self.contentScale;
-    int scaledHeight = self.height * self.contentScale;
-    int nrOfColorComponents = 4; //RGBA
-    int bitsPerColorComponent = 8;
-    int rawImageDataLength = scaledWidth * scaledHeight * nrOfColorComponents;
-    BOOL interpolateAndSmoothPixels = NO;
-    CGBitmapInfo bitmapInfo = kCGBitmapByteOrder32Big | kCGImageAlphaPremultipliedLast;//kCGBitmapByteOrderDefault;
-    CGColorRenderingIntent renderingIntent = kCGRenderingIntentDefault;
+	int scaledWidth = self.width  * self.contentScale;
+	int scaledHeight = self.height * self.contentScale;
+	int nrOfColorComponents = 4; // RGBA
+	int bitsPerColorComponent = 8;
+	int rawImageDataLength = scaledWidth * scaledHeight * nrOfColorComponents;
+	BOOL interpolateAndSmoothPixels = NO;
+	CGBitmapInfo bitmapInfo = kCGBitmapByteOrder32Big | kCGImageAlphaPremultipliedLast;
+	CGColorRenderingIntent renderingIntent = kCGRenderingIntentDefault;
 
-    CGDataProviderRef dataProviderRef;
-    CGColorSpaceRef colorSpaceRef;
-    CGImageRef imageRef;
+	CGDataProviderRef dataProviderRef;
+	CGColorSpaceRef colorSpaceRef;
+	CGImageRef imageRef;
 
-    @try
-    {
-        GLubyte *rawImageDataBuffer = rawImageData;
+	@try {
+		dataProviderRef = CGDataProviderCreateWithData(NULL, self.pixels.bytes, rawImageDataLength, nil);
+		colorSpaceRef = CGColorSpaceCreateDeviceRGB();
+		imageRef = CGImageCreate(
+			width, height,
+			bitsPerColorComponent, bitsPerColorComponent * nrOfColorComponents, width * nrOfColorComponents,
+			colorSpaceRef, bitmapInfo, dataProviderRef, NULL, interpolateAndSmoothPixels, renderingIntent
+		);
+		newImage = [[UIImage alloc] initWithCGImage:imageRef scale:self.contentScale orientation:UIImageOrientationUp];
+	}
+	@finally {
+		CGDataProviderRelease(dataProviderRef);
+		CGColorSpaceRelease(colorSpaceRef);
+		CGImageRelease(imageRef);
+	}
 
-        dataProviderRef = CGDataProviderCreateWithData(NULL, rawImageDataBuffer, rawImageDataLength, nil);
-        colorSpaceRef = CGColorSpaceCreateDeviceRGB();
-        imageRef = CGImageCreate(width, height, bitsPerColorComponent, bitsPerColorComponent * nrOfColorComponents, width * nrOfColorComponents, colorSpaceRef, bitmapInfo, dataProviderRef, NULL, interpolateAndSmoothPixels, renderingIntent);
-        newImage = [[UIImage alloc] initWithCGImage:imageRef scale:self.contentScale orientation:UIImageOrientationUp];
-    }
-    @finally
-    {
-        CGDataProviderRelease(dataProviderRef);
-        CGColorSpaceRelease(colorSpaceRef);
-        CGImageRelease(imageRef);
-    }
-
-    return newImage;
+	return newImage;
 }
 
 + (void)premultiplyPixels:(const GLubyte *)inPixels to:(GLubyte *)outPixels byteLength:(int)byteLength format:(GLenum)format {
