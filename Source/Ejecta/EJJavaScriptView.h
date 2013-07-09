@@ -64,6 +64,7 @@
 	EJCanvasContext<EJPresentable> *screenRenderingContext;
 
 	NSOperationQueue *backgroundQueue;
+	JSClassRef jsBlockFunctionClass;
 	
 	// Public for fast access in bound functions
 	@public JSValueRef jsUndefined;
@@ -101,5 +102,6 @@
 - (JSValueRef)deleteTimer:(JSContextRef)ctx argc:(size_t)argc argv:(const JSValueRef [])argv;
 - (JSValueRef)loadModuleWithId:(NSString *)moduleId module:(JSValueRef)module exports:(JSValueRef)exports;
 - (JSValueRef)createTimer:(JSContextRef)ctxp argc:(size_t)argc argv:(const JSValueRef [])argv repeat:(BOOL)repeat;
+- (JSObjectRef)createFunctionWithBlock:(JSValueRef (^)(JSContextRef ctx, size_t argc, const JSValueRef argv[]))block;
 
 @end
