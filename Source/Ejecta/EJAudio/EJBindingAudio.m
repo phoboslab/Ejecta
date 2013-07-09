@@ -149,7 +149,7 @@ EJ_BIND_FUNCTION(load, ctx, argc, argv) {
 }
 
 EJ_BIND_FUNCTION(canPlayType, ctx, argc, argv) {
-	if( argc != 1 ) return NULL;
+	if( argc != 1 ) return NSStringToJSValue(ctx, @"");
 	
 	NSString *mime = JSValueToNSString(ctx, argv[0]);
 	if( 
@@ -159,7 +159,7 @@ EJ_BIND_FUNCTION(canPlayType, ctx, argc, argv) {
 	) {
 		return NSStringToJSValue(ctx, @"probably");
 	}
-	return NULL;
+	return NSStringToJSValue(ctx, @"");
 }
 
 EJ_BIND_FUNCTION(cloneNode, ctx, argc, argv) {
