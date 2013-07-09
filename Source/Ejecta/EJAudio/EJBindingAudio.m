@@ -159,7 +159,7 @@ EJ_BIND_FUNCTION(canPlayType, ctx, argc, argv) {
 	) {
 		return NSStringToJSValue(ctx, @"probably");
 	}
-	return NULL;
+	return NSStringToJSValue(ctx, @"");
 }
 
 EJ_BIND_FUNCTION(cloneNode, ctx, argc, argv) {
