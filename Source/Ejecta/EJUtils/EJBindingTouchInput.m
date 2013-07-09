@@ -23,12 +23,6 @@
 	jsClientXName = JSStringCreateWithUTF8CString("clientX");
 	jsClientYName = JSStringCreateWithUTF8CString("clientY");
 	
-	// Create all touch objects
-	for( int i = 0; i < EJ_TOUCH_INPUT_MAX_TOUCHES; i++ ) {
-		jsTouchesPool[i] = JSObjectMake( ctx, NULL, NULL );
-		JSValueProtect( ctx, jsTouchesPool[i] );
-	}
-	
 	scriptView.touchDelegate = self;
 }
 
@@ -45,7 +39,7 @@
 	JSStringRelease( jsClientXName );
 	JSStringRelease( jsClientYName );
 	
-	for( int i = 0; i < EJ_TOUCH_INPUT_MAX_TOUCHES; i++ ) {
+	for( int i = 0; i < touchesInPool; i++ ) {
 		JSValueUnprotectSafe( ctx, jsTouchesPool[i] );
 	}
 	
@@ -55,8 +49,21 @@
 - (void)triggerEvent:(NSString *)name all:(NSSet *)all changed:(NSSet *)changed remaining:(NSSet *)remaining {
 	JSContextRef ctx = scriptView.jsGlobalContext;
 	
-	JSObjectSetProperty(ctx, jsRemainingTouches, jsLengthName, JSValueMakeNumber(ctx, remaining.count), kJSPropertyAttributeNone, NULL);
-	JSObjectSetProperty(ctx, jsChangedTouches, jsLengthName, JSValueMakeNumber(ctx, changed.count), kJSPropertyAttributeNone, NULL);
+	int remainingCount = MIN(remaining.count, EJ_TOUCH_INPUT_MAX_TOUCHES);
+	int changedCount = MIN(changed.count, EJ_TOUCH_INPUT_MAX_TOUCHES);
+	int totalCount = MAX(remainingCount, changedCount);
+	
+	JSObjectSetProperty(ctx, jsRemainingTouches, jsLengthName, JSValueMakeNumber(ctx, remainingCount), kJSPropertyAttributeNone, NULL);
+	JSObjectSetProperty(ctx, jsChangedTouches, jsLengthName, JSValueMakeNumber(ctx, changedCount), kJSPropertyAttributeNone, NULL);
+	
+	// More touches than we have in our pool? Create some!
+	if( touchesInPool < totalCount ) {
+		for( int i = touchesInPool; i < totalCount; i++ ) {
+			jsTouchesPool[i] = JSObjectMake( ctx, NULL, NULL );
+			JSValueProtect( ctx, jsTouchesPool[i] );
+		}
+		touchesInPool = totalCount;
+	}
 	
 	int
 		poolIndex = 0,
@@ -85,7 +92,7 @@
 			JSObjectSetPropertyAtIndex(ctx, jsChangedTouches, changedIndex++, jsTouch, NULL);
 		}
 		
-		if( poolIndex >= EJ_TOUCH_INPUT_MAX_TOUCHES ) { break; }
+		if( poolIndex >= touchesInPool ) { break; }
 	}
 	
 	[self triggerEvent:name argc:2 argv:(JSValueRef[]){ jsRemainingTouches, jsChangedTouches }];
