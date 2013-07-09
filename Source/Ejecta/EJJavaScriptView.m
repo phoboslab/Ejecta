@@ -5,6 +5,20 @@
 #import <objc/runtime.h>
 
 
+// Block function callbacks
+JSValueRef EJBlockFunctionCallAsFunction(
+	JSContextRef ctx, JSObjectRef function, JSObjectRef thisObject, size_t argc, const JSValueRef argv[], JSValueRef* exception
+) {
+	JSValueRef (^block)(JSContextRef ctx, size_t argc, const JSValueRef argv[]) = JSObjectGetPrivate(function);
+	return block(ctx, argc, argv);
+}
+
+void EJBlockFunctionFinalize(JSObjectRef object) {
+	JSValueRef (^block)(JSContextRef ctx, size_t argc, const JSValueRef argv[]) = JSObjectGetPrivate(object);
+	[block release];
+}
+
+
 #pragma mark -
 #pragma mark Ejecta view Implementation
 
@@ -110,6 +124,9 @@
 	[openALManager release];
 	[classLoader release];
 	
+	if( jsBlockFunctionClass ) {
+		JSClassRelease(jsBlockFunctionClass);
+	}
 	[screenRenderingContext finish];
 	[screenRenderingContext release];
 	[currentRenderingContext release];
@@ -392,6 +409,17 @@
 	
 	[timers cancelId:JSValueToNumberFast(ctxp, argv[0])];
 	return NULL;
+}
+
+- (JSObjectRef)createFunctionWithBlock:(JSValueRef (^)(JSContextRef ctx, size_t argc, const JSValueRef argv[]))block {
+	if( !jsBlockFunctionClass ) {
+		JSClassDefinition blockFunctionClassDef = kJSClassDefinitionEmpty;
+		blockFunctionClassDef.callAsFunction = EJBlockFunctionCallAsFunction;
+		blockFunctionClassDef.finalize = EJBlockFunctionFinalize;
+		jsBlockFunctionClass = JSClassCreate(&blockFunctionClassDef);
+	}
+	
+	return JSObjectMake( jsGlobalContext, jsBlockFunctionClass, (void *)Block_copy(block) );
 }
 
 @end

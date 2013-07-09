@@ -9,6 +9,13 @@
 
 @implementation EJBindingEjectaCore
 
+- (id)initWithContext:(JSContextRef)ctx argc:(size_t)argc argv:(const JSValueRef [])argv {
+	if( self = [super initWithContext:ctx argc:argc argv:argv] ) {
+		baseTime = [NSDate timeIntervalSinceReferenceDate];
+	}
+	return self;
+}
+
 - (NSString*) deviceName {
 	struct utsname systemInfo;
 	uname( &systemInfo );
@@ -142,6 +149,10 @@ EJ_BIND_FUNCTION(clearInterval, ctx, argc, argv ) {
 	return [scriptView deleteTimer:ctx argc:argc argv:argv];
 }
 
+EJ_BIND_FUNCTION(performanceNow, ctx, argc, argv ) {
+	NSTimeInterval now = [NSDate timeIntervalSinceReferenceDate];
+	return JSValueMakeNumber(ctx, (now - baseTime) * 1000.0);
+}
 
 EJ_BIND_GET(devicePixelRatio, ctx ) {
 	return JSValueMakeNumber( ctx, [UIScreen mainScreen].scale );

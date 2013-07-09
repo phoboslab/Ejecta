@@ -6,6 +6,29 @@
 #import "EJSharedTextureCache.h"
 
 
+#define PVR_TEXTURE_FLAG_TYPE_MASK 0xff
+
+enum {
+	kPVRTextureFlagTypePVRTC_2 = 24,
+	kPVRTextureFlagTypePVRTC_4
+};
+
+typedef struct {
+	uint32_t headerLength;
+	uint32_t height;
+	uint32_t width;
+	uint32_t numMipmaps;
+	uint32_t flags;
+	uint32_t dataLength;
+	uint32_t bpp;
+	uint32_t bitmaskRed;
+	uint32_t bitmaskGreen;
+	uint32_t bitmaskBlue;
+	uint32_t bitmaskAlpha;
+	uint32_t pvrTag;
+	uint32_t numSurfs;
+} PVRTextureHeader;
+
 @implementation EJTexture
 
 @synthesize contentScale;
@@ -152,8 +175,10 @@
 - (void)ensureMutableKeepPixels:(BOOL)keepPixels forTarget:(GLenum)target {
 
 	// If we have a TextureStorage but it's not mutable (i.e. created by Canvas2D) and
-	// we're not the only owner of it, we have to create a new TextureStorage
-	if( textureStorage && textureStorage.immutable && textureStorage.retainCount > 1 ) {
+	// we're not the only owner of it, we have to create a new TextureStorage.
+	// FIXME: If the texture is compressed, we simply ignore this check and use the compressed
+	// TextureStorage
+	if( textureStorage && textureStorage.immutable && textureStorage.retainCount > 1 && !isCompressed ) {
 	
 		// Keep pixel data of the old TextureStorage when creating the new?
 		if( keepPixels ) {
@@ -191,8 +216,9 @@
 	// by createWithTexture
 	memcpy(copy->params, params, sizeof(EJTextureParams));
 	copy->owningContext = owningContext;
+	copy->isCompressed = isCompressed;
 	
-	if( self.isDynamic ) {
+	if( self.isDynamic && !isCompressed ) {
 		// We want a static copy. So if this texture is used by an FBO, we have to
 		// re-create the texture from pixels again
 		[copy createWithPixels:self.pixels format:format];
@@ -211,6 +237,7 @@
 	
 	width = other->width;
 	height = other->height;
+	isCompressed = other->isCompressed;
 	
 	textureStorage = [other->textureStorage retain];
 }
@@ -246,10 +273,62 @@
 		: GL_TEXTURE_BINDING_CUBE_MAP;
 	glGetIntegerv(bindingName, &boundTexture);
 	
+	if( isCompressed ) {
+		[self uploadCompressedPixels:pixels target:target];
+	}
+	else {
+		textureStorage = [[EJTextureStorage alloc] initImmutable];
+		[textureStorage bindToTarget:target withParams:params];
+		glTexImage2D(target, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, pixels.bytes);
+	}
+	
+	glBindTexture(target, boundTexture);
+}
+
+- (void)uploadCompressedPixels:(NSData *)pixels target:(GLenum)target {
+	PVRTextureHeader *header = (PVRTextureHeader *) pixels.bytes;
+	
+    uint32_t formatFlags = header->flags & PVR_TEXTURE_FLAG_TYPE_MASK;
+	
+	GLenum internalFormat;
+	uint32_t bpp;
+	
+	if( formatFlags == kPVRTextureFlagTypePVRTC_4 ) {
+		internalFormat = GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG;
+		bpp = 4;
+	}
+	else if( formatFlags == kPVRTextureFlagTypePVRTC_2 ) {
+		internalFormat = GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG;
+		bpp = 2;
+	}
+	
+	
+	// Create texture storage
+	if( header->numMipmaps > 0 ) {
+		params[kEJTextureParamMinFilter] = GL_LINEAR_MIPMAP_LINEAR;
+	}
+	
 	textureStorage = [[EJTextureStorage alloc] initImmutable];
 	[textureStorage bindToTarget:target withParams:params];
-	glTexImage2D(target, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, pixels.bytes);
-	glBindTexture(target, boundTexture);
+	
+	// Upload all mip levels
+	int mipWidth = width,
+		mipHeight = height;
+	
+	
+	uint8_t *bytes = ((uint8_t *)pixels.bytes) + header->headerLength;
+	
+	for( int mip = 0; mip < header->numMipmaps+1; mip++ ) {
+		uint32_t widthBlocks = MAX(mipWidth / (16/bpp), 2);
+		uint32_t heightBlocks = MAX(mipHeight / 4, 2);
+		uint32_t size = widthBlocks * heightBlocks * 8;
+		
+		glCompressedTexImage2D(GL_TEXTURE_2D, mip, internalFormat, mipWidth, mipHeight, 0, size, bytes);
+		bytes += size;
+
+		mipWidth = MAX(mipWidth >> 1, 1);
+		mipHeight = MAX(mipHeight >> 1, 1);
+	}
 }
 
 - (void)updateWithPixels:(NSData *)pixels atX:(int)sx y:(int)sy width:(int)sw height:(int)sh {	
@@ -297,24 +376,37 @@
 		}
 	}
 	
-	UIImage *tmpImage = [[UIImage alloc] initWithContentsOfFile:path];
-	if( !tmpImage ) {
-		NSLog(@"Error Loading image %@ - not found.", path);
-		return NULL;
+	
+	NSMutableData *pixels;
+	if( [path.pathExtension isEqualToString:@"pvr"] ) {
+		// Compressed PVRTC? Only load raw data bytes
+		pixels = [NSMutableData dataWithContentsOfFile:path];
+		PVRTextureHeader *header = (PVRTextureHeader *)pixels.bytes;
+		width = header->width;
+		height = header->height;
+		isCompressed = true;
 	}
-	
-	CGImageRef image = tmpImage.CGImage;
-	
-	width = CGImageGetWidth(image);
-	height = CGImageGetHeight(image);
-	
-	NSMutableData *pixels = [NSMutableData dataWithLength:width*height*4];
-	CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-	CGContextRef context = CGBitmapContextCreate(pixels.mutableBytes, width, height, 8, width * 4, colorSpace, kCGImageAlphaPremultipliedLast);
-	CGContextDrawImage(context, CGRectMake(0.0, 0.0, (CGFloat)width, (CGFloat)height), image);
-	CGContextRelease(context);
-	CGColorSpaceRelease(colorSpace);
-	[tmpImage release];
+	else {
+		// Use UIImage for PNG, JPG and everything else
+		UIImage *tmpImage = [[UIImage alloc] initWithContentsOfFile:path];
+		if( !tmpImage ) {
+			NSLog(@"Error Loading image %@ - not found.", path);
+			return NULL;
+		}
+		
+		CGImageRef image = tmpImage.CGImage;
+		
+		width = CGImageGetWidth(image);
+		height = CGImageGetHeight(image);
+		
+		pixels = [NSMutableData dataWithLength:width*height*4];
+		CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+		CGContextRef context = CGBitmapContextCreate(pixels.mutableBytes, width, height, 8, width * 4, colorSpace, kCGImageAlphaPremultipliedLast);
+		CGContextDrawImage(context, CGRectMake(0.0, 0.0, (CGFloat)width, (CGFloat)height), image);
+		CGContextRelease(context);
+		CGColorSpaceRelease(colorSpace);
+		[tmpImage release];
+	}
 	
 	return pixels;
 }
@@ -344,6 +436,40 @@
 	[textureStorage bindToTarget:target withParams:params];
 }
 
+- (UIImage *)imageFromPixels {
+	UIImage *newImage = nil;
+
+	int scaledWidth = self.width  * self.contentScale;
+	int scaledHeight = self.height * self.contentScale;
+	int nrOfColorComponents = 4; // RGBA
+	int bitsPerColorComponent = 8;
+	int rawImageDataLength = scaledWidth * scaledHeight * nrOfColorComponents;
+	BOOL interpolateAndSmoothPixels = NO;
+	CGBitmapInfo bitmapInfo = kCGBitmapByteOrder32Big | kCGImageAlphaPremultipliedLast;
+	CGColorRenderingIntent renderingIntent = kCGRenderingIntentDefault;
+
+	CGDataProviderRef dataProviderRef;
+	CGColorSpaceRef colorSpaceRef;
+	CGImageRef imageRef;
+
+	@try {
+		dataProviderRef = CGDataProviderCreateWithData(NULL, self.pixels.bytes, rawImageDataLength, nil);
+		colorSpaceRef = CGColorSpaceCreateDeviceRGB();
+		imageRef = CGImageCreate(
+			width, height,
+			bitsPerColorComponent, bitsPerColorComponent * nrOfColorComponents, width * nrOfColorComponents,
+			colorSpaceRef, bitmapInfo, dataProviderRef, NULL, interpolateAndSmoothPixels, renderingIntent
+		);
+		newImage = [[UIImage alloc] initWithCGImage:imageRef scale:self.contentScale orientation:UIImageOrientationUp];
+	}
+	@finally {
+		CGDataProviderRelease(dataProviderRef);
+		CGColorSpaceRelease(colorSpaceRef);
+		CGImageRelease(imageRef);
+	}
+
+	return newImage;
+}
 
 + (void)premultiplyPixels:(const GLubyte *)inPixels to:(GLubyte *)outPixels byteLength:(int)byteLength format:(GLenum)format {
 	const GLubyte *premultiplyTable = [EJSharedTextureCache instance].premultiplyTable.bytes;

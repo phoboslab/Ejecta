@@ -72,11 +72,15 @@ window.require = function( name ) {
 };
 
 // Timers
+window.performance = {now: function() {return ej.performanceNow();} };
 window.setTimeout = function(cb, t){ return ej.setTimeout(cb, t); };
 window.setInterval = function(cb, t){ return ej.setInterval(cb, t); };
 window.clearTimeout = function(id){ return ej.clearTimeout(id); };
 window.clearInterval = function(id){ return ej.clearInterval(id); };
-window.requestAnimationFrame = function(cb, element){ return ej.setTimeout(cb, 16); };
+window.requestAnimationFrame = function(cb, element){
+	return ej.setTimeout(function(){ cb(ej.performanceNow()); }, 16);
+};
+
 
 
 // The native Image, Audio, HttpRequest and LocalStorage class mimic the real elements

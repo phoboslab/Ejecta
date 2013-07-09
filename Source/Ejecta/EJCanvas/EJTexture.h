@@ -13,6 +13,7 @@ typedef enum {
 
 @interface EJTexture : NSObject <NSCopying> {
 	BOOL cached;
+	BOOL isCompressed;
 	short width, height;
 	NSString *fullPath;
 	EJTextureStorage *textureStorage;
@@ -39,6 +40,7 @@ typedef enum {
 - (void)createWithTexture:(EJTexture *)other;
 - (void)createWithPixels:(NSData *)pixels format:(GLenum)format;
 - (void)createWithPixels:(NSData *)pixels format:(GLenum)formatp target:(GLenum)target;
+- (void)uploadCompressedPixels:(NSData *)pixels target:(GLenum)target;
 - (void)updateWithPixels:(NSData *)pixels atX:(int)x y:(int)y width:(int)subWidth height:(int)subHeight;
 
 - (NSMutableData *)loadPixelsFromPath:(NSString *)path;
@@ -48,6 +50,8 @@ typedef enum {
 
 - (void)bindWithFilter:(GLenum)filter;
 - (void)bindToTarget:(GLenum)target;
+
+- (UIImage *)imageFromPixels;
 
 + (void)premultiplyPixels:(const GLubyte *)inPixels to:(GLubyte *)outPixels byteLength:(int)byteLength format:(GLenum)format;
 + (void)unPremultiplyPixels:(const GLubyte *)inPixels to:(GLubyte *)outPixels byteLength:(int)byteLength format:(GLenum)format;
