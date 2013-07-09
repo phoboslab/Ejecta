@@ -72,6 +72,7 @@ window.require = function( name ) {
 };
 
 // Timers
+window.performance = {now: function() {return ej.performanceNow();} };
 window.setTimeout = function(cb, t){ return ej.setTimeout(cb, t); };
 window.setInterval = function(cb, t){ return ej.setInterval(cb, t); };
 window.clearTimeout = function(id){ return ej.clearTimeout(id); };
