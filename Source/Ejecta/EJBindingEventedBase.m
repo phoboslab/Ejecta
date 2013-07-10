@@ -82,6 +82,7 @@ EJ_BIND_FUNCTION(removeEventListener, ctx, argc, argv) {
 		JSObjectRef callback = JSValueToObject(ctx, argv[1], NULL);
 		for( int i = 0; i < listeners.count; i++ ) {
 			if( JSValueIsStrictEqual(ctx, callback, [listeners[i] pointerValue]) ) {
+				JSValueUnprotect(ctx, [listeners[i] pointerValue]);
 				[listeners removeObjectAtIndex:i];
 				return NULL;
 			}
