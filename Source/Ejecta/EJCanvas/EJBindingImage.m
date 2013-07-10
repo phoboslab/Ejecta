@@ -47,7 +47,7 @@
 	[loadCallback release];
 	loadCallback = nil;
 	
-	[self triggerEvent:(texture.textureId ? @"load" : @"error") argc:0 argv:NULL];		
+	[self triggerEvent:(texture.textureId ? @"load" : @"error")];
 	JSValueUnprotect(scriptView.jsGlobalContext, jsObject);
 }
 

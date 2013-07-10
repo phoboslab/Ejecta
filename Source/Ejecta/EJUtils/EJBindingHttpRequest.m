@@ -78,7 +78,7 @@
 	else {
 		[[challenge sender] cancelAuthenticationChallenge:challenge];
 		state = kEJHttpRequestStateDone;
-		[self triggerEvent:@"abort" argc:0 argv:NULL];
+		[self triggerEvent:@"abort"];
 		NSLog(@"XHR: Aborting Request %@ - wrong credentials", url);
 	}
 }
@@ -87,9 +87,9 @@
 	state = kEJHttpRequestStateDone;
 	
 	[connection release]; connection = NULL;
-	[self triggerEvent:@"load" argc:0 argv:NULL];
-	[self triggerEvent:@"loadend" argc:0 argv:NULL];
-	[self triggerEvent:@"readystatechange" argc:0 argv:NULL];
+	[self triggerEvent:@"load"];
+	[self triggerEvent:@"loadend"];
+	[self triggerEvent:@"readystatechange"];
 }
 
 - (void)connection:(NSURLConnection *)connectionp didFailWithError:(NSError *)error {
@@ -97,13 +97,13 @@
 	
 	[connection release]; connection = NULL;
 	if( error.code == kCFURLErrorTimedOut ) {
-		[self triggerEvent:@"timeout" argc:0 argv:NULL];
+		[self triggerEvent:@"timeout"];
 	}
 	else {
-		[self triggerEvent:@"error" argc:0 argv:NULL];
+		[self triggerEvent:@"error"];
 	}
-	[self triggerEvent:@"loadend" argc:0 argv:NULL];
-	[self triggerEvent:@"readystatechange" argc:0 argv:NULL];
+	[self triggerEvent:@"loadend"];
+	[self triggerEvent:@"readystatechange"];
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)responsep {
@@ -111,8 +111,15 @@
 	
 	[response release];
 	response = (NSHTTPURLResponse *)[responsep retain];
-	[self triggerEvent:@"progress" argc:0 argv:NULL];
-	[self triggerEvent:@"readystatechange" argc:0 argv:NULL];
+	
+	JSContextRef ctx = scriptView.jsGlobalContext;
+	[self triggerEvent:@"progress" properties:(JSEventProperty[]){
+		{"lengthComputable", JSValueMakeBoolean(ctx, response.expectedContentLength != NSURLResponseUnknownLength)},
+		{"total", JSValueMakeNumber(ctx, response.expectedContentLength)},
+		{"loaded", JSValueMakeNumber(ctx, responseBody.length)},
+		{NULL, NULL}
+	}];
+	[self triggerEvent:@"readystatechange"];
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
@@ -122,8 +129,15 @@
 		responseBody = [[NSMutableData alloc] initWithCapacity:1024 * 10]; // 10kb
 	}
 	[responseBody appendData:data];
-	[self triggerEvent:@"progress" argc:0 argv:NULL];
-	[self triggerEvent:@"readystatechange" argc:0 argv:NULL];
+	
+	JSContextRef ctx = scriptView.jsGlobalContext;
+	[self triggerEvent:@"progress" properties:(JSEventProperty[]){
+		{"lengthComputable", JSValueMakeBoolean(ctx, response.expectedContentLength != NSURLResponseUnknownLength)},
+		{"total", JSValueMakeNumber(ctx, response.expectedContentLength)},
+		{"loaded", JSValueMakeNumber(ctx, responseBody.length)},
+		{NULL, NULL}
+	}];
+	[self triggerEvent:@"readystatechange"];
 }
 
 
@@ -161,7 +175,7 @@ EJ_BIND_FUNCTION(setRequestHeader, ctx, argc, argv) {
 EJ_BIND_FUNCTION(abort, ctx, argc, argv) {
 	if( connection ) {
 		[self clearConnection];
-		[self triggerEvent:@"abort" argc:0 argv:NULL];
+		[self triggerEvent:@"abort"];
 	}
 	return NULL;
 }
@@ -226,7 +240,7 @@ EJ_BIND_FUNCTION(send, ctx, argc, argv) {
 	}	
 	
 	NSLog(@"XHR: %@ %@", method, url);
-	[self triggerEvent:@"loadstart" argc:0 argv:NULL];
+	[self triggerEvent:@"loadstart"];
 	
 	if( async ) {
 		state = kEJHttpRequestStateLoading;
@@ -241,14 +255,14 @@ EJ_BIND_FUNCTION(send, ctx, argc, argv) {
 		if( [response isKindOfClass:[NSHTTPURLResponse class]] ) {
 			NSHTTPURLResponse *urlResponse = (NSHTTPURLResponse *)response;
 			if( urlResponse.statusCode == 200 ) {
-				[self triggerEvent:@"load" argc:0 argv:NULL];
+				[self triggerEvent:@"load"];
 			}
 		}
 		else {
-			[self triggerEvent:@"load" argc:0 argv:NULL];
+			[self triggerEvent:@"load"];
 		}
-		[self triggerEvent:@"loadend" argc:0 argv:NULL];
-		[self triggerEvent:@"readystatechange" argc:0 argv:NULL];
+		[self triggerEvent:@"loadend"];
+		[self triggerEvent:@"readystatechange"];
 	}
 	[request release];
 	

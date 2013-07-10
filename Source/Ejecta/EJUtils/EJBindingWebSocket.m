@@ -59,14 +59,14 @@
 - (void)webSocketDidOpen:(SRWebSocket *)webSocket {
 	readyState = kEJWebSocketReadyStateOpen;
 	
-	[self triggerEvent:@"open" argc:0 argv:NULL];
+	[self triggerEvent:@"open"];
 }
 
 - (void)webSocket:(SRWebSocket *)webSocket didFailWithError:(NSError *)error {
 	readyState = kEJWebSocketReadyStateClosed;
 	
-	JSValueRef jsError = NSStringToJSValue(scriptView.jsGlobalContext, error.localizedDescription);
-	[self triggerEvent:@"error" argc:1 argv:(JSValueRef[]){jsError}];
+	NSLog(@"WebSocket Error: %@", error.description);
+	[self triggerEvent:@"error"];
 	
 	[socket release];
 	socket = nil;
@@ -96,12 +96,22 @@
 	}
 	
 	JSObjectSetProperty(ctx, jsEvent, jsDataName, jsMessage, kJSPropertyAttributeNone, NULL);
-	[self triggerEvent:@"message" argc:1 argv:(JSValueRef[]){ jsEvent }];
+	[self triggerEvent:@"message" properties:(JSEventProperty[]){
+		{"data", jsMessage},
+		{NULL, NULL}
+	}];
 }
 
 - (void)webSocket:(SRWebSocket *)webSocket didCloseWithCode:(NSInteger)code reason:(NSString *)reason wasClean:(BOOL)wasClean {
 	readyState = kEJWebSocketReadyStateClosed;
-	[self triggerEvent:@"close" argc:0 argv:NULL];
+	
+	JSContextRef ctx = scriptView.jsGlobalContext;
+	[self triggerEvent:@"close" properties:(JSEventProperty[]){
+		{"code", JSValueMakeNumber(ctx, code)},
+		{"reason", NSStringToJSValue(ctx, reason)},
+		{"wasClean", JSValueMakeBoolean(ctx, wasClean)},
+		{NULL, NULL},
+	}];
 	
 	
 	// Unprotect self from garbage collection
