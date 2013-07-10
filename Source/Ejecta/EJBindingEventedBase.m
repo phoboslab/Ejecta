@@ -94,14 +94,14 @@ EJ_BIND_FUNCTION(removeEventListener, ctx, argc, argv) {
 - (void)triggerEvent:(NSString *)name argc:(int)argc argv:(JSValueRef[])argv {
 	NSArray *listeners = eventListeners[name];
 	if( listeners ) {
-		for( NSValue *callbackValue in listeners ) {
-			[scriptView invokeCallback:[callbackValue pointerValue] thisObject:jsObject argc:argc argv:argv];
+		for( NSValue *callback in listeners ) {
+			[scriptView invokeCallback:callback.pointerValue thisObject:jsObject argc:argc argv:argv];
 		}
 	}
 	
-	NSValue *callbackValue = onCallbacks[name];
-	if( callbackValue ) {
-		[scriptView invokeCallback:[callbackValue pointerValue] thisObject:jsObject argc:argc argv:argv];
+	NSValue *callback = onCallbacks[name];
+	if( callback ) {
+		[scriptView invokeCallback:callback.pointerValue thisObject:jsObject argc:argc argv:argv];
 	}
 }
 
