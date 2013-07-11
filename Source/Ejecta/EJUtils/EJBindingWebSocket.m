@@ -26,10 +26,6 @@
 		jsEvent = JSObjectMake(ctx, NULL, NULL);
 		JSValueProtect(ctx, jsEvent);
 		jsDataName = JSStringCreateWithUTF8CString("data");
-        
-        jsMessageName = JSStringCreateWithUTF8CString("message");
-        jsTargetName = JSStringCreateWithUTF8CString("target");
-
 	}
 	return self;
 }
@@ -37,8 +33,6 @@
 - (void)createWithJSObject:(JSObjectRef)obj scriptView:(EJJavaScriptView *)view {
 	[super createWithJSObject:obj scriptView:view];
 	
-    JSObjectSetProperty( scriptView.jsGlobalContext, jsEvent, jsTargetName, jsObject, kJSPropertyAttributeNone, NULL );
-    
 	if( readyState != kEJWebSocketReadyStateClosed ) {
 		// Protect self from garbage collection; the event handlers may be the only
 		// thing holding on to us.
@@ -56,9 +50,7 @@
 - (void) dealloc {
 	JSValueUnprotectSafe(scriptView.jsGlobalContext, jsEvent);
 	JSStringRelease(jsDataName);
-    JSStringRelease(jsTargetName);
-    JSStringRelease(jsMessageName);
-    
+	
 	[url release];
 	[socket release];
 	[super dealloc];
@@ -68,7 +60,6 @@
 	readyState = kEJWebSocketReadyStateOpen;
 	
 	[self triggerEvent:@"open"];
-    
 }
 
 - (void)webSocket:(SRWebSocket *)webSocket didFailWithError:(NSError *)error {
@@ -76,7 +67,7 @@
 	
 	NSLog(@"WebSocket Error: %@", error.description);
 	[self triggerEvent:@"error"];
-
+	
 	[socket release];
 	socket = nil;
 }
@@ -113,6 +104,7 @@
 
 - (void)webSocket:(SRWebSocket *)webSocket didCloseWithCode:(NSInteger)code reason:(NSString *)reason wasClean:(BOOL)wasClean {
 	readyState = kEJWebSocketReadyStateClosed;
+	
 	JSContextRef ctx = scriptView.jsGlobalContext;
 	[self triggerEvent:@"close" properties:(JSEventProperty[]){
 		{"code", JSValueMakeNumber(ctx, code)},
@@ -120,6 +112,7 @@
 		{"wasClean", JSValueMakeBoolean(ctx, wasClean)},
 		{NULL, NULL},
 	}];
+	
 	
 	// Unprotect self from garbage collection
 	JSValueUnprotectSafe(scriptView.jsGlobalContext, jsObject);

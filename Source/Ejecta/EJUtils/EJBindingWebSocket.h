@@ -21,9 +21,6 @@ typedef enum {
 	
 	JSObjectRef jsEvent;
 	JSStringRef jsDataName;
-    
-    JSStringRef jsTargetName;
-    JSStringRef jsMessageName;
 }
 
 @end
