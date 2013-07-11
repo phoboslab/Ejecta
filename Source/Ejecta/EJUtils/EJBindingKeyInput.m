@@ -106,22 +106,24 @@ EJ_BIND_EVENT(change);
 {
     [self.value appendString:text];
 
-    JSValueRef params[] = { NSStringToJSValue(scriptView.jsGlobalContext, text) };
-    [self triggerEvent:@"keypress" argc:1 argv:params];
+    [self triggerEvent:@"keypress" properties:(JSEventProperty[]){
+		{"char", NSStringToJSValue(scriptView.jsGlobalContext, text)},
+		{NULL, NULL}
+	}];
     
-    [self triggerEvent:@"change" argc:0 argv:NULL];
+    [self triggerEvent:@"change"];
 }
 
 - (void)keyInputDidDeleteBackwards:(EJKeyInputResponder *)keyInput{
-    [self triggerEvent:@"delete" argc:0 argv:NULL];
+    [self triggerEvent:@"delete"];
 }
 
 - (void)keyInputDidResignFirstResponderStatus:(EJKeyInputResponder *)keyInput{
-    [self triggerEvent:@"blur" argc:0 argv:NULL];
+    [self triggerEvent:@"blur"];
 }
 
 - (void)keyInputDidBecomeFirstResponder:(EJKeyInputResponder *)keyInput{
-    [self triggerEvent:@"focus" argc:0 argv:NULL];
+    [self triggerEvent:@"focus"];
 }
 
 @end

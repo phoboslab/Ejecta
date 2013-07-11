@@ -28,14 +28,36 @@
 		return true; \
 	} \
 	__EJ_GET_POINTER_TO(_set_on##NAME)
+
+
+typedef struct {
+	const char *name;
+	JSValueRef value;
+} JSEventProperty;
 	
 @interface EJBindingEventedBase : EJBindingBase {
 	NSMutableDictionary *eventListeners; // for addEventListener
 	NSMutableDictionary *onCallbacks; // for on* setters
 }
 
-- (JSObjectRef)getCallbackWith:(NSString *)name ctx:(JSContextRef)ctx;
-- (void)setCallbackWith:(NSString *)name ctx:(JSContextRef)ctx callback:(JSValueRef)callback;
-- (void)triggerEvent:(NSString *)name argc:(int)argc argv:(JSValueRef[])argv;
+- (JSObjectRef)getCallbackWith:(NSString *)type ctx:(JSContextRef)ctx;
+- (void)setCallbackWith:(NSString *)type ctx:(JSContextRef)ctx callback:(JSValueRef)callback;
+- (void)triggerEvent:(NSString *)type argc:(int)argc argv:(JSValueRef[])argv;
+- (void)triggerEvent:(NSString *)type properties:(JSEventProperty[])properties;
+- (void)triggerEvent:(NSString *)type;
 
 @end
+
+
+@interface EJBindingEvent : EJBindingBase {
+	NSString *type;
+	JSObjectRef jsTarget;
+}
+
++ (JSObjectRef)createJSObjectWithContext:(JSContextRef)ctx
+	scriptView:(EJJavaScriptView *)scriptView
+	type:(NSString *)type
+	target:(JSObjectRef)target;
+	
+@end
+

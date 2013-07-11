@@ -9,15 +9,15 @@
 }
 
 - (void)pause {
-	[self triggerEvent:@"pagehide" argc:0 argv:NULL];
+	[self triggerEvent:@"pagehide"];
 }
 
 - (void)resume {
-	[self triggerEvent:@"pageshow" argc:0 argv:NULL];
+	[self triggerEvent:@"pageshow"];
 }
 
 - (void)resize {
-	[self triggerEvent:@"resize" argc:0 argv:NULL];
+	[self triggerEvent:@"resize"];
 }
 
 EJ_BIND_EVENT(pagehide);

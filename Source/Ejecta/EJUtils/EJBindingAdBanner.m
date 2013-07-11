@@ -40,12 +40,12 @@
 		[scriptView bringSubviewToFront:banner];
 		banner.hidden = NO;
 	}
-	[self triggerEvent:@"load" argc:0 argv:NULL];
+	[self triggerEvent:@"load"];
 }
 
 - (void)bannerView:(ADBannerView *)theBanner didFailToReceiveAdWithError:(NSError *)error {
 	NSLog(@"AdBanner: Failed to receive Ad. Error: %d - %@", error.code, error.localizedDescription);
-	[self triggerEvent:@"error" argc:0 argv:NULL];
+	[self triggerEvent:@"error"];
 	banner.hidden = YES;
 }
 

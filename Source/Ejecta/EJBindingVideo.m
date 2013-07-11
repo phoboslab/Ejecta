@@ -135,19 +135,19 @@ EJ_BIND_SET(src, ctx, value) {
 - (void)preparedToPlayChange:(MPMoviePlayerController *)moviePlayer {
 	if( player.isPreparedToPlay && !loaded ) {
 		loaded = YES;
-		[self triggerEvent:@"canplaythrough" argc:0 argv:NULL];
-		[self triggerEvent:@"loadedmetadata" argc:0 argv:NULL];
+		[self triggerEvent:@"canplaythrough"];
+		[self triggerEvent:@"loadedmetadata"];
 	}
 }
 
 - (void)didTap:(UIGestureRecognizer *)gestureRecognizer {
-	[self triggerEvent:@"click" argc:0 argv:NULL];
+	[self triggerEvent:@"click"];
 }
 
 - (void)didFinish:(MPMoviePlayerController *)moviePlayer {
 	player.fullscreen = NO;
 	[player.view removeFromSuperview];
-	[self triggerEvent:@"ended" argc:0 argv:NULL];
+	[self triggerEvent:@"ended"];
 }
 
 EJ_BIND_GET(ended, ctx) {
