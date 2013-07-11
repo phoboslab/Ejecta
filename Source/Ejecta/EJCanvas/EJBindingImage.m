@@ -78,7 +78,7 @@ EJ_BIND_SET(src, ctx, value) {
 		texture = nil;
 	}
 	
-	if( [newPath length] ) {
+	if( !JSValueIsNull(ctx, value) && [newPath length] ) {
 		path = [newPath retain];
 		[self beginLoad];
 	}
