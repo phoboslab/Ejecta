@@ -59,7 +59,9 @@ typedef struct {
 		owningContext = kEJTextureOwningContextCanvas2D;
 		
 		NSMutableData *pixels = [self loadPixelsFromPath:path];
-		[self createWithPixels:pixels format:GL_RGBA];
+		if( pixels ) {
+			[self createWithPixels:pixels format:GL_RGBA];
+		}
 	}
 
 	return self;
@@ -107,7 +109,9 @@ typedef struct {
 			// We could use a sharegroup here, but it turned out quite buggy and has little
 			// benefits - the main bottleneck is loading the image file.
 			[loadCallback addExecutionBlock:^{
-				[self createWithPixels:pixels format:GL_RGBA];
+				if( pixels ) {
+					[self createWithPixels:pixels format:GL_RGBA];
+				}
 				[loadCallback release];
 				loadCallback = nil;
 			}];
