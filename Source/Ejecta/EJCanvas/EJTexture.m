@@ -381,6 +381,10 @@ typedef struct {
 	if( [path.pathExtension isEqualToString:@"pvr"] ) {
 		// Compressed PVRTC? Only load raw data bytes
 		pixels = [NSMutableData dataWithContentsOfFile:path];
+		if( !pixels ) {
+			NSLog(@"Error Loading image %@ - not found.", path);
+			return NULL;
+		}
 		PVRTextureHeader *header = (PVRTextureHeader *)pixels.bytes;
 		width = header->width;
 		height = header->height;
