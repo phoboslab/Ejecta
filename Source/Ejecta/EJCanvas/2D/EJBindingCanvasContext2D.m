@@ -164,6 +164,9 @@ EJ_BIND_SET(font, ctx, value) {
 	if( font ) {
 		renderingContext.font = font;
 	}
+	else {
+		NSLog(@"Warning: No font with name %s", name);
+	}
 	
 	JSStringRelease(jsString);
 }
