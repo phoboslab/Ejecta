@@ -111,7 +111,7 @@
 
 /* Begin PBXFileReference section */
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		1D6058910D05DD3D006BFB54 /* Ejecta.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Ejecta.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1D6058910D05DD3D006BFB54 /* D2-2013.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "D2-2013.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		288765FC0DF74451002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		3EBC19BC16CECE190036F9F3 /* EJBindingKeyInput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingKeyInput.h; sourceTree = "<group>"; };
@@ -325,7 +325,7 @@
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				1D6058910D05DD3D006BFB54 /* Ejecta.app */,
+				1D6058910D05DD3D006BFB54 /* D2-2013.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -631,9 +631,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		1D6058900D05DD3D006BFB54 /* Ejecta */ = {
+		1D6058900D05DD3D006BFB54 /* D2-2013 */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "Ejecta" */;
+			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "D2-2013" */;
 			buildPhases = (
 				1D60588D0D05DD3D006BFB54 /* Resources */,
 				1D60588E0D05DD3D006BFB54 /* Sources */,
@@ -643,9 +643,9 @@
 			);
 			dependencies = (
 			);
-			name = Ejecta;
+			name = "D2-2013";
 			productName = iOSImpact;
-			productReference = 1D6058910D05DD3D006BFB54 /* Ejecta.app */;
+			productReference = 1D6058910D05DD3D006BFB54 /* D2-2013.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -656,7 +656,7 @@
 			attributes = {
 				LastUpgradeCheck = 0500;
 			};
-			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Ejecta" */;
+			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "D2-2013" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 1;
@@ -670,7 +670,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				1D6058900D05DD3D006BFB54 /* Ejecta */,
+				1D6058900D05DD3D006BFB54 /* D2-2013 */,
 			);
 		};
 /* End PBXProject section */
@@ -794,7 +794,7 @@
 					"\"$(SRCROOT)/Source/lib\"",
 				);
 				OTHER_CFLAGS = "-DDEBUG";
-				PRODUCT_NAME = Ejecta;
+				PRODUCT_NAME = "D2-2013";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -814,7 +814,7 @@
 					"\"$(SRCROOT)\"",
 					"\"$(SRCROOT)/Source/lib\"",
 				);
-				PRODUCT_NAME = Ejecta;
+				PRODUCT_NAME = "D2-2013";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -871,7 +871,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "Ejecta" */ = {
+		1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "D2-2013" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1D6058940D05DD3E006BFB54 /* Debug */,
@@ -880,7 +880,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Ejecta" */ = {
+		C01FCF4E08A954540054247B /* Build configuration list for PBXProject "D2-2013" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C01FCF4F08A954540054247B /* Debug */,
