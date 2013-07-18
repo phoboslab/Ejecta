@@ -300,6 +300,20 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 	JSStringRelease( jsFilePropertyName );
 }
 
+- (JSValueRef)jsValueForPath:(NSString *)objectPath {
+	JSValueRef obj = JSContextGetGlobalObject( jsGlobalContext  );
+	
+	NSArray *pathComponents = [objectPath componentsSeparatedByString:@"."];
+	for( NSString *p in pathComponents) {
+		JSStringRef name = JSStringCreateWithCFString((CFStringRef)p);
+		obj = JSObjectGetProperty( jsGlobalContext, (JSObjectRef)obj, name, NULL);
+		JSStringRelease(name);
+		
+		if( !obj ) { break; }
+	}
+	return obj;
+}
+
 
 #pragma mark -
 #pragma mark Run loop
