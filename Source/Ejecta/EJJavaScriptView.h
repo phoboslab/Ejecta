@@ -94,6 +94,7 @@
 - (void)loadScriptAtPath:(NSString *)path;
 - (JSValueRef)evaluateScript:(NSString *)script;
 - (JSValueRef)evaluateScript:(NSString *)script sourceURL:(NSString *)sourceURL;
+- (JSValueRef)jsValueForPath:(NSString *)objectPath;
 
 - (void)clearCaches;
 
