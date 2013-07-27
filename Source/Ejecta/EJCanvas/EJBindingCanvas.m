@@ -88,6 +88,7 @@ EJ_BIND_SET(width, ctx, value) {
 		scriptView.currentRenderingContext = renderingContext;
 		renderingContext.width = newWidth;
 		width = renderingContext.width;
+		[(EJCanvasContext2D *)renderingContext clearRectX:0 y:0 w:width h:height];
 		return;
 	}
 	else {
@@ -105,6 +106,7 @@ EJ_BIND_SET(height, ctx, value) {
 		scriptView.currentRenderingContext = renderingContext;
 		renderingContext.height = newHeight;
 		height = renderingContext.height;
+		[(EJCanvasContext2D *)renderingContext clearRectX:0 y:0 w:width h:height];
 	}
 	else {
 		height = newHeight;
