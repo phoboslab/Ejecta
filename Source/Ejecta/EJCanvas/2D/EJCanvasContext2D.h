@@ -141,6 +141,7 @@ static inline EJColorRGBA EJCanvasBlendStrokeColor( EJCanvasState *state ) {
 - (void)createStencilBufferOnce;
 - (void)bindVertexBuffer;
 - (void)prepare;
+- (void)clear;
 - (void)setTexture:(EJTexture *)newTexture;
 - (void)setProgram:(EJGLProgram2D *)program;
 - (void)pushTriX1:(float)x1 y1:(float)y1 x2:(float)x2 y2:(float)y2

@@ -9,5 +9,6 @@
 - (void)create {}
 - (void)flushBuffers {}
 - (void)prepare {}
+- (void)clear {}
 
 @end

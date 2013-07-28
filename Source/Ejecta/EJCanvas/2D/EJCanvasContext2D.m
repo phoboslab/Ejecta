@@ -212,6 +212,10 @@ const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
 	needsPresenting = YES;
 }
 
+- (void)clear {
+	[self clearRectX:0 y:0 w:width h:height];
+}
+
 - (void)setWidth:(short)newWidth {
 	if( newWidth == width ) { return; }
 	[self resizeToWidth:newWidth height:height];
