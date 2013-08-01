@@ -161,7 +161,9 @@ EJ_BIND_SET(font, ctx, value) {
 	float size = 0;
 	char name[64];
 	char ptx;
-	sscanf( string, "%fp%1[tx]%*[\"' ]%63[^\"']", &size, &ptx, name); // matches: 10.5p[tx] 'some font'
+	char *start = string;
+	while(*start != '\0' && !isdigit(*start)){ start++; } // skip to the first digit
+	sscanf( start, "%fp%1[tx]%*[\"' ]%63[^\"']", &size, &ptx, name); // matches: 10.5p[tx] 'some font'
 	
 	if( ptx == 't' ) { // pt or px?
 		size = ceilf(size*4.0/3.0);

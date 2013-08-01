@@ -9,7 +9,7 @@
 
 + (id)descriptorWithName:(NSString *)name size:(float)size {
 	// Check if the font exists
-	if( ![UIFont fontWithName:name size:size] ) {
+	if( !name.length || ![UIFont fontWithName:name size:size] ) {
 		return NULL;
 	}
 	
