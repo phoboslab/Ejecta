@@ -10,10 +10,11 @@
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765FC0DF74451002DB57D /* CoreGraphics.framework */; };
-		391193FE179D87330037E2D1 /* EJBindingAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 391193F4179D87330037E2D1 /* EJBindingAlertView.m */; };
-		391193FF179D87330037E2D1 /* EJBindingAppUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 391193F6179D87330037E2D1 /* EJBindingAppUtils.m */; };
-		39119401179D87330037E2D1 /* EJBindingWebView.m in Sources */ = {isa = PBXBuildFile; fileRef = 391193FA179D87330037E2D1 /* EJBindingWebView.m */; };
-		39119402179D87330037E2D1 /* OpenUDID.m in Sources */ = {isa = PBXBuildFile; fileRef = 391193FD179D87330037E2D1 /* OpenUDID.m */; };
+		3929E9CB17B7BC12003BBE57 /* EJBindingAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3929E9C117B7BC12003BBE57 /* EJBindingAlertView.m */; };
+		3929E9CC17B7BC12003BBE57 /* EJBindingAppUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 3929E9C317B7BC12003BBE57 /* EJBindingAppUtils.m */; };
+		3929E9CD17B7BC12003BBE57 /* EJBindingNotificationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3929E9C517B7BC12003BBE57 /* EJBindingNotificationManager.m */; };
+		3929E9CE17B7BC12003BBE57 /* EJBindingWebView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3929E9C717B7BC12003BBE57 /* EJBindingWebView.m */; };
+		3929E9CF17B7BC12003BBE57 /* OpenUDID.m in Sources */ = {isa = PBXBuildFile; fileRef = 3929E9CA17B7BC12003BBE57 /* OpenUDID.m */; };
 		3EBC19BE16CECE190036F9F3 /* EJBindingKeyInput.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EBC19BD16CECE190036F9F3 /* EJBindingKeyInput.m */; };
 		3EF00C5916C29360004599A4 /* EJJavaScriptView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EF00C5816C29360004599A4 /* EJJavaScriptView.m */; };
 		5B7B76761619DB9700691910 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B7B76751619DB9700691910 /* CoreText.framework */; };
@@ -118,14 +119,16 @@
 		1D6058910D05DD3D006BFB54 /* Ejecta.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Ejecta.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		288765FC0DF74451002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		391193F3179D87330037E2D1 /* EJBindingAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingAlertView.h; sourceTree = "<group>"; };
-		391193F4179D87330037E2D1 /* EJBindingAlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingAlertView.m; sourceTree = "<group>"; };
-		391193F5179D87330037E2D1 /* EJBindingAppUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingAppUtils.h; sourceTree = "<group>"; };
-		391193F6179D87330037E2D1 /* EJBindingAppUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingAppUtils.m; sourceTree = "<group>"; };
-		391193F9179D87330037E2D1 /* EJBindingWebView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingWebView.h; sourceTree = "<group>"; };
-		391193FA179D87330037E2D1 /* EJBindingWebView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingWebView.m; sourceTree = "<group>"; };
-		391193FC179D87330037E2D1 /* OpenUDID.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenUDID.h; sourceTree = "<group>"; };
-		391193FD179D87330037E2D1 /* OpenUDID.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OpenUDID.m; sourceTree = "<group>"; };
+		3929E9C017B7BC12003BBE57 /* EJBindingAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingAlertView.h; sourceTree = "<group>"; };
+		3929E9C117B7BC12003BBE57 /* EJBindingAlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingAlertView.m; sourceTree = "<group>"; };
+		3929E9C217B7BC12003BBE57 /* EJBindingAppUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingAppUtils.h; sourceTree = "<group>"; };
+		3929E9C317B7BC12003BBE57 /* EJBindingAppUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingAppUtils.m; sourceTree = "<group>"; };
+		3929E9C417B7BC12003BBE57 /* EJBindingNotificationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingNotificationManager.h; sourceTree = "<group>"; };
+		3929E9C517B7BC12003BBE57 /* EJBindingNotificationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingNotificationManager.m; sourceTree = "<group>"; };
+		3929E9C617B7BC12003BBE57 /* EJBindingWebView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingWebView.h; sourceTree = "<group>"; };
+		3929E9C717B7BC12003BBE57 /* EJBindingWebView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingWebView.m; sourceTree = "<group>"; };
+		3929E9C917B7BC12003BBE57 /* OpenUDID.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenUDID.h; sourceTree = "<group>"; };
+		3929E9CA17B7BC12003BBE57 /* OpenUDID.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OpenUDID.m; sourceTree = "<group>"; };
 		3EBC19BC16CECE190036F9F3 /* EJBindingKeyInput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingKeyInput.h; sourceTree = "<group>"; };
 		3EBC19BD16CECE190036F9F3 /* EJBindingKeyInput.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingKeyInput.m; sourceTree = "<group>"; };
 		3EF00C5716C29360004599A4 /* EJJavaScriptView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJJavaScriptView.h; sourceTree = "<group>"; };
@@ -346,7 +349,7 @@
 			isa = PBXGroup;
 			children = (
 				B68C5AEF132E6CD60015092E /* App */,
-				391193F2179D87330037E2D1 /* Extension */,
+				3929E9BF17B7BC12003BBE57 /* Extension */,
 				B64CE60E166682700087CF94 /* Source */,
 				B64CE683166682B10087CF94 /* Resources */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
@@ -382,25 +385,27 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		391193F2179D87330037E2D1 /* Extension */ = {
+		3929E9BF17B7BC12003BBE57 /* Extension */ = {
 			isa = PBXGroup;
 			children = (
-				391193FB179D87330037E2D1 /* OpenUDID */,
-				391193F3179D87330037E2D1 /* EJBindingAlertView.h */,
-				391193F4179D87330037E2D1 /* EJBindingAlertView.m */,
-				391193F5179D87330037E2D1 /* EJBindingAppUtils.h */,
-				391193F6179D87330037E2D1 /* EJBindingAppUtils.m */,
-				391193F9179D87330037E2D1 /* EJBindingWebView.h */,
-				391193FA179D87330037E2D1 /* EJBindingWebView.m */,
+				3929E9C017B7BC12003BBE57 /* EJBindingAlertView.h */,
+				3929E9C117B7BC12003BBE57 /* EJBindingAlertView.m */,
+				3929E9C217B7BC12003BBE57 /* EJBindingAppUtils.h */,
+				3929E9C317B7BC12003BBE57 /* EJBindingAppUtils.m */,
+				3929E9C417B7BC12003BBE57 /* EJBindingNotificationManager.h */,
+				3929E9C517B7BC12003BBE57 /* EJBindingNotificationManager.m */,
+				3929E9C617B7BC12003BBE57 /* EJBindingWebView.h */,
+				3929E9C717B7BC12003BBE57 /* EJBindingWebView.m */,
+				3929E9C817B7BC12003BBE57 /* OpenUDID */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
 		};
-		391193FB179D87330037E2D1 /* OpenUDID */ = {
+		3929E9C817B7BC12003BBE57 /* OpenUDID */ = {
 			isa = PBXGroup;
 			children = (
-				391193FC179D87330037E2D1 /* OpenUDID.h */,
-				391193FD179D87330037E2D1 /* OpenUDID.m */,
+				3929E9C917B7BC12003BBE57 /* OpenUDID.h */,
+				3929E9CA17B7BC12003BBE57 /* OpenUDID.m */,
 			);
 			path = OpenUDID;
 			sourceTree = "<group>";
@@ -806,10 +811,11 @@
 				B6D6E0A316F7E7D8009AB75F /* EJBindingIAPTransaction.m in Sources */,
 				B6D6E0A616F7E81B009AB75F /* EJBindingIAPProduct.m in Sources */,
 				B60FA92817021E0900078D20 /* EJBindingVideo.m in Sources */,
-				391193FE179D87330037E2D1 /* EJBindingAlertView.m in Sources */,
-				391193FF179D87330037E2D1 /* EJBindingAppUtils.m in Sources */,
-				39119401179D87330037E2D1 /* EJBindingWebView.m in Sources */,
-				39119402179D87330037E2D1 /* OpenUDID.m in Sources */,
+				3929E9CB17B7BC12003BBE57 /* EJBindingAlertView.m in Sources */,
+				3929E9CC17B7BC12003BBE57 /* EJBindingAppUtils.m in Sources */,
+				3929E9CD17B7BC12003BBE57 /* EJBindingNotificationManager.m in Sources */,
+				3929E9CE17B7BC12003BBE57 /* EJBindingWebView.m in Sources */,
+				3929E9CF17B7BC12003BBE57 /* OpenUDID.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
