@@ -8,7 +8,7 @@
 #import "EJBindingCanvasContextWebGL.h"
 
 #import "EJJavaScriptView.h"
-
+#import "base64.h"
 
 @implementation EJBindingCanvas
 @synthesize styleWidth, styleHeight;
@@ -245,5 +245,40 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 	
 	return jsCanvasContext;
 }
+
+
+EJ_BIND_FUNCTION(toDataURL, ctx, argc, argv) {
+    
+    // support PNG only.
+    // JPEG doesn't support the alpha channel , it's not commonly used in Game Developing.
+    // PNG is enough in most cases.
+    NSString *type=@"image/png";
+    
+    scriptView.currentRenderingContext = nil;
+    
+    UIImage* image = [[self texture] imageFromPixels];
+    NSData *data = UIImagePNGRepresentation(image) ;
+    
+    size_t buffer_size = (([data length] * 3 + 2) / 2);
+    char *buffer = (char *)malloc(buffer_size);
+    int len = b64_ntop([data bytes], [data length], buffer, buffer_size);
+    
+    NSString *dataURL;
+    if (len <= 0) {
+        free(buffer);
+        dataURL=@"data:,";
+    }else{
+        dataURL=[[NSString alloc] initWithBytesNoCopy:buffer length:len encoding:NSUTF8StringEncoding freeWhenDone:YES];
+        dataURL = [NSString stringWithFormat:@"data:%@;base64,%@", type , dataURL];
+        
+    }
+    
+    JSStringRef jsDataURL = JSStringCreateWithUTF8CString([dataURL UTF8String]);
+    JSValueRef ret = JSValueMakeString(ctx, jsDataURL);
+    JSStringRelease(jsDataURL);
+    return ret;
+}
+
+
 
 @end
