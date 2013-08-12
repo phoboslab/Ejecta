@@ -61,8 +61,9 @@
 	}
 }
 
-#define EJ_SET_STYLE(NAME, TARGET) \
-	- (void)NAME:(float)value { \
+#define EJ_GET_SET_STYLE(GETTER, SETTER, TARGET) \
+	- (float)GETTER { return TARGET; } \
+	- (void)SETTER:(float)value { \
 		TARGET = value; \
 		if( renderingContext && [renderingContext conformsToProtocol:@protocol(EJPresentable)] ) { \
 			scriptView.currentRenderingContext = renderingContext; \
@@ -70,12 +71,12 @@
 		} \
 	} \
 	
-	EJ_SET_STYLE(setStyleWidth, style.size.width);
-	EJ_SET_STYLE(setStyleHeight, style.size.height);
-	EJ_SET_STYLE(setStyleLeft, style.origin.x);
-	EJ_SET_STYLE(setStyleTop, style.origin.y);
+	EJ_GET_SET_STYLE(styleWidth, setStyleWidth, style.size.width);
+	EJ_GET_SET_STYLE(styleHeight, setStyleHeight, style.size.height);
+	EJ_GET_SET_STYLE(styleLeft, setStyleLeft, style.origin.x);
+	EJ_GET_SET_STYLE(styleTop, setStyleTop, style.origin.y);
 
-#undef EJ_SET_STYLE
+#undef EJ_GET_SET_STYLE
 
 
 EJ_BIND_GET(width, ctx) {
