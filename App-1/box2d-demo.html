@@ -1,0 +1,199 @@
+<html>
+   <head>
+      <title>Box2dWeb Demo</title>
+   </head>
+   <body onload="init();">
+   <img src="data:image/png;base64,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" 
+   >
+      <canvas id="canvas" width="600" height="400" style="background-color:#333333;" ></canvas>
+   </body>
+
+      <script type="text/javascript" src="./lib/Box2D.min.js"></script>
+
+   <script type="text/javascript">
+      
+      function init() {
+         var   b2Vec2 = Box2D.Common.Math.b2Vec2
+            ,  b2AABB = Box2D.Collision.b2AABB
+         	,	b2BodyDef = Box2D.Dynamics.b2BodyDef
+         	,	b2Body = Box2D.Dynamics.b2Body
+         	,	b2FixtureDef = Box2D.Dynamics.b2FixtureDef
+         	,	b2Fixture = Box2D.Dynamics.b2Fixture
+         	,	b2World = Box2D.Dynamics.b2World
+         	,	b2MassData = Box2D.Collision.Shapes.b2MassData
+         	,	b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape
+         	,	b2CircleShape = Box2D.Collision.Shapes.b2CircleShape
+         	,	b2DebugDraw = Box2D.Dynamics.b2DebugDraw
+            ,  b2MouseJointDef =  Box2D.Dynamics.Joints.b2MouseJointDef
+            ;
+         
+         var world = new b2World(
+               new b2Vec2(0, 10)    //gravity
+            ,  true                 //allow sleep
+         );
+         
+         var fixDef = new b2FixtureDef;
+         fixDef.density = 1.0;
+         fixDef.friction = 0.5;
+         fixDef.restitution = 0.2;
+         
+         var bodyDef = new b2BodyDef;
+         
+         //create ground
+         bodyDef.type = b2Body.b2_staticBody;
+         fixDef.shape = new b2PolygonShape;
+         // fixDef.shape.SetAsBox(20, 2);
+         fixDef.shape.SetAsBox(1,10);
+
+         bodyDef.position.Set(10, 400 / 30 + 1.8);
+         world.CreateBody(bodyDef).CreateFixture(fixDef);
+         
+         bodyDef.position.Set(10, -1.8);
+         world.CreateBody(bodyDef).CreateFixture(fixDef);
+         
+         // fixDef.shape.SetAsBox(2, 14);
+         bodyDef.position.Set(-1.8, 13);
+         world.CreateBody(bodyDef).CreateFixture(fixDef);
+
+         bodyDef.position.Set(21.8, 13);
+         world.CreateBody(bodyDef).CreateFixture(fixDef);
+         
+         
+         //create some objects
+         bodyDef.type = b2Body.b2_dynamicBody;
+         for(var i = 0; i < 10; ++i) {
+            if(Math.random() > 0.5) {
+               fixDef.shape = new b2PolygonShape;
+               fixDef.shape.SetAsBox(
+                     Math.random() + 0.1 //half width
+                  ,  Math.random() + 0.1 //half height
+               );
+            } else {
+               fixDef.shape = new b2CircleShape(
+                  Math.random() + 0.1 //radius
+               );
+            }
+            bodyDef.position.x = Math.random() * 10;
+            bodyDef.position.y = Math.random() * 10;
+            world.CreateBody(bodyDef).CreateFixture(fixDef);
+         }
+         
+         //setup debug draw
+         var debugDraw = new b2DebugDraw();
+			debugDraw.SetSprite(document.getElementById("canvas").getContext("2d"));
+			debugDraw.SetDrawScale(30.0);
+			debugDraw.SetFillAlpha(0.5);
+			debugDraw.SetLineThickness(1.0);
+			debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
+			world.SetDebugDraw(debugDraw);
+         
+         window.setInterval(update, 1000 / 60);
+         
+         //mouse
+         
+         var mouseX, mouseY, mousePVec, isMouseDown, selectedBody, mouseJoint;
+         var canvasPosition = getElementPosition(document.getElementById("canvas"));
+         
+         document.addEventListener("mousedown", function(e) {
+            isMouseDown = true;
+            handleMouseMove(e);
+            document.addEventListener("mousemove", handleMouseMove, true);
+         }, true);
+         
+         document.addEventListener("mouseup", function() {
+            document.removeEventListener("mousemove", handleMouseMove, true);
+            isMouseDown = false;
+            mouseX = undefined;
+            mouseY = undefined;
+         }, true);
+         
+         function handleMouseMove(e) {
+            mouseX = (e.clientX - canvasPosition.x) / 30;
+            mouseY = (e.clientY - canvasPosition.y) / 30;
+         };
+         
+         function getBodyAtMouse() {
+            mousePVec = new b2Vec2(mouseX, mouseY);
+            var aabb = new b2AABB();
+            aabb.lowerBound.Set(mouseX - 0.001, mouseY - 0.001);
+            aabb.upperBound.Set(mouseX + 0.001, mouseY + 0.001);
+            
+            // Query the world for overlapping shapes.
+
+            selectedBody = null;
+            world.QueryAABB(getBodyCB, aabb);
+            return selectedBody;
+         }
+
+         function getBodyCB(fixture) {
+            if(fixture.GetBody().GetType() != b2Body.b2_staticBody) {
+               if(fixture.GetShape().TestPoint(fixture.GetBody().GetTransform(), mousePVec)) {
+                  selectedBody = fixture.GetBody();
+                  return false;
+               }
+            }
+            return true;
+         }
+         
+         //update
+         
+         function update() {
+         
+            if(isMouseDown && (!mouseJoint)) {
+               var body = getBodyAtMouse();
+               if(body) {
+                  var md = new b2MouseJointDef();
+                  md.bodyA = world.GetGroundBody();
+                  md.bodyB = body;
+                  md.target.Set(mouseX, mouseY);
+                  md.collideConnected = true;
+                  md.maxForce = 300.0 * body.GetMass();
+                  mouseJoint = world.CreateJoint(md);
+                  body.SetAwake(true);
+               }
+            }
+            
+            if(mouseJoint) {
+               if(isMouseDown) {
+                  mouseJoint.SetTarget(new b2Vec2(mouseX, mouseY));
+               } else {
+                  world.DestroyJoint(mouseJoint);
+                  mouseJoint = null;
+               }
+            }
+         
+            world.Step(1 / 60, 10, 10);
+            world.DrawDebugData();
+            world.ClearForces();
+         };
+         
+         //helpers
+         
+         //http://js-tut.aardon.de/js-tut/tutorial/position.html
+         function getElementPosition(element) {
+            var elem=element, tagname="", x=0, y=0;
+           
+            while((typeof(elem) == "object") && (typeof(elem.tagName) != "undefined")) {
+               y += elem.offsetTop;
+               x += elem.offsetLeft;
+               tagname = elem.tagName.toUpperCase();
+
+               if(tagname == "BODY")
+                  elem=0;
+
+               if(typeof(elem) == "object") {
+                  if(typeof(elem.offsetParent) == "object")
+                     elem = elem.offsetParent;
+               }
+            }
+
+            return {x: x, y: y};
+         }
+
+
+      };
+   
+   </script>
+   
+   
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+
+    <script>
+        if( window.devicePixelRatio<2 || window.innerWidth>=960) {
+            document.write('<meta name="viewport" content="width=device-width, height=device-height, minimum-scale=1.0,maximum-scale=1.0,initial-scale=1.0, user-scalable=yes" />');
+        } else {
+            document.write('<meta name="viewport" content="width=device-width, height=device-height, minimum-scale=0.5,maximum-scale=0.5,initial-scale=0.5, user-scalable=no" />');
+        }
+    </script>
+
+
+<title>Love</title>
+<style>
+
+
+
+</style>
+
+<script src="./lib/ViewBridge.js"></script>
+
+<script>
+
+    window.onload=function(){
+ 
+    	ViewBridge.initInWeb();
+
+    	setTimeout(function(){
+    		start()
+    	},100);
+	}
+
+	function start(){
+		var a=["a",1,["b",2], {c:3 , d:4}];
+        ViewBridge.evalRemote("console.log("+JSON.stringify(a)+")");
+        
+        
+		ViewBridge.callRemote("testCallBack","hello from web",function(receive){
+            alert(receive)
+        })
+	}
+
+
+    function testCallBack(msg,cb){
+        console.log(msg);
+        setTimeout(function(){
+          if (cb){
+            cb(msg+" from web")
+          }
+
+        },1000);
+    }
+
+</script>
+
+
+</head>
+<body>
+test webview
+<img src="./res/jpeg2000.jpf">
+
+</body>
+
+</html>

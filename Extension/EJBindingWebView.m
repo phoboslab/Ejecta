@@ -6,29 +6,26 @@
 
 @synthesize loaded;
 
-//- (id)initWithContext:(JSContextRef)ctx argc:(size_t)argc argv:(const JSValueRef [])argv {
-//	if (self = [super initWithContext:ctx argc:argc argv:argv]) {
-
-/*
-{
- transparent: true,
- left:
- top:
- width:
- height:
- src:
- eval_protocol:
- visible:
+- (id)initWithContext:(JSContextRef)ctx argc:(size_t)argc argv:(const JSValueRef [])argv {
+	if (self = [super initWithContext:ctx argc:argc argv:argv]) {
+        evalProtocol=@"eval";
+        /*
+        {
+         transparent: true,
+         left:
+         top:
+         width:
+         height:
+         src:
+         visible:
+        }
+        */
+    }
+    return self;
 }
- */
-
-//    }
-//    return self;
-//}
 
 - (void)createWithJSObject:(JSObjectRef)obj scriptView:(EJJavaScriptView *)view {
 	[super createWithJSObject:obj scriptView:view];
-    
     
     CGSize screen = scriptView.bounds.size;
     width = screen.width;
@@ -170,7 +167,7 @@
 {
     NSURL *url = request.URL;
     
-    if ([[url scheme] isEqualToString:@"eval"]){
+    if ([[url scheme] isEqualToString:evalProtocol]){
            
         NSString *script = [[url query] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
         
@@ -182,7 +179,7 @@
         if ([[url absoluteString] isEqualToString:@"about:blank"]){
             return NO;
         }
-        NSLog(@"url: %@",[url absoluteURL]);
+//        NSLog(@"url: %@",[url absoluteURL]);
         return YES;
     }
     
@@ -244,6 +241,17 @@ EJ_BIND_GET(left, ctx) {
 
 EJ_BIND_SET(left, ctx, value) {
 	left = JSValueToNumberFast(ctx, value);
+}
+
+
+EJ_BIND_GET(evalProtocol, ctx ) {
+	JSStringRef _evalProtocol = JSStringCreateWithUTF8CString( [evalProtocol UTF8String] );
+	JSValueRef ret = JSValueMakeString(ctx, _evalProtocol);
+	JSStringRelease(_evalProtocol);
+	return ret;
+}
+EJ_BIND_SET(evalProtocol, ctx, value) {
+	evalProtocol = JSValueToNSString(ctx, value);
 }
 
 EJ_BIND_GET(top, ctx) {
