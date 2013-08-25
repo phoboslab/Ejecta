@@ -140,6 +140,7 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 	
 	[openGLContext release];
 	[appFolder release];
+	[proxy release];
 	[super dealloc];
 }
 
