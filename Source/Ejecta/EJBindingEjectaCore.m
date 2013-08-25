@@ -49,6 +49,23 @@ EJ_BIND_FUNCTION(log, ctx, argc, argv ) {
 	return NULL;
 }
 
+EJ_BIND_FUNCTION(load, ctx, argc, argv ) {
+	if( argc < 1 ) return NULL;
+	
+	NSObject<UIApplicationDelegate> *app = [[UIApplication sharedApplication] delegate];
+	if( [app respondsToSelector:@selector(loadViewControllerWithScriptAtPath:)] ) {
+		// Queue up the loading till the next frame; the script view may be in the
+		// midst of a timer update
+		[app performSelectorOnMainThread:@selector(loadViewControllerWithScriptAtPath:)
+			withObject:JSValueToNSString(ctx, argv[0]) waitUntilDone:NO];
+	}
+	else {
+		NSLog(@"Error: Current UIApplicationDelegate does not support loadViewControllerWithScriptAtPath.");
+	}
+	
+	return NULL;
+}
+
 EJ_BIND_FUNCTION(include, ctx, argc, argv ) {
 	if( argc < 1 ) { return NULL; }
 
