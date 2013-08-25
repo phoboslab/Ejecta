@@ -10,11 +10,13 @@
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765FC0DF74451002DB57D /* CoreGraphics.framework */; };
-		3929E9CB17B7BC12003BBE57 /* EJBindingAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3929E9C117B7BC12003BBE57 /* EJBindingAlertView.m */; };
-		3929E9CC17B7BC12003BBE57 /* EJBindingAppUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 3929E9C317B7BC12003BBE57 /* EJBindingAppUtils.m */; };
-		3929E9CD17B7BC12003BBE57 /* EJBindingNotificationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3929E9C517B7BC12003BBE57 /* EJBindingNotificationManager.m */; };
-		3929E9CE17B7BC12003BBE57 /* EJBindingWebView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3929E9C717B7BC12003BBE57 /* EJBindingWebView.m */; };
-		3929E9CF17B7BC12003BBE57 /* OpenUDID.m in Sources */ = {isa = PBXBuildFile; fileRef = 3929E9CA17B7BC12003BBE57 /* OpenUDID.m */; };
+		399DDE9517CA8C2000267FFE /* Default-Landscape@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 399DDE9317CA8C2000267FFE /* Default-Landscape@2x.png */; };
+		399DDE9617CA8C2000267FFE /* Default-Portrait@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 399DDE9417CA8C2000267FFE /* Default-Portrait@2x.png */; };
+		399DDEA517CA8C4000267FFE /* EJBindingAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 399DDE9B17CA8C4000267FFE /* EJBindingAlertView.m */; };
+		399DDEA617CA8C4000267FFE /* EJBindingAppUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 399DDE9D17CA8C4000267FFE /* EJBindingAppUtils.m */; };
+		399DDEA717CA8C4000267FFE /* EJBindingNotificationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 399DDE9F17CA8C4000267FFE /* EJBindingNotificationManager.m */; };
+		399DDEA817CA8C4000267FFE /* EJBindingWebView.m in Sources */ = {isa = PBXBuildFile; fileRef = 399DDEA117CA8C4000267FFE /* EJBindingWebView.m */; };
+		399DDEA917CA8C4000267FFE /* OpenUDID.m in Sources */ = {isa = PBXBuildFile; fileRef = 399DDEA417CA8C4000267FFE /* OpenUDID.m */; };
 		3EBC19BE16CECE190036F9F3 /* EJBindingKeyInput.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EBC19BD16CECE190036F9F3 /* EJBindingKeyInput.m */; };
 		3EF00C5916C29360004599A4 /* EJJavaScriptView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EF00C5816C29360004599A4 /* EJJavaScriptView.m */; };
 		5B7B76761619DB9700691910 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B7B76751619DB9700691910 /* CoreText.framework */; };
@@ -116,19 +118,21 @@
 
 /* Begin PBXFileReference section */
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		1D6058910D05DD3D006BFB54 /* Ejecta.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Ejecta.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1D6058910D05DD3D006BFB54 /* finscn.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = finscn.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		288765FC0DF74451002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		3929E9C017B7BC12003BBE57 /* EJBindingAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingAlertView.h; sourceTree = "<group>"; };
-		3929E9C117B7BC12003BBE57 /* EJBindingAlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingAlertView.m; sourceTree = "<group>"; };
-		3929E9C217B7BC12003BBE57 /* EJBindingAppUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingAppUtils.h; sourceTree = "<group>"; };
-		3929E9C317B7BC12003BBE57 /* EJBindingAppUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingAppUtils.m; sourceTree = "<group>"; };
-		3929E9C417B7BC12003BBE57 /* EJBindingNotificationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingNotificationManager.h; sourceTree = "<group>"; };
-		3929E9C517B7BC12003BBE57 /* EJBindingNotificationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingNotificationManager.m; sourceTree = "<group>"; };
-		3929E9C617B7BC12003BBE57 /* EJBindingWebView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingWebView.h; sourceTree = "<group>"; };
-		3929E9C717B7BC12003BBE57 /* EJBindingWebView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingWebView.m; sourceTree = "<group>"; };
-		3929E9C917B7BC12003BBE57 /* OpenUDID.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenUDID.h; sourceTree = "<group>"; };
-		3929E9CA17B7BC12003BBE57 /* OpenUDID.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OpenUDID.m; sourceTree = "<group>"; };
+		399DDE9317CA8C2000267FFE /* Default-Landscape@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape@2x.png"; sourceTree = "<group>"; };
+		399DDE9417CA8C2000267FFE /* Default-Portrait@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Portrait@2x.png"; sourceTree = "<group>"; };
+		399DDE9A17CA8C4000267FFE /* EJBindingAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingAlertView.h; sourceTree = "<group>"; };
+		399DDE9B17CA8C4000267FFE /* EJBindingAlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingAlertView.m; sourceTree = "<group>"; };
+		399DDE9C17CA8C4000267FFE /* EJBindingAppUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingAppUtils.h; sourceTree = "<group>"; };
+		399DDE9D17CA8C4000267FFE /* EJBindingAppUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingAppUtils.m; sourceTree = "<group>"; };
+		399DDE9E17CA8C4000267FFE /* EJBindingNotificationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingNotificationManager.h; sourceTree = "<group>"; };
+		399DDE9F17CA8C4000267FFE /* EJBindingNotificationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingNotificationManager.m; sourceTree = "<group>"; };
+		399DDEA017CA8C4000267FFE /* EJBindingWebView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingWebView.h; sourceTree = "<group>"; };
+		399DDEA117CA8C4000267FFE /* EJBindingWebView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingWebView.m; sourceTree = "<group>"; };
+		399DDEA317CA8C4000267FFE /* OpenUDID.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenUDID.h; sourceTree = "<group>"; };
+		399DDEA417CA8C4000267FFE /* OpenUDID.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OpenUDID.m; sourceTree = "<group>"; };
 		3EBC19BC16CECE190036F9F3 /* EJBindingKeyInput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingKeyInput.h; sourceTree = "<group>"; };
 		3EBC19BD16CECE190036F9F3 /* EJBindingKeyInput.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingKeyInput.m; sourceTree = "<group>"; };
 		3EF00C5716C29360004599A4 /* EJJavaScriptView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJJavaScriptView.h; sourceTree = "<group>"; };
@@ -340,7 +344,7 @@
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				1D6058910D05DD3D006BFB54 /* Ejecta.app */,
+				1D6058910D05DD3D006BFB54 /* finscn.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -349,7 +353,7 @@
 			isa = PBXGroup;
 			children = (
 				B68C5AEF132E6CD60015092E /* App */,
-				3929E9BF17B7BC12003BBE57 /* Extension */,
+				399DDE9917CA8C4000267FFE /* Extension */,
 				B64CE60E166682700087CF94 /* Source */,
 				B64CE683166682B10087CF94 /* Resources */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
@@ -385,27 +389,27 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		3929E9BF17B7BC12003BBE57 /* Extension */ = {
+		399DDE9917CA8C4000267FFE /* Extension */ = {
 			isa = PBXGroup;
 			children = (
-				3929E9C017B7BC12003BBE57 /* EJBindingAlertView.h */,
-				3929E9C117B7BC12003BBE57 /* EJBindingAlertView.m */,
-				3929E9C217B7BC12003BBE57 /* EJBindingAppUtils.h */,
-				3929E9C317B7BC12003BBE57 /* EJBindingAppUtils.m */,
-				3929E9C417B7BC12003BBE57 /* EJBindingNotificationManager.h */,
-				3929E9C517B7BC12003BBE57 /* EJBindingNotificationManager.m */,
-				3929E9C617B7BC12003BBE57 /* EJBindingWebView.h */,
-				3929E9C717B7BC12003BBE57 /* EJBindingWebView.m */,
-				3929E9C817B7BC12003BBE57 /* OpenUDID */,
+				399DDE9A17CA8C4000267FFE /* EJBindingAlertView.h */,
+				399DDE9B17CA8C4000267FFE /* EJBindingAlertView.m */,
+				399DDE9C17CA8C4000267FFE /* EJBindingAppUtils.h */,
+				399DDE9D17CA8C4000267FFE /* EJBindingAppUtils.m */,
+				399DDE9E17CA8C4000267FFE /* EJBindingNotificationManager.h */,
+				399DDE9F17CA8C4000267FFE /* EJBindingNotificationManager.m */,
+				399DDEA017CA8C4000267FFE /* EJBindingWebView.h */,
+				399DDEA117CA8C4000267FFE /* EJBindingWebView.m */,
+				399DDEA217CA8C4000267FFE /* OpenUDID */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
 		};
-		3929E9C817B7BC12003BBE57 /* OpenUDID */ = {
+		399DDEA217CA8C4000267FFE /* OpenUDID */ = {
 			isa = PBXGroup;
 			children = (
-				3929E9C917B7BC12003BBE57 /* OpenUDID.h */,
-				3929E9CA17B7BC12003BBE57 /* OpenUDID.m */,
+				399DDEA317CA8C4000267FFE /* OpenUDID.h */,
+				399DDEA417CA8C4000267FFE /* OpenUDID.m */,
 			);
 			path = OpenUDID;
 			sourceTree = "<group>";
@@ -583,6 +587,8 @@
 		B64CE683166682B10087CF94 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				399DDE9317CA8C2000267FFE /* Default-Landscape@2x.png */,
+				399DDE9417CA8C2000267FFE /* Default-Portrait@2x.png */,
 				B64CE684166682B10087CF94 /* Default-568h@2x.png */,
 				B64CE685166682B10087CF94 /* Default-Landscape.png */,
 				B64CE686166682B10087CF94 /* Default-Portrait.png */,
@@ -672,9 +678,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		1D6058900D05DD3D006BFB54 /* Ejecta */ = {
+		1D6058900D05DD3D006BFB54 /* finscn */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "Ejecta" */;
+			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "finscn" */;
 			buildPhases = (
 				1D60588D0D05DD3D006BFB54 /* Resources */,
 				1D60588E0D05DD3D006BFB54 /* Sources */,
@@ -684,9 +690,9 @@
 			);
 			dependencies = (
 			);
-			name = Ejecta;
+			name = finscn;
 			productName = iOSImpact;
-			productReference = 1D6058910D05DD3D006BFB54 /* Ejecta.app */;
+			productReference = 1D6058910D05DD3D006BFB54 /* finscn.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -697,7 +703,7 @@
 			attributes = {
 				LastUpgradeCheck = 0500;
 			};
-			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Ejecta" */;
+			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "finscn" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 1;
@@ -711,7 +717,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				1D6058900D05DD3D006BFB54 /* Ejecta */,
+				1D6058900D05DD3D006BFB54 /* finscn */,
 			);
 		};
 /* End PBXProject section */
@@ -739,6 +745,8 @@
 				B64CE698166682B10087CF94 /* Icon@2x.png in Resources */,
 				B64CE699166682B10087CF94 /* MainWindow.xib in Resources */,
 				B62436681666851E0046B8C7 /* Ejecta.js in Resources */,
+				399DDE9517CA8C2000267FFE /* Default-Landscape@2x.png in Resources */,
+				399DDE9617CA8C2000267FFE /* Default-Portrait@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -811,11 +819,11 @@
 				B6D6E0A316F7E7D8009AB75F /* EJBindingIAPTransaction.m in Sources */,
 				B6D6E0A616F7E81B009AB75F /* EJBindingIAPProduct.m in Sources */,
 				B60FA92817021E0900078D20 /* EJBindingVideo.m in Sources */,
-				3929E9CB17B7BC12003BBE57 /* EJBindingAlertView.m in Sources */,
-				3929E9CC17B7BC12003BBE57 /* EJBindingAppUtils.m in Sources */,
-				3929E9CD17B7BC12003BBE57 /* EJBindingNotificationManager.m in Sources */,
-				3929E9CE17B7BC12003BBE57 /* EJBindingWebView.m in Sources */,
-				3929E9CF17B7BC12003BBE57 /* OpenUDID.m in Sources */,
+				399DDEA517CA8C4000267FFE /* EJBindingAlertView.m in Sources */,
+				399DDEA617CA8C4000267FFE /* EJBindingAppUtils.m in Sources */,
+				399DDEA717CA8C4000267FFE /* EJBindingNotificationManager.m in Sources */,
+				399DDEA817CA8C4000267FFE /* EJBindingWebView.m in Sources */,
+				399DDEA917CA8C4000267FFE /* OpenUDID.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -826,6 +834,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Zijun Wei (X3SAEDQD56)";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -833,14 +842,15 @@
 				GCC_PREFIX_HEADER = Source/Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = "";
 				INFOPLIST_FILE = Resources/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
 					"\"$(SRCROOT)/Source/lib\"",
 				);
 				OTHER_CFLAGS = "-DDEBUG";
-				PRODUCT_NAME = Ejecta;
+				PRODUCT_NAME = finscn;
+				PROVISIONING_PROFILE = "7B5E6FB0-8A46-4CEC-AAFF-15762662723D";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -850,17 +860,19 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Zijun Wei (X3SAEDQD56)";
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Source/Prefix.pch;
 				INFOPLIST_FILE = Resources/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
 					"\"$(SRCROOT)/Source/lib\"",
 				);
-				PRODUCT_NAME = Ejecta;
+				PRODUCT_NAME = finscn;
+				PROVISIONING_PROFILE = "7B5E6FB0-8A46-4CEC-AAFF-15762662723D";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -871,8 +883,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Zijun Wei (X3SAEDQD56)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Zijun Wei (X3SAEDQD56)";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_PREPROCESSOR_DEFINITIONS = NS_BLOCK_ASSERTIONS;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -885,7 +897,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = "-DDEBUG";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "7B5E6FB0-8A46-4CEC-AAFF-15762662723D";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "7B5E6FB0-8A46-4CEC-AAFF-15762662723D";
 				SDKROOT = iphoneos;
 				VALID_ARCHS = "armv6 armv7";
 			};
@@ -895,8 +908,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Zijun Wei (X3SAEDQD56)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Zijun Wei (X3SAEDQD56)";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
@@ -907,8 +920,8 @@
 				INFOPLIST_FILE = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
-				PROVISIONING_PROFILE = "";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				PROVISIONING_PROFILE = "7B5E6FB0-8A46-4CEC-AAFF-15762662723D";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "7B5E6FB0-8A46-4CEC-AAFF-15762662723D";
 				SDKROOT = iphoneos;
 				VALID_ARCHS = "armv6 armv7";
 			};
@@ -917,7 +930,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "Ejecta" */ = {
+		1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "finscn" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1D6058940D05DD3E006BFB54 /* Debug */,
@@ -926,7 +939,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Ejecta" */ = {
+		C01FCF4E08A954540054247B /* Build configuration list for PBXProject "finscn" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C01FCF4F08A954540054247B /* Debug */,
