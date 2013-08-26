@@ -848,6 +848,7 @@
 					"\"$(SRCROOT)\"",
 					"\"$(SRCROOT)/Source/lib\"",
 				);
+				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = "-DDEBUG";
 				PRODUCT_NAME = finscn;
 				PROVISIONING_PROFILE = "7B5E6FB0-8A46-4CEC-AAFF-15762662723D";
@@ -871,6 +872,7 @@
 					"\"$(SRCROOT)\"",
 					"\"$(SRCROOT)/Source/lib\"",
 				);
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = finscn;
 				PROVISIONING_PROFILE = "7B5E6FB0-8A46-4CEC-AAFF-15762662723D";
 				SDKROOT = iphoneos;
