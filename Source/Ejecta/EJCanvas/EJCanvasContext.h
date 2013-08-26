@@ -13,6 +13,7 @@
 - (void)create;
 - (void)flushBuffers;
 - (void)prepare;
+- (void)clear;
 
 @property (nonatomic) BOOL msaaEnabled;
 @property (nonatomic) int msaaSamples;

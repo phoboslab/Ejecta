@@ -27,6 +27,7 @@
 - (void)finish;
 - (void)create;
 - (void)prepare;
+- (void)clear;
 
 @property (nonatomic) CGRect style;
 

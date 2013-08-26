@@ -178,6 +178,11 @@
 	if( boundTextureCube ) { glBindTexture(GL_TEXTURE_CUBE_MAP, boundTextureCube); }
 }
 
+- (void)clear {
+    // This modifies user's intended color buffer, so not true solution
+    //glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+}
+
 - (void)bindRenderbuffer {
 	glBindRenderbuffer(GL_RENDERBUFFER, viewRenderBuffer);
 }

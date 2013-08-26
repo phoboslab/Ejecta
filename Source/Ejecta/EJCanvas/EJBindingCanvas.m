@@ -89,6 +89,7 @@ EJ_BIND_SET(width, ctx, value) {
 		scriptView.currentRenderingContext = renderingContext;
 		renderingContext.width = newWidth;
 		width = renderingContext.width;
+        [renderingContext clear];
 		return;
 	}
 	else {
@@ -106,6 +107,7 @@ EJ_BIND_SET(height, ctx, value) {
 		scriptView.currentRenderingContext = renderingContext;
 		renderingContext.height = newHeight;
 		height = renderingContext.height;
+        [renderingContext clear];
 	}
 	else {
 		height = newHeight;
