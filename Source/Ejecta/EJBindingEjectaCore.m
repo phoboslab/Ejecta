@@ -2,6 +2,8 @@
 
 #import <netinet/in.h>
 #import <sys/utsname.h>
+#import <sys/types.h>
+#import <sys/sysctl.h>
 #import <SystemConfiguration/SystemConfiguration.h>
 #import <AVFoundation/AVFoundation.h>
 
@@ -188,6 +190,13 @@ EJ_BIND_GET(userAgent, ctx ) {
 		ctx,
 		[NSString stringWithFormat: @"Ejecta/%@ (%@; OS %@)", EJECTA_VERSION, [self deviceName], [[UIDevice currentDevice] systemVersion]]
 	);
+}
+
+EJ_BIND_GET(platform, ctx ) {
+	char machine[32];
+	size_t size = sizeof(machine);
+    sysctlbyname("hw.machine", machine, &size, NULL, 0);
+	return NSStringToJSValue(ctx, [NSString stringWithUTF8String:machine] );
 }
 
 EJ_BIND_GET(language, ctx) {
