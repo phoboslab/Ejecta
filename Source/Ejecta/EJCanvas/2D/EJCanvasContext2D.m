@@ -213,12 +213,22 @@ const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
 }
 
 - (void)setWidth:(short)newWidth {
-	if( newWidth == width ) { return; }
+	if( newWidth == width ) {
+		// Same width as before? Just clear the canvas, as per the spec
+		[self flushBuffers];
+		glClear(GL_COLOR_BUFFER_BIT);
+		return;
+	}
 	[self resizeToWidth:newWidth height:height];
 }
 
 - (void)setHeight:(short)newHeight {
-	if( newHeight == height ) { return; }
+	if( newHeight == height ) {
+		// Same height as before? Just clear the canvas, as per the spec
+		[self flushBuffers];
+		glClear(GL_COLOR_BUFFER_BIT);
+		return;
+	}
 	[self resizeToWidth:width height:newHeight];
 }
 
