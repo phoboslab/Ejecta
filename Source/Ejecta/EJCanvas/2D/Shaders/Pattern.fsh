@@ -1,5 +1,5 @@
 varying lowp vec4 vColor;
-varying mediump vec2 vUv;
+varying highp vec2 vUv;
 
 uniform sampler2D texture;
 
