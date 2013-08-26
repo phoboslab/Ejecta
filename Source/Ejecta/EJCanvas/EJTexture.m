@@ -444,14 +444,15 @@ typedef struct {
 	[textureStorage bindToTarget:target withParams:params];
 }
 
-- (UIImage *)imageFromPixels {
-	UIImage *newImage = nil;
+- (UIImage *)image {
+	return [EJTexture imageWithPixels:self.pixels width:width height:height scale:contentScale];
+}
 
-	int scaledWidth = self.width  * self.contentScale;
-	int scaledHeight = self.height * self.contentScale;
++ (UIImage *)imageWithPixels:(NSData *)pixels width:(int)width height:(int)height scale:(float)scale {
+	UIImage *newImage = nil;
+	
 	int nrOfColorComponents = 4; // RGBA
 	int bitsPerColorComponent = 8;
-	int rawImageDataLength = scaledWidth * scaledHeight * nrOfColorComponents;
 	BOOL interpolateAndSmoothPixels = NO;
 	CGBitmapInfo bitmapInfo = kCGBitmapByteOrder32Big | kCGImageAlphaPremultipliedLast;
 	CGColorRenderingIntent renderingIntent = kCGRenderingIntentDefault;
@@ -461,14 +462,14 @@ typedef struct {
 	CGImageRef imageRef;
 
 	@try {
-		dataProviderRef = CGDataProviderCreateWithData(NULL, self.pixels.bytes, rawImageDataLength, nil);
+		dataProviderRef = CGDataProviderCreateWithData(NULL, pixels.bytes, pixels.length, nil);
 		colorSpaceRef = CGColorSpaceCreateDeviceRGB();
 		imageRef = CGImageCreate(
 			width, height,
 			bitsPerColorComponent, bitsPerColorComponent * nrOfColorComponents, width * nrOfColorComponents,
 			colorSpaceRef, bitmapInfo, dataProviderRef, NULL, interpolateAndSmoothPixels, renderingIntent
 		);
-		newImage = [[UIImage alloc] initWithCGImage:imageRef scale:self.contentScale orientation:UIImageOrientationUp];
+		newImage = [[UIImage alloc] initWithCGImage:imageRef scale:scale orientation:UIImageOrientationUp];
 	}
 	@finally {
 		CGDataProviderRelease(dataProviderRef);

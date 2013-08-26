@@ -51,7 +51,8 @@ typedef enum {
 - (void)bindWithFilter:(GLenum)filter;
 - (void)bindToTarget:(GLenum)target;
 
-- (UIImage *)imageFromPixels;
+- (UIImage *)image;
++ (UIImage *)imageWithPixels:(NSData *)pixels width:(int)width height:(int)height scale:(float)scale;
 
 + (void)premultiplyPixels:(const GLubyte *)inPixels to:(GLubyte *)outPixels byteLength:(int)byteLength format:(GLenum)format;
 + (void)unPremultiplyPixels:(const GLubyte *)inPixels to:(GLubyte *)outPixels byteLength:(int)byteLength format:(GLenum)format;
