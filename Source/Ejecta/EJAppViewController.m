@@ -5,8 +5,9 @@
 
 @implementation EJAppViewController
 
-- (id)init{
+- (id)initWithScriptAtPath:(NSString *)pathp {
 	if( self = [super init] ) {
+		path = [pathp retain];
 		landscapeMode = [[[NSBundle mainBundle] infoDictionary][@"UIInterfaceOrientation"]
 			hasPrefix:@"UIInterfaceOrientationLandscape"];
 	}
@@ -15,6 +16,7 @@
 
 - (void)dealloc {
 	self.view = nil;
+	[path release];
 	[super dealloc];
 }
 
@@ -31,7 +33,7 @@
 	EJJavaScriptView *view = [[EJJavaScriptView alloc] initWithFrame:frame];
 	self.view = view;
 	
-	[view loadScriptAtPath:@"index.js"];
+	[view loadScriptAtPath:path];
 	[view release];
 }
 

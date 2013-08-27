@@ -2,6 +2,8 @@
 
 #import <netinet/in.h>
 #import <sys/utsname.h>
+#import <sys/types.h>
+#import <sys/sysctl.h>
 #import <SystemConfiguration/SystemConfiguration.h>
 #import <AVFoundation/AVFoundation.h>
 
@@ -46,6 +48,23 @@ EJ_BIND_FUNCTION(log, ctx, argc, argv ) {
 	if( argc < 1 ) return NULL;
     
 	NSLog( @"JS: %@", JSValueToNSString(ctx, argv[0]) );
+	return NULL;
+}
+
+EJ_BIND_FUNCTION(load, ctx, argc, argv ) {
+	if( argc < 1 ) return NULL;
+	
+	NSObject<UIApplicationDelegate> *app = [[UIApplication sharedApplication] delegate];
+	if( [app respondsToSelector:@selector(loadViewControllerWithScriptAtPath:)] ) {
+		// Queue up the loading till the next frame; the script view may be in the
+		// midst of a timer update
+		[app performSelectorOnMainThread:@selector(loadViewControllerWithScriptAtPath:)
+			withObject:JSValueToNSString(ctx, argv[0]) waitUntilDone:NO];
+	}
+	else {
+		NSLog(@"Error: Current UIApplicationDelegate does not support loadViewControllerWithScriptAtPath.");
+	}
+	
 	return NULL;
 }
 
@@ -171,6 +190,13 @@ EJ_BIND_GET(userAgent, ctx ) {
 		ctx,
 		[NSString stringWithFormat: @"Ejecta/%@ (%@; OS %@)", EJECTA_VERSION, [self deviceName], [[UIDevice currentDevice] systemVersion]]
 	);
+}
+
+EJ_BIND_GET(platform, ctx ) {
+	char machine[32];
+	size_t size = sizeof(machine);
+    sysctlbyname("hw.machine", machine, &size, NULL, 0);
+	return NSStringToJSValue(ctx, [NSString stringWithUTF8String:machine] );
 }
 
 EJ_BIND_GET(language, ctx) {

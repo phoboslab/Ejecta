@@ -1,6 +1,6 @@
 precision highp float;
 
-varying mediump vec2 vUv;
+varying highp vec2 vUv;
 varying lowp vec4 vColor;
 
 uniform mediump vec3 inner; // x, y, z=radius

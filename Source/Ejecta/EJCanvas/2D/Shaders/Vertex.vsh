@@ -3,7 +3,7 @@ attribute vec2 uv;
 attribute vec4 color;
 
 varying lowp vec4 vColor;
-varying mediump vec2 vUv;
+varying highp vec2 vUv;
 
 uniform highp vec2 screen;
 

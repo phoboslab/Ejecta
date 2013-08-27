@@ -24,7 +24,8 @@
 - (void)dealloc {
 	[loadCallback cancel];
 	[loadCallback release];
-
+	
+	source.delegate = nil;
 	[source release];
 	[path release];
 	[super dealloc];
