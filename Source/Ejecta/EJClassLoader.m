@@ -74,6 +74,7 @@ bool EJConstructorHasInstance(JSContextRef ctx, JSObjectRef constructor, JSValue
 		// Create the constructor class
 		JSClassDefinition constructorClassDef = kJSClassDefinitionEmpty;
 		constructorClassDef.callAsConstructor = EJCallAsConstructor;
+		constructorClassDef.hasInstance = EJConstructorHasInstance;
 		constructorClassDef.finalize = EJConstructorFinalize;
 		jsConstructorClass = JSClassCreate(&constructorClassDef);
 		
