@@ -210,6 +210,15 @@ EJ_BIND_FUNCTION( eval, ctx, argc, argv ) {
     
 }
 
+EJ_BIND_FUNCTION( hide, ctx, argc, argv ) {
+   [webView setHidden:YES];
+    return NULL;
+}
+EJ_BIND_FUNCTION( show, ctx, argc, argv ) {
+     [webView setHidden:NO];
+    return NULL;
+}
+
 EJ_BIND_FUNCTION( reload, ctx, argc, argv ) {
     [self load:src];
     return NULL;
