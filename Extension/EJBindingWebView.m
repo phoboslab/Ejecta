@@ -55,8 +55,9 @@
     
     JSValueRef result=[scriptView evaluateScript:script];
     
-    // JSType type=JSValueGetType(jsGlobalContext,result);
-
+    //  JSGlobalContextRef jsGlobalContext=[scriptView jsGlobalContext];
+    //  JSType type=JSValueGetType(jsGlobalContext,result);
+    
     return result;
 
 }
