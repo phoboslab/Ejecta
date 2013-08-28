@@ -5,26 +5,6 @@
 @implementation EJBindingAppUtils
 
 
-- (void)logException:(JSValueRef)exception ctx:(JSContextRef)ctxp {
-	if( !exception ) return;
-	
-	JSStringRef jsLinePropertyName = JSStringCreateWithUTF8CString("line");
-	JSStringRef jsFilePropertyName = JSStringCreateWithUTF8CString("sourceURL");
-	
-	JSObjectRef exObject = JSValueToObject( ctxp, exception, NULL );
-	JSValueRef line = JSObjectGetProperty( ctxp, exObject, jsLinePropertyName, NULL );
-	JSValueRef file = JSObjectGetProperty( ctxp, exObject, jsFilePropertyName, NULL );
-	
-	NSLog(
-          @"%@ at line %@ in %@",
-          JSValueToNSString( ctxp, exception ),
-          JSValueToNSString( ctxp, line ),
-          JSValueToNSString( ctxp, file )
-          );
-	
-	JSStringRelease( jsLinePropertyName );
-	JSStringRelease( jsFilePropertyName );
-}
 
 EJ_BIND_GET(udid, ctx) {
     NSString* openUDID = [OpenUDID value];
@@ -65,19 +45,14 @@ EJ_BIND_GET(systemLocal, ctx) {
 
 EJ_BIND_FUNCTION( eval, ctx, argc, argv ) {
     
-    JSGlobalContextRef jsGlobalContext=[scriptView jsGlobalContext];
     NSString *script = JSValueToNSString(ctx, argv[0]);
-    JSStringRef scriptJS = JSStringCreateWithCFString((CFStringRef)script);
-
-	JSValueRef exception = NULL;
-	JSValueRef ret = JSEvaluateScript(jsGlobalContext, scriptJS, NULL, NULL, 0, &exception );
-	[self logException:exception ctx:jsGlobalContext];
- 
-	JSStringRelease( scriptJS );
- 
+    
+    JSValueRef result=[scriptView evaluateScript:script];
+    
     // JSType type=JSValueGetType(jsGlobalContext,result);
     
-    return ret;
+    return result;
+
 }
 
 

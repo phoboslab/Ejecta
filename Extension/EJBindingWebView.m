@@ -53,40 +53,35 @@
 
 -(JSValueRef)evalScriptInNative:(NSString *)script {
     
-    JSGlobalContextRef jsGlobalContext=[scriptView jsGlobalContext];
+    JSValueRef result=[scriptView evaluateScript:script];
     
-    JSStringRef scriptJS = JSStringCreateWithCFString((CFStringRef)script);
-    JSValueRef exception = NULL;
-	JSValueRef result=JSEvaluateScript( jsGlobalContext, scriptJS, NULL, NULL, 0, &exception );
-	[self logException:exception ctx:jsGlobalContext];
-
     // JSType type=JSValueGetType(jsGlobalContext,result);
-    
-    JSStringRelease( scriptJS );
-    
+
     return result;
+
 }
 
-- (void)logException:(JSValueRef)exception ctx:(JSContextRef)ctxp {
-	if( !exception ) return;
-	
-	JSStringRef jsLinePropertyName = JSStringCreateWithUTF8CString("line");
-	JSStringRef jsFilePropertyName = JSStringCreateWithUTF8CString("sourceURL");
-	
-	JSObjectRef exObject = JSValueToObject( ctxp, exception, NULL );
-	JSValueRef line = JSObjectGetProperty( ctxp, exObject, jsLinePropertyName, NULL );
-	JSValueRef file = JSObjectGetProperty( ctxp, exObject, jsFilePropertyName, NULL );
-	
-	NSLog(
-          @"%@ at line %@ in %@",
-          JSValueToNSString( ctxp, exception ),
-          JSValueToNSString( ctxp, line ),
-          JSValueToNSString( ctxp, file )
-          );
-	
-	JSStringRelease( jsLinePropertyName );
-	JSStringRelease( jsFilePropertyName );
-}
+//
+//- (void)logException:(JSValueRef)exception ctx:(JSContextRef)ctxp {
+//	if( !exception ) return;
+//	
+//	JSStringRef jsLinePropertyName = JSStringCreateWithUTF8CString("line");
+//	JSStringRef jsFilePropertyName = JSStringCreateWithUTF8CString("sourceURL");
+//	
+//	JSObjectRef exObject = JSValueToObject( ctxp, exception, NULL );
+//	JSValueRef line = JSObjectGetProperty( ctxp, exObject, jsLinePropertyName, NULL );
+//	JSValueRef file = JSObjectGetProperty( ctxp, exObject, jsFilePropertyName, NULL );
+//	
+//	NSLog(
+//          @"%@ at line %@ in %@",
+//          JSValueToNSString( ctxp, exception ),
+//          JSValueToNSString( ctxp, line ),
+//          JSValueToNSString( ctxp, file )
+//          );
+//	
+//	JSStringRelease( jsLinePropertyName );
+//	JSStringRelease( jsFilePropertyName );
+//}
 
 - (void)loadRequest:(NSURLRequest *)request {
     loaded=NO;
