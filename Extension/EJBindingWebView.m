@@ -53,7 +53,6 @@
 
 -(JSValueRef)evalScriptInNative:(NSString *)script {
     
-    
     JSGlobalContextRef jsGlobalContext=[scriptView jsGlobalContext];
     
     JSStringRef scriptJS = JSStringCreateWithCFString((CFStringRef)script);
@@ -61,7 +60,6 @@
 	JSValueRef result=JSEvaluateScript( jsGlobalContext, scriptJS, NULL, NULL, 0, &exception );
 	[self logException:exception ctx:jsGlobalContext];
 
-    
     // JSType type=JSValueGetType(jsGlobalContext,result);
     
     JSStringRelease( scriptJS );
