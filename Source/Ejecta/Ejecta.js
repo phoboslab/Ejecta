@@ -56,6 +56,23 @@ window.console.debug =
 	window.console.warn =
 	window.console.error =
 	window.console.log;
+	
+var consoleTimers = {};
+console.time = function(name) {
+	consoleTimers[name] = ej.performanceNow();
+};
+
+console.timeEnd = function(name) {
+	var timeStart = consoleTimers[name];
+	if( !timeStart ) {
+		return;
+	}
+
+	var timeElapsed = ej.performanceNow() - timeStart;
+	console.log(name + ": " + timeElapsed + "ms");
+	delete consoleTimers[name];
+};
+
 
 // CommonJS style require()
 var loadedModules = {};
