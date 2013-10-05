@@ -22,10 +22,6 @@
 		// FIXME: we don't support the 'blob' type yet, but the spec dictates this should
 		// be the default
 		binaryType = kEJWebSocketBinaryTypeBlob;
-		
-		jsEvent = JSObjectMake(ctx, NULL, NULL);
-		JSValueProtect(ctx, jsEvent);
-		jsDataName = JSStringCreateWithUTF8CString("data");
 	}
 	return self;
 }
@@ -48,9 +44,6 @@
 }
 
 - (void) dealloc {
-	JSValueUnprotectSafe(scriptView.jsGlobalContext, jsEvent);
-	JSStringRelease(jsDataName);
-	
 	[url release];
 	[socket release];
 	[super dealloc];
@@ -95,7 +88,6 @@
 		}
 	}
 	
-	JSObjectSetProperty(ctx, jsEvent, jsDataName, jsMessage, kJSPropertyAttributeNone, NULL);
 	[self triggerEvent:@"message" properties:(JSEventProperty[]){
 		{"data", jsMessage},
 		{NULL, NULL}
