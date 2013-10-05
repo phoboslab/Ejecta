@@ -56,6 +56,23 @@ window.console.debug =
 	window.console.warn =
 	window.console.error =
 	window.console.log;
+	
+var consoleTimers = {};
+console.time = function(name) {
+	consoleTimers[name] = ej.performanceNow();
+};
+
+console.timeEnd = function(name) {
+	var timeStart = consoleTimers[name];
+	if( !timeStart ) {
+		return;
+	}
+
+	var timeElapsed = ej.performanceNow() - timeStart;
+	console.log(name + ": " + timeElapsed + "ms");
+	delete consoleTimers[name];
+};
+
 
 // CommonJS style require()
 var loadedModules = {};
@@ -74,8 +91,8 @@ window.require = function( name ) {
 
 // Timers
 window.performance = {now: function() {return ej.performanceNow();} };
-window.setTimeout = function(cb, t){ return ej.setTimeout(cb, t); };
-window.setInterval = function(cb, t){ return ej.setInterval(cb, t); };
+window.setTimeout = function(cb, t){ return ej.setTimeout(cb, t||0); };
+window.setInterval = function(cb, t){ return ej.setInterval(cb, t||0); };
 window.clearTimeout = function(id){ return ej.clearTimeout(id); };
 window.clearInterval = function(id){ return ej.clearInterval(id); };
 window.requestAnimationFrame = function(cb, element){
