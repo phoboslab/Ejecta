@@ -355,6 +355,13 @@ var resizeEvent = {
 	stopPropagation: function(){}
 };
 
+var visiblityEvent = {
+	type: 'visiblitychange',
+	target: window.document,
+	preventDefault: function(){},
+	stopPropagation: function(){}
+}
+
 eventInit.pagehide = eventInit.pageshow = eventInit.resize = function() {
 	if( windowEvents ) { return; }
 	
@@ -363,10 +370,18 @@ eventInit.pagehide = eventInit.pageshow = eventInit.resize = function() {
 	windowEvents.onpagehide = function() {
 		lifecycleEvent.type = 'pagehide';
 		document.dispatchEvent( lifecycleEvent );
+		
+		document.hidden=false;
+		document.visibilityState="hidden";
+		document.dispatchEvent( visiblityEvent );
 	};
 	windowEvents.onpageshow = function() {
 		lifecycleEvent.type = 'pageshow';
 		document.dispatchEvent( lifecycleEvent );
+
+		document.hidden=true;
+		document.visibilityState="visible";
+		document.dispatchEvent( visiblityEvent );
 	};
 
 	windowEvents.onresize = function() {
