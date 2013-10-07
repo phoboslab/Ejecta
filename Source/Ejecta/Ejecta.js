@@ -358,8 +358,8 @@ var resizeEvent = {
 	stopPropagation: function(){}
 };
 
-var visiblityEvent = {
-	type: 'visiblitychange',
+var visibilityEvent = {
+	type: 'visibilitychange',
 	target: window.document,
 	preventDefault: function(){},
 	stopPropagation: function(){}
@@ -373,15 +373,16 @@ eventInit.pagehide = eventInit.pageshow = eventInit.resize = function() {
 	windowEvents.onpagehide = function() {
 		document.hidden=true;
 		document.visibilityState='hidden';
-		document.dispatchEvent( visiblityEvent );
+		document.dispatchEvent( visibilityEvent );
 
 		lifecycleEvent.type = 'pagehide';
 		document.dispatchEvent( lifecycleEvent );
 	};
+	
 	windowEvents.onpageshow = function() {
 		document.hidden=false;
 		document.visibilityState='visible';
-		document.dispatchEvent( visiblityEvent );
+		document.dispatchEvent( visibilityEvent );
 
 		lifecycleEvent.type = 'pageshow';
 		document.dispatchEvent( lifecycleEvent );
