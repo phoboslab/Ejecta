@@ -27,6 +27,7 @@ window.navigator = {
 	language: ej.language,
 	userAgent: ej.userAgent,
 	appVersion: ej.appVersion,
+	platform: ej.platform,
 	get onLine() { return ej.onLine; } // re-evaluate on each get
 };
 
@@ -55,6 +56,23 @@ window.console.debug =
 	window.console.warn =
 	window.console.error =
 	window.console.log;
+	
+var consoleTimers = {};
+console.time = function(name) {
+	consoleTimers[name] = ej.performanceNow();
+};
+
+console.timeEnd = function(name) {
+	var timeStart = consoleTimers[name];
+	if( !timeStart ) {
+		return;
+	}
+
+	var timeElapsed = ej.performanceNow() - timeStart;
+	console.log(name + ': ' + timeElapsed + 'ms');
+	delete consoleTimers[name];
+};
+
 
 // CommonJS style require()
 var loadedModules = {};
@@ -73,8 +91,8 @@ window.require = function( name ) {
 
 // Timers
 window.performance = {now: function() {return ej.performanceNow();} };
-window.setTimeout = function(cb, t){ return ej.setTimeout(cb, t); };
-window.setInterval = function(cb, t){ return ej.setInterval(cb, t); };
+window.setTimeout = function(cb, t){ return ej.setTimeout(cb, t||0); };
+window.setInterval = function(cb, t){ return ej.setInterval(cb, t||0); };
 window.clearTimeout = function(id){ return ej.clearTimeout(id); };
 window.clearInterval = function(id){ return ej.clearInterval(id); };
 window.requestAnimationFrame = function(cb, element){
@@ -93,7 +111,7 @@ window.WebSocket = Ejecta.WebSocket;
 
 
 // Set up a "fake" HTMLElement
-HTMLElement = function( tagName ){ 
+HTMLElement = function( tagName ){
 	this.tagName = tagName;
 	this.children = [];
 	this.style = {};
@@ -120,6 +138,9 @@ window.document = {
 	
 	head: new HTMLElement( 'head' ),
 	body: new HTMLElement( 'body' ),
+
+	hidden: false,
+	visibilityState: 'visible',
 	
 	events: {},
 	
@@ -140,8 +161,8 @@ window.document = {
 			return new window.Image();
 		}
 		else if (name === 'input' || name === 'textarea') {
-  			return new Ejecta.KeyInput();
- 		}
+			return new Ejecta.KeyInput();
+		}
 		return new HTMLElement( name );
 	},
 	
@@ -200,11 +221,11 @@ window.document = {
 		}
 	}
 };
-window.canvas.addEventListener = window.addEventListener = function( type, callback ) { 
-	window.document.addEventListener(type,callback); 
+window.canvas.addEventListener = window.addEventListener = function( type, callback ) {
+	window.document.addEventListener(type,callback);
 };
-window.canvas.removeEventListener = window.removeEventListener = function( type, callback ) { 
-	window.document.removeEventListener(type,callback); 
+window.canvas.removeEventListener = window.removeEventListener = function( type, callback ) {
+	window.document.removeEventListener(type,callback);
 };
 
 var eventInit = document._eventInitializers;
@@ -221,7 +242,7 @@ window.ontouchstart = window.ontouchend = window.ontouchmove = null;
 // touch class just call a simple callback.
 var touchInput = null;
 var touchEvent = {
-	type: 'touchstart', 
+	type: 'touchstart',
 	target: canvas,
 	touches: null,
 	targetTouches: null,
@@ -253,7 +274,7 @@ eventInit.touchstart = eventInit.touchend = eventInit.touchmove = function() {
 
 var deviceMotion = null;
 var deviceMotionEvent = {
-	type: 'devicemotion', 
+	type: 'devicemotion',
 	target: canvas,
 	interval: 16,
 	acceleration: {x: 0, y: 0, z: 0},
@@ -264,7 +285,7 @@ var deviceMotionEvent = {
 };
 
 var deviceOrientationEvent = {
-	type: 'deviceorientation', 
+	type: 'deviceorientation',
 	target: canvas,
 	alpha: null,
 	beta: null,
@@ -314,7 +335,7 @@ eventInit.deviceorientation = eventInit.devicemotion = function() {
 		deviceMotionEvent.rotationRate = null;
 	
 		document.dispatchEvent( deviceMotionEvent );
-	}
+	};
 };
 
 
@@ -337,16 +358,32 @@ var resizeEvent = {
 	stopPropagation: function(){}
 };
 
+var visibilityEvent = {
+	type: 'visibilitychange',
+	target: window.document,
+	preventDefault: function(){},
+	stopPropagation: function(){}
+};
+
 eventInit.pagehide = eventInit.pageshow = eventInit.resize = function() {
 	if( windowEvents ) { return; }
 	
 	windowEvents = new Ejecta.WindowEvents();
 	
 	windowEvents.onpagehide = function() {
+		document.hidden=true;
+		document.visibilityState='hidden';
+		document.dispatchEvent( visibilityEvent );
+
 		lifecycleEvent.type = 'pagehide';
 		document.dispatchEvent( lifecycleEvent );
 	};
+
 	windowEvents.onpageshow = function() {
+		document.hidden=false;
+		document.visibilityState='visible';
+		document.dispatchEvent( visibilityEvent );
+
 		lifecycleEvent.type = 'pageshow';
 		document.dispatchEvent( lifecycleEvent );
 	};
