@@ -140,6 +140,7 @@ window.document = {
 	body: new HTMLElement( 'body' ),
 
 	hidden: false,
+	visibilityState: 'visible',
 	
 	events: {},
 	
@@ -370,7 +371,7 @@ eventInit.pagehide = eventInit.pageshow = eventInit.resize = function() {
 	windowEvents = new Ejecta.WindowEvents();
 	
 	windowEvents.onpagehide = function() {
-		document.hidden=false;
+		document.hidden=true;
 		document.visibilityState='hidden';
 		document.dispatchEvent( visiblityEvent );
 
@@ -378,7 +379,7 @@ eventInit.pagehide = eventInit.pageshow = eventInit.resize = function() {
 		document.dispatchEvent( lifecycleEvent );
 	};
 	windowEvents.onpageshow = function() {
-		document.hidden=true;
+		document.hidden=false;
 		document.visibilityState='visible';
 		document.dispatchEvent( visiblityEvent );
 
