@@ -22,7 +22,6 @@
 		B60FA92817021E0900078D20 /* EJBindingVideo.m in Sources */ = {isa = PBXBuildFile; fileRef = B60FA92717021E0900078D20 /* EJBindingVideo.m */; };
 		B60FA92A1702297C00078D20 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B60FA9291702297C00078D20 /* MediaPlayer.framework */; };
 		B6243666166684420046B8C7 /* libJavaScriptCore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B64CE60C1666825F0087CF94 /* libJavaScriptCore.a */; };
-		B62436681666851E0046B8C7 /* Ejecta.js in Resources */ = {isa = PBXBuildFile; fileRef = B64CE63F166682700087CF94 /* Ejecta.js */; };
 		B630048916C1A2390036D8D4 /* EJBindingTextMetrics.m in Sources */ = {isa = PBXBuildFile; fileRef = B630048816C1A1960036D8D4 /* EJBindingTextMetrics.m */; };
 		B630048C16CB098D0036D8D4 /* EJClassLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = B630048B16CB09850036D8D4 /* EJClassLoader.m */; };
 		B63D256416E8DE23007E6034 /* base64.c in Sources */ = {isa = PBXBuildFile; fileRef = B63D255D16E8DE23007E6034 /* base64.c */; };
@@ -74,7 +73,6 @@
 		B66F1E801476B6A40090D208 /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B66F1E7F1476B6A40090D208 /* libstdc++.dylib */; };
 		B66F1E811476B6B90090D208 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B66F1E771476B3AC0090D208 /* libicucore.dylib */; };
 		B68037011682A58300833604 /* EJConvertWebGL.m in Sources */ = {isa = PBXBuildFile; fileRef = B68037001682A58200833604 /* EJConvertWebGL.m */; };
-		B68C5B95132E6CD60015092E /* App in Resources */ = {isa = PBXBuildFile; fileRef = B68C5AEF132E6CD60015092E /* App */; };
 		B699669816CC4E6E006B9456 /* EJTextureStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = B699669716CC4E6D006B9456 /* EJTextureStorage.m */; };
 		B699669B16CC55F5006B9456 /* EJSharedTextureCache.m in Sources */ = {isa = PBXBuildFile; fileRef = B699669A16CC55F4006B9456 /* EJSharedTextureCache.m */; };
 		B699669E16CC579E006B9456 /* EJSharedOpenGLContext.m in Sources */ = {isa = PBXBuildFile; fileRef = B699669D16CC579B006B9456 /* EJSharedOpenGLContext.m */; };
@@ -107,6 +105,7 @@
 		B6F629D116F353C800F16BAC /* EJBindingCanvasStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = B6F629D016F353C700F16BAC /* EJBindingCanvasStyle.m */; };
 		B6F9AFC0169F81D400ABD91A /* EJBindingWindowEvents.m in Sources */ = {isa = PBXBuildFile; fileRef = B6F9AFBF169F81D400ABD91A /* EJBindingWindowEvents.m */; };
 		B870BDE916F2E11A00827F01 /* EJBindingWebGLExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = B870BDE816F2E11A00827F01 /* EJBindingWebGLExtensions.m */; };
+		BA949288175ACBAC00DA13FC /* SIEmbeddedFileSystem.m in Sources */ = {isa = PBXBuildFile; fileRef = BA949284175ACBAC00DA13FC /* SIEmbeddedFileSystem.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -289,6 +288,9 @@
 		B6F9AFBF169F81D400ABD91A /* EJBindingWindowEvents.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingWindowEvents.m; sourceTree = "<group>"; };
 		B870BDE716F2E10400827F01 /* EJBindingWebGLExtensions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = EJBindingWebGLExtensions.h; path = WebGL/EJBindingWebGLExtensions.h; sourceTree = "<group>"; };
 		B870BDE816F2E11A00827F01 /* EJBindingWebGLExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EJBindingWebGLExtensions.m; path = WebGL/EJBindingWebGLExtensions.m; sourceTree = "<group>"; };
+		BA949282175ACBAC00DA13FC /* SIEmbeddedFiles.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SIEmbeddedFiles.h; sourceTree = "<group>"; };
+		BA949283175ACBAC00DA13FC /* SIEmbeddedFileSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SIEmbeddedFileSystem.h; sourceTree = "<group>"; };
+		BA949284175ACBAC00DA13FC /* SIEmbeddedFileSystem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SIEmbeddedFileSystem.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -334,6 +336,7 @@
 			isa = PBXGroup;
 			children = (
 				B68C5AEF132E6CD60015092E /* App */,
+				BA94927E175ACBAC00DA13FC /* SIEmbeddedFileSystem */,
 				B64CE60E166682700087CF94 /* Source */,
 				B64CE683166682B10087CF94 /* Resources */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
@@ -628,6 +631,16 @@
 			name = WebGL;
 			sourceTree = "<group>";
 		};
+		BA94927E175ACBAC00DA13FC /* SIEmbeddedFileSystem */ = {
+			isa = PBXGroup;
+			children = (
+				BA949282175ACBAC00DA13FC /* SIEmbeddedFiles.h */,
+				BA949283175ACBAC00DA13FC /* SIEmbeddedFileSystem.h */,
+				BA949284175ACBAC00DA13FC /* SIEmbeddedFileSystem.m */,
+			);
+			path = SIEmbeddedFileSystem;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -635,6 +648,8 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "Ejecta" */;
 			buildPhases = (
+				BA949289175ACBF700DA13FC /* Embed JavaScript Source */,
+				BA94928A175ACC0F00DA13FC /* Copy non-JavaScript App Contents  */,
 				1D60588D0D05DD3D006BFB54 /* Resources */,
 				1D60588E0D05DD3D006BFB54 /* Sources */,
 				1D60588F0D05DD3D006BFB54 /* Frameworks */,
@@ -686,7 +701,6 @@
 				B64C878D16B800DA0097CD5B /* Texture.fsh in Resources */,
 				B64C878E16B800DA0097CD5B /* Vertex.vsh in Resources */,
 				B609F2D416AD877E00A3B2B9 /* RadialGradient.fsh in Resources */,
-				B68C5B95132E6CD60015092E /* App in Resources */,
 				B64CE68F166682B10087CF94 /* Default-568h@2x.png in Resources */,
 				B64CE690166682B10087CF94 /* Default-Landscape.png in Resources */,
 				B64CE691166682B10087CF94 /* Default-Portrait.png in Resources */,
@@ -697,11 +711,41 @@
 				B64CE697166682B10087CF94 /* Icon.png in Resources */,
 				B64CE698166682B10087CF94 /* Icon@2x.png in Resources */,
 				B64CE699166682B10087CF94 /* MainWindow.xib in Resources */,
-				B62436681666851E0046B8C7 /* Ejecta.js in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		BA949289175ACBF700DA13FC /* Embed JavaScript Source */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed JavaScript Source";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "php SIEmbeddedFileSystem/embed.php";
+		};
+		BA94928A175ACC0F00DA13FC /* Copy non-JavaScript App Contents  */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy non-JavaScript App Contents ";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "php SIEmbeddedFileSystem/copy.php";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		1D60588E0D05DD3D006BFB54 /* Sources */ = {
@@ -770,6 +814,7 @@
 				B6D6E0A316F7E7D8009AB75F /* EJBindingIAPTransaction.m in Sources */,
 				B6D6E0A616F7E81B009AB75F /* EJBindingIAPProduct.m in Sources */,
 				B60FA92817021E0900078D20 /* EJBindingVideo.m in Sources */,
+				BA949288175ACBAC00DA13FC /* SIEmbeddedFileSystem.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
