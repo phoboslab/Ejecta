@@ -81,7 +81,7 @@ typedef struct {
 		}
 		[NSOperationQueue.mainQueue addOperation:callback];
 	}
-	else {
+	else if( queue ){
 		// Create a new texture and add it to the cache
 		texture = [[EJTexture alloc] initWithPath:path loadOnQueue:queue callback:callback];
 		
@@ -89,6 +89,16 @@ typedef struct {
 		[texture autorelease];
 		texture->cached = true;
 	}
+    else{
+        // Create a new texture and add it to the cache (blocking)
+        texture = [[EJTexture alloc] initWithPath:path];
+
+		[EJSharedTextureCache instance].textures[path] = texture;
+		[texture autorelease];
+		texture->cached = true;
+        
+        [NSOperationQueue.mainQueue addOperation:callback];
+    }
 	return texture;
 }
 
@@ -368,8 +378,12 @@ typedef struct {
 }
 
 - (NSMutableData *)loadPixelsFromPath:(NSString *)path {
-	// Try @2x texture?
-	if( [UIScreen mainScreen].scale == 2 ) {
+    
+    BOOL useDataURL = NO;
+    if ( [path hasPrefix:@"data:"] ){
+        useDataURL = YES;
+    }
+    else if( [UIScreen mainScreen].scale == 2 ) { //Try @2x texture?
 		NSString *path2x = [[[path stringByDeletingPathExtension]
 			stringByAppendingString:@"@2x"]
 			stringByAppendingPathExtension:[path pathExtension]];
@@ -395,8 +409,18 @@ typedef struct {
 		isCompressed = true;
 	}
 	else {
-		// Use UIImage for PNG, JPG and everything else
-		UIImage *tmpImage = [[UIImage alloc] initWithContentsOfFile:path];
+        UIImage *tmpImage;
+        if ( useDataURL ){
+            // Use UIImage for PNG, JPG and everything else (from dataURL)
+            NSURL *url = [NSURL URLWithString:path];
+            NSData *imageData = [NSData dataWithContentsOfURL:url];
+            tmpImage = [UIImage imageWithData:imageData];
+        }
+        else {
+            // Use UIImage for PNG, JPG and everything else
+            tmpImage = [[UIImage alloc] initWithContentsOfFile:path];
+        }
+       
 		if( !tmpImage ) {
 			NSLog(@"Error Loading image %@ - not found.", path);
 			return NULL;
@@ -413,7 +437,12 @@ typedef struct {
 		CGContextDrawImage(context, CGRectMake(0.0, 0.0, (CGFloat)width, (CGFloat)height), image);
 		CGContextRelease(context);
 		CGColorSpaceRelease(colorSpace);
-		[tmpImage release];
+        if ( !useDataURL ){
+            // When use dataURL, tmpImage created via [UIImage imageWithData:],
+            // it's  an autoreleased objec which should not be released.
+            [tmpImage release];
+        }
+
 	}
 	
 	return pixels;
