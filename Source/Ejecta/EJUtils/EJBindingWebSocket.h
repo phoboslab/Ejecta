@@ -18,9 +18,6 @@ typedef enum {
 	EJWebSocketReadyState readyState;
 	NSString *url;
 	SRWebSocket *socket;
-	
-	JSObjectRef jsEvent;
-	JSStringRef jsDataName;
 }
 
 @end
