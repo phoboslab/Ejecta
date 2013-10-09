@@ -18,7 +18,7 @@
 	return self;
 }
 
-- (NSString*) deviceName {
+- (NSString*)deviceName {
 	struct utsname systemInfo;
 	uname( &systemInfo );
 	
