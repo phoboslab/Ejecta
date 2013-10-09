@@ -205,18 +205,25 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 	char const *key = keyData.bytes;
 	
 	NSData *encodeData = [script dataUsingEncoding:NSUTF8StringEncoding];
-//	NSLog(@"Encoded length: %d",encodeData.length);
-	
-	int decodeLen = encodeData.length * 3 / 4 - 2;
+	int decodeLen = encodeData.length * 3 / 4;
 	NSMutableData *decodedData = [NSMutableData dataWithLength:decodeLen];
-	b64_pton(encodeData.bytes, decodedData.mutableBytes, decodeLen + 2);
-	char *decode = decodedData.mutableBytes;
+//	NSLog(@"data length: %d %d",encodeData.length, decodeLen);
 	
+//	NOTE: b64_pton will ignore blank-lines at the start & end of the code.
+	int tarindex = b64_pton(encodeData.bytes, decodedData.mutableBytes, decodeLen);
+	if ( tarindex != -1 ){
+		decodeLen = tarindex;
+	}
+//	NSLog(@"tarindex : %d",tarindex);
+	
+	char *decode = decodedData.mutableBytes;
 	for (int i = 0; i < decodeLen; i++) {
 		char v = decode[i];
 		char kv = key[i % keyLen];
 		decode[i] = v ^ kv;
 	}
+	[decodedData setLength:decodeLen];
+	
 	script = [[NSString alloc] initWithData:decodedData encoding:NSUTF8StringEncoding];
 //	NSLog(@"Decoded : %@",script);
 	
