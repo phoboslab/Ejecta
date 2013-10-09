@@ -3,7 +3,7 @@
 #import "EJBindingBase.h"
 #import "EJClassLoader.h"
 #import <objc/runtime.h>
-
+#import "base64.h"
 
 // Block function callbacks
 JSValueRef EJBlockFunctionCallAsFunction(
@@ -195,6 +195,35 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 #pragma mark -
 #pragma mark Script loading and execution
 
+
+- (NSString *)decodeScript:(NSString *)script {
+	
+	script = [script substringFromIndex:[EJECTA_SECRET_PREFIX length]];
+	
+	NSData *keyData = [EJECTA_SECRET_KEY dataUsingEncoding:NSUTF8StringEncoding];
+	int keyLen = keyData.length;
+	char const *key = keyData.bytes;
+	
+	NSData *encodeData = [script dataUsingEncoding:NSUTF8StringEncoding];
+//	NSLog(@"Encoded length: %d",encodeData.length);
+	
+	int decodeLen = encodeData.length * 3 / 4 - 2;
+	NSMutableData *decodedData = [NSMutableData dataWithLength:decodeLen];
+	b64_pton(encodeData.bytes, decodedData.mutableBytes, decodeLen + 2);
+	char *decode = decodedData.mutableBytes;
+	
+	for (int i = 0; i < decodeLen; i++) {
+		char v = decode[i];
+		char kv = key[i % keyLen];
+		decode[i] = v ^ kv;
+	}
+	script = [[NSString alloc] initWithData:decodedData encoding:NSUTF8StringEncoding];
+//	NSLog(@"Decoded : %@",script);
+	
+	return script;
+}
+
+
 - (NSString *)pathForResource:(NSString *)path {
 	return [NSString stringWithFormat:@"%@/%@%@", [[NSBundle mainBundle] resourcePath], appFolder, path];
 }
@@ -202,6 +231,11 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 - (void)loadScriptAtPath:(NSString *)path {
 	NSString *script = [NSString stringWithContentsOfFile:[self pathForResource:path]
 		encoding:NSUTF8StringEncoding error:NULL];
+	
+	if ( [script hasPrefix:EJECTA_SECRET_PREFIX] ){
+		NSLog(@"Decoding JavaScript : %@",path);
+		script = [self decodeScript:script];
+	}
 	
 	[self evaluateScript:script sourceURL:path];
 }
@@ -215,20 +249,20 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 		NSLog(@"Error: No or empty script given");
 		return NULL;
 	}
-    
+	
 	JSStringRef scriptJS = JSStringCreateWithCFString((CFStringRef)script);
 	JSStringRef sourceURLJS = NULL;
-    
+	
 	if( [sourceURL length] > 0 ) {
 		sourceURLJS = JSStringCreateWithCFString((CFStringRef)sourceURL);
 	}
-    
+	
 	JSValueRef exception = NULL;
 	JSValueRef ret = JSEvaluateScript(jsGlobalContext, scriptJS, NULL, sourceURLJS, 0, &exception );
 	[self logException:exception ctx:jsGlobalContext];
 	
 	JSStringRelease( scriptJS );
-    
+	
 	if ( sourceURLJS ) {
 		JSStringRelease( sourceURLJS );
 	}
@@ -239,6 +273,11 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 	NSString *path = [moduleId stringByAppendingString:@".js"];
 	NSString *script = [NSString stringWithContentsOfFile:[self pathForResource:path]
 		encoding:NSUTF8StringEncoding error:NULL];
+	
+	if ( [script hasPrefix:EJECTA_SECRET_PREFIX] ){        
+		NSLog(@"Decoding JavaScript : %@",path);
+		script = [self decodeScript:script];
+	}
 	
 	if( !script ) {
 		NSLog(@"Error: Can't Find Module %@", moduleId );
