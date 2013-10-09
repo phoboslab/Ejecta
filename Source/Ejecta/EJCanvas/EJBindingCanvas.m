@@ -295,7 +295,7 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 	// There's a lot of heavy data lifting going on here: getting the pixel data from the canvas,
 	// converting to a UIImage, converting to JPG or PNG representation and converting to Base64.
 	
-	// autorelease bytes our ass here, causing all the data to be only released at the end of the
+	// autorelease bites our ass here, causing all the data to be only released at the end of the
 	// frame. So we try to be at least conservative with the final Base64 encoded string: it's
 	// created with the right prefix and the encoder writes directly into it.
 	
