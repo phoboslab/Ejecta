@@ -2,7 +2,7 @@
 
 /*
 
-JS File Encryption(Encode) Tool.
+JS File Encryption(Encoding) Tool.
 
 -------------------
 Command-line
@@ -10,27 +10,27 @@ Command-line
 
     $ node encode-script.js secret-key input-file output-file
 
-Info:
-    secret-key : Any string without Breakline. It's a key used for encryption.
-    input-file : the original js file that waiting for encrypting.
-    output-file : the new encrypted file's name. It will overwrite the file with the same name.
+Parameters:
+    secret-key : The key for encryption(encoding), accepts any string without breakline.
+    input-file : The original js file you would like to encrypt (encode).
+    output-file : Path to the encrypted(encoded) file. It will overwrite the existing file with the same name.
 
 
 -------------------
 Example
 -------------------
 
-Run the command in terminal:
+Execute the command in terminal:
 
-    $ node encode-script.js DoNotGuessTheKey  game-original.js  ../App/game.js
+    $ node encode-script.js TheKeyHardToGuess  game-original.js  ../App/game.js
 
 
-Then in Ejecta :
+Load in Ejecta :
 
     ejecta.include("my-game.js");
 
 
-Yes, there is no different from before.
+Yes, there is NO difference between encrypted(encoded) and original.
 
 
 -------------------
@@ -85,10 +85,11 @@ function start() {
 
         fs.writeFileSync(outputFilename, new Buffer(scriptEncode));
         console.log(" ==== Encode OK ==== ");
+        console.log(scriptEncode);
 
         console.log(" ==== Test Decode ==== ");
         var scriptDecode = decode(scriptEncode, secretKey);
-        console.log(scriptDecode)
+        console.log(scriptDecode);
     }
 
 
@@ -138,7 +139,6 @@ function decode(scriptEncode, key) {
     return scriptDecode;
 }
 
-// console.log(escapeQuote(key));
 
 function escapeQuote(str) {
     return str.replace(/(")/g, '\\$1');
