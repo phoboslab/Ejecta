@@ -1,9 +1,64 @@
 
 #import "EJBindingAppUtils.h"
 #import "OpenUDID.h"
+#import "base64.h"
 
 @implementation EJBindingAppUtils
 
+
+
+- (NSString *)decodeScript:(NSString *)script {
+	
+	script = [script substringFromIndex:[EJECTA_SECRET_PREFIX length]];
+	
+	NSData *keyData = [EJECTA_SECRET_KEY dataUsingEncoding:NSUTF8StringEncoding];
+	int keyLen = keyData.length;
+	char const *key = keyData.bytes;
+	
+	NSData *encodeData = [script dataUsingEncoding:NSUTF8StringEncoding];
+	int decodeLen = encodeData.length * 3 / 4;
+	NSMutableData *decodedData = [NSMutableData dataWithLength:decodeLen];
+    //	NSLog(@"data length: %d %d",encodeData.length, decodeLen);
+	
+    //	NOTE: b64_pton will ignore blank-lines at the start & end of the code.
+	int tarindex = b64_pton(encodeData.bytes, decodedData.mutableBytes, decodeLen);
+	if ( tarindex != -1 ){
+		decodeLen = tarindex;
+	}
+    //	NSLog(@"tarindex : %d",tarindex);
+	
+	char *decode = decodedData.mutableBytes;
+	for (int i = 0; i < decodeLen; i++) {
+		char v = decode[i];
+		char kv = key[i % keyLen];
+		decode[i] = v ^ kv;
+	}
+	[decodedData setLength:decodeLen];
+	
+	script = [[NSString alloc] initWithData:decodedData encoding:NSUTF8StringEncoding];
+    //	NSLog(@"Decoded : %@",script);
+	
+	return script;
+}
+
+
+EJ_BIND_FUNCTION(include, ctx, argc, argv ) {
+	if( argc < 1 ) { return NULL; }
+    
+    NSString *path=JSValueToNSString(ctx, argv[0]);
+
+    NSString *script = [NSString stringWithContentsOfFile:[scriptView pathForResource:path]
+                                                 encoding:NSUTF8StringEncoding error:NULL];
+	
+	if ( [script hasPrefix:EJECTA_SECRET_PREFIX] ){
+		NSLog(@"Decoding JavaScript : %@",path);
+		script = [self decodeScript:script];
+	}
+	
+	[scriptView evaluateScript:script sourceURL:path];
+
+	return NULL;
+}
 
 
 EJ_BIND_GET(udid, ctx) {
