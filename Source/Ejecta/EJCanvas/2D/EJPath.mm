@@ -74,8 +74,10 @@ typedef std::vector<subpath_t> path_t;
 
 - (void)close {
 	currentPath.isClosed = true;
-	currentPos = currentPath.points.front();
-	[self push:currentPos];
+    if (currentPath.points.size()) {
+        currentPos = currentPath.points.front();
+        [self push:currentPos];
+    }
 	[self endSubPath];
 }
 
