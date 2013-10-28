@@ -14,8 +14,15 @@
 	// may be the only thing holding on to it
 	JSValueProtect(scriptView.jsGlobalContext, jsObject);
 	
-	NSLog(@"Loading Image: %@", path);
-	NSString *fullPath = [scriptView pathForResource:path];
+
+    NSString *fullPath;
+    if ([path hasPrefix:@"data:"]){
+        NSLog(@"Loading Image from dataURL");
+        fullPath = [path retain];
+    }else{
+        NSLog(@"Loading Image: %@", path);
+        fullPath = [scriptView pathForResource:path];
+    }
 	
 	// Use a non-retaining proxy for the callback operation and take care that the
 	// loadCallback is always cancelled when dealloc'ing
