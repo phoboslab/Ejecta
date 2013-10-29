@@ -14,17 +14,61 @@
 	// may be the only thing holding on to it
 	JSValueProtect(scriptView.jsGlobalContext, jsObject);
 	
+    NSString *fullPath = @"";
+    
 	NSLog(@"Loading Image: %@", path);
-	NSString *fullPath = [scriptView pathForResource:path];
-	
+    if ( [path rangeOfString:@"http"].location == NSNotFound || [path rangeOfString:@"https"].location == NSNotFound) {
+        // Is likely to be a remote source
+        NSURL *url = [NSURL URLWithString:path];
+        
+        NSData *urlData = [NSData dataWithContentsOfURL:url];
+        if ( urlData ) {
+            
+            // Split the path string
+            NSMutableArray *pathSpliter = [[NSMutableArray alloc] initWithArray:[path componentsSeparatedByString:@"/"] copyItems:YES];
+            NSString *fileName = [pathSpliter lastObject];
+            // Remove last object (filename)
+            [pathSpliter removeLastObject];
+            // Join all dir(s)
+            NSString *storePath = [pathSpliter componentsJoinedByString:@"/"];
+            [pathSpliter release];
+            
+            NSFileManager *filemgr;
+            filemgr =[NSFileManager defaultManager];
+            
+            // Path to library caches
+            NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+            
+            NSString *documentsDirectory = [paths objectAtIndex:0];
+            NSString *appNameDir = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleName"];
+            NSString *fullDir = [NSString stringWithFormat:@"%@/%@/%@", documentsDirectory, appNameDir, storePath];
+            NSString *filePath = [fullDir stringByAppendingPathComponent:fileName];
+            
+            if ([filemgr createDirectoryAtPath:fullDir withIntermediateDirectories:YES attributes:nil error: NULL] == YES) {
+                // Success to create directory download data to temp and move to library/cache when complete
+                [urlData writeToFile:filePath atomically:YES];
+                
+                fullPath = filePath;
+                
+            } else {
+                // Fail to download
+                NSLog(@"Error downloading image file");
+                // returnString = @"error - failed download";
+            }
+        }
+    } else {
+        fullPath = [scriptView pathForResource:path];
+    }
+
 	// Use a non-retaining proxy for the callback operation and take care that the
 	// loadCallback is always cancelled when dealloc'ing
 	loadCallback = [[NSInvocationOperation alloc]
-		initWithTarget:[EJNonRetainingProxy proxyWithTarget:self]
-		selector:@selector(endLoad) object:nil];
+                    initWithTarget:[EJNonRetainingProxy proxyWithTarget:self]
+                    selector:@selector(endLoad) object:nil];
 	
 	texture = [[EJTexture cachedTextureWithPath:fullPath
-		loadOnQueue:scriptView.backgroundQueue callback:loadCallback] retain];
+                                    loadOnQueue:scriptView.backgroundQueue callback:loadCallback] retain];
+    
 }
 
 - (void)prepareGarbageCollection {
