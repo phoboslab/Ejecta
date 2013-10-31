@@ -52,8 +52,7 @@ const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
 		path = [[EJPath alloc] init];
 		backingStoreRatio = 1;
 		
-		fontCache = [[NSCache alloc] init];
-		fontCache.countLimit = 8;
+		fontCache = [[EJFontCache instance] retain];
 		
 		textureFilter = GL_LINEAR;
 		msaaEnabled = NO;
@@ -815,36 +814,25 @@ const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
 	[path arcX:x y:y radius:radius startAngle:startAngle endAngle:endAngle antiClockwise:antiClockwise];
 }
 
-- (EJFont *)getFontWithDescriptor:(EJFontDescriptor *)desc filled:(BOOL)filled {
-	NSString *cacheKey = (filled)
-		? [desc identFilled]
-		: [desc identOutlinedWithWidth:state->lineWidth];
-		
-	EJFont *font = [fontCache objectForKey:cacheKey];
-	if( !font ) {
-		font = [[EJFont alloc] initWithDescriptor:desc fill:filled lineWidth:state->lineWidth contentScale:backingStoreRatio];
-		[fontCache setObject:font forKey:cacheKey];
-		[font autorelease];
-	}
-	return font;
-}
-
 - (void)fillText:(NSString *)text x:(float)x y:(float)y {
-	EJFont *font = [self getFontWithDescriptor:state->font filled:YES];
+	float scale = CGAffineTransformGetScale( state->transform ) * backingStoreRatio;
+	EJFont *font = [fontCache fontWithDescriptor:state->font contentScale:scale];
 	
 	[self setProgram:sharedGLContext.glProgram2DAlphaTexture];
 	[font drawString:text toContext:self x:x y:y];
 }
 
 - (void)strokeText:(NSString *)text x:(float)x y:(float)y {
-	EJFont *font = [self getFontWithDescriptor:state->font filled:NO];
+	float scale = CGAffineTransformGetScale( state->transform ) * backingStoreRatio;
+	EJFont *font = [fontCache outlineFontWithDescriptor:state->font lineWidth:state->lineWidth contentScale:scale];
 	
 	[self setProgram:sharedGLContext.glProgram2DAlphaTexture];
 	[font drawString:text toContext:self x:x y:y];
 }
 
 - (EJTextMetrics)measureText:(NSString *)text {
-	EJFont *font = [self getFontWithDescriptor:state->font filled:YES];
+	float scale = CGAffineTransformGetScale( state->transform ) * backingStoreRatio;
+	EJFont *font = [fontCache fontWithDescriptor:state->font contentScale:scale];
 	return [font measureString:text forContext:self];
 }
 

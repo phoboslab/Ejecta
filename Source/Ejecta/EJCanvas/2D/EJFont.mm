@@ -16,23 +16,26 @@
 	EJFontDescriptor *descriptor = [[EJFontDescriptor alloc] init];
 	descriptor->name = [name retain];
 	descriptor->size = size;
-	
-	descriptor->identFilled = [[NSString stringWithFormat:@"%@:F:%.2f", name, size] retain];	
+	descriptor->hash = [name hash] + (size * 383); // 383 is a 'random' prime, chosen by fair dice roll
 	return [descriptor autorelease];
 }
 
+- (NSUInteger)hash {
+	return hash;
+}
+
+- (BOOL)isEqual:(id)anObject {
+	if( ![anObject isKindOfClass:[EJFontDescriptor class]] ) {
+		return NO;
+	}
+	
+	EJFontDescriptor *otherDescriptor = (EJFontDescriptor *)anObject;
+	return (otherDescriptor->size == size && [otherDescriptor->name isEqualToString:name]);
+}
+
 - (void)dealloc {
-	[identFilled release];
 	[name release];
 	[super dealloc];
-}
-
-- (NSString *)identFilled {
-	return identFilled;
-}
-
-- (NSString *)identOutlinedWithWidth:(float)width {
-	return [NSString stringWithFormat:@"%@:O:%.2f:%.2f", name, size, width];
 }
 
 @end

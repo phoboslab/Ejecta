@@ -29,14 +29,11 @@ typedef struct {
 
 
 @interface EJFontDescriptor : NSObject {
-	NSString *identFilled;
 	NSString *name;
-	float size, contentScale;
+	float size;
+	NSUInteger hash;
 }
 + (id)descriptorWithName:(NSString *)name size:(float)size;
-
-- (NSString *)identFilled;
-- (NSString *)identOutlinedWithWidth:(float)width;
 
 @property (readonly, nonatomic) NSString *name;
 @property (readonly, nonatomic) float size;
