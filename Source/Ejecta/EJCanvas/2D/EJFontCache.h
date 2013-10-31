@@ -1,7 +1,7 @@
 #import <Foundation/Foundation.h>
 #import "EJFont.h"
 
-#define EJ_FONT_CACHE_MAX_CONTENT_SCALE 16
+#define EJ_FONT_CACHE_MAX_CONTENT_SCALE 32
 
 
 // EJFontCache is a singleton and can be shared between 2D contexts

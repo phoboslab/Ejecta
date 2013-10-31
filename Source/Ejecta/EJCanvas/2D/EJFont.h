@@ -63,6 +63,7 @@ int EJFontGlyphLayoutSortByTextureIndex(const void *a, const void *b);
 @interface EJFont : NSObject {
 	NSMutableArray *textures;
 	float txLineX, txLineY, txLineH;
+	BOOL useSingleGlyphTextures;
 	
 	// Font preferences
 	float pointSize, ascent, descent, leading, contentScale, glyphPadding;
