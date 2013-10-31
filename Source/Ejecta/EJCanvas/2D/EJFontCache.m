@@ -101,6 +101,7 @@ static EJFontCache *fontCache;
 }
 
 - (void)dealloc {
+	fontCache = nil;
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[fonts release];
 	[super dealloc];
