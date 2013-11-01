@@ -34,7 +34,6 @@ window.navigator = {
 // Create the default screen canvas
 window.canvas = new Ejecta.Canvas();
 window.canvas.type = 'canvas';
-window.canvas.style = {};
 
 // The console object
 window.console = {
@@ -146,7 +145,6 @@ window.document = {
 		if( name === 'canvas' ) {
 			var canvas = new Ejecta.Canvas();
 			canvas.type = 'canvas';
-			canvas.style = {};
 			return canvas;
 		}
 		else if( name == 'audio' ) {
