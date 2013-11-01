@@ -479,6 +479,14 @@ const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
 		[self flushBuffers];
 	}
 	
+	// Textures from offscreen WebGL contexts have to be draw upside down.
+	// They're actually right-side up in memory, but everything else has
+	// flipped y
+	if( currentTexture.drawFlippedY ) {
+		ty = 1 - ty;
+		th *= -1;
+	}
+	
 	EJVector2 d11 = {x, y};
 	EJVector2 d21 = {x+w, y};
 	EJVector2 d12 = {x, y+h};

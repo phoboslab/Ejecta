@@ -34,6 +34,7 @@ typedef struct {
 @synthesize contentScale;
 @synthesize format;
 @synthesize width, height;
+@synthesize drawFlippedY;
 
 - (id)initEmptyForWebGL {
 	// For WebGL textures; this will not create a textureStorage
