@@ -208,7 +208,7 @@ typedef struct {
 }
 
 - (BOOL)isDynamic {
-	return !fullPath;
+	return !!fbo;
 }
 
 - (id)copyWithZone:(NSZone *)zone {
