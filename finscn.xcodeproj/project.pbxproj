@@ -78,6 +78,7 @@
 		B64CE699166682B10087CF94 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = B64CE68E166682B10087CF94 /* MainWindow.xib */; };
 		B664B98B1699F3380093E04E /* EJBindingCanvasPattern.m in Sources */ = {isa = PBXBuildFile; fileRef = B664B98A1699F3380093E04E /* EJBindingCanvasPattern.m */; };
 		B664B98E1699F49C0093E04E /* EJCanvasPattern.m in Sources */ = {isa = PBXBuildFile; fileRef = B664B98D1699F49B0093E04E /* EJCanvasPattern.m */; };
+		B668FCEE1821C08500D4F629 /* EJFontCache.m in Sources */ = {isa = PBXBuildFile; fileRef = B668FCED1821C08500D4F629 /* EJFontCache.m */; };
 		B66F1E801476B6A40090D208 /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B66F1E7F1476B6A40090D208 /* libstdc++.dylib */; };
 		B66F1E811476B6B90090D208 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B66F1E771476B3AC0090D208 /* libicucore.dylib */; };
 		B68037011682A58300833604 /* EJConvertWebGL.m in Sources */ = {isa = PBXBuildFile; fileRef = B68037001682A58200833604 /* EJConvertWebGL.m */; };
@@ -241,6 +242,8 @@
 		B664B98A1699F3380093E04E /* EJBindingCanvasPattern.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingCanvasPattern.m; sourceTree = "<group>"; };
 		B664B98C1699F49B0093E04E /* EJCanvasPattern.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJCanvasPattern.h; sourceTree = "<group>"; };
 		B664B98D1699F49B0093E04E /* EJCanvasPattern.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJCanvasPattern.m; sourceTree = "<group>"; };
+		B668FCEC1821C08500D4F629 /* EJFontCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJFontCache.h; sourceTree = "<group>"; };
+		B668FCED1821C08500D4F629 /* EJFontCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJFontCache.m; sourceTree = "<group>"; };
 		B66F1E771476B3AC0090D208 /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = usr/lib/libicucore.dylib; sourceTree = SDKROOT; };
 		B66F1E7F1476B6A40090D208 /* libstdc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.dylib"; path = "usr/lib/libstdc++.dylib"; sourceTree = SDKROOT; };
 		B68036FF1682A58200833604 /* EJConvertWebGL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EJConvertWebGL.h; path = WebGL/EJConvertWebGL.h; sourceTree = "<group>"; };
@@ -643,6 +646,8 @@
 				B6F114F71676BD40001F1324 /* EJImageData.m */,
 				B6F114F41676BD40001F1324 /* EJFont.h */,
 				B6F114F51676BD40001F1324 /* EJFont.mm */,
+				B668FCEC1821C08500D4F629 /* EJFontCache.h */,
+				B668FCED1821C08500D4F629 /* EJFontCache.m */,
 				B630048716C1A1960036D8D4 /* EJBindingTextMetrics.h */,
 				B630048816C1A1960036D8D4 /* EJBindingTextMetrics.m */,
 				B6F114F81676BD40001F1324 /* EJPath.h */,
@@ -803,6 +808,7 @@
 				B6A0F4AF16A9D86100477789 /* EJCanvasGradient.m in Sources */,
 				B6A0F4B416AB0B4600477789 /* EJBindingCanvasGradient.m in Sources */,
 				3EBC19BE16CECE190036F9F3 /* EJBindingKeyInput.m in Sources */,
+				B668FCEE1821C08500D4F629 /* EJFontCache.m in Sources */,
 				3EF00C5916C29360004599A4 /* EJJavaScriptView.m in Sources */,
 				B630048C16CB098D0036D8D4 /* EJClassLoader.m in Sources */,
 				B699669816CC4E6E006B9456 /* EJTextureStorage.m in Sources */,

@@ -5,6 +5,7 @@
 #import "EJCanvas2DTypes.h"
 #import "EJCanvasContext.h"
 #import "EJFont.h"
+#import "EJFontCache.h"
 #import "EJSharedOpenGLContext.h"
 
 #define EJ_CANVAS_STATE_STACK_SIZE 16
@@ -133,7 +134,7 @@ static inline EJColorRGBA EJCanvasBlendStrokeColor( EJCanvasState *state ) {
 	BOOL useRetinaResolution;
 	float backingStoreRatio;
 	
-	NSCache *fontCache;
+	EJFontCache *fontCache;
 	
 	EJJavaScriptView *scriptView;
 	EJGLProgram2D *currentProgram;
