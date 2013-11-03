@@ -4,7 +4,8 @@
 #import "EJCanvasContext2DTexture.h"
 #import "EJBindingCanvasContext2D.h"
 
-#import "EJCanvasContextWebGL.h"
+#import "EJCanvasContextWebGLScreen.h"
+#import "EJCanvasContextWebGLTexture.h"
 #import "EJBindingCanvasContextWebGL.h"
 
 #import "EJJavaScriptView.h"
@@ -193,6 +194,7 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 	// Create the requested CanvasContext
 	scriptView.currentRenderingContext = nil;
 	
+	// 2D Screen or Texture
 	if( newContextMode == kEJCanvasContextMode2D ) {
 		if( isScreenCanvas ) {
 			EJCanvasContext2DScreen *sc = [[EJCanvasContext2DScreen alloc]
@@ -218,13 +220,23 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 		JSValueProtect(ctx, jsCanvasContext);
 	}
 	
+	// WebGL Screen or Texture
 	else if( newContextMode == kEJCanvasContextModeWebGL ) {
-		EJCanvasContextWebGL *sc = [[EJCanvasContextWebGL alloc]
-			initWithScriptView:scriptView width:width height:height style:style];
-		sc.useRetinaResolution = useRetinaResolution;
-		
-		scriptView.screenRenderingContext = sc;
-		renderingContext = sc;
+		if( isScreenCanvas ) {
+			EJCanvasContextWebGLScreen *sc = [[EJCanvasContextWebGLScreen alloc]
+				initWithScriptView:scriptView width:width height:height style:style];
+			sc.useRetinaResolution = useRetinaResolution;
+			
+			scriptView.screenRenderingContext = sc;
+			renderingContext = sc;
+		}
+		else {
+			EJCanvasContextWebGLTexture *tc = [[EJCanvasContextWebGLTexture alloc]
+				initWithScriptView:scriptView width:width height:height];
+			tc.useRetinaResolution = useRetinaResolution;
+			
+			renderingContext = tc;
+		}
 		
 		// Create the JS object
 		EJBindingCanvasContextWebGL *binding = [[EJBindingCanvasContextWebGL alloc]

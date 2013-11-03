@@ -18,6 +18,17 @@
 	bufferWidth = width * backingStoreRatio;
 	bufferHeight = height * backingStoreRatio;
 	
+	NSLog(
+		@"Creating Offscreen Canvas (2D): "
+			@"size: %dx%d, "
+			@"retina: %@ = %.0fx%.0f, "
+			@"msaa: %@",
+		width, height,
+		(useRetinaResolution ? @"yes" : @"no"),
+		width * backingStoreRatio, height * backingStoreRatio,
+		(msaaEnabled ? [NSString stringWithFormat:@"yes (%d samples)", msaaSamples] : @"no")
+	);
+	
 	// Release previous texture if any, create the new texture and set it as
 	// the rendering target for this framebuffer
 	[texture release];

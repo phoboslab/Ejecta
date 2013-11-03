@@ -1,9 +1,7 @@
 #import "EJCanvasContext.h"
-#import "EAGLView.h"
-#import "EJPresentable.h"
 
 @class EJJavaScriptView;
-@interface EJCanvasContextWebGL : EJCanvasContext <EJPresentable> {
+@interface EJCanvasContextWebGL : EJCanvasContext {
 	GLuint viewFrameBuffer, viewRenderBuffer;
 	GLuint depthRenderBuffer;
 	
@@ -11,25 +9,18 @@
 	GLuint boundRenderbuffer;
 	
 	GLint bufferWidth, bufferHeight;
-	EAGLView *glview;
 	EJJavaScriptView *scriptView;
 	
 	float backingStoreRatio;
 	BOOL useRetinaResolution;
-	
-	CGRect style;
 }
 
-- (id)initWithScriptView:(EJJavaScriptView *)scriptView width:(short)width height:(short)height style:(CGRect)style;
+- (id)initWithScriptView:(EJJavaScriptView *)scriptView width:(short)width height:(short)height;
 - (void)bindRenderbuffer;
 - (void)bindFramebuffer;
-- (void)present;
-- (void)finish;
 - (void)create;
 - (void)prepare;
 - (void)clear;
-
-@property (nonatomic) CGRect style;
 
 @property (nonatomic) BOOL needsPresenting;
 @property (nonatomic) BOOL useRetinaResolution;
