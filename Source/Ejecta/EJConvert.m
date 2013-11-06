@@ -22,7 +22,7 @@ double JSValueToNumberFast( JSContextRef ctx, JSValueRef v ) {
 	// This struct represents the memory layout of a C++ JSValue instance
 	// See JSC/runtime/JSValue.h for an explanation of the tagging
 	struct {
-		unsigned char cppClassData[8];
+		unsigned char cppClassData[4];
 		union {
 			double asDouble;
 			struct { int32_t asInt; int32_t tag; } asBits;
