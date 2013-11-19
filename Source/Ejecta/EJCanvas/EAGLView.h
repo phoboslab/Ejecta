@@ -4,6 +4,8 @@
 #import <OpenGLES/ES2/glext.h>
 #import <QuartzCore/CAEAGLLayer.h>
 
+#import <QuartzCore/QuartzCore.h>
+
 @interface EAGLView : UIView
 
 - (id)initWithFrame:(CGRect)frame contentScale:(float)contentScale retainedBacking:(BOOL)retainedBacking;
