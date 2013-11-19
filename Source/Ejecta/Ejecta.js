@@ -68,7 +68,7 @@ console.timeEnd = function(name) {
 	}
 
 	var timeElapsed = ej.performanceNow() - timeStart;
-	console.log(name + ': ' + timeElapsed + 'ms');
+	console.log(name + ": " + timeElapsed + "ms");
 	delete consoleTimers[name];
 };
 
@@ -110,7 +110,7 @@ window.WebSocket = Ejecta.WebSocket;
 
 
 // Set up a "fake" HTMLElement
-HTMLElement = function( tagName ){
+HTMLElement = function( tagName ){ 
 	this.tagName = tagName;
 	this.children = [];
 	this.style = {};
