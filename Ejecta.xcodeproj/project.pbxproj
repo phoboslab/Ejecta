@@ -297,11 +297,6 @@
 		B6F629D016F353C700F16BAC /* EJBindingCanvasStyle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingCanvasStyle.m; sourceTree = "<group>"; };
 		B6F9AFBE169F81D400ABD91A /* EJBindingWindowEvents.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingWindowEvents.h; sourceTree = "<group>"; };
 		B6F9AFBF169F81D400ABD91A /* EJBindingWindowEvents.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingWindowEvents.m; sourceTree = "<group>"; };
-		B6FD09761829AE6F001BC762 /* JSContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSContext.h; sourceTree = "<group>"; };
-		B6FD09771829AE6F001BC762 /* JSExport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSExport.h; sourceTree = "<group>"; };
-		B6FD09781829AE6F001BC762 /* JSManagedValue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSManagedValue.h; sourceTree = "<group>"; };
-		B6FD09791829AE6F001BC762 /* JSValue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSValue.h; sourceTree = "<group>"; };
-		B6FD097A1829AE6F001BC762 /* JSVirtualMachine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSVirtualMachine.h; sourceTree = "<group>"; };
 		B870BDE716F2E10400827F01 /* EJBindingWebGLExtensions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = EJBindingWebGLExtensions.h; path = WebGL/EJBindingWebGLExtensions.h; sourceTree = "<group>"; };
 		B870BDE816F2E11A00827F01 /* EJBindingWebGLExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EJBindingWebGLExtensions.m; path = WebGL/EJBindingWebGLExtensions.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -541,11 +536,6 @@
 		B64CE653166682700087CF94 /* JavaScriptCore */ = {
 			isa = PBXGroup;
 			children = (
-				B6FD09761829AE6F001BC762 /* JSContext.h */,
-				B6FD09771829AE6F001BC762 /* JSExport.h */,
-				B6FD09781829AE6F001BC762 /* JSManagedValue.h */,
-				B6FD09791829AE6F001BC762 /* JSValue.h */,
-				B6FD097A1829AE6F001BC762 /* JSVirtualMachine.h */,
 				B64CE654166682700087CF94 /* JavaScript.h */,
 				B64CE655166682700087CF94 /* JavaScriptCore.h */,
 				B64CE656166682700087CF94 /* JSBase.h */,
