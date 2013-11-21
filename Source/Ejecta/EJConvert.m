@@ -114,13 +114,13 @@ NSObject *JSValueToNSObject( JSContextRef ctx, JSValueRef value ) {
 		NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity:count];
 		for( int i = 0; i < count; i++ ) {
 			JSStringRef jsName = JSPropertyNameArrayGetNameAtIndex(properties, i);
-			NSString *name = (NSString *)JSStringCopyCFString( kCFAllocatorDefault, jsName );
 			NSObject *obj = JSValueToNSObject(ctx, JSObjectGetProperty(ctx, jsObj, jsName, NULL));
 			
 			if( obj ) {
+				NSString *name = (NSString *)JSStringCopyCFString( kCFAllocatorDefault, jsName );
 				[dict setObject:obj forKey:name];
+				[name release];
 			}
-			[name release];
 		}
 		return dict;
 	}
