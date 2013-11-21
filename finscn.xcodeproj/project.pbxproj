@@ -92,6 +92,8 @@
 		B6A0F4B416AB0B4600477789 /* EJBindingCanvasGradient.m in Sources */ = {isa = PBXBuildFile; fileRef = B6A0F4B316AB0B4500477789 /* EJBindingCanvasGradient.m */; };
 		B6AC4A061359E7A5003C4982 /* iAd.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6AC4A051359E7A5003C4982 /* iAd.framework */; };
 		B6CFCCD91332F152001F17AF /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6CFCCD81332F152001F17AF /* AVFoundation.framework */; };
+		B6D4B281183CDFBB008251EB /* EJBindingGeolocation.m in Sources */ = {isa = PBXBuildFile; fileRef = B6D4B280183CDFBB008251EB /* EJBindingGeolocation.m */; };
+		B6D4B283183CF43A008251EB /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6D4B282183CF43A008251EB /* CoreLocation.framework */; };
 		B6D6E09A16F7D03F009AB75F /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6D6E09916F7D03C009AB75F /* StoreKit.framework */; };
 		B6D6E0A016F7E7B4009AB75F /* EJBindingIAPManager.m in Sources */ = {isa = PBXBuildFile; fileRef = B6D6E09F16F7E7B4009AB75F /* EJBindingIAPManager.m */; };
 		B6D6E0A316F7E7D8009AB75F /* EJBindingIAPTransaction.m in Sources */ = {isa = PBXBuildFile; fileRef = B6D6E0A216F7E7D8009AB75F /* EJBindingIAPTransaction.m */; };
@@ -268,6 +270,9 @@
 		B6A0F4B316AB0B4500477789 /* EJBindingCanvasGradient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingCanvasGradient.m; sourceTree = "<group>"; };
 		B6AC4A051359E7A5003C4982 /* iAd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iAd.framework; path = System/Library/Frameworks/iAd.framework; sourceTree = SDKROOT; };
 		B6CFCCD81332F152001F17AF /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		B6D4B27F183CDFBB008251EB /* EJBindingGeolocation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingGeolocation.h; sourceTree = "<group>"; };
+		B6D4B280183CDFBB008251EB /* EJBindingGeolocation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingGeolocation.m; sourceTree = "<group>"; };
+		B6D4B282183CF43A008251EB /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		B6D6E09916F7D03C009AB75F /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		B6D6E09E16F7E7B4009AB75F /* EJBindingIAPManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingIAPManager.h; sourceTree = "<group>"; };
 		B6D6E09F16F7E7B4009AB75F /* EJBindingIAPManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingIAPManager.m; sourceTree = "<group>"; };
@@ -316,11 +321,6 @@
 		B6F629D016F353C700F16BAC /* EJBindingCanvasStyle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingCanvasStyle.m; sourceTree = "<group>"; };
 		B6F9AFBE169F81D400ABD91A /* EJBindingWindowEvents.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingWindowEvents.h; sourceTree = "<group>"; };
 		B6F9AFBF169F81D400ABD91A /* EJBindingWindowEvents.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingWindowEvents.m; sourceTree = "<group>"; };
-		B6FD09761829AE6F001BC762 /* JSContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSContext.h; sourceTree = "<group>"; };
-		B6FD09771829AE6F001BC762 /* JSExport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSExport.h; sourceTree = "<group>"; };
-		B6FD09781829AE6F001BC762 /* JSManagedValue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSManagedValue.h; sourceTree = "<group>"; };
-		B6FD09791829AE6F001BC762 /* JSValue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSValue.h; sourceTree = "<group>"; };
-		B6FD097A1829AE6F001BC762 /* JSVirtualMachine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSVirtualMachine.h; sourceTree = "<group>"; };
 		B870BDE716F2E10400827F01 /* EJBindingWebGLExtensions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = EJBindingWebGLExtensions.h; path = WebGL/EJBindingWebGLExtensions.h; sourceTree = "<group>"; };
 		B870BDE816F2E11A00827F01 /* EJBindingWebGLExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EJBindingWebGLExtensions.m; path = WebGL/EJBindingWebGLExtensions.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -330,7 +330,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				39195A3B183BD77000A8866D /* libc++.dylib in Frameworks */,
+				B6D4B283183CF43A008251EB /* CoreLocation.framework in Frameworks */,
+				B6CDA16018295A5F00190074 /* libc++.dylib in Frameworks */,
 				B60FA92A1702297C00078D20 /* MediaPlayer.framework in Frameworks */,
 				B6D6E09A16F7D03F009AB75F /* StoreKit.framework in Frameworks */,
 				B63D256A16E8DF33007E6034 /* Security.framework in Frameworks */,
@@ -380,7 +381,8 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				39195A3A183BD77000A8866D /* libc++.dylib */,
+				B6D4B282183CF43A008251EB /* CoreLocation.framework */,
+				B6CDA15F18295A5F00190074 /* libc++.dylib */,
 				B64CE60C1666825F0087CF94 /* libJavaScriptCore.a */,
 				B66F1E7F1476B6A40090D208 /* libstdc++.dylib */,
 				B66F1E771476B3AC0090D208 /* libicucore.dylib */,
@@ -570,6 +572,8 @@
 				B6F9AFBF169F81D400ABD91A /* EJBindingWindowEvents.m */,
 				B63D256B16E8DFAB007E6034 /* EJBindingWebSocket.h */,
 				B63D256C16E8DFAB007E6034 /* EJBindingWebSocket.m */,
+				B6D4B27F183CDFBB008251EB /* EJBindingGeolocation.h */,
+				B6D4B280183CDFBB008251EB /* EJBindingGeolocation.m */,
 			);
 			path = EJUtils;
 			sourceTree = "<group>";
@@ -586,11 +590,6 @@
 		B64CE653166682700087CF94 /* JavaScriptCore */ = {
 			isa = PBXGroup;
 			children = (
-				B6FD09761829AE6F001BC762 /* JSContext.h */,
-				B6FD09771829AE6F001BC762 /* JSExport.h */,
-				B6FD09781829AE6F001BC762 /* JSManagedValue.h */,
-				B6FD09791829AE6F001BC762 /* JSValue.h */,
-				B6FD097A1829AE6F001BC762 /* JSVirtualMachine.h */,
 				B64CE654166682700087CF94 /* JavaScript.h */,
 				B64CE655166682700087CF94 /* JavaScriptCore.h */,
 				B64CE656166682700087CF94 /* JSBase.h */,
@@ -834,6 +833,7 @@
 				B664B98B1699F3380093E04E /* EJBindingCanvasPattern.m in Sources */,
 				B66847591823FEDF00ABCDF9 /* EJCanvasContextWebGLTexture.m in Sources */,
 				B664B98E1699F49C0093E04E /* EJCanvasPattern.m in Sources */,
+				B6D4B281183CDFBB008251EB /* EJBindingGeolocation.m in Sources */,
 				B6A0F4AF16A9D86100477789 /* EJCanvasGradient.m in Sources */,
 				B6A0F4B416AB0B4600477789 /* EJBindingCanvasGradient.m in Sources */,
 				3EBC19BE16CECE190036F9F3 /* EJBindingKeyInput.m in Sources */,

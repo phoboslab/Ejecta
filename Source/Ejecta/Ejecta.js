@@ -23,12 +23,17 @@ window.screen = {
 	availHeight: window.innerHeight
 };
 
+var geolocation = null;
 window.navigator = {
 	language: ej.language,
 	userAgent: ej.userAgent,
 	appVersion: ej.appVersion,
 	platform: ej.platform,
-	get onLine() { return ej.onLine; } // re-evaluate on each get
+	get onLine() { return ej.onLine; }, // re-evaluate on each get
+	get geolocation(){ // Lazily create geolocation instance
+		geolocation = geolocation || new Ejecta.Geolocation();
+		return geolocation;
+	}
 };
 
 // Create the default screen canvas
