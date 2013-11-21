@@ -122,6 +122,8 @@ NSObject *JSValueToNSObject( JSContextRef ctx, JSValueRef value ) {
 				[name release];
 			}
 		}
+		
+		JSPropertyNameArrayRelease(properties);
 		return dict;
 	}
 	
