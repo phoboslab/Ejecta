@@ -18,18 +18,19 @@ Ejecta is published under the [MIT Open Source License](http://opensource.org/li
 
 ## WebGL Support
 
-Recently WebGL support has been merged into the main branch. It's quite buggy at the moment, but we intend to fix it. Don't expect your WebGL App to run. At all.
+Recently WebGL support has been merged into the main branch. A huge thanks goes to @vikerman - he did most of the grunt work of the WebGL implementation. To have the WebGL alongside Canvas2D, I modified the old 2D implementation to use OpenGL ES2 instead of ES1, just like WebGL itself. 
 
-A huge thanks goes to @vikerman - he did most of the grunt work of the WebGL implementation.
+Unlike with the Canvas2D, if you want to have a WebGL Canvas in retina resolution, you have to manually double the internal resiolution and shrink down the displayed size again through the `style`. I.e.
 
-To have the WebGL alongside Canvas2D, I modified the old 2D implementation to use OpenGL ES2 instead of ES1, just like WebGL itself. This means that some of the previously working Canvas2D stuff may currently be broken, although everything is implemented. 
+```javascript
+canvas.width = window.innerWidth * window.devicePixelRatio;
+canvas.height = window.innerHeight * window.devicePixelRatio;
+canvas.style.width = window.innerWidth + 'px';
+canvas.style.height = window.innerHeight + 'px';
+```
 
-I also built a modified version of the JavaScriptCore library, to have support for TypedArrays - this may be broken in some aspects as well.
 
-Please report any bugs you find, especially regressions.
-
-
-## Three.js in Ejecta 
+## Three.js on iOS with Ejecta 
 
 Ejecta always creates the screen Canvas element for you. You have to hand this Canvas element over to Three.js instead of letting it create its own.
 
@@ -37,7 +38,6 @@ Ejecta always creates the screen Canvas element for you. You have to hand this C
 renderer = new THREE.WebGLRenderer( {canvas: document.getElementById('canvas')} );
 ```
 
-Currently the WebGL context honors the Canvas element's `retinaResolutionEnabled` property. Creating a 320x480 Canvas will create 640x960 backing store, if Ejecta is running on a retina device. This will probably be changed in the future, so that you have to set the Canvas size yourself to 2x if you want to have retina support.
 
 ## How to use
 
