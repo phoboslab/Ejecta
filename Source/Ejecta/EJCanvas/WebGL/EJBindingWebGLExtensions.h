@@ -33,6 +33,9 @@ extern const int EJWebGLExtensionsCount;
 @interface EJBindingWebGLExtensionOES_texture_half_float : EJBindingWebGLExtension
 @end;
 
+@interface EJBindingWebGLExtensionOES_texture_half_float_linear : EJBindingWebGLExtension
+@end;
+
 @interface EJBindingWebGLExtensionOES_standard_derivatives : EJBindingWebGLExtension
 @end;
 

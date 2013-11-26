@@ -6,6 +6,7 @@ const EJWebGLExtensionName EJWebGLExtensions[] = {
 	{"EXT_texture_filter_anisotropic", "GL_EXT_texture_filter_anisotropic"},
 	{"OES_texture_float", "GL_OES_texture_float"},
 	{"OES_texture_half_float", "GL_OES_texture_half_float"},
+	{"OES_texture_half_float_linear", "GL_OES_texture_half_float_linear"},
 	{"OES_standard_derivatives", "GL_OES_standard_derivatives"},
 	{"OES_vertex_array_object", "GL_OES_vertex_array_object"}
 };
@@ -53,6 +54,10 @@ EJ_BIND_CONST_GL(TEXTURE_MAX_ANISOTROPY_EXT);
 
 @implementation EJBindingWebGLExtensionOES_texture_half_float
 EJ_BIND_CONST_GL(HALF_FLOAT_OES);
+@end
+
+
+@implementation EJBindingWebGLExtensionOES_texture_half_float_linear
 @end
 
 
