@@ -200,7 +200,7 @@ EJ_BIND_GET(platform, ctx ) {
 }
 
 EJ_BIND_GET(language, ctx) {
-	return NSStringToJSValue( ctx, [[NSLocale preferredLanguages] objectAtIndex:0] );
+	return NSStringToJSValue( ctx, NSLocale.preferredLanguages[0] );
 }
 
 EJ_BIND_GET(appVersion, ctx ) {

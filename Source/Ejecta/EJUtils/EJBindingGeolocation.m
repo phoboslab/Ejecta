@@ -32,7 +32,7 @@
 	// Unprotect and remove all callbacks
 	for( NSNumber *key in callbacks ) {
 		EJGeolocationCallback cb;
-		[[callbacks objectForKey:key] getValue:&cb];
+		[callbacks[key] getValue:&cb];
 		
 		JSValueUnprotectSafe(scriptView.jsGlobalContext, cb.callback);
 		JSValueUnprotectSafe(scriptView.jsGlobalContext, cb.errback);
@@ -84,7 +84,7 @@
 	NSMutableArray *toRemove = [NSMutableArray new];
 	for( NSNumber *key in callbacks ) {
 		EJGeolocationCallback cb;
-		[[callbacks objectForKey:key] getValue:&cb];
+		[callbacks[key] getValue:&cb];
 		
 		if( !error && cb.callback ) {
 			[scriptView invokeCallback:cb.callback thisObject:NULL argc:argc argv:argv];
@@ -128,7 +128,7 @@
 	};
 	
 	currentIndex++;
-	[callbacks setObject:[NSValue valueWithBytes:&cb objCType:@encode(EJGeolocationCallback)] forKey:@(currentIndex)];
+	callbacks[@(currentIndex)] = [NSValue valueWithBytes:&cb objCType:@encode(EJGeolocationCallback)];
 	return currentIndex;
 }
 
@@ -158,7 +158,7 @@ EJ_BIND_FUNCTION(clearWatch, ctx, argc, argv) {
 	EJ_UNPACK_ARGV(int index);
 	
 	EJGeolocationCallback cb = {};
-	[[callbacks objectForKey:@(index)] getValue:&cb];
+	[callbacks[@(index)] getValue:&cb];
 	
 	JSValueUnprotectSafe(ctx, cb.callback);
 	JSValueUnprotectSafe(ctx, cb.errback);
