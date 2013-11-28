@@ -44,14 +44,14 @@ JSValueRef NSObjectToJSValue( JSContextRef ctx, NSObject *obj ) {
 	JSValueRef ret = NULL;
 	
 	// String
-	if( [obj isKindOfClass:[NSString class]] ) {
+	if( [obj isKindOfClass:NSString.class] ) {
 		ret = NSStringToJSValue(ctx, (NSString *)obj);
 	}
 	
 	// Number or Bool
-	else if( [obj isKindOfClass:[NSNumber class]] ) {
+	else if( [obj isKindOfClass:NSNumber.class] ) {
 		NSNumber *number = (NSNumber *)obj;
-		if (strcmp([number objCType], @encode(BOOL)) == 0) {
+		if( strcmp(number.objCType, @encode(BOOL)) == 0 ) {
 			ret = JSValueMakeBoolean(ctx, number.boolValue);
 		}
 		else {
@@ -60,30 +60,30 @@ JSValueRef NSObjectToJSValue( JSContextRef ctx, NSObject *obj ) {
 	}
 	
 	// Date
-	else if( [obj isKindOfClass:[NSDate class]] ) {
+	else if( [obj isKindOfClass:NSDate.class] ) {
 		NSDate *date = (NSDate *)obj;
 		JSValueRef timestamp = JSValueMakeNumber(ctx, date.timeIntervalSince1970 * 1000.0);
 		ret = JSObjectMakeDate(ctx, 1, &timestamp, NULL);
 	}
 	
 	// Array
-	else if( [obj isKindOfClass:[NSArray class]] ) {
+	else if( [obj isKindOfClass:NSArray.class] ) {
 		NSArray *array = (NSArray *)obj;
 		JSValueRef *args = malloc(array.count * sizeof(JSValueRef));
 		for( int i = 0; i < array.count; i++ ) {
-			args[i] = NSObjectToJSValue(ctx, [array objectAtIndex:i] );
+			args[i] = NSObjectToJSValue(ctx, array[i] );
 		}
 		ret = JSObjectMakeArray(ctx, array.count, args, NULL);
 		free(args);
 	}
 	
 	// Dictionary
-	else if( [obj isKindOfClass:[NSDictionary class]] ) {
+	else if( [obj isKindOfClass:NSDictionary.class] ) {
 		NSDictionary *dict = (NSDictionary *)obj;
 		ret = JSObjectMake(ctx, NULL, NULL);
 		for( NSString *key in dict ) {
 			JSStringRef jsKey = JSStringCreateWithUTF8CString(key.UTF8String);
-			JSValueRef value = NSObjectToJSValue(ctx, [dict objectForKey:key]);
+			JSValueRef value = NSObjectToJSValue(ctx, dict[key]);
 			JSObjectSetProperty(ctx, (JSObjectRef)ret, jsKey, value, NULL, NULL);
 			JSStringRelease(jsKey);
 		}
@@ -118,7 +118,7 @@ NSObject *JSValueToNSObject( JSContextRef ctx, JSValueRef value ) {
 			
 			if( obj ) {
 				NSString *name = (NSString *)JSStringCopyCFString( kCFAllocatorDefault, jsName );
-				[dict setObject:obj forKey:name];
+				dict[name] = obj;
 				[name release];
 			}
 		}

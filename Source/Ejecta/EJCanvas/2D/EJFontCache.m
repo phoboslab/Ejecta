@@ -119,10 +119,10 @@ static EJFontCache *fontCache;
 	EJFontCacheKey *key = [EJFontCacheKey keyWithDescriptor:desc
 		lineWidth:kEJFontCacheKeyLineWidthNoneFilled contentScale:contentScale];
 	
-	EJFont *font = [fonts objectForKey:key];
+	EJFont *font = fonts[key];
 	if( !font ) {
 		font = [[EJFont alloc] initWithDescriptor:desc fill:YES lineWidth:0 contentScale:key.normalizedContentScale];
-		[fonts setObject:font forKey:key];
+		fonts[key] = font;
 		[font autorelease];
 	}
 	return font;
@@ -132,10 +132,10 @@ static EJFontCache *fontCache;
 	EJFontCacheKey *key = [EJFontCacheKey keyWithDescriptor:desc
 		lineWidth:lineWidth contentScale:contentScale];
 	
-	EJFont *font = [fonts objectForKey:key];
+	EJFont *font = fonts[key];
 	if( !font ) {
 		font = [[EJFont alloc] initWithDescriptor:desc fill:NO lineWidth:lineWidth contentScale:key.normalizedContentScale];
-		[fonts setObject:font forKey:key];
+		fonts[key] = font;
 		[font autorelease];
 	}
 	return font;
