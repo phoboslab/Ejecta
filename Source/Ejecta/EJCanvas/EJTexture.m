@@ -1,10 +1,11 @@
 #import <QuartzCore/QuartzCore.h>
 #import <OpenGLES/EAGLDrawable.h>
+#import <CommonCrypto/CommonDigest.h>
 #import "EJTexture.h"
 #import "EJConvertWebGL.h"
 
 #import "EJSharedTextureCache.h"
-
+#import "EJJavaScriptView.h"
 
 #define PVR_TEXTURE_FLAG_TYPE_MASK 0xff
 
@@ -71,7 +72,17 @@ typedef struct {
 + (id)cachedTextureWithPath:(NSString *)path loadOnQueue:(NSOperationQueue *)queue callback:(NSOperation *)callback {
 	// For loading on a background thread (non-blocking), but tries the cache first
 	
-	EJTexture *texture = [EJSharedTextureCache instance].textures[path];
+	// If path is a Data URI the string size may be very huge. In this case we don't want to use
+	// it as cache key (even if it works it would be a waste of memory), we use a hash instead.
+	NSString * cacheKey;
+	if ( [self isDataURI:path] ) {
+		cacheKey = NSStringCCHashFunction(CC_SHA1, CC_SHA1_DIGEST_LENGTH, path);
+	} else {
+		cacheKey = path;
+	}
+	
+	EJTexture *texture = [EJSharedTextureCache instance].textures[cacheKey];
+	
 	if( texture ) {
 		// We already have a texture, but it may hasn't finished loading yet. If
 		// the texture's loadCallback is still present, add it as an dependency
@@ -86,7 +97,7 @@ typedef struct {
 		// Create a new texture and add it to the cache
 		texture = [[EJTexture alloc] initWithPath:path loadOnQueue:queue callback:callback];
 		
-		[EJSharedTextureCache instance].textures[path] = texture;
+		[EJSharedTextureCache instance].textures[cacheKey] = texture;
 		[texture autorelease];
 		texture->cached = true;
 	}
@@ -369,6 +380,8 @@ typedef struct {
 }
 
 - (NSMutableData *)loadPixelsFromPath:(NSString *)path {
+	BOOL isDataURI = [EJTexture isDataURI:path];
+	
 	// Try @2x texture?
 	if( [UIScreen mainScreen].scale == 2 ) {
 		NSString *path2x = [[[path stringByDeletingPathExtension]
@@ -397,25 +410,46 @@ typedef struct {
 	}
 	else {
 		// Use UIImage for PNG, JPG and everything else
-		UIImage *tmpImage = [[UIImage alloc] initWithContentsOfFile:path];
+		UIImage *tmpImage;
+		
+		if( isDataURI ) {
+			NSURL *url = [NSURL URLWithString:path];
+			NSData *imageData = [NSData dataWithContentsOfURL:url];
+			tmpImage = [[UIImage alloc] initWithData:imageData];
+		} else {
+			tmpImage = [[UIImage alloc] initWithContentsOfFile:path];
+		}
+		
 		if( !tmpImage ) {
-			NSLog(@"Error Loading image %@ - not found.", path);
+			if( isDataURI ) {
+				NSLog(@"Error Loading image from Data URI.");
+			} else {
+				NSLog(@"Error Loading image %@ - not found.", path);
+			}
 			return NULL;
 		}
 		
-		CGImageRef image = tmpImage.CGImage;
-		
-		width = CGImageGetWidth(image);
-		height = CGImageGetHeight(image);
-		
-		pixels = [NSMutableData dataWithLength:width*height*4];
-		CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-		CGContextRef context = CGBitmapContextCreate(pixels.mutableBytes, width, height, 8, width * 4, colorSpace, kCGImageAlphaPremultipliedLast);
-		CGContextDrawImage(context, CGRectMake(0.0, 0.0, (CGFloat)width, (CGFloat)height), image);
-		CGContextRelease(context);
-		CGColorSpaceRelease(colorSpace);
+		pixels = [self loadPixelsFromUIImage:tmpImage];
 		[tmpImage release];
 	}
+	
+	return pixels;
+}
+
+- (NSMutableData *)loadPixelsFromUIImage:(UIImage *)image {
+	NSMutableData *pixels;
+	
+	CGImageRef cgImage = image.CGImage;
+	
+	width = CGImageGetWidth(cgImage);
+	height = CGImageGetHeight(cgImage);
+	
+	pixels = [NSMutableData dataWithLength:width*height*4];
+	CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+	CGContextRef context = CGBitmapContextCreate(pixels.mutableBytes, width, height, 8, width * 4, colorSpace, kCGImageAlphaPremultipliedLast);
+	CGContextDrawImage(context, CGRectMake(0.0, 0.0, (CGFloat)width, (CGFloat)height), cgImage);
+	CGContextRelease(context);
+	CGColorSpaceRelease(colorSpace);
 	
 	return pixels;
 }
@@ -557,5 +591,23 @@ typedef struct {
 	}
 }
 
++ (BOOL)isDataURI:(NSString *) path {
+	if( [path hasPrefix:@"data:image/jpeg;base64,"] || [path hasPrefix:@"data:image/png;base64,"] ) {
+		return YES;
+	}
+	return NO;
+}
+
+// from https://github.com/hypercrypt/NSString-Hashes (public domain license)
+static inline NSString *NSStringCCHashFunction(unsigned char *(function)(const void *data, CC_LONG len, unsigned char *md), CC_LONG digestLength, NSString *string) {
+	NSData *data = [string dataUsingEncoding:NSUTF8StringEncoding];
+	uint8_t digest[digestLength];
+	function(data.bytes, (CC_LONG)data.length, digest);
+	NSMutableString *output = [NSMutableString stringWithCapacity:digestLength * 2];
+	for (int i = 0; i < digestLength; i++) {
+        [output appendFormat:@"%02x", digest[i]];
+	}
+	return output;
+}
 
 @end

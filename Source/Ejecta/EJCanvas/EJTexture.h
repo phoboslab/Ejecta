@@ -45,6 +45,7 @@ typedef enum {
 - (void)updateWithPixels:(NSData *)pixels atX:(int)x y:(int)y width:(int)subWidth height:(int)subHeight;
 
 - (NSMutableData *)loadPixelsFromPath:(NSString *)path;
+- (NSMutableData *)loadPixelsFromUIImage:(UIImage *)image;
 
 - (GLint)getParam:(GLenum)pname;
 - (void)setParam:(GLenum)pname param:(GLenum)param;
@@ -58,6 +59,8 @@ typedef enum {
 + (void)premultiplyPixels:(const GLubyte *)inPixels to:(GLubyte *)outPixels byteLength:(int)byteLength format:(GLenum)format;
 + (void)unPremultiplyPixels:(const GLubyte *)inPixels to:(GLubyte *)outPixels byteLength:(int)byteLength format:(GLenum)format;
 + (void)flipPixelsY:(GLubyte *)pixels bytesPerRow:(int)bytesPerRow rows:(int)rows;
+
++ (BOOL)isDataURI:(NSString *) path;
 
 @property (readwrite, nonatomic) BOOL drawFlippedY;
 @property (readonly, nonatomic) BOOL isDynamic;
