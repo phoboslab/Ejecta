@@ -41,10 +41,17 @@
 }
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations {
+	[self invokeCallbacksWithLocation:locations.lastObject heading:manager.heading];
+}
+
+- (void)locationManager:(CLLocationManager *)manager didUpdateHeading:(CLHeading *)newHeading {
+	[self invokeCallbacksWithLocation:manager.location heading:newHeading];
+}
+
+- (void)invokeCallbacksWithLocation:(CLLocation *)location heading:(CLHeading *)heading {
 	if( callbacks.count == 0 ) { return; } // Nothing to do here?
-	
+
 	// Build the position object
-	CLLocation *location = [locations lastObject];
 	JSValueRef position = NSObjectToJSValue(scriptView.jsGlobalContext, @{
 		@"coords":@{
 			@"latitude": @(location.coordinate.latitude),
@@ -52,7 +59,7 @@
 			@"altitude": @(location.altitude),
 			@"accuracy": @(location.horizontalAccuracy),
 			@"altitudeAccuracy": @(location.verticalAccuracy),
-			@"heading": @(manager.heading.trueHeading),
+			@"heading": @(heading.trueHeading),
 			@"speed": @(location.speed)
 		},
 		@"timestamp": location.timestamp
