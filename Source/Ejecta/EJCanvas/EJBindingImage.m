@@ -18,10 +18,11 @@
 	NSString *fullPath;
 
 	// If path is a Data URI we don't want to prepend resource paths
-	if ( [EJTexture isDataURI:path] ) {
+	if( [path hasPrefix:@"data:"] ) {
 		NSLog(@"Loading Image from Data URI");
-		fullPath = [NSString stringWithString:path];
-	} else {
+		fullPath = path;
+	}
+	else {
 		NSLog(@"Loading Image: %@", path);
 		fullPath = [scriptView pathForResource:path];
 	}
@@ -61,7 +62,7 @@
 }
 
 EJ_BIND_GET(src, ctx ) { 
-	JSStringRef src = JSStringCreateWithUTF8CString( [path UTF8String] );
+	JSStringRef src = JSStringCreateWithUTF8CString( path.UTF8String );
 	JSValueRef ret = JSValueMakeString(ctx, src);
 	JSStringRelease(src);
 	return ret;

@@ -1,11 +1,11 @@
 #import <QuartzCore/QuartzCore.h>
 #import <OpenGLES/EAGLDrawable.h>
-#import <CommonCrypto/CommonDigest.h>
 #import "EJTexture.h"
 #import "EJConvertWebGL.h"
 
 #import "EJSharedTextureCache.h"
 #import "EJJavaScriptView.h"
+#import "NSString+Hashes.h"
 
 #define PVR_TEXTURE_FLAG_TYPE_MASK 0xff
 
@@ -74,12 +74,7 @@ typedef struct {
 	
 	// If path is a Data URI the string size may be very huge. In this case we don't want to use
 	// it as cache key (even if it works it would be a waste of memory), we use a hash instead.
-	NSString * cacheKey;
-	if ( [self isDataURI:path] ) {
-		cacheKey = NSStringCCHashFunction(CC_SHA1, CC_SHA1_DIGEST_LENGTH, path);
-	} else {
-		cacheKey = path;
-	}
+	NSString *cacheKey = [path hasPrefix:@"data:"] ? path.md5 : path;
 	
 	EJTexture *texture = [EJSharedTextureCache instance].textures[cacheKey];
 	
@@ -380,10 +375,10 @@ typedef struct {
 }
 
 - (NSMutableData *)loadPixelsFromPath:(NSString *)path {
-	BOOL isDataURI = [EJTexture isDataURI:path];
+	BOOL isDataURI = [path hasPrefix:@"data:"];
 	
 	// Try @2x texture?
-	if( [UIScreen mainScreen].scale == 2 ) {
+	if( !isDataURI && [UIScreen mainScreen].scale == 2 ) {
 		NSString *path2x = [[[path stringByDeletingPathExtension]
 			stringByAppendingString:@"@2x"]
 			stringByAppendingPathExtension:[path pathExtension]];
@@ -396,7 +391,20 @@ typedef struct {
 	
 	
 	NSMutableData *pixels;
-	if( [path.pathExtension isEqualToString:@"pvr"] ) {
+	if( isDataURI ) {
+		// Load directly from a Data URI string
+		UIImage *tmpImage = [[UIImage alloc] initWithData:
+			[NSData dataWithContentsOfURL:[NSURL URLWithString:path]]];
+		
+		if( !tmpImage ) {
+			NSLog(@"Error Loading image from Data URI.");
+			return NULL;
+		}
+		pixels = [self loadPixelsFromUIImage:tmpImage];
+		[tmpImage release];
+	}
+	
+	else if( [path.pathExtension isEqualToString:@"pvr"] ) {
 		// Compressed PVRTC? Only load raw data bytes
 		pixels = [NSMutableData dataWithContentsOfFile:path];
 		if( !pixels ) {
@@ -408,24 +416,13 @@ typedef struct {
 		height = header->height;
 		isCompressed = true;
 	}
+	
 	else {
 		// Use UIImage for PNG, JPG and everything else
-		UIImage *tmpImage;
-		
-		if( isDataURI ) {
-			NSURL *url = [NSURL URLWithString:path];
-			NSData *imageData = [NSData dataWithContentsOfURL:url];
-			tmpImage = [[UIImage alloc] initWithData:imageData];
-		} else {
-			tmpImage = [[UIImage alloc] initWithContentsOfFile:path];
-		}
+		UIImage *tmpImage = [[UIImage alloc] initWithContentsOfFile:path];
 		
 		if( !tmpImage ) {
-			if( isDataURI ) {
-				NSLog(@"Error Loading image from Data URI.");
-			} else {
-				NSLog(@"Error Loading image %@ - not found.", path);
-			}
+			NSLog(@"Error Loading image %@ - not found.", path);
 			return NULL;
 		}
 		
@@ -437,14 +434,12 @@ typedef struct {
 }
 
 - (NSMutableData *)loadPixelsFromUIImage:(UIImage *)image {
-	NSMutableData *pixels;
-	
 	CGImageRef cgImage = image.CGImage;
 	
 	width = CGImageGetWidth(cgImage);
 	height = CGImageGetHeight(cgImage);
 	
-	pixels = [NSMutableData dataWithLength:width*height*4];
+	NSMutableData *pixels = [NSMutableData dataWithLength:width*height*4];
 	CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
 	CGContextRef context = CGBitmapContextCreate(pixels.mutableBytes, width, height, 8, width * 4, colorSpace, kCGImageAlphaPremultipliedLast);
 	CGContextDrawImage(context, CGRectMake(0.0, 0.0, (CGFloat)width, (CGFloat)height), cgImage);
@@ -591,23 +586,5 @@ typedef struct {
 	}
 }
 
-+ (BOOL)isDataURI:(NSString *) path {
-	if( [path hasPrefix:@"data:image/jpeg;base64,"] || [path hasPrefix:@"data:image/png;base64,"] ) {
-		return YES;
-	}
-	return NO;
-}
-
-// from https://github.com/hypercrypt/NSString-Hashes (public domain license)
-static inline NSString *NSStringCCHashFunction(unsigned char *(function)(const void *data, CC_LONG len, unsigned char *md), CC_LONG digestLength, NSString *string) {
-	NSData *data = [string dataUsingEncoding:NSUTF8StringEncoding];
-	uint8_t digest[digestLength];
-	function(data.bytes, (CC_LONG)data.length, digest);
-	NSMutableString *output = [NSMutableString stringWithCapacity:digestLength * 2];
-	for (int i = 0; i < digestLength; i++) {
-        [output appendFormat:@"%02x", digest[i]];
-	}
-	return output;
-}
 
 @end

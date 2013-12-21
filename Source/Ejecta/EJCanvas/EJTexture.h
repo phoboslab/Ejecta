@@ -60,8 +60,6 @@ typedef enum {
 + (void)unPremultiplyPixels:(const GLubyte *)inPixels to:(GLubyte *)outPixels byteLength:(int)byteLength format:(GLenum)format;
 + (void)flipPixelsY:(GLubyte *)pixels bytesPerRow:(int)bytesPerRow rows:(int)rows;
 
-+ (BOOL)isDataURI:(NSString *) path;
-
 @property (readwrite, nonatomic) BOOL drawFlippedY;
 @property (readonly, nonatomic) BOOL isDynamic;
 @property (readonly, nonatomic) NSMutableData *pixels;
