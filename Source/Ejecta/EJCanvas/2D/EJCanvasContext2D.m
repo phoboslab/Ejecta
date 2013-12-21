@@ -612,7 +612,7 @@ const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
 	// Render clip path, if present and different
 	if( state->clipPath && state->clipPath != oldClipPath ) {
 		[self setProgram:sharedGLContext.glProgram2DFlat];
-		[state->clipPath drawPolygonsToContext:self target:kEJPathPolygonTargetDepth];
+		[state->clipPath drawPolygonsToContext:self fillRule:state->clipPath.fillRule target:kEJPathPolygonTargetDepth];
 	}
 }
 
@@ -775,9 +775,9 @@ const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
 	[path close];
 }
 
-- (void)fill {
+- (void)fill:(EJPathFillRule)fillRule {
 	[self setProgram:sharedGLContext.glProgram2DFlat];
-	[path drawPolygonsToContext:self target:kEJPathPolygonTargetColor];
+	[path drawPolygonsToContext:self fillRule:fillRule target:kEJPathPolygonTargetColor];
 }
 
 - (void)stroke {
@@ -844,14 +844,14 @@ const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
 	return [font measureString:text forContext:self];
 }
 
-- (void)clip {
+- (void)clip:(EJPathFillRule)fillRule {
 	[self flushBuffers];
 	[state->clipPath release];
 	state->clipPath = nil;
 	
 	state->clipPath = path.copy;
 	[self setProgram:sharedGLContext.glProgram2DFlat];
-	[state->clipPath drawPolygonsToContext:self target:kEJPathPolygonTargetDepth];
+	[state->clipPath drawPolygonsToContext:self fillRule:fillRule target:kEJPathPolygonTargetDepth];
 }
 
 - (void)resetClip {
