@@ -12,11 +12,17 @@ typedef enum {
 	kEJPathPolygonTargetDepth
 } EJPathPolygonTarget;
 
+typedef enum {
+	kEJPathFillRuleNonZero,
+	kEJPathFillRuleEvenOdd
+} EJPathFillRule;
+
 @class EJCanvasContext2D;
 
 @interface EJPath : NSObject <NSCopying> {
 	EJVector2 currentPos, lastPushed;
 	EJVector2 minPos, maxPos;
+	EJPathFillRule fillRule;
 	int longestSubpath;
 	
 	GLubyte stencilMask;
@@ -26,7 +32,8 @@ typedef enum {
 	CGAffineTransform transform;
 }
 
-@property (nonatomic,assign) CGAffineTransform transform;;
+@property (nonatomic,assign) CGAffineTransform transform;
+@property (readonly) EJPathFillRule fillRule;
 
 - (void)push:(EJVector2)v;
 - (void)reset;
@@ -41,7 +48,7 @@ typedef enum {
 - (void)arcToX1:(float)x1 y1:(float)y1 x2:(float)x2 y2:(float)y2 radius:(float)radius;
 - (void)arcX:(float)x y:(float)y radius:(float)radius startAngle:(float)startAngle endAngle:(float)endAngle	antiClockwise:(BOOL)antiClockwise;
 
-- (void)drawPolygonsToContext:(EJCanvasContext2D *)context target:(EJPathPolygonTarget)target;
+- (void)drawPolygonsToContext:(EJCanvasContext2D *)context fillRule:(EJPathFillRule)fillRule target:(EJPathPolygonTarget)target;
 - (void)drawLinesToContext:(EJCanvasContext2D *)context;
 
 @end

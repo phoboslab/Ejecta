@@ -421,8 +421,12 @@ EJ_BIND_FUNCTION( closePath, ctx, argc, argv ) {
 }
 
 EJ_BIND_FUNCTION( fill, ctx, argc, argv ) {
+	EJPathFillRule fillRule = (argc > 0 && [JSValueToNSString(ctx, argv[0]) isEqualToString:@"evenodd"])
+		? kEJPathFillRuleEvenOdd
+		: kEJPathFillRuleNonZero;
+	
 	scriptView.currentRenderingContext = renderingContext;
-	[renderingContext fill];
+	[renderingContext fill:fillRule];
 	return NULL;
 }
 
@@ -509,8 +513,12 @@ EJ_BIND_FUNCTION( strokeText, ctx, argc, argv ) {
 }
 
 EJ_BIND_FUNCTION( clip, ctx, argc, argv ) {
+	EJPathFillRule fillRule = (argc > 0 && [JSValueToNSString(ctx, argv[0]) isEqualToString:@"evenodd"])
+		? kEJPathFillRuleEvenOdd
+		: kEJPathFillRuleNonZero;
+		
 	scriptView.currentRenderingContext = renderingContext;
-	[renderingContext clip];
+	[renderingContext clip:fillRule];
 	return NULL;
 }
 

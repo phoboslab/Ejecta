@@ -197,7 +197,7 @@ static inline EJColorRGBA EJCanvasBlendStrokeColor( EJCanvasState *state ) {
 - (void)putImageData:(EJImageData*)imageData scaled:(float)scale dx:(float)dx dy:(float)dy;
 - (void)beginPath;
 - (void)closePath;
-- (void)fill;
+- (void)fill:(EJPathFillRule)fillRule;
 - (void)stroke;
 - (void)moveToX:(float)x y:(float)y;
 - (void)lineToX:(float)x y:(float)y;
@@ -211,7 +211,7 @@ static inline EJColorRGBA EJCanvasBlendStrokeColor( EJCanvasState *state ) {
 - (void)strokeText:(NSString *)text x:(float)x y:(float)y;
 - (EJTextMetrics)measureText:(NSString *)text;
 
-- (void)clip;
+- (void)clip:(EJPathFillRule)fillRule;
 - (void)resetClip;
 
 @property (nonatomic) EJCanvasState *state;

@@ -1,6 +1,7 @@
 #import "EJBindingImage.h"
 #import "EJJavaScriptView.h"
 #import "EJNonRetainingProxy.h"
+#import "EJTexture.h"
 
 @implementation EJBindingImage
 @synthesize texture;
@@ -14,6 +15,7 @@
 	// may be the only thing holding on to it
 	JSValueProtect(scriptView.jsGlobalContext, jsObject);
 	
+<<<<<<< HEAD
 
     NSString *fullPath;
     if ([path hasPrefix:@"data:"]){
@@ -23,6 +25,19 @@
         NSLog(@"Loading Image: %@", path);
         fullPath = [scriptView pathForResource:path];
     }
+=======
+	NSString *fullPath;
+
+	// If path is a Data URI we don't want to prepend resource paths
+	if( [path hasPrefix:@"data:"] ) {
+		NSLog(@"Loading Image from Data URI");
+		fullPath = path;
+	}
+	else {
+		NSLog(@"Loading Image: %@", path);
+		fullPath = [scriptView pathForResource:path];
+	}
+>>>>>>> 7113dbe430cf0ff66271f50a189d1d65ce05336a
 	
 	// Use a non-retaining proxy for the callback operation and take care that the
 	// loadCallback is always cancelled when dealloc'ing
@@ -59,7 +74,7 @@
 }
 
 EJ_BIND_GET(src, ctx ) { 
-	JSStringRef src = JSStringCreateWithUTF8CString( [path UTF8String] );
+	JSStringRef src = JSStringCreateWithUTF8CString( path.UTF8String );
 	JSValueRef ret = JSValueMakeString(ctx, src);
 	JSStringRelease(src);
 	return ret;

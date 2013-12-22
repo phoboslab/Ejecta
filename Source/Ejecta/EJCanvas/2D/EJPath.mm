@@ -22,6 +22,7 @@ typedef std::vector<subpath_t> path_t;
 @implementation EJPath
 
 @synthesize transform;
+@synthesize fillRule;
 
 - (id)init {
 	self = [super init];
@@ -318,8 +319,11 @@ typedef std::vector<subpath_t> path_t;
 	[self push:currentPos];
 }
 
-- (void)drawPolygonsToContext:(EJCanvasContext2D *)context target:(EJPathPolygonTarget)target {
-	//[self endSubPath];
+- (void)drawPolygonsToContext:(EJCanvasContext2D *)context
+	fillRule:(EJPathFillRule)rule
+	target:(EJPathPolygonTarget)target
+{
+	fillRule = rule;
 	if( longestSubpath < 3 && currentPath.points.size()<3) { return; }
 	
 	EJCanvasState *state = context.state;
@@ -355,27 +359,47 @@ typedef std::vector<subpath_t> path_t;
 	[context flushBuffers];
 	
 	
-	// For each subpath, draw to the stencil buffer twice:
-	// 1) for all back-facing polygons, increase the stencil value
-	// 2) for all front-facing polygons, decrease the stencil value
+	if( fillRule == kEJPathFillRuleNonZero ) {
+		// If we use the Non-Zero fill rule, draw to the stencil buffer twice
+		// for each sub path:
+		// 1) for all back-facing polygons, increase the stencil value
+		// 2) for all front-facing polygons, decrease the stencil value
+		
+		// We need to enable face culling for this and alternate the stencil
+		// ops in the draw loop.
+		glEnable(GL_CULL_FACE);
+	}
+	else if( fillRule == kEJPathFillRuleEvenOdd ) {
+		// For the Even-Odd fill rule, simply invert the stencil buffer with
+		// each overdraw/
+		glStencilOp(GL_KEEP, GL_KEEP, GL_INVERT);
+	}
 	
-	glEnable(GL_CULL_FACE);
 	for( path_t::iterator sp = paths.begin(); ; ++sp ) {
 		subpath_t &path = sp==paths.end()?currentPath:*sp;
 		
 		glVertexAttribPointer(kEJGLProgram2DAttributePos, 2, GL_FLOAT, GL_FALSE, 0, &(path.points).front());
 		
-		glCullFace(GL_BACK);
-		glStencilOp(GL_INCR_WRAP, GL_KEEP, GL_INCR_WRAP);
-		glDrawArrays(GL_TRIANGLE_FAN, 0, path.points.size());
+		if( fillRule == kEJPathFillRuleNonZero ) {
+			glCullFace(GL_BACK);
+			glStencilOp(GL_INCR_WRAP, GL_KEEP, GL_INCR_WRAP);
+			glDrawArrays(GL_TRIANGLE_FAN, 0, path.points.size());
 		
-		glCullFace(GL_FRONT);
-		glStencilOp(GL_DECR_WRAP, GL_KEEP, GL_DECR_WRAP);
-		glDrawArrays(GL_TRIANGLE_FAN, 0, path.points.size());
+			glCullFace(GL_FRONT);
+			glStencilOp(GL_DECR_WRAP, GL_KEEP, GL_DECR_WRAP);
+			glDrawArrays(GL_TRIANGLE_FAN, 0, path.points.size());
+		}
+		else if( fillRule == kEJPathFillRuleEvenOdd ) {
+			glDrawArrays(GL_TRIANGLE_FAN, 0, path.points.size());
+		}
 		
 		if(sp==paths.end()) break;
 	}
-	glDisable(GL_CULL_FACE);
+	
+	if( fillRule == kEJPathFillRuleNonZero ) {
+		glDisable(GL_CULL_FACE);
+	}
+	
 	[context bindVertexBuffer];
 	
 	
