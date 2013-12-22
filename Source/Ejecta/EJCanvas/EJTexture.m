@@ -275,6 +275,7 @@ typedef struct {
 	
 	if( width > maxTextureSize || height > maxTextureSize ) {
 		NSLog(@"Warning: Image %@ larger than MAX_TEXTURE_SIZE (%d)", fullPath ? fullPath : @"[Dynamic]", maxTextureSize);
+		return;
 	}
 	format = formatp;
 	
