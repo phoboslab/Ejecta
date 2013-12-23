@@ -16,13 +16,15 @@
 	int maxWidth, maxHeight;
 }
 
-- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popup;
+- (void)dealloc;
+
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info;
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker;
+- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popup;
 - (void)successCallback:(JSValueRef[])params;
 - (void)errorCallback:(NSString *)message;
 - (void)closePicker:(JSContextRef)ctx;
-- (void)dealloc;
+- (UIImage *)reduceImageSize:(UIImage *)image;
 
 + (BOOL)isSourceTypeAvailable:(NSString *) sourceType;
 
