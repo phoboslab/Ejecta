@@ -386,19 +386,10 @@ typedef struct {
 }
 
 - (NSMutableData *)loadPixelsFromPath:(NSString *)path {
-<<<<<<< HEAD
-    
-    BOOL useDataURL = NO;
-    if ( [path hasPrefix:@"data:"] ){
-        useDataURL = YES;
-    }
-    else if( [UIScreen mainScreen].scale == 2 ) { //Try @2x texture?
-=======
 	BOOL isDataURI = [path hasPrefix:@"data:"];
 	
 	// Try @2x texture?
 	if( !isDataURI && [UIScreen mainScreen].scale == 2 ) {
->>>>>>> 7113dbe430cf0ff66271f50a189d1d65ce05336a
 		NSString *path2x = [[[path stringByDeletingPathExtension]
 			stringByAppendingString:@"@2x"]
 			stringByAppendingPathExtension:[path pathExtension]];
@@ -438,51 +429,16 @@ typedef struct {
 	}
 	
 	else {
-<<<<<<< HEAD
-        UIImage *tmpImage;
-        if ( useDataURL ){
-            // Use UIImage for PNG, JPG and everything else (from dataURL)
-            NSURL *url = [NSURL URLWithString:path];
-            NSData *imageData = [NSData dataWithContentsOfURL:url];
-            tmpImage = [UIImage imageWithData:imageData];
-        }
-        else {
-            // Use UIImage for PNG, JPG and everything else
-            tmpImage = [[UIImage alloc] initWithContentsOfFile:path];
-        }
-       
-=======
 		// Use UIImage for PNG, JPG and everything else
 		UIImage *tmpImage = [[UIImage alloc] initWithContentsOfFile:path];
 		
->>>>>>> 7113dbe430cf0ff66271f50a189d1d65ce05336a
 		if( !tmpImage ) {
 			NSLog(@"Error Loading image %@ - not found.", path);
 			return NULL;
 		}
 		
-<<<<<<< HEAD
-		CGImageRef image = tmpImage.CGImage;
-		
-		width = CGImageGetWidth(image);
-		height = CGImageGetHeight(image);
-		
-		pixels = [NSMutableData dataWithLength:width*height*4];
-		CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-		CGContextRef context = CGBitmapContextCreate(pixels.mutableBytes, width, height, 8, width * 4, colorSpace, kCGImageAlphaPremultipliedLast);
-		CGContextDrawImage(context, CGRectMake(0.0, 0.0, (CGFloat)width, (CGFloat)height), image);
-		CGContextRelease(context);
-		CGColorSpaceRelease(colorSpace);
-        if ( !useDataURL ){
-            // When use dataURL, tmpImage created via [UIImage imageWithData:],
-            // it's  an autoreleased objec which should not be released.
-            [tmpImage release];
-        }
-
-=======
 		pixels = [self loadPixelsFromUIImage:tmpImage];
 		[tmpImage release];
->>>>>>> 7113dbe430cf0ff66271f50a189d1d65ce05336a
 	}
 	
 	return pixels;

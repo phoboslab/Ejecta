@@ -15,11 +15,6 @@
 
 #define EJECTA_BOOT_JS @"../Ejecta.js"
 
-#define EJECTA_SECRET_KEY @"SecretKey (Don't include Breakline)"
-//Please Don't change the value of EJECTA_SECRET_PREFIX, unless you understand it.
-#define EJECTA_SECRET_PREFIX @"=S="
-
-
 
 @protocol EJTouchDelegate
 - (void)triggerEvent:(NSString *)name all:(NSSet *)all changed:(NSSet *)changed remaining:(NSSet *)remaining;
