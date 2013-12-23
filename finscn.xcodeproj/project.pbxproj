@@ -10,6 +10,7 @@
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765FC0DF74451002DB57D /* CoreGraphics.framework */; };
+		39888FEE1868A4490016C071 /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 39888FED1868A4490016C071 /* libc++.dylib */; };
 		399DDE9517CA8C2000267FFE /* Default-Landscape@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 399DDE9317CA8C2000267FFE /* Default-Landscape@2x.png */; };
 		399DDE9617CA8C2000267FFE /* Default-Portrait@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 399DDE9417CA8C2000267FFE /* Default-Portrait@2x.png */; };
 		399DDEA517CA8C4000267FFE /* EJBindingAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 399DDE9B17CA8C4000267FFE /* EJBindingAlertView.m */; };
@@ -126,6 +127,7 @@
 		1D6058910D05DD3D006BFB54 /* finscn.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = finscn.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		288765FC0DF74451002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		39888FED1868A4490016C071 /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
 		399DDE9317CA8C2000267FFE /* Default-Landscape@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape@2x.png"; sourceTree = "<group>"; };
 		399DDE9417CA8C2000267FFE /* Default-Portrait@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Portrait@2x.png"; sourceTree = "<group>"; };
 		399DDE9A17CA8C4000267FFE /* EJBindingAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingAlertView.h; sourceTree = "<group>"; };
@@ -331,6 +333,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				39888FEE1868A4490016C071 /* libc++.dylib in Frameworks */,
 				B6D4B283183CF43A008251EB /* CoreLocation.framework in Frameworks */,
 				B60FA92A1702297C00078D20 /* MediaPlayer.framework in Frameworks */,
 				B6D6E09A16F7D03F009AB75F /* StoreKit.framework in Frameworks */,
@@ -368,6 +371,7 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				39888FED1868A4490016C071 /* libc++.dylib */,
 				B68C5AEF132E6CD60015092E /* App */,
 				399DDE9917CA8C4000267FFE /* Extension */,
 				B64CE60E166682700087CF94 /* Source */,
