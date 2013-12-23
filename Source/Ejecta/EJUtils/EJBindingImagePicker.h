@@ -8,16 +8,15 @@
 
 @interface EJBindingImagePicker : EJBindingBase <UIImagePickerControllerDelegate, UIPopoverControllerDelegate, UINavigationControllerDelegate> {
 	JSObjectRef callback;
-	NSString * imgFormat;
-	double jpgCompression;
 	UIImagePickerController * picker;
 	UIPopoverController * popover;
+	NSString * imgFormat;
+	float jpgCompression;
 	short pickerType;
 	int maxWidth, maxHeight;
 }
 
 - (void)dealloc;
-
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info;
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker;
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)popup;

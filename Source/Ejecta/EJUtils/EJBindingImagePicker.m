@@ -21,12 +21,6 @@ static inline NSString * getOptionValueAsNSString(JSContextRef ctx, JSObjectRef 
 	return JSValueToNSString(ctx, value);
 }
 
-static inline int getOptionValueAsInt(JSContextRef ctx, JSObjectRef options, NSString * key, int defaultValue) {
-	JSObjectRef value = getOptionValue(ctx, options, key);
-	if( !value ) { return defaultValue; }
-	return JSValueToNumber(ctx, value, NULL);
-}
-
 static inline float getOptionValueAsFloat(JSContextRef ctx, JSObjectRef options, NSString * key, float defaultValue) {
 	JSObjectRef value = getOptionValue(ctx, options, key);
 	if( !value ) { return defaultValue; }
@@ -51,6 +45,7 @@ static inline float getOptionValueAsFloat(JSContextRef ctx, JSObjectRef options,
 }
 
 
+// to know if a source type (`PhotoLibrary`, `SavedPhotosAlbum` or `Camera`) is available on the device
 EJ_BIND_FUNCTION(isSourceTypeAvailable, ctx, argc, argv) {
 	if( argc == 0 ) {
 		return NULL;
@@ -60,6 +55,7 @@ EJ_BIND_FUNCTION(isSourceTypeAvailable, ctx, argc, argv) {
 }
 
 
+// pick a picture
 EJ_BIND_FUNCTION(getPicture, ctx, argc, argv) {
 	// checking if the 2 parameters are here (callback and options)
 	if( argc < 2 ) {
