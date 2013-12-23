@@ -10,6 +10,8 @@
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765FC0DF74451002DB57D /* CoreGraphics.framework */; };
+		33BE9DE2186817D900E0D16E /* EJBindingImagePicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 33BE9DE1186817D900E0D16E /* EJBindingImagePicker.m */; };
+		33BE9DE41868183900E0D16E /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33BE9DE31868183900E0D16E /* MobileCoreServices.framework */; };
 		3EBC19BE16CECE190036F9F3 /* EJBindingKeyInput.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EBC19BD16CECE190036F9F3 /* EJBindingKeyInput.m */; };
 		3EF00C5916C29360004599A4 /* EJJavaScriptView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EF00C5816C29360004599A4 /* EJJavaScriptView.m */; };
 		5B7B76761619DB9700691910 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B7B76751619DB9700691910 /* CoreText.framework */; };
@@ -120,6 +122,9 @@
 		1D6058910D05DD3D006BFB54 /* Ejecta.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Ejecta.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		288765FC0DF74451002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		33BE9DE0186817D900E0D16E /* EJBindingImagePicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingImagePicker.h; sourceTree = "<group>"; };
+		33BE9DE1186817D900E0D16E /* EJBindingImagePicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingImagePicker.m; sourceTree = "<group>"; };
+		33BE9DE31868183900E0D16E /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		3EBC19BC16CECE190036F9F3 /* EJBindingKeyInput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingKeyInput.h; sourceTree = "<group>"; };
 		3EBC19BD16CECE190036F9F3 /* EJBindingKeyInput.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingKeyInput.m; sourceTree = "<group>"; };
 		3EF00C5716C29360004599A4 /* EJJavaScriptView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJJavaScriptView.h; sourceTree = "<group>"; };
@@ -314,6 +319,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				33BE9DE41868183900E0D16E /* MobileCoreServices.framework in Frameworks */,
 				B6D4B283183CF43A008251EB /* CoreLocation.framework in Frameworks */,
 				B6CDA16018295A5F00190074 /* libc++.dylib in Frameworks */,
 				B60FA92A1702297C00078D20 /* MediaPlayer.framework in Frameworks */,
@@ -364,6 +370,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				33BE9DE31868183900E0D16E /* MobileCoreServices.framework */,
 				B6D4B282183CF43A008251EB /* CoreLocation.framework */,
 				B6CDA15F18295A5F00190074 /* libc++.dylib */,
 				B64CE60C1666825F0087CF94 /* libJavaScriptCore.a */,
@@ -522,6 +529,8 @@
 				B64CE648166682700087CF94 /* EJBindingGameCenter.m */,
 				B64CE649166682700087CF94 /* EJBindingHttpRequest.h */,
 				B64CE64A166682700087CF94 /* EJBindingHttpRequest.m */,
+				33BE9DE0186817D900E0D16E /* EJBindingImagePicker.h */,
+				33BE9DE1186817D900E0D16E /* EJBindingImagePicker.m */,
 				B64CE64B166682700087CF94 /* EJBindingLocalStorage.h */,
 				B64CE64C166682700087CF94 /* EJBindingLocalStorage.m */,
 				B64CE64D166682700087CF94 /* EJBindingTouchInput.h */,
@@ -764,6 +773,7 @@
 				B64CE67A166682700087CF94 /* EJBindingAdBanner.m in Sources */,
 				B64CE67B166682700087CF94 /* EJBindingGameCenter.m in Sources */,
 				B64CE67C166682700087CF94 /* EJBindingHttpRequest.m in Sources */,
+				33BE9DE2186817D900E0D16E /* EJBindingImagePicker.m in Sources */,
 				B64CE67D166682700087CF94 /* EJBindingLocalStorage.m in Sources */,
 				B64CE67E166682700087CF94 /* EJBindingTouchInput.m in Sources */,
 				B64CE67F166682700087CF94 /* AppDelegate.m in Sources */,
