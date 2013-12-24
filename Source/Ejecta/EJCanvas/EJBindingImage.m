@@ -109,5 +109,15 @@ EJ_BIND_GET(complete, ctx ) {
 EJ_BIND_EVENT(load);
 EJ_BIND_EVENT(error);
 
+EJ_BIND_FUNCTION(unload, ctx, argc, argv){
+    
+    [texture release];
+    texture = nil;
+    [path release];
+    path = nil;
+    return NULL;
+}
+
+
 
 @end
