@@ -2,42 +2,14 @@
 #import "EJBindingImagePicker.h"
 #import "EJJavaScriptView.h"
 
-
-// helpers for extracting options values
-
-static inline JSObjectRef getOptionValue(JSContextRef ctx, JSObjectRef options, NSString * key) {
-	JSValueRef jsKeyVal = NSStringToJSValue(ctx, key);
-	JSStringRef jsKey = JSValueToStringCopy(ctx, jsKeyVal, NULL);
-	JSObjectRef value = (JSObjectRef)JSObjectGetProperty(ctx, options, jsKey, NULL);
-	if( JSValueIsEqual(ctx, value, JSValueMakeUndefined(ctx), NULL) ) {
-		return nil;
-	}
-	return value;
-}
-
-static inline NSString * getOptionValueAsNSString(JSContextRef ctx, JSObjectRef options, NSString * key, NSString * defaultValue) {
-	JSObjectRef value = getOptionValue(ctx, options, key);
-	if( !value ) { return defaultValue; }
-	return JSValueToNSString(ctx, value);
-}
-
-static inline float getOptionValueAsFloat(JSContextRef ctx, JSObjectRef options, NSString * key, float defaultValue) {
-	JSObjectRef value = getOptionValue(ctx, options, key);
-	if( !value ) { return defaultValue; }
-	return JSValueToNumber(ctx, value, NULL);
-}
-
-
 @implementation EJBindingImagePicker
-
 
 - (id)initWithContext:(JSContextRef) ctx argc:(size_t)argc argv:(const JSValueRef [])argv {
     if( self = [super initWithContext:ctx argc:argc argv:argv] ) {
-		NSLog(@"A new picker have been created");
+		NSLog(@"An ImagePicker instance have been created.");
 	}
     return self;
 }
-
 
 - (void)dealloc {
 	NSLog(@"An ImagePicker instance is being deallocated.");
@@ -45,73 +17,53 @@ static inline float getOptionValueAsFloat(JSContextRef ctx, JSObjectRef options,
 }
 
 
-// to know if a source type (`PhotoLibrary`, `SavedPhotosAlbum` or `Camera`) is available on the device
-EJ_BIND_FUNCTION(isSourceTypeAvailable, ctx, argc, argv) {
-	if( argc == 0 ) {
-		return NULL;
-	}
-	NSString * sourceType = JSValueToNSString(ctx, argv[0]);
-	return [EJBindingImagePicker isSourceTypeAvailable:sourceType];
-}
-
-
 // pick a picture
 EJ_BIND_FUNCTION(getPicture, ctx, argc, argv) {
-	// checking if the 2 parameters are here (callback and options)
-	if( argc < 2 ) {
-		return NULL;
-	}
+	if( argc < 1 ) return NULL;
 	
-	// 1st parameter: callback
+	// retrieve the callback
 	JSValueUnprotectSafe(ctx, callback);
 	callback = JSValueToObject(ctx, argv[0], NULL);
+
+	// retrieve the options if any
+	NSDictionary *options = nil;
+	if( argc > 1 && JSValueIsObject(ctx, argv[1]) ) {
+		options = (NSDictionary *) JSValueToNSObject(ctx, argv[1]);
+	}
 	
-	// 2nd parameter: options
-	JSObjectRef options = JSValueToObject(ctx, argv[1], NULL);
+	// retrieve maximum Open GL ES texture size
+	GLint maxTextureSize;
+	glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
 	
-	// Set the source type
-	NSString * sourceType = getOptionValueAsNSString(ctx, options, @"sourceType", @"PhotoLibrary");
-	if( ![sourceType isEqualToString:@"PhotoLibrary"] && ![sourceType isEqualToString:@"SavedPhotosAlbum"] && ![sourceType isEqualToString:@"Camera"] ) {
-		[self errorCallback:[NSString stringWithFormat:@"sourceType `%@` unknown. Valid values are: `PhotoLibrary`, `SavedPhotosAlbum`, `Camera`.", sourceType]];
+	// set current options
+	NSString *sourceType = options[@"sourceType"]     ? options[@"sourceType"]                  : @"PhotoLibrary";
+	imgFormat            = options[@"imgFormat"]      ? options[@"imgFormat"]                   : @"png";
+	jpgCompression       = options[@"jpgCompression"] ? [options[@"jpgCompression"] floatValue] : 0.9f;
+	maxWidth             = options[@"maxWidth"]       ? [options[@"maxWidth"] floatValue]       : (float)maxTextureSize;
+	maxHeight            = options[@"maxHeight"]      ? [options[@"maxHeight"] floatValue]      : (float)maxTextureSize;
+	float popupX         = options[@"popupX"]         ? [options[@"popupX"] floatValue]         : 0.0f;
+	float popupY         = options[@"popupY"]         ? [options[@"popupY"] floatValue]         : 0.0f;
+	float popupWidth     = options[@"popupWidth"]     ? [options[@"popupWidth"] floatValue]     : 1.0f;
+	float popupHeight    = options[@"popupHeight"]    ? [options[@"popupHeight"] floatValue]    : 1.0f;
+	
+	// Source type validation
+	if( ![EJBindingImagePicker isSourceTypeAvailable:sourceType] ) {
+		[self errorCallback:[NSString stringWithFormat:@"sourceType `%@` is not available on this device or the source collection is empty.", sourceType]];
 		return NULL;
 	}
-
-	// Set the returned image format
-	imgFormat = getOptionValueAsNSString(ctx, options, @"imgFormat", @"png");
+	
+	// Image format validation
 	if( ![imgFormat isEqualToString:@"png"] && ![imgFormat isEqualToString:@"jpg"] && ![imgFormat isEqualToString:@"jpeg"] ) {
 		[self errorCallback:[NSString stringWithFormat:@"imgFormat `%@` unknown. Valid values are: `png`, `jpg`, `jpeg`.", imgFormat]];
 		return NULL;
 	}
 	
-	// Set the jpeg compression
-	jpgCompression = getOptionValueAsFloat(ctx, options, @"jpgCompression", 0.9);
-	if( jpgCompression < 0.1 ) {
-		jpgCompression = 0.1;
-	} else if( jpgCompression > 1 ) {
-		jpgCompression = 1;
-	}
+	// Jpeg compression validation
+	jpgCompression = MAX(0.1f, MIN(1.0f, jpgCompression));
 	
-	// Picture maximum width and height, default is the maximum GL texture size
-	GLint maxTextureSize;
-	glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
-	maxWidth = lroundf(getOptionValueAsFloat(ctx, options, @"maxWidth", maxTextureSize));
-	maxHeight = lroundf(getOptionValueAsFloat(ctx, options, @"maxHeight", maxTextureSize));
+	// Picture maximum width and height validation
 	maxWidth = MIN(maxWidth, maxTextureSize);
 	maxHeight = MIN(maxHeight, maxTextureSize);
-	
-	// X and Y position pointed by the popup on iPad
-	float popupX = getOptionValueAsFloat(ctx, options, @"popupX", 0);
-	float popupY = getOptionValueAsFloat(ctx, options, @"popupY", 0);
-	
-	// iPad popup width and height (see Apple UIPopoverController doc for more explanations) default is 1 (automatic / smaller size)
-	float popupWidth = getOptionValueAsFloat(ctx, options, @"popupWidth", 1);
-	float popupHeight = getOptionValueAsFloat(ctx, options, @"popupHeight", 1);
-	
-	// check if the requested sourceType is available on this device
-	if( ![EJBindingImagePicker isSourceTypeAvailable:sourceType] ) {
-		[self errorCallback:[NSString stringWithFormat:@"sourceType `%@` is not available on this device.", sourceType]];
-		return NULL;
-	}
 
 	// identify the type of picker we need: full screen or popup
 	if( IDIOM == IPAD && ![sourceType isEqualToString:@"Camera"] ) {
@@ -131,14 +83,8 @@ EJ_BIND_FUNCTION(getPicture, ctx, argc, argv) {
 	// limit to pictures only
 	[picker setMediaTypes: [NSArray arrayWithObject:(NSString *)kUTTypeImage]];
 	
-	// select the source type
-	if( [sourceType isEqualToString:@"PhotoLibrary"] ) {
-		picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-	} else if ( [sourceType isEqualToString:@"SavedPhotosAlbum"] ) {
-		picker.sourceType = UIImagePickerControllerSourceTypeSavedPhotosAlbum;
-	} else if ( [sourceType isEqualToString:@"Camera"] ) {
-		picker.sourceType = UIImagePickerControllerSourceTypeCamera;
-	}
+	// set the source type
+	picker.sourceType = [EJBindingImagePicker getSourceTypeClass:sourceType];
 	
 	// we are ready to open the picker, let's retain the variables we need for the callback
 	[imgFormat retain];
@@ -159,11 +105,20 @@ EJ_BIND_FUNCTION(getPicture, ctx, argc, argv) {
 }
 
 
+// to know if a source type (`PhotoLibrary`, `SavedPhotosAlbum` or `Camera`) is available on the device at the moment
+EJ_BIND_FUNCTION(isSourceTypeAvailable, ctx, argc, argv) {
+	if( argc < 1 ) return NULL;
+	
+	NSString *sourceType = JSValueToNSString(ctx, argv[0]);
+	return [EJBindingImagePicker isSourceTypeAvailable:sourceType];
+}
+
+
 // user picked a picture
 - (void)imagePickerController:(UIImagePickerController *)_picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
 	// retrieve image data
-	UIImage * rawImage = info[UIImagePickerControllerOriginalImage];
-	UIImage * chosenImage;
+	UIImage *rawImage = info[UIImagePickerControllerOriginalImage];
+	UIImage *chosenImage;
 	
 	// resize it if required
 	if( rawImage.size.width > maxWidth || rawImage.size.height > maxHeight ) {
@@ -252,7 +207,7 @@ EJ_BIND_FUNCTION(getPicture, ctx, argc, argv) {
 - (UIImage *)reduceImageSize:(UIImage *)image {
 	float originalWidth = image.size.width;
 	float originalHeight = image.size.height;
-	float ratio = MIN((float)maxWidth / originalWidth, (float)maxHeight / originalHeight);
+	float ratio = MIN(maxWidth / originalWidth, maxHeight / originalHeight);
 	float targetWidth = lroundf(originalWidth * ratio);
 	float targetHeight = lroundf(originalHeight * ratio);
 	
@@ -266,19 +221,28 @@ EJ_BIND_FUNCTION(getPicture, ctx, argc, argv) {
 }
 
 
-// to check if a source type is available on the current device
+// to check if a source type is available at the moment on the current device
 + (BOOL)isSourceTypeAvailable:(NSString *) sourceType {
+	UIImagePickerControllerSourceType sourceTypeClass = [self getSourceTypeClass:sourceType];
 	if( ![sourceType isEqualToString:@"PhotoLibrary"] && ![sourceType isEqualToString:@"SavedPhotosAlbum"] && ![sourceType isEqualToString:@"Camera"] ) {
 		return NO;
 	}
-	if( [sourceType isEqualToString:@"PhotoLibrary"] && ![UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary] ) {
-		return NO;
-	} else if( [sourceType isEqualToString:@"SavedPhotosAlbum"] && ![UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeSavedPhotosAlbum] ) {
-		return NO;
-	} else if( [sourceType isEqualToString:@"Camera"] && ![UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera] ) {
+	if( ![UIImagePickerController isSourceTypeAvailable:sourceTypeClass] ) {
 		return NO;
 	}
 	return YES;
+}
+
+// to retrieve the source type enum number from string source type
++ (UIImagePickerControllerSourceType)getSourceTypeClass:(NSString *) sourceType {
+	if( [sourceType isEqualToString:@"PhotoLibrary"] ) {
+		return UIImagePickerControllerSourceTypePhotoLibrary;
+	} else if( [sourceType isEqualToString:@"SavedPhotosAlbum"] ) {
+		return UIImagePickerControllerSourceTypeSavedPhotosAlbum;
+	} else if( [sourceType isEqualToString:@"Camera"] ) {
+		return UIImagePickerControllerSourceTypeCamera;
+	}
+	return UIImagePickerControllerSourceTypePhotoLibrary;
 }
 
 @end
