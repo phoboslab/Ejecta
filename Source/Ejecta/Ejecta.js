@@ -29,6 +29,7 @@ window.navigator = {
 	userAgent: ej.userAgent,
 	appVersion: ej.appVersion,
 	platform: ej.platform,
+  maxTouchPoints: 4,
 	get onLine() { return ej.onLine; }, // re-evaluate on each get
 	get geolocation(){ // Lazily create geolocation instance
 		geolocation = geolocation || new Ejecta.Geolocation();
@@ -46,7 +47,7 @@ window.console = {
 		var args = Array.prototype.join.call(arguments, ', ');
 		ej.log( args );
 	},
-	
+
 	assert: function() {
 		var args = Array.prototype.slice.call(arguments);
 		var assertion = args.shift();
@@ -60,7 +61,7 @@ window.console.debug =
 	window.console.warn =
 	window.console.error =
 	window.console.log;
-	
+
 var consoleTimers = {};
 console.time = function(name) {
 	consoleTimers[name] = ej.performanceNow();
@@ -89,7 +90,7 @@ window.require = function( name ) {
 		// Some modules override module.exports, so use the module.exports reference only after loading the module
 		loadedModules[id] = module.exports;
 	}
-	
+
 	return loadedModules[id];
 };
 
@@ -100,7 +101,7 @@ window.setInterval = function(cb, t){ return ej.setInterval(cb, t||0); };
 window.clearTimeout = function(id){ return ej.clearTimeout(id); };
 window.clearInterval = function(id){ return ej.clearInterval(id); };
 window.requestAnimationFrame = function(cb, element){
-	return ej.setTimeout(function(){ cb(ej.performanceNow()); }, 16);
+	return ej.setTimeout(function(){ cb(ej.performanceNow()); }, 8);
 };
 
 
@@ -115,7 +116,7 @@ window.WebSocket = Ejecta.WebSocket;
 
 
 // Set up a "fake" HTMLElement
-HTMLElement = function( tagName ){ 
+HTMLElement = function( tagName ){
 	this.tagName = tagName;
 	this.children = [];
 	this.style = {};
@@ -123,7 +124,7 @@ HTMLElement = function( tagName ){
 
 HTMLElement.prototype.appendChild = function( element ) {
 	this.children.push( element );
-	
+
 	// If the child is a script element, begin to load it
 	if( element.tagName == 'script' ) {
 		ej.setTimeout( function(){
@@ -135,22 +136,33 @@ HTMLElement.prototype.appendChild = function( element ) {
 	}
 };
 
+// Leave unimplemented methods, just to prevent some engine's crashing
+HTMLElement.prototype.insertBefore = function( newElement, existingElement ) {};
+HTMLElement.prototype.removeChild = function( node ) {};
+HTMLElement.prototype.getBoundingClientRect = function() {
+   return {top: 0, left: 0, width: window.innerWidth, height: window.innerHeight};
+}
+
 
 // The document object
 window.document = {
+  readystate: 'complete',
+
 	location: { href: 'index' },
 	visibilityState: 'visible',
-	
+
+  documentElement: {},
+
 	head: new HTMLElement( 'head' ),
 	body: new HTMLElement( 'body' ),
-	
+
 	events: {},
-	
+
 	createElement: function( name ) {
 		if( name === 'canvas' ) {
 			var canvas = new Ejecta.Canvas();
 			canvas.type = 'canvas';
-			return canvas;
+			return setUpCanvas(canvas);
 		}
 		else if( name == 'audio' ) {
 			return new Ejecta.Audio();
@@ -166,14 +178,14 @@ window.document = {
  		}
 		return new HTMLElement( name );
 	},
-	
+
 	getElementById: function( id ){
 		if( id === 'canvas' ) {
 			return window.canvas;
 		}
 		return null;
 	},
-	
+
 	getElementsByTagName: function( tagName ) {
 		if( tagName === 'head' ) {
 			return [document.head];
@@ -183,7 +195,7 @@ window.document = {
 		}
 		return [];
 	},
-	
+
 	addEventListener: function( type, callback, useCapture ){
 		if( type == 'DOMContentLoaded' ) {
 			ej.setTimeout( callback, 1 );
@@ -191,7 +203,7 @@ window.document = {
 		}
 		if( !this.events[type] ) {
 			this.events[type] = [];
-			
+
 			// call the event initializer, if this is the first time we
 			// bind to this event.
 			if( typeof(this._eventInitializers[type]) == 'function' ) {
@@ -200,38 +212,44 @@ window.document = {
 		}
 		this.events[type].push( callback );
 	},
-	
+
 	removeEventListener: function( type, callback ) {
 		var listeners = this.events[ type ];
 		if( !listeners ) { return; }
-		
+
 		for( var i = listeners.length; i--; ) {
 			if( listeners[i] === callback ) {
 				listeners.splice(i, 1);
 			}
 		}
 	},
-	
+
 	_eventInitializers: {},
 	dispatchEvent: function( event ) {
 		var listeners = this.events[ event.type ];
 		if( !listeners ) { return; }
-		
+
 		for( var i = 0; i < listeners.length; i++ ) {
 			listeners[i]( event );
 		}
 	}
 };
-window.canvas.addEventListener = window.addEventListener = function( type, callback ) { 
-	window.document.addEventListener(type,callback); 
-};
-window.canvas.removeEventListener = window.removeEventListener = function( type, callback ) { 
-	window.document.removeEventListener(type,callback); 
-};
+
+function setUpCanvas(canvas) {
+  canvas.addEventListener = window.addEventListener = function( type, callback ) {
+    window.document.addEventListener(type,callback);
+  };
+  canvas.removeEventListener = window.removeEventListener = function( type, callback ) {
+    window.document.removeEventListener(type,callback);
+  };
+  canvas.getBoundingClientRect = function() {
+    return {top: 0, left: 0, width: window.innerWidth, height: window.innerHeight};
+  }
+  return canvas;
+}
 
 var eventInit = document._eventInitializers;
-
-
+setUpCanvas(window.canvas);
 
 // Touch events
 
@@ -243,7 +261,7 @@ window.ontouchstart = window.ontouchend = window.ontouchmove = null;
 // touch class just call a simple callback.
 var touchInput = null;
 var touchEvent = {
-	type: 'touchstart', 
+	type: 'touchstart',
 	target: canvas,
 	touches: null,
 	targetTouches: null,
@@ -257,7 +275,7 @@ var dispatchTouchEvent = function( type, all, changed ) {
 	touchEvent.targetTouches = all;
 	touchEvent.changedTouches = changed;
 	touchEvent.type = type;
-	
+
 	document.dispatchEvent( touchEvent );
 };
 eventInit.touchstart = eventInit.touchend = eventInit.touchmove = function() {
@@ -275,7 +293,7 @@ eventInit.touchstart = eventInit.touchend = eventInit.touchmove = function() {
 
 var deviceMotion = null;
 var deviceMotionEvent = {
-	type: 'devicemotion', 
+	type: 'devicemotion',
 	target: canvas,
 	interval: 16,
 	acceleration: {x: 0, y: 0, z: 0},
@@ -286,7 +304,7 @@ var deviceMotionEvent = {
 };
 
 var deviceOrientationEvent = {
-	type: 'deviceorientation', 
+	type: 'deviceorientation',
 	target: canvas,
 	alpha: null,
 	beta: null,
@@ -298,16 +316,16 @@ var deviceOrientationEvent = {
 
 eventInit.deviceorientation = eventInit.devicemotion = function() {
 	if( deviceMotion ) { return; }
-	
+
 	deviceMotion = new Ejecta.DeviceMotion();
 	deviceMotionEvent.interval = deviceMotion.interval;
-	
+
 	// Callback for Devices that have a Gyro
 	deviceMotion.ondevicemotion = function( agx, agy, agz, ax, ay, az, rx, ry, rz, ox, oy, oz ) {
 		deviceMotionEvent.accelerationIncludingGravity.x = agx;
 		deviceMotionEvent.accelerationIncludingGravity.y = agy;
 		deviceMotionEvent.accelerationIncludingGravity.z = agz;
-	
+
 		deviceMotionEvent.acceleration.x = ax;
 		deviceMotionEvent.acceleration.y = ay;
 		deviceMotionEvent.acceleration.z = az;
@@ -325,16 +343,16 @@ eventInit.deviceorientation = eventInit.devicemotion = function() {
 
 		document.dispatchEvent( deviceOrientationEvent );
 	};
-	
+
 	// Callback for Devices that only have an accelerometer
 	deviceMotion.onacceleration = function( agx, agy, agz ) {
 		deviceMotionEvent.accelerationIncludingGravity.x = agx;
 		deviceMotionEvent.accelerationIncludingGravity.y = agy;
 		deviceMotionEvent.accelerationIncludingGravity.z = agz;
-	
+
 		deviceMotionEvent.acceleration = null;
 		deviceMotionEvent.rotationRate = null;
-	
+
 		document.dispatchEvent( deviceMotionEvent );
 	}
 };
@@ -368,14 +386,14 @@ var visibilityEvent = {
 
 eventInit.visibilitychange = eventInit.pagehide = eventInit.pageshow = eventInit.resize = function() {
 	if( windowEvents ) { return; }
-	
+
 	windowEvents = new Ejecta.WindowEvents();
-	
+
 	windowEvents.onpagehide = function() {
 		document.hidden = true;
 		document.visibilityState = 'hidden';
 		document.dispatchEvent( visibilityEvent );
-	
+
 		lifecycleEvent.type = 'pagehide';
 		document.dispatchEvent( lifecycleEvent );
 	};
@@ -383,7 +401,7 @@ eventInit.visibilitychange = eventInit.pagehide = eventInit.pageshow = eventInit
 		document.hidden = false;
 		document.visibilityState = 'visible';
 		document.dispatchEvent( visibilityEvent );
-	
+
 		lifecycleEvent.type = 'pageshow';
 		document.dispatchEvent( lifecycleEvent );
 	};
