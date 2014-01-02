@@ -135,9 +135,28 @@ HTMLElement.prototype.appendChild = function( element ) {
 	}
 };
 
+HTMLElement.prototype.insertBefore = function( newElement, existingElement ) {
+	// Just append; we don't care about order here
+	this.children.push( newElement );
+};
+
+HTMLElement.prototype.removeChild = function( node ) {
+	for( var i = this.children.length; i--; ) {
+		if( this.children[i] === node ) {
+			this.children.splice(i, 1);
+		}
+	}
+};
+
+HTMLElement.prototype.getBoundingClientRect = function() {
+	return {top: 0, left: 0, width: window.innerWidth, height: window.innerHeight};
+}
+
 
 // The document object
 window.document = {
+	readystate: 'complete',
+	documentElement: window,
 	location: { href: 'index' },
 	visibilityState: 'visible',
 	
@@ -227,6 +246,12 @@ window.canvas.addEventListener = window.addEventListener = function( type, callb
 };
 window.canvas.removeEventListener = window.removeEventListener = function( type, callback ) { 
 	window.document.removeEventListener(type,callback); 
+};
+window.canvas.getBoundingClientRect = function() {
+	return {
+		top: this.offsetTop, left: this.offsetLeft,
+		width: this.offsetWidth, height: this.offsetHeight
+	};
 };
 
 var eventInit = document._eventInitializers;
