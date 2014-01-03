@@ -182,7 +182,7 @@ window.document = {
 			return new window.Image();
 		}
 		else if (name === 'input' || name === 'textarea') {
-  			return new Ejecta.KeyInput();
+			return new Ejecta.KeyInput();
  		}
 		return new HTMLElement( name );
 	},
@@ -242,10 +242,11 @@ window.document = {
 		}
 	}
 };
-window.canvas.addEventListener = window.addEventListener = function( type, callback ) { 
+
+window.canvas.addEventListener = window.addEventListener = function( type, callback ) {
 	window.document.addEventListener(type,callback);
 };
-window.canvas.removeEventListener = window.removeEventListener = function( type, callback ) { 
+window.canvas.removeEventListener = window.removeEventListener = function( type, callback ) {
 	window.document.removeEventListener(type,callback);
 };
 window.canvas.getBoundingClientRect = function() {
@@ -362,7 +363,7 @@ eventInit.deviceorientation = eventInit.devicemotion = function() {
 		deviceMotionEvent.rotationRate = null;
 	
 		document.dispatchEvent( deviceMotionEvent );
-	}
+	};
 };
 
 
@@ -405,6 +406,7 @@ eventInit.visibilitychange = eventInit.pagehide = eventInit.pageshow = eventInit
 		lifecycleEvent.type = 'pagehide';
 		document.dispatchEvent( lifecycleEvent );
 	};
+	
 	windowEvents.onpageshow = function() {
 		document.hidden = false;
 		document.visibilityState = 'visible';
