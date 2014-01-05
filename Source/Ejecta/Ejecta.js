@@ -159,12 +159,10 @@ window.document = {
 	documentElement: window,
 	location: { href: 'index' },
 	visibilityState: 'visible',
+	hidden: false,
 	
 	head: new HTMLElement( 'head' ),
 	body: new HTMLElement( 'body' ),
-
-	hidden: false,
-	visibilityState: 'visible',
 	
 	events: {},
 	
