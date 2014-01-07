@@ -327,10 +327,8 @@ EJ_BIND_FUNCTION(createImageData, ctx, argc, argv) {
 }
 
 EJ_BIND_FUNCTION(putImageData, ctx, argc, argv) {
-	if( argc < 3 ) { return NULL; }
-	
-	EJBindingImageData *jsImageData = (EJBindingImageData *)JSObjectGetPrivate((JSObjectRef)argv[0]);
 	EJ_UNPACK_ARGV_OFFSET(1, float dx, float dy);
+	EJBindingImageData *jsImageData = (EJBindingImageData *)JSObjectGetPrivate((JSObjectRef)argv[0]);
 	
 	scriptView.currentRenderingContext = renderingContext;
 	[renderingContext putImageData:jsImageData.imageData dx:dx dy:dy];
@@ -359,10 +357,8 @@ EJ_BIND_FUNCTION(createImageDataHD, ctx, argc, argv) {
 }
 
 EJ_BIND_FUNCTION(putImageDataHD, ctx, argc, argv) {
-	if( argc < 3 ) { return NULL; }
-	
-	EJBindingImageData *jsImageData = (EJBindingImageData *)JSObjectGetPrivate((JSObjectRef)argv[0]);
 	EJ_UNPACK_ARGV_OFFSET(1, float dx, float dy);
+	EJBindingImageData *jsImageData = (EJBindingImageData *)JSObjectGetPrivate((JSObjectRef)argv[0]);
 	
 	scriptView.currentRenderingContext = renderingContext;
 	[renderingContext putImageDataHD:jsImageData.imageData dx:dx dy:dy];
@@ -491,10 +487,8 @@ EJ_BIND_FUNCTION( measureText, ctx, argc, argv ) {
 }
 
 EJ_BIND_FUNCTION( fillText, ctx, argc, argv ) {
-	if( argc < 3 ) { return NULL; }
-	
-	NSString *string = JSValueToNSString(ctx, argv[0]);
 	EJ_UNPACK_ARGV_OFFSET(1, float x, float y);
+	NSString *string = JSValueToNSString(ctx, argv[0]);
 	
 	scriptView.currentRenderingContext = renderingContext;
 	[renderingContext fillText:string x:x y:y];
@@ -502,10 +496,8 @@ EJ_BIND_FUNCTION( fillText, ctx, argc, argv ) {
 }
 
 EJ_BIND_FUNCTION( strokeText, ctx, argc, argv ) {
-	if( argc < 3 ) { return NULL; }
-	
-	NSString *string = JSValueToNSString(ctx, argv[0]);
 	EJ_UNPACK_ARGV_OFFSET(1, float x, float y);
+	NSString *string = JSValueToNSString(ctx, argv[0]);
 	
 	scriptView.currentRenderingContext = renderingContext;
 	[renderingContext strokeText:string x:x y:y];
