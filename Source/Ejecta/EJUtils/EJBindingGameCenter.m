@@ -122,6 +122,54 @@ EJ_BIND_FUNCTION( reportScore, ctx, argc, argv ) {
 	return NULL;
 }
 
+// args: category , [rangeStart,rangeEnd], callback
+EJ_BIND_FUNCTION( retrieveScores, ctx, argc, argv ) {
+
+    GKLeaderboard *leaderboardRequest = [[GKLeaderboard alloc] init];
+    if (leaderboardRequest != nil)
+    {
+        NSString *category = JSValueToNSString(ctx, argv[0]);
+        JSObjectRef range = JSValueToObject(ctx, argv[1], NULL);
+        JSObjectRef callback = JSValueToObject(ctx, argv[2], NULL);
+        
+       	if( callback ) {
+            JSValueProtect(ctx, callback);
+        }
+        int start=JSValueToNumberFast(ctx, JSObjectGetPropertyAtIndex(ctx, range, 0, NULL));
+        int end=JSValueToNumberFast(ctx, JSObjectGetPropertyAtIndex(ctx, range, 1, NULL));
+        
+        leaderboardRequest.playerScope = GKLeaderboardPlayerScopeGlobal;
+        leaderboardRequest.timeScope = GKLeaderboardTimeScopeAllTime;
+        leaderboardRequest.category = category;
+        leaderboardRequest.range = NSMakeRange(start,end);
+        [leaderboardRequest loadScoresWithCompletionHandler: ^(NSArray *scores, NSError *error) {
+            JSContextRef gctx = scriptView.jsGlobalContext;
+            JSObjectRef jsScores = JSObjectMakeArray(gctx, 0, NULL, NULL);
+            if (scores!=NULL){
+                int scoreIndex=0;
+                NSArray *tempScore = [NSArray arrayWithArray:leaderboardRequest.scores];
+                for (GKScore *obj in tempScore) {
+                    JSValueRef jsScore = NSObjectToJSValue(gctx,
+                        @{
+                            @"playerID": obj.playerID,
+                            @"category": obj.category,
+                            @"formattedValue": obj.formattedValue,
+                            @"rank": @(obj.rank)
+                        });
+                    
+                    JSObjectSetPropertyAtIndex(gctx, jsScores, scoreIndex++, jsScore, NULL);
+                }
+            }
+
+            JSValueRef params[] = { jsScores, JSValueMakeBoolean(gctx, error) };
+            [scriptView invokeCallback:callback thisObject:NULL argc:2 argv:params];
+            JSValueUnprotectSafe(gctx, callback);
+        }];
+    }
+    return NULL;
+}
+
+
 EJ_BIND_FUNCTION( showLeaderboard, ctx, argc, argv ) {
 	if( argc < 1 || viewIsActive ) { return NULL; }
 	if( !authed ) { NSLog(@"GameKit Error: Not authed. Can't show leaderboard."); return NULL; }

@@ -18,6 +18,7 @@
 		399DDEA717CA8C4000267FFE /* EJBindingNotificationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 399DDE9F17CA8C4000267FFE /* EJBindingNotificationManager.m */; };
 		399DDEA817CA8C4000267FFE /* EJBindingWebView.m in Sources */ = {isa = PBXBuildFile; fileRef = 399DDEA117CA8C4000267FFE /* EJBindingWebView.m */; };
 		399DDEA917CA8C4000267FFE /* OpenUDID.m in Sources */ = {isa = PBXBuildFile; fileRef = 399DDEA417CA8C4000267FFE /* OpenUDID.m */; };
+		39DDCD12187B1A6600D56B15 /* Dominican.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 39DDCD11187B1A6600D56B15 /* Dominican.ttf */; };
 		3EBC19BE16CECE190036F9F3 /* EJBindingKeyInput.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EBC19BD16CECE190036F9F3 /* EJBindingKeyInput.m */; };
 		3EF00C5916C29360004599A4 /* EJJavaScriptView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EF00C5816C29360004599A4 /* EJJavaScriptView.m */; };
 		5B7B76761619DB9700691910 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B7B76751619DB9700691910 /* CoreText.framework */; };
@@ -124,7 +125,7 @@
 
 /* Begin PBXFileReference section */
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		1D6058910D05DD3D006BFB54 /* finscn.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = finscn.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1D6058910D05DD3D006BFB54 /* MeetYou.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MeetYou.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		288765FC0DF74451002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		39888FED1868A4490016C071 /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
@@ -140,6 +141,7 @@
 		399DDEA117CA8C4000267FFE /* EJBindingWebView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingWebView.m; sourceTree = "<group>"; };
 		399DDEA317CA8C4000267FFE /* OpenUDID.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenUDID.h; sourceTree = "<group>"; };
 		399DDEA417CA8C4000267FFE /* OpenUDID.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OpenUDID.m; sourceTree = "<group>"; };
+		39DDCD11187B1A6600D56B15 /* Dominican.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Dominican.ttf; path = App/game/res/Dominican.ttf; sourceTree = SOURCE_ROOT; };
 		3EBC19BC16CECE190036F9F3 /* EJBindingKeyInput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingKeyInput.h; sourceTree = "<group>"; };
 		3EBC19BD16CECE190036F9F3 /* EJBindingKeyInput.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingKeyInput.m; sourceTree = "<group>"; };
 		3EF00C5716C29360004599A4 /* EJJavaScriptView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJJavaScriptView.h; sourceTree = "<group>"; };
@@ -363,7 +365,7 @@
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				1D6058910D05DD3D006BFB54 /* finscn.app */,
+				1D6058910D05DD3D006BFB54 /* MeetYou.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -612,6 +614,7 @@
 		B64CE683166682B10087CF94 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				39DDCD11187B1A6600D56B15 /* Dominican.ttf */,
 				399DDE9317CA8C2000267FFE /* Default-Landscape@2x.png */,
 				399DDE9417CA8C2000267FFE /* Default-Portrait@2x.png */,
 				B64CE684166682B10087CF94 /* Default-568h@2x.png */,
@@ -709,9 +712,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		1D6058900D05DD3D006BFB54 /* finscn */ = {
+		1D6058900D05DD3D006BFB54 /* MeetYou */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "finscn" */;
+			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "MeetYou" */;
 			buildPhases = (
 				1D60588D0D05DD3D006BFB54 /* Resources */,
 				1D60588E0D05DD3D006BFB54 /* Sources */,
@@ -721,9 +724,9 @@
 			);
 			dependencies = (
 			);
-			name = finscn;
+			name = MeetYou;
 			productName = iOSImpact;
-			productReference = 1D6058910D05DD3D006BFB54 /* finscn.app */;
+			productReference = 1D6058910D05DD3D006BFB54 /* MeetYou.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -739,7 +742,7 @@
 					};
 				};
 			};
-			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "finscn" */;
+			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "MeetYou" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 1;
@@ -753,7 +756,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				1D6058900D05DD3D006BFB54 /* finscn */,
+				1D6058900D05DD3D006BFB54 /* MeetYou */,
 			);
 		};
 /* End PBXProject section */
@@ -783,6 +786,7 @@
 				B62436681666851E0046B8C7 /* Ejecta.js in Resources */,
 				399DDE9517CA8C2000267FFE /* Default-Landscape@2x.png in Resources */,
 				399DDE9617CA8C2000267FFE /* Default-Portrait@2x.png in Resources */,
+				39DDCD12187B1A6600D56B15 /* Dominican.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -891,7 +895,7 @@
 				);
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = "-DDEBUG";
-				PRODUCT_NAME = finscn;
+				PRODUCT_NAME = MeetYou;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -914,7 +918,7 @@
 					"\"$(SRCROOT)/Source/lib\"",
 				);
 				ONLY_ACTIVE_ARCH = NO;
-				PRODUCT_NAME = finscn;
+				PRODUCT_NAME = MeetYou;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -973,7 +977,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "finscn" */ = {
+		1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "MeetYou" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1D6058940D05DD3E006BFB54 /* Debug */,
@@ -982,7 +986,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C01FCF4E08A954540054247B /* Build configuration list for PBXProject "finscn" */ = {
+		C01FCF4E08A954540054247B /* Build configuration list for PBXProject "MeetYou" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C01FCF4F08A954540054247B /* Debug */,
