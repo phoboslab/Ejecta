@@ -7,6 +7,7 @@ EJ_BIND_FUNCTION(getItem, ctx, argc, argv ) {
 	if( argc < 1 ) return NULL;
 	
 	NSString *key = JSValueToNSString( ctx, argv[0] );
+    NSLog(@"getItem %@",key);
 	NSString *value = [[NSUserDefaults standardUserDefaults] objectForKey:key];
 	return value ? NSStringToJSValue( ctx, value ) : JSValueMakeNull(ctx);
 }
@@ -28,6 +29,7 @@ EJ_BIND_FUNCTION(removeItem, ctx, argc, argv ) {
 	if( argc < 1 ) return NULL;
 	
 	NSString *key = JSValueToNSString( ctx, argv[0] );
+    NSLog(@"removeItem %@",key);
 	[[NSUserDefaults standardUserDefaults] removeObjectForKey:key];
 	
 	return NULL;

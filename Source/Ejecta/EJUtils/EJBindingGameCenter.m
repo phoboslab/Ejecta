@@ -170,6 +170,22 @@ EJ_BIND_FUNCTION( retrieveScores, ctx, argc, argv ) {
 }
 
 
+EJ_BIND_FUNCTION( getLocalPlayerInfo, ctx, argc, argv ) {
+    if (!authed){
+        return NULL;
+    }
+    GKLocalPlayer * player=[GKLocalPlayer localPlayer];
+    JSValueRef jsPlayer = NSObjectToJSValue(ctx,
+       @{
+       @"playerID": player.playerID,
+       @"displayName": player.displayName,
+       @"alias": player.alias,
+       @"isFriend": @(player.isFriend)
+       });
+    return jsPlayer;
+}
+
+
 EJ_BIND_FUNCTION( showLeaderboard, ctx, argc, argv ) {
 	if( argc < 1 || viewIsActive ) { return NULL; }
 	if( !authed ) { NSLog(@"GameKit Error: Not authed. Can't show leaderboard."); return NULL; }
@@ -179,7 +195,7 @@ EJ_BIND_FUNCTION( showLeaderboard, ctx, argc, argv ) {
 		viewIsActive = true;
 		leaderboard.leaderboardDelegate = self;
 		leaderboard.category = JSValueToNSString(ctx, argv[0]);
-		
+        leaderboard.timeScope=GKLeaderboardTimeScopeAllTime;
 		[scriptView.window.rootViewController presentModalViewController:leaderboard animated:YES];
 	}
 	
