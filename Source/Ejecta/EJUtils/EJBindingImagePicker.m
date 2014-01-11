@@ -90,6 +90,10 @@ EJ_BIND_FUNCTION(getPicture, ctx, argc, argv) {
 	[imgFormat retain];
 	JSValueProtect(ctx, callback);
 	
+	// Protect this picker object from garbage collection, as the callback function
+	// may be the only thing holding on to it
+	JSValueProtect(scriptView.jsGlobalContext, jsObject);
+	
 	// open it
 	if ( pickerType == PICKER_TYPE_POPUP ) {
 		[popover
@@ -200,6 +204,7 @@ EJ_BIND_FUNCTION(isSourceTypeAvailable, ctx, argc, argv) {
 		[popover release];
 		NSLog(@"popup released");
 	}
+	JSValueUnprotect(scriptView.jsGlobalContext, jsObject);
 }
 
 
@@ -223,10 +228,10 @@ EJ_BIND_FUNCTION(isSourceTypeAvailable, ctx, argc, argv) {
 
 // to check if a source type is available at the moment on the current device
 + (BOOL)isSourceTypeAvailable:(NSString *) sourceType {
-	UIImagePickerControllerSourceType sourceTypeClass = [self getSourceTypeClass:sourceType];
 	if( ![sourceType isEqualToString:@"PhotoLibrary"] && ![sourceType isEqualToString:@"SavedPhotosAlbum"] && ![sourceType isEqualToString:@"Camera"] ) {
 		return NO;
 	}
+	UIImagePickerControllerSourceType sourceTypeClass = [self getSourceTypeClass:sourceType];
 	if( ![UIImagePickerController isSourceTypeAvailable:sourceTypeClass] ) {
 		return NO;
 	}
