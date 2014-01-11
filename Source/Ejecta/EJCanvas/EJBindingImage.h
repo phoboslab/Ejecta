@@ -11,6 +11,6 @@
 
 @property (readonly, nonatomic) EJTexture *texture;
 
-- (void)setTexture:(EJTexture *)texture path:(NSString *)p;
+- (void)setTexture:(EJTexture *)texturep path:(NSString *)pathp;
 
 @end

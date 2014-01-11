@@ -61,9 +61,9 @@
 	JSValueUnprotect(scriptView.jsGlobalContext, jsObject);
 }
 
-- (void)setTexture:(EJTexture *)t path:(NSString *)p {
-	texture = t;
-	path = p;
+- (void)setTexture:(EJTexture *)texturep path:(NSString *)pathp {
+	texture = texturep;
+	path = pathp;
 	[texture retain];
 	[path retain];
 }
