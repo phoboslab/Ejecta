@@ -243,6 +243,14 @@ EJ_BIND_GET(onLine, ctx) {
 	return JSValueMakeBoolean(ctx, false);
 }
 
+EJ_BIND_GET(allowSleepMode, ctx) {
+	return JSValueMakeBoolean(ctx, ![UIApplication sharedApplication].idleTimerDisabled);
+}
+
+EJ_BIND_SET(allowSleepMode, ctx, value) {
+	[UIApplication sharedApplication].idleTimerDisabled = !JSValueToBoolean(ctx, value);
+}
+
 EJ_BIND_GET(otherAudioPlaying, ctx) {
 	// Make sure we have an AudioSession instance
 	[AVAudioSession sharedInstance];

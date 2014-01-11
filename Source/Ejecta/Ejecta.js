@@ -115,7 +115,7 @@ window.WebSocket = Ejecta.WebSocket;
 
 
 // Set up a "fake" HTMLElement
-HTMLElement = function( tagName ){ 
+HTMLElement = function( tagName ){
 	this.tagName = tagName;
 	this.children = [];
 	this.style = {};
@@ -135,11 +135,31 @@ HTMLElement.prototype.appendChild = function( element ) {
 	}
 };
 
+HTMLElement.prototype.insertBefore = function( newElement, existingElement ) {
+	// Just append; we don't care about order here
+	this.children.push( newElement );
+};
+
+HTMLElement.prototype.removeChild = function( node ) {
+	for( var i = this.children.length; i--; ) {
+		if( this.children[i] === node ) {
+			this.children.splice(i, 1);
+		}
+	}
+};
+
+HTMLElement.prototype.getBoundingClientRect = function() {
+	return {top: 0, left: 0, width: window.innerWidth, height: window.innerHeight};
+};
+
 
 // The document object
 window.document = {
+	readystate: 'complete',
+	documentElement: window,
 	location: { href: 'index' },
 	visibilityState: 'visible',
+	hidden: false,
 	
 	head: new HTMLElement( 'head' ),
 	body: new HTMLElement( 'body' ),
@@ -162,7 +182,7 @@ window.document = {
 			return new window.Image();
 		}
 		else if (name === 'input' || name === 'textarea') {
-  			return new Ejecta.KeyInput();
+			return new Ejecta.KeyInput();
  		}
 		return new HTMLElement( name );
 	},
@@ -222,11 +242,18 @@ window.document = {
 		}
 	}
 };
-window.canvas.addEventListener = window.addEventListener = function( type, callback ) { 
-	window.document.addEventListener(type,callback); 
+
+window.canvas.addEventListener = window.addEventListener = function( type, callback ) {
+	window.document.addEventListener(type,callback);
 };
-window.canvas.removeEventListener = window.removeEventListener = function( type, callback ) { 
-	window.document.removeEventListener(type,callback); 
+window.canvas.removeEventListener = window.removeEventListener = function( type, callback ) {
+	window.document.removeEventListener(type,callback);
+};
+window.canvas.getBoundingClientRect = function() {
+	return {
+		top: this.offsetTop, left: this.offsetLeft,
+		width: this.offsetWidth, height: this.offsetHeight
+	};
 };
 
 var eventInit = document._eventInitializers;
@@ -243,7 +270,7 @@ window.ontouchstart = window.ontouchend = window.ontouchmove = null;
 // touch class just call a simple callback.
 var touchInput = null;
 var touchEvent = {
-	type: 'touchstart', 
+	type: 'touchstart',
 	target: canvas,
 	touches: null,
 	targetTouches: null,
@@ -275,7 +302,7 @@ eventInit.touchstart = eventInit.touchend = eventInit.touchmove = function() {
 
 var deviceMotion = null;
 var deviceMotionEvent = {
-	type: 'devicemotion', 
+	type: 'devicemotion',
 	target: canvas,
 	interval: 16,
 	acceleration: {x: 0, y: 0, z: 0},
@@ -286,7 +313,7 @@ var deviceMotionEvent = {
 };
 
 var deviceOrientationEvent = {
-	type: 'deviceorientation', 
+	type: 'deviceorientation',
 	target: canvas,
 	alpha: null,
 	beta: null,
@@ -336,7 +363,7 @@ eventInit.deviceorientation = eventInit.devicemotion = function() {
 		deviceMotionEvent.rotationRate = null;
 	
 		document.dispatchEvent( deviceMotionEvent );
-	}
+	};
 };
 
 
@@ -379,6 +406,7 @@ eventInit.visibilitychange = eventInit.pagehide = eventInit.pageshow = eventInit
 		lifecycleEvent.type = 'pagehide';
 		document.dispatchEvent( lifecycleEvent );
 	};
+	
 	windowEvents.onpageshow = function() {
 		document.hidden = false;
 		document.visibilityState = 'visible';

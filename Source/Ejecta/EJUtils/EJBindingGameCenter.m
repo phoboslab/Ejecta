@@ -37,7 +37,7 @@
 
 
 EJ_BIND_FUNCTION( authenticate, ctx, argc, argv ) {
-	JSObjectRef callback = NULL;
+	__block JSObjectRef callback = NULL;
 	if( argc > 0 && JSValueIsObject(ctx, argv[0]) ) {
 		callback = JSValueToObject(ctx, argv[0], NULL);
 		JSValueProtect(ctx, callback);
@@ -65,6 +65,9 @@ EJ_BIND_FUNCTION( authenticate, ctx, argc, argv ) {
 			JSValueRef params[] = { JSValueMakeBoolean(gctx, error) };
 			[scriptView invokeCallback:callback thisObject:NULL argc:1 argv:params];
 			JSValueUnprotectSafe(gctx, callback);
+			
+			// Make sure this callback is only called once
+			callback = NULL;
 		}
 	}];
 	return NULL;
