@@ -39,8 +39,6 @@ EJ_BIND_FUNCTION(getPicture, ctx, argc, argv) {
 	
 	// set current options
 	NSString *sourceType = options[@"sourceType"]     ? options[@"sourceType"]                  : @"PhotoLibrary";
-	imgFormat            = options[@"imgFormat"]      ? options[@"imgFormat"]                   : @"png";
-	jpgCompression       = options[@"jpgCompression"] ? [options[@"jpgCompression"] floatValue] : 0.9f;
 	maxWidth             = options[@"maxWidth"]       ? [options[@"maxWidth"] floatValue]       : (float)maxTextureSize;
 	maxHeight            = options[@"maxHeight"]      ? [options[@"maxHeight"] floatValue]      : (float)maxTextureSize;
 	float popupX         = options[@"popupX"]         ? [options[@"popupX"] floatValue]         : 0.0f;
@@ -53,15 +51,6 @@ EJ_BIND_FUNCTION(getPicture, ctx, argc, argv) {
 		[self errorCallback:[NSString stringWithFormat:@"sourceType `%@` is not available on this device or the source collection is empty.", sourceType]];
 		return NULL;
 	}
-	
-	// Image format validation
-	if( ![imgFormat isEqualToString:@"png"] && ![imgFormat isEqualToString:@"jpg"] && ![imgFormat isEqualToString:@"jpeg"] ) {
-		[self errorCallback:[NSString stringWithFormat:@"imgFormat `%@` unknown. Valid values are: `png`, `jpg`, `jpeg`.", imgFormat]];
-		return NULL;
-	}
-	
-	// Jpeg compression validation
-	jpgCompression = MAX(0.1f, MIN(1.0f, jpgCompression));
 	
 	// picture maximum width and height validation
 	maxWidth = MIN(maxWidth, maxTextureSize);
@@ -89,7 +78,6 @@ EJ_BIND_FUNCTION(getPicture, ctx, argc, argv) {
 	picker.sourceType = [EJBindingImagePicker getSourceTypeClass:sourceType];
 	
 	// we are ready to open the picker, let's retain the variables we need for the callback
-	[imgFormat retain];
 	JSValueProtect(ctx, callback);
 	
 	// Protect this picker object from garbage collection, as the callback function
@@ -204,7 +192,6 @@ EJ_BIND_FUNCTION(isSourceTypeAvailable, ctx, argc, argv) {
 	
 	// release all the retained stuff
 	JSValueUnprotectSafe(ctx, callback);
-	[imgFormat release];
 	[picker release];
 	NSLog(@"picker released");
 	if ( pickerType == PICKER_TYPE_POPUP ) {
