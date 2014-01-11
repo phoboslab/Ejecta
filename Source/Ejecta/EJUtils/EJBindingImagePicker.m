@@ -1,6 +1,8 @@
 #import <MobileCoreServices/UTCoreTypes.h> // for media filtering
 #import "EJBindingImagePicker.h"
 #import "EJJavaScriptView.h"
+#import "EJTexture.h"
+#import "EJBindingImage.h"
 
 @implementation EJBindingImagePicker
 
@@ -61,7 +63,7 @@ EJ_BIND_FUNCTION(getPicture, ctx, argc, argv) {
 	// Jpeg compression validation
 	jpgCompression = MAX(0.1f, MIN(1.0f, jpgCompression));
 	
-	// Picture maximum width and height validation
+	// picture maximum width and height validation
 	maxWidth = MIN(maxWidth, maxTextureSize);
 	maxHeight = MIN(maxHeight, maxTextureSize);
 
@@ -131,21 +133,26 @@ EJ_BIND_FUNCTION(isSourceTypeAvailable, ctx, argc, argv) {
 		chosenImage = rawImage;
 	}
 	
-	// here the UIImage chosenImage should be transformed into a javascript image object
-	// for the time being, it's going to return a Data URI representation instead
-	
-	NSData *dataForFile;
-	if( [imgFormat isEqualToString:@"jpg"] || [imgFormat isEqualToString:@"jpeg"] ) {
-		dataForFile = UIImageJPEGRepresentation(chosenImage, jpgCompression);
-	} else {
-		dataForFile = UIImagePNGRepresentation(chosenImage);
-	}
-	NSString *encodedString = [dataForFile base64Encoding];
-	
-	// call the callback passing the base64 string representation of the image
+	// retrieve the context
 	JSContextRef ctx = scriptView.jsGlobalContext;
-	JSValueRef params[] = { NULL, NSStringToJSValue(ctx, encodedString) };
+	
+	// create a texture with the UIImage instance
+	EJTexture *texture = [[EJTexture alloc] initWithUIImage:chosenImage];
+	
+	// create the EJBindingImage instance, attach the texture
+	EJBindingImage *image = [[EJBindingImage alloc] initWithContext:ctx argc:0 argv:NULL];
+	[image setTexture:texture path:[info[UIImagePickerControllerReferenceURL] absoluteString]];
+	
+	// create the javascript image object
+	JSObjectRef jsImage = [EJBindingImage createJSObjectWithContext:ctx scriptView:scriptView instance:image];
+	
+	// call the callback
+	JSValueRef params[] = { NULL, jsImage };
 	[self successCallback:params];
+
+	// cleaning
+	[image release];
+	[texture release];
 	
 	// close and release
 	[self closePicker:ctx];
@@ -237,6 +244,7 @@ EJ_BIND_FUNCTION(isSourceTypeAvailable, ctx, argc, argv) {
 	}
 	return YES;
 }
+
 
 // to retrieve the source type enum number from string source type
 + (UIImagePickerControllerSourceType)getSourceTypeClass:(NSString *) sourceType {

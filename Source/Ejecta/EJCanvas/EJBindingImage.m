@@ -61,6 +61,13 @@
 	JSValueUnprotect(scriptView.jsGlobalContext, jsObject);
 }
 
+- (void)setTexture:(EJTexture *)t path:(NSString *)p {
+	texture = t;
+	path = p;
+	[texture retain];
+	[path retain];
+}
+
 EJ_BIND_GET(src, ctx ) { 
 	JSStringRef src = JSStringCreateWithUTF8CString( path.UTF8String );
 	JSValueRef ret = JSValueMakeString(ctx, src);
