@@ -24,8 +24,6 @@ enum {
 + (void)linkProgram:(GLuint)program;
 
 @property (nonatomic, readonly) GLuint program;
-
 @property (nonatomic, readonly) GLuint screen;
-@property (nonatomic, readonly) GLuint translate;
 
 @end
