@@ -13,7 +13,8 @@
 	NSString * imgFormat;
 	float jpgCompression;
 	short pickerType;
-	float maxWidth, maxHeight;
+	float maxJsWidth, maxJsHeight;
+	float maxTexWidth, maxTexHeight;
 }
 
 - (void)dealloc;

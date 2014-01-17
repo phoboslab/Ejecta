@@ -26,7 +26,7 @@ EJ_BIND_FUNCTION(getPicture, ctx, argc, argv) {
 	// retrieve the callback
 	JSValueUnprotectSafe(ctx, callback);
 	callback = JSValueToObject(ctx, argv[0], NULL);
-
+	
 	// retrieve the options if any
 	NSDictionary *options = nil;
 	if( argc > 1 && JSValueIsObject(ctx, argv[1]) ) {
@@ -36,11 +36,12 @@ EJ_BIND_FUNCTION(getPicture, ctx, argc, argv) {
 	// retrieve maximum Open GL ES texture size
 	GLint maxTextureSize;
 	glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
+	float maxTexSize = (float)maxTextureSize;
 	
 	// set current options
 	NSString *sourceType = options[@"sourceType"]     ? options[@"sourceType"]                  : @"PhotoLibrary";
-	maxWidth             = options[@"maxWidth"]       ? [options[@"maxWidth"] floatValue]       : (float)maxTextureSize;
-	maxHeight            = options[@"maxHeight"]      ? [options[@"maxHeight"] floatValue]      : (float)maxTextureSize;
+	maxJsWidth           = options[@"maxWidth"]       ? [options[@"maxWidth"] floatValue]       : maxTexSize / [UIScreen mainScreen].scale;
+	maxJsHeight          = options[@"maxHeight"]      ? [options[@"maxHeight"] floatValue]      : maxTexSize / [UIScreen mainScreen].scale;
 	float popupX         = options[@"popupX"]         ? [options[@"popupX"] floatValue]         : 0.0f;
 	float popupY         = options[@"popupY"]         ? [options[@"popupY"] floatValue]         : 0.0f;
 	float popupWidth     = options[@"popupWidth"]     ? [options[@"popupWidth"] floatValue]     : 1.0f;
@@ -52,10 +53,14 @@ EJ_BIND_FUNCTION(getPicture, ctx, argc, argv) {
 		return NULL;
 	}
 	
-	// picture maximum width and height validation
-	maxWidth = MIN(maxWidth, maxTextureSize);
-	maxHeight = MIN(maxHeight, maxTextureSize);
-
+	// js picture maximum width and height validation
+	maxJsWidth = MIN(maxJsWidth, maxTexSize / [UIScreen mainScreen].scale);
+	maxJsHeight = MIN(maxJsHeight, maxTexSize / [UIScreen mainScreen].scale);
+	
+	// gl texture maximum width and height
+	maxTexWidth = maxJsWidth * [UIScreen mainScreen].scale;
+	maxTexHeight = maxJsHeight * [UIScreen mainScreen].scale;
+	
 	// identify the type of picker we need: full screen or popup
 	if( IDIOM == IPAD && ![sourceType isEqualToString:@"Camera"] ) {
 		pickerType = PICKER_TYPE_POPUP;
@@ -70,7 +75,7 @@ EJ_BIND_FUNCTION(getPicture, ctx, argc, argv) {
 		popover = [[UIPopoverController alloc] initWithContentViewController:picker];
 		popover.delegate = self;
 	}
-
+	
 	// limit to pictures only
 	[picker setMediaTypes: [NSArray arrayWithObject:(NSString *)kUTTypeImage]];
 	
@@ -115,7 +120,7 @@ EJ_BIND_FUNCTION(isSourceTypeAvailable, ctx, argc, argv) {
 	UIImage *chosenImage;
 	
 	// resize it if required
-	if( rawImage.size.width > maxWidth || rawImage.size.height > maxHeight ) {
+	if( (rawImage.size.width * rawImage.scale) > maxTexWidth || (rawImage.size.height * rawImage.scale) > maxTexHeight ) {
 		chosenImage = [self reduceImageSize:rawImage];
 	} else {
 		chosenImage = rawImage;
@@ -137,7 +142,7 @@ EJ_BIND_FUNCTION(isSourceTypeAvailable, ctx, argc, argv) {
 	// call the callback
 	JSValueRef params[] = { NULL, jsImage };
 	[self successCallback:params];
-
+	
 	// cleaning
 	[image release];
 	[texture release];
@@ -206,16 +211,16 @@ EJ_BIND_FUNCTION(isSourceTypeAvailable, ctx, argc, argv) {
 - (UIImage *)reduceImageSize:(UIImage *)image {
 	float originalWidth = image.size.width;
 	float originalHeight = image.size.height;
-	float ratio = MIN(maxWidth / originalWidth, maxHeight / originalHeight);
+	float ratio = MIN(maxTexWidth / originalWidth, maxTexHeight / originalHeight);
 	float targetWidth = lroundf(originalWidth * ratio);
 	float targetHeight = lroundf(originalHeight * ratio);
 	
 	CGSize newSize = CGSizeMake(targetWidth, targetHeight);
-	UIGraphicsBeginImageContextWithOptions(newSize, NO, 0.0);
+	UIGraphicsBeginImageContextWithOptions(newSize, NO, 1.0);
 	[image drawInRect:CGRectMake(0, 0, targetWidth, targetHeight)];
 	UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
 	UIGraphicsEndImageContext();
-
+	
 	return newImage;
 }
 
