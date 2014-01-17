@@ -108,6 +108,7 @@
 		}
 	}
 	[callbacks removeObjectsForKeys:toRemove];
+	[toRemove release];
 	
 	
 	// Stop updating if we don't have any callbacks left
