@@ -35,7 +35,7 @@
 	}
 	[decodedData setLength:decodeLen];
 	
-	script = [[NSString alloc] initWithData:decodedData encoding:NSUTF8StringEncoding];
+	script = [[[NSString alloc] initWithData:decodedData encoding:NSUTF8StringEncoding] autorelease];
     //	NSLog(@"Decoded : %@",script);
 	
 	return script;
