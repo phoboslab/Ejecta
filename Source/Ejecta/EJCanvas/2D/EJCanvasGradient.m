@@ -45,7 +45,7 @@
 		.a = color.rgba.a
 	}};
 	
-	EJCanvasGradientColorStop stop = { .pos = pos, .color = premultiplied, .order = colorStops.count };
+	EJCanvasGradientColorStop stop = { .pos = pos, .color = premultiplied, .order = (unsigned int)colorStops.count };
 	[colorStops addObject:[NSValue value:&stop withObjCType:@encode(EJCanvasGradientColorStop)]];
 	
 	// Release current texture; it's invalid now

@@ -19,13 +19,13 @@
 
 #include <sys/types.h>
 
-extern int
+extern size_t
 b64_ntop(u_char const *src,
          size_t srclength,
          char *target,
          size_t targsize);
 
-extern int
+extern size_t
 b64_pton(char const *src,
          u_char *target, 
          size_t targsize);

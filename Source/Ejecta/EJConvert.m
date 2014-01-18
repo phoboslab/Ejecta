@@ -18,21 +18,54 @@ JSValueRef NSStringToJSValue( JSContextRef ctx, NSString *string ) {
 	return ret;
 }
 
-double JSValueToNumberFast( JSContextRef ctx, JSValueRef v ) {
-	// This struct represents the memory layout of a C++ JSValue instance
-	// See JSC/runtime/JSValue.h for an explanation of the tagging
-	struct {
-		unsigned char cppClassData[4];
+
+// JSValueToNumberFast blindly assumes that the given JSValueRef is a
+// a number. Everything else will be silently converted to 0.
+// This functions comes in a 64bit and 32bit flavor, since the NaN-Boxing
+// in JSC works a bit differently on each platforms. For an explanation
+// of the taggging refer to JSC/runtime/JSCJSValue.h
+
+#if __LP64__ // arm64 version
+	double JSValueToNumberFast(JSContextRef ctx, JSValueRef v) {
 		union {
+			int64_t asInt64;
 			double asDouble;
 			struct { int32_t asInt; int32_t tag; } asBits;
-		} payload;
-	} *decoded = (void *)v;
-	
-	return decoded->payload.asBits.tag < 0xfffffff9
-		? decoded->payload.asDouble
-		: decoded->payload.asBits.asInt;
-}
+		} taggedValue = { .asInt64 = (int64_t)v };
+		
+		#define DoubleEncodeOffset 0x1000000000000ll
+		#define TagTypeNumber 0xffff0000
+		#define ValueTrue 0x7
+		
+		if( (taggedValue.asBits.tag & TagTypeNumber) == TagTypeNumber ) {
+			return taggedValue.asBits.asInt;
+		}
+		else if( taggedValue.asBits.tag & TagTypeNumber ) {
+			taggedValue.asInt64 -= DoubleEncodeOffset;
+			return taggedValue.asDouble;
+		}
+		else if( taggedValue.asBits.asInt == ValueTrue ) {
+			return 1.0;
+		}
+		else {
+			return 0; // false, undefined, null, object
+		}
+	}
+#else // armv7 version
+	double JSValueToNumberFast( JSContextRef ctx, JSValueRef v ) {
+		struct {
+			unsigned char cppClassData[4];
+			union {
+				double asDouble;
+				struct { int32_t asInt; int32_t tag; } asBits;
+			} payload;
+		} *decoded = (void *)v;
+		
+		return decoded->payload.asBits.tag < 0xfffffff9
+			? decoded->payload.asDouble
+			: decoded->payload.asBits.asInt;
+	}
+#endif
 
 void JSValueUnprotectSafe( JSContextRef ctx, JSValueRef v ) {
 	if( ctx && v ) {
@@ -109,10 +142,10 @@ NSObject *JSValueToNSObject( JSContextRef ctx, JSValueRef value ) {
 	if( type == kJSTypeObject ) {
 		JSObjectRef jsObj = (JSObjectRef)value;
 		JSPropertyNameArrayRef properties = JSObjectCopyPropertyNames(ctx, jsObj);
-		int count = JSPropertyNameArrayGetCount(properties);
+		size_t count = JSPropertyNameArrayGetCount(properties);
 		
 		NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity:count];
-		for( int i = 0; i < count; i++ ) {
+		for( size_t i = 0; i < count; i++ ) {
 			JSStringRef jsName = JSPropertyNameArrayGetNameAtIndex(properties, i);
 			NSObject *obj = JSValueToNSObject(ctx, JSObjectGetProperty(ctx, jsObj, jsName, NULL));
 			

@@ -49,16 +49,16 @@
 - (void)triggerEvent:(NSString *)name all:(NSSet *)all changed:(NSSet *)changed remaining:(NSSet *)remaining {
 	JSContextRef ctx = scriptView.jsGlobalContext;
 	
-	int remainingCount = MIN(remaining.count, EJ_TOUCH_INPUT_MAX_TOUCHES);
-	int changedCount = MIN(changed.count, EJ_TOUCH_INPUT_MAX_TOUCHES);
-	int totalCount = MAX(remainingCount, changedCount);
+	NSUInteger remainingCount = MIN(remaining.count, EJ_TOUCH_INPUT_MAX_TOUCHES);
+	NSUInteger changedCount = MIN(changed.count, EJ_TOUCH_INPUT_MAX_TOUCHES);
+	NSUInteger totalCount = MAX(remainingCount, changedCount);
 	
 	JSObjectSetProperty(ctx, jsRemainingTouches, jsLengthName, JSValueMakeNumber(ctx, remainingCount), kJSPropertyAttributeNone, NULL);
 	JSObjectSetProperty(ctx, jsChangedTouches, jsLengthName, JSValueMakeNumber(ctx, changedCount), kJSPropertyAttributeNone, NULL);
 	
 	// More touches than we have in our pool? Create some!
 	if( touchesInPool < totalCount ) {
-		for( int i = touchesInPool; i < totalCount; i++ ) {
+		for( NSUInteger i = touchesInPool; i < totalCount; i++ ) {
 			jsTouchesPool[i] = JSObjectMake( ctx, NULL, NULL );
 			JSValueProtect( ctx, jsTouchesPool[i] );
 		}

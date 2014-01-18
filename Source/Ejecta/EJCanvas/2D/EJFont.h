@@ -45,12 +45,12 @@ typedef struct {
 @interface EJFontLayout : NSObject {
 	NSData *glyphLayout;
 	EJTextMetrics metrics;
-	int glyphCount;
+	NSInteger glyphCount;
 }
 
-- (id)initWithGlyphLayout:(NSData *)layoutp glyphCount:(int)count metrics:(EJTextMetrics)metrics;
+- (id)initWithGlyphLayout:(NSData *)layoutp glyphCount:(NSInteger)count metrics:(EJTextMetrics)metrics;
 @property (readonly, nonatomic) EJFontGlyphLayout *layout;
-@property (readonly, nonatomic) int glyphCount;
+@property (readonly, nonatomic) NSInteger glyphCount;
 @property (readonly, nonatomic) EJTextMetrics metrics;
 
 @end

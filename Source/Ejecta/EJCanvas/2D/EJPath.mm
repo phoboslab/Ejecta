@@ -85,7 +85,7 @@ typedef std::vector<subpath_t> path_t;
 - (void)endSubPath {
 	if( currentPath.points.size() > 1 ) {
 		paths.push_back(currentPath);
-		longestSubpath = MAX( longestSubpath, currentPath.points.size() );
+		longestSubpath = MAX( longestSubpath, (unsigned int)currentPath.points.size() );
 	}
 	currentPath.points.clear();
 	currentPath.isClosed = false;
@@ -383,14 +383,14 @@ typedef std::vector<subpath_t> path_t;
 		if( fillRule == kEJPathFillRuleNonZero ) {
 			glCullFace(GL_BACK);
 			glStencilOp(GL_INCR_WRAP, GL_KEEP, GL_INCR_WRAP);
-			glDrawArrays(GL_TRIANGLE_FAN, 0, path.points.size());
+			glDrawArrays(GL_TRIANGLE_FAN, 0, (int)path.points.size());
 		
 			glCullFace(GL_FRONT);
 			glStencilOp(GL_DECR_WRAP, GL_KEEP, GL_DECR_WRAP);
-			glDrawArrays(GL_TRIANGLE_FAN, 0, path.points.size());
+			glDrawArrays(GL_TRIANGLE_FAN, 0, (int)path.points.size());
 		}
 		else if( fillRule == kEJPathFillRuleEvenOdd ) {
-			glDrawArrays(GL_TRIANGLE_FAN, 0, path.points.size());
+			glDrawArrays(GL_TRIANGLE_FAN, 0, (int)path.points.size());
 		}
 		
 		if(sp==paths.end()) break;

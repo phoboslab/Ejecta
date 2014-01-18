@@ -29,7 +29,7 @@ const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
 		sharedGLContext = scriptView.openGLContext;
 		glContext = sharedGLContext.glContext2D;
 		vertexBuffer = (EJVertex *)(sharedGLContext.vertexBuffer.mutableBytes);
-		vertexBufferSize = sharedGLContext.vertexBuffer.length / sizeof(EJVertex);
+		vertexBufferSize = (int)(sharedGLContext.vertexBuffer.length / sizeof(EJVertex));
 	
 		memset(stateStack, 0, sizeof(stateStack));
 		stateIndex = 0;

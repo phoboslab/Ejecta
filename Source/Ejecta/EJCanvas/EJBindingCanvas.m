@@ -319,7 +319,7 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 	memcpy(encoded.mutableBytes, prefix, prefixLength);
 	
 	// Write base64 encoded data into the url string; start after the prefix
-	int len = b64_ntop(raw.bytes, raw.length, (encoded.mutableBytes + prefixLength), encoded.length - prefixLength);
+	size_t len = b64_ntop(raw.bytes, raw.length, (encoded.mutableBytes + prefixLength), encoded.length - prefixLength);
 	
 	if( len <= 0 ) {
 		return nil;

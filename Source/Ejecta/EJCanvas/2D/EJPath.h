@@ -23,7 +23,7 @@ typedef enum {
 	EJVector2 currentPos, lastPushed;
 	EJVector2 minPos, maxPos;
 	EJPathFillRule fillRule;
-	int longestSubpath;
+	unsigned int longestSubpath;
 	
 	GLubyte stencilMask;
 	

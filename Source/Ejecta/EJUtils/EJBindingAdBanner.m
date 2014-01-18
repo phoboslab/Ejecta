@@ -44,7 +44,7 @@
 }
 
 - (void)bannerView:(ADBannerView *)theBanner didFailToReceiveAdWithError:(NSError *)error {
-	NSLog(@"AdBanner: Failed to receive Ad. Error: %d - %@", error.code, error.localizedDescription);
+	NSLog(@"AdBanner: Failed to receive Ad. Error: %ld - %@", (long)error.code, error.localizedDescription);
 	[self triggerEvent:@"error"];
 	banner.hidden = YES;
 }

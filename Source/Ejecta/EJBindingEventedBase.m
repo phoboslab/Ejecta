@@ -33,14 +33,14 @@
 	[super dealloc];
 }
 
-- (JSObjectRef)getCallbackWith:(NSString *)type ctx:(JSContextRef)ctx {
+- (JSObjectRef)getCallbackWithType:(NSString *)type ctx:(JSContextRef)ctx {
 	NSValue *listener = onCallbacks[type];
 	return listener ? [listener pointerValue] : NULL;
 }
 
-- (void)setCallbackWith:(NSString *)type ctx:(JSContextRef)ctx callback:(JSValueRef)callbackValue {
+- (void)setCallbackWithType:(NSString *)type ctx:(JSContextRef)ctx callback:(JSValueRef)callbackValue {
 	// remove old event listener?
-	JSObjectRef oldCallback = [self getCallbackWith:type ctx:ctx];
+	JSObjectRef oldCallback = [self getCallbackWithType:type ctx:ctx];
 	if( oldCallback ) {
 		JSValueUnprotectSafe(ctx, oldCallback);
 		[onCallbacks removeObjectForKey:type];

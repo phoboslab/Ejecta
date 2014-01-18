@@ -124,13 +124,13 @@ static inline void SRFastLog(NSString *format, ...);
 static NSString *newSHA1String(const char *bytes, size_t length) {
     uint8_t md[CC_SHA1_DIGEST_LENGTH];
     
-    CC_SHA1(bytes, length, md);
+    CC_SHA1(bytes, (unsigned int)length, md);
     
     size_t buffer_size = ((sizeof(md) * 3 + 2) / 2);
     
     char *buffer =  (char *)malloc(buffer_size);
     
-    int len = b64_ntop(md, CC_SHA1_DIGEST_LENGTH, buffer, buffer_size);
+    size_t len = b64_ntop(md, CC_SHA1_DIGEST_LENGTH, buffer, buffer_size);
     if (len == -1) {
         free(buffer);
         return nil;
@@ -461,7 +461,7 @@ static __strong NSData *CRLFCRLF;
     
     if (responseCode >= 400) {
         SRFastLog(@"Request failed with response code %d", responseCode);
-        [self _failWithError:[NSError errorWithDomain:@"org.lolrus.SocketRocket" code:2132 userInfo:[NSDictionary dictionaryWithObject:[NSString stringWithFormat:@"received bad response code from server %d", responseCode] forKey:NSLocalizedDescriptionKey]]];
+        [self _failWithError:[NSError errorWithDomain:@"org.lolrus.SocketRocket" code:2132 userInfo:[NSDictionary dictionaryWithObject:[NSString stringWithFormat:@"received bad response code from server %ld", (long)responseCode] forKey:NSLocalizedDescriptionKey]]];
         return;
 
     }
@@ -530,7 +530,7 @@ static __strong NSData *CRLFCRLF;
     CFHTTPMessageSetHeaderFieldValue(request, CFSTR("Upgrade"), CFSTR("websocket"));
     CFHTTPMessageSetHeaderFieldValue(request, CFSTR("Connection"), CFSTR("Upgrade"));
     CFHTTPMessageSetHeaderFieldValue(request, CFSTR("Sec-WebSocket-Key"), (__bridge CFStringRef)_secKey);
-    CFHTTPMessageSetHeaderFieldValue(request, CFSTR("Sec-WebSocket-Version"), (__bridge CFStringRef)[NSString stringWithFormat:@"%d", _webSocketVersion]);
+    CFHTTPMessageSetHeaderFieldValue(request, CFSTR("Sec-WebSocket-Version"), (__bridge CFStringRef)[NSString stringWithFormat:@"%ld", (long)_webSocketVersion]);
     
     CFHTTPMessageSetHeaderFieldValue(request, CFSTR("Origin"), (__bridge CFStringRef)_url.SR_origin);
     
@@ -552,7 +552,7 @@ static __strong NSData *CRLFCRLF;
 
 - (void)_initializeStreams;
 {
-    NSInteger port = _url.port.integerValue;
+    unsigned int port = (unsigned int)_url.port.integerValue;
     if (port == 0) {
         if (!_secure) {
             port = 80;
@@ -876,7 +876,7 @@ static inline BOOL closeCodeIsValid(int closeCode) {
             [self handlePong];
             break;
         default:
-            [self _closeWithProtocolError:[NSString stringWithFormat:@"Unknown opcode %d", opcode]];
+            [self _closeWithProtocolError:[NSString stringWithFormat:@"Unknown opcode %ld", (long)opcode]];
             // TODO: Handle invalid opcode
             break;
     }
@@ -1460,7 +1460,7 @@ static const size_t SRFrameHeaderOverhead = 32;
                 uint8_t buffer[bufferSize];
                 
                 while (_inputStream.hasBytesAvailable) {
-                    int bytes_read = [_inputStream read:buffer maxLength:bufferSize];
+                    NSInteger bytes_read = [_inputStream read:buffer maxLength:bufferSize];
                     
                     if (bytes_read > 0) {
                         [_readBuffer appendBytes:buffer length:bytes_read];
@@ -1670,7 +1670,7 @@ static inline int32_t validate_dispatch_data_partial_string(NSData *data) {
         size = -1;
     }
     
-    return size;
+    return (int32_t)size;
 }
 
 #else

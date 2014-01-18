@@ -45,7 +45,7 @@
 @implementation EJFontLayout
 @synthesize metrics, glyphCount;
 
-- (id)initWithGlyphLayout:(NSData *)layout glyphCount:(int)count metrics:(EJTextMetrics)metricsp {
+- (id)initWithGlyphLayout:(NSData *)layout glyphCount:(NSInteger)count metrics:(EJTextMetrics)metricsp {
 	if( self = [super init] ) {
 		glyphLayout = [layout retain];
 		glyphCount = count;
@@ -285,20 +285,20 @@ int EJFontGlyphLayoutSortByTextureIndex(const void *a, const void *b) {
 	
 	
 	// Create a layout buffer large enough to hold all glyphs for this line
-	int lineGlyphCount = CTLineGetGlyphCount(line);
-	int layoutBufferSize = sizeof(EJFontGlyphLayout) * lineGlyphCount;
+	NSInteger lineGlyphCount = CTLineGetGlyphCount(line);
+	size_t layoutBufferSize = sizeof(EJFontGlyphLayout) * lineGlyphCount;
 	NSMutableData *layoutData = [NSMutableData dataWithLength:layoutBufferSize];
 	EJFontGlyphLayout *layoutBuffer = (EJFontGlyphLayout *)layoutData.mutableBytes;
 		
 	
 	// Go through all runs for this line
 	CFArrayRef runs = CTLineGetGlyphRuns(line);
-	int runCount = CFArrayGetCount(runs);
+	NSInteger runCount = CFArrayGetCount(runs);
 	
 	int layoutIndex = 0;
 	for( int i = 0; i < runCount; i++ ) {
 		CTRunRef run = (CTRunRef)CFArrayGetValueAtIndex(runs, i);
-		int runGlyphCount = CTRunGetGlyphCount(run);
+		NSInteger runGlyphCount = CTRunGetGlyphCount(run);
 		CTFontRef runFont = (CTFontRef)CFDictionaryGetValue(CTRunGetAttributes(run), kCTFontAttributeName);
 	
 		// Fetch glyphs buffer
@@ -408,8 +408,8 @@ int EJFontGlyphLayoutSortByTextureIndex(const void *a, const void *b) {
 	
 	// Go through all glyphs - bind textures as needed - and draw
 	EJFontGlyphLayout *layoutBuffer = layout.glyphLayout;
-	int glyphCount = layout.glyphCount;
-	int i = 0;
+	NSInteger glyphCount = layout.glyphCount;
+	NSInteger i = 0;
 	while( i < glyphCount ) {
 		int textureIndex = layoutBuffer[i].textureIndex;
 		[context setTexture:textures[textureIndex-1]];
