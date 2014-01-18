@@ -19,7 +19,7 @@ typedef enum {
 	EJAudioPreload preload;
 	NSObject<EJAudioSource> *source;
 	
-	BOOL loop, ended, paused;
+	BOOL loop, ended, paused, muted;
 	BOOL loading, playAfterLoad;
 	float volume;
 	NSOperation *loadCallback;

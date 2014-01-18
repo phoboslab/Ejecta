@@ -160,7 +160,9 @@ EJ_BIND_FUNCTION(removeEventListener, ctx, argc, argv) {
 	event->jsTarget = target;
 	event->type = [type retain];
 	
-	return [self createJSObjectWithContext:ctx scriptView:scriptView instance:event];
+	JSObjectRef jsEvent = [self createJSObjectWithContext:ctx scriptView:scriptView instance:event];
+	[event release];
+	return jsEvent;
 }
 
 - (void)dealloc {

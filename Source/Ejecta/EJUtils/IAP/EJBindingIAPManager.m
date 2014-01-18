@@ -186,6 +186,8 @@ EJ_BIND_FUNCTION(getProducts, ctx, argc, argv) {
 	SKProductsRequest *request = [[SKProductsRequest alloc] initWithProductIdentifiers:productIds];
 	request.delegate = self;
 	
+	[productIds release];
+	
 	JSValueProtect(ctx, argv[1]);
 	NSValue *callback = [NSValue valueWithPointer:argv[1]];
 	NSValue *requestKey = [NSValue valueWithPointer:(void *)request];

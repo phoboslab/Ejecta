@@ -97,7 +97,10 @@
 	[source setVolume:volume];
 	
 	if( playAfterLoad ) {
-		[source play];
+		if( !muted ) {
+			[source play];
+		}
+		paused = false;
 	}
 	
 	loading = NO;
@@ -126,7 +129,9 @@ EJ_BIND_FUNCTION(play, ctx, argc, argv) {
 		[self load];
 	}
 	else {
-		[source play];
+		if( !muted ) {
+			[source play];
+		}
 		paused = false;
 		ended = false;
 	}
@@ -221,6 +226,20 @@ EJ_BIND_SET(src, ctx, value) {
 	[self setSourcePath:JSValueToNSString(ctx, value)];
 	if( preload != kEJAudioPreloadNone ) {
 		[self load];
+	}
+}
+
+EJ_BIND_GET(muted, ctx) {
+	return JSValueMakeBoolean(ctx, muted);
+}
+
+EJ_BIND_SET(muted, ctx, value) {
+	muted = JSValueToBoolean(ctx, value);
+	if( muted && !paused ) {
+		[source pause];
+	}
+	else if( !muted && !paused ) {
+		[source play];
 	}
 }
 

@@ -323,6 +323,10 @@ typedef struct {
 		internalFormat = GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG;
 		bpp = 2;
 	}
+	else {
+		NSLog(@"Warning: PVRTC Compressed Image %@ neither 2 nor 4 bits per pixel", fullPath);
+		return;
+	}
 	
 	
 	// Create texture storage
