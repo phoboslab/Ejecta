@@ -212,7 +212,10 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 
 - (JSValueRef)evaluateScript:(NSString *)script sourceURL:(NSString *)sourceURL {
 	if( !script || script.length == 0 ) {
-		NSLog(@"Error: No or empty script given");
+		NSLog(
+			@"Error: The script %@ does not exist or appears to be empty.",
+			sourceURL ? sourceURL : @"[Anonymous]"
+		);
 		return NULL;
 	}
     
