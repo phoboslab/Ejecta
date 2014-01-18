@@ -26,7 +26,7 @@
 		B630048916C1A2390036D8D4 /* EJBindingTextMetrics.m in Sources */ = {isa = PBXBuildFile; fileRef = B630048816C1A1960036D8D4 /* EJBindingTextMetrics.m */; };
 		B630048C16CB098D0036D8D4 /* EJClassLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = B630048B16CB09850036D8D4 /* EJClassLoader.m */; };
 		B63D256416E8DE23007E6034 /* base64.c in Sources */ = {isa = PBXBuildFile; fileRef = B63D255D16E8DE23007E6034 /* base64.c */; };
-		B63D256516E8DE23007E6034 /* NSData+SRB64Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = B63D256016E8DE23007E6034 /* NSData+SRB64Additions.m */; };
+		B63D256516E8DE23007E6034 /* NSData+SRB64Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = B63D256016E8DE23007E6034 /* NSData+SRB64Additions.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		B63D256616E8DE23007E6034 /* SRWebSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = B63D256316E8DE23007E6034 /* SRWebSocket.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		B63D256816E8DF23007E6034 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B63D256716E8DF23007E6034 /* CFNetwork.framework */; };
 		B63D256A16E8DF33007E6034 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B63D256916E8DF33007E6034 /* Security.framework */; };

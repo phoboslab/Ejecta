@@ -31,8 +31,8 @@
     if (len == -1) {
         free(buffer);
         return nil;
-    } else {
-        return [[[NSString alloc] initWithBytesNoCopy:buffer length:len encoding:NSUTF8StringEncoding freeWhenDone:YES] autorelease];
+    } else{
+        return [[NSString alloc] initWithBytesNoCopy:buffer length:len encoding:NSUTF8StringEncoding freeWhenDone:YES];
     }
 }
 
