@@ -17,7 +17,7 @@
 + (EJCanvasPattern *)patternFromJSValue:(JSValueRef)value {
 	if( !value ) { return NULL; }
 	
-	EJBindingCanvasPattern *binding = (EJBindingCanvasPattern *)JSObjectGetPrivate((JSObjectRef)value);
+	EJBindingCanvasPattern *binding = (EJBindingCanvasPattern *)JSValueGetPrivate(value);
 	return (binding && [binding isMemberOfClass:[EJBindingCanvasPattern class]]) ? binding->pattern : NULL;
 }
 

@@ -54,7 +54,7 @@ bool EJConstructorHasInstance(JSContextRef ctx, JSObjectRef constructor, JSValue
 
 	// Unpack the class and instance from private data
 	EJClassWithScriptView *classWithScriptView = (EJClassWithScriptView *)JSObjectGetPrivate(constructor);
-	id instance = JSObjectGetPrivate((JSObjectRef)possibleInstance);
+	id instance = JSValueGetPrivate(possibleInstance);
 	
 	if( !classWithScriptView || !instance ) {
 		return false;
