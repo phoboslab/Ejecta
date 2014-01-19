@@ -94,12 +94,10 @@
 		
 	source.delegate = self;
 	[source setLooping:loop];
-	[source setVolume:volume];
+	[source setVolume:(muted ? 0.0 : volume)];
 	
 	if( playAfterLoad ) {
-		if( !muted ) {
-			[source play];
-		}
+		[source play];
 		paused = false;
 	}
 	
@@ -129,9 +127,7 @@ EJ_BIND_FUNCTION(play, ctx, argc, argv) {
 		[self load];
 	}
 	else {
-		if( !muted ) {
-			[source play];
-		}
+		[source play];
 		paused = false;
 		ended = false;
 	}
@@ -206,7 +202,7 @@ EJ_BIND_GET(volume, ctx) {
 
 EJ_BIND_SET(volume, ctx, value) {
 	volume = MIN(1,MAX(JSValueToNumberFast(ctx, value),0));
-	[source setVolume:volume];
+	[source setVolume:(muted ? 0.0 : volume)];
 }
 
 EJ_BIND_GET(currentTime, ctx) {
@@ -235,12 +231,7 @@ EJ_BIND_GET(muted, ctx) {
 
 EJ_BIND_SET(muted, ctx, value) {
 	muted = JSValueToBoolean(ctx, value);
-	if( muted && !paused ) {
-		[source pause];
-	}
-	else if( !muted && !paused ) {
-		[source play];
-	}
+	[source setVolume:(muted ? 0.0 : volume)];
 }
 
 EJ_BIND_GET(ended, ctx) {
