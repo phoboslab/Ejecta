@@ -59,11 +59,11 @@
 	EJNonRetainingProxy *proxy = [EJNonRetainingProxy proxyWithTarget:self];
 	
 	loadCallback = [[NSInvocationOperation alloc]
-		initWithTarget:proxy selector:@selector(endLoad) object:nil];
+                    initWithTarget:proxy selector:@selector(endLoad) object:nil];
 	
 	NSOperation *loadOp = [[NSInvocationOperation alloc]
-		initWithTarget:proxy selector:@selector(backgroundLoad) object:nil];
-		
+                           initWithTarget:proxy selector:@selector(backgroundLoad) object:nil];
+    
 	[scriptView.backgroundQueue addOperation:loadOp];
 	[loadOp release];
 }
@@ -85,20 +85,20 @@
 		NSLog(@"Loading Sound(AVAudio): %@", path);
 		source = [[EJAudioSourceAVAudio alloc] initWithPath:fullPath];
 	}
-
+    
 	[NSOperationQueue.mainQueue addOperation:loadCallback];
 }
 
 - (void)endLoad {
 	[loadCallback release];
 	loadCallback = nil;
-		
+    
 	source.delegate = self;
 	[source setLooping:loop];
 	[source setVolume:volume];
 	
 	if( playAfterLoad ) {
-        [source play];
+		[source play];
 		paused = false;
 	}
 	
@@ -155,11 +155,11 @@ EJ_BIND_FUNCTION(canPlayType, ctx, argc, argv) {
 	if( argc != 1 ) return NSStringToJSValue(ctx, @"");
 	
 	NSString *mime = JSValueToNSString(ctx, argv[0]);
-	if( 
-		[mime hasPrefix:@"audio/x-caf"] ||
-		[mime hasPrefix:@"audio/mpeg"] ||
-		[mime hasPrefix:@"audio/mp4"]
-	) {
+	if(
+       [mime hasPrefix:@"audio/x-caf"] ||
+       [mime hasPrefix:@"audio/mpeg"] ||
+       [mime hasPrefix:@"audio/mp4"]
+       ) {
 		return NSStringToJSValue(ctx, @"probably");
 	}
 	return NSStringToJSValue(ctx, @"");
@@ -203,9 +203,9 @@ EJ_BIND_GET(volume, ctx) {
 
 EJ_BIND_SET(volume, ctx, value) {
 	volume = MIN(1,MAX(JSValueToNumberFast(ctx, value),0));
-    if (!muted){
-        [source setVolume:volume];
-    }
+	if (!muted){
+		[source setVolume:volume];
+	}
 }
 
 EJ_BIND_GET(currentTime, ctx) {
@@ -234,15 +234,15 @@ EJ_BIND_GET(muted, ctx) {
 
 EJ_BIND_SET(muted, ctx, value) {
 	BOOL newMuted = JSValueToBoolean(ctx, value);
-    if (muted == newMuted){
-        return;
-    }
-    muted = newMuted;
-    if (muted){
-        [source setVolume:0];
-    }else{
-        [source setVolume:volume];
-    }
+	if (muted == newMuted){
+		return;
+	}
+	muted = newMuted;
+	if (muted){
+		[source setVolume:0];
+	}else{
+		[source setVolume:volume];
+	}
 }
 
 EJ_BIND_GET(ended, ctx) {
@@ -254,9 +254,9 @@ EJ_BIND_GET(paused, ctx) {
 }
 
 EJ_BIND_ENUM(preload, self.preload,
-	"none",		// kEJAudioPreloadNone
-	"metadata", // kEJAudioPreloadMetadata
-	"auto"		// kEJAudioPreloadAuto
+             "none",		// kEJAudioPreloadNone
+             "metadata", // kEJAudioPreloadMetadata
+             "auto"		// kEJAudioPreloadAuto
 );
 
 EJ_BIND_EVENT(loadedmetadata);
