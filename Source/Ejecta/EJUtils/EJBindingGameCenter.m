@@ -166,24 +166,52 @@ EJ_BIND_FUNCTION( retrievePlayers, ctx, argc, argv ) {
 }
 
 // get scores in range
-//      args: category, rangeStart, rangeEnd, callback
+//      args: category, options(timeScope,friendsOnly,start,end), callback
+// playerScope
 EJ_BIND_FUNCTION( retrieveScores, ctx, argc, argv ) {
 
     GKLeaderboard *leaderboardRequest = [[GKLeaderboard alloc] init];
-    if (leaderboardRequest != nil)
-    {
+    if (leaderboardRequest != nil) {
         NSString *category = JSValueToNSString(ctx, argv[0]);
-        int start=JSValueToNumberFast(ctx, argv[1]);
-        int end=JSValueToNumberFast(ctx, argv[2]);
-        JSObjectRef callback = JSValueToObject(ctx, argv[3], NULL);
+        
+        JSObjectRef jsOptions=JSValueToObject(ctx,argv[1], NULL);
+        JSObjectRef callback = JSValueToObject(ctx,argv[2], NULL );
        	if( callback ) {
             JSValueProtect(ctx, callback);
         }
+        
+//      NSObject *options = JSValueToNSObject(ctx, jsOptions);
+        
+        int start=JSValueToNumberFast(ctx, JSObjectGetProperty(ctx, jsOptions, JSStringCreateWithUTF8CString("start"), NULL));
+        int end=JSValueToNumberFast(ctx, JSObjectGetProperty(ctx, jsOptions, JSStringCreateWithUTF8CString("end"), NULL));
+        if (!start){
+            start=1;
+        }
+        if (!end){
+            end=start+100-1;
+        }
 
-        leaderboardRequest.playerScope = GKLeaderboardPlayerScopeGlobal;
-        leaderboardRequest.timeScope = GKLeaderboardTimeScopeAllTime;
+        //  0: GKLeaderboardTimeScopeToday  , 1: GKLeaderboardTimeScopeWeek , 2: GKLeaderboardTimeScopeAllTime
+        int timeScope=JSValueToBoolean(ctx, JSObjectGetProperty(ctx, jsOptions, JSStringCreateWithUTF8CString("timeScope"), NULL));
+        
+        bool friendsOnly=JSValueToBoolean(ctx, JSObjectGetProperty(ctx, jsOptions, JSStringCreateWithUTF8CString("friendsOnly"), NULL));
+        
+        switch(timeScope) {
+            case 0:
+                leaderboardRequest.timeScope = GKLeaderboardTimeScopeToday;
+                break;
+            case 1:
+                leaderboardRequest.timeScope = GKLeaderboardTimeScopeWeek;
+                break;
+            case 2:
+                leaderboardRequest.timeScope = GKLeaderboardTimeScopeAllTime;
+                break;
+        }
+        leaderboardRequest.playerScope = friendsOnly?GKLeaderboardPlayerScopeFriendsOnly: GKLeaderboardPlayerScopeGlobal;
+        
         leaderboardRequest.category = category;
         leaderboardRequest.range = NSMakeRange(start,end);
+        
         [leaderboardRequest loadScoresWithCompletionHandler: ^(NSArray *scores, NSError *error) {
     
             NSMutableArray *identifiers = [[NSMutableArray alloc] init];
@@ -247,6 +275,9 @@ EJ_BIND_FUNCTION( getLocalPlayerInfo, ctx, argc, argv ) {
      }];
 
 }
+
+
+
 
 -(void)loadPlayersAndScores:(NSArray *)identifiers scores:(NSArray *)scores callback:(JSObjectRef)callback {
     
