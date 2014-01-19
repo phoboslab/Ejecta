@@ -227,7 +227,7 @@ EJ_BIND_FUNCTION( getLocalPlayerInfo, ctx, argc, argv ) {
          JSObjectRef jsPlayers = NULL;
          JSContextRef gctx = scriptView.jsGlobalContext;
          if (players != nil) {
-             int size=players.count;
+             NSUInteger size=players.count;
              JSValueRef *jsArrayItems = malloc( sizeof(JSValueRef) * size);
              int count=0;
              for (GKPlayer *player in players){
@@ -255,7 +255,7 @@ EJ_BIND_FUNCTION( getLocalPlayerInfo, ctx, argc, argv ) {
          JSObjectRef jsScores = NULL;
          JSContextRef gctx = scriptView.jsGlobalContext;
          if (players != nil) {
-             int size=players.count;
+             NSUInteger size=players.count;
              JSValueRef *jsArrayItems = malloc( sizeof(JSValueRef) * size);
              int count=0;
              for (GKPlayer *player in players){
@@ -297,6 +297,7 @@ EJ_BIND_FUNCTION( showLeaderboard, ctx, argc, argv ) {
 	
 	return NULL;
 }
+
 
 - (void)reportAchievementWithIdentifier:(NSString *)identifier
 	percentage:(float)percentage isIncrement:(BOOL)isIncrement
