@@ -187,9 +187,9 @@ EJ_BIND_FUNCTION(retrieveScores, ctx, argc, argv)
 		}
         
 		NSDictionary *options = (NSDictionary *)JSValueToNSObject(ctx, jsOptions);
-		int start = [options[@"start"] integerValue];
-		int end = [options[@"end"] integerValue];
-		int timeScope = [options[@"timeScope"] integerValue];
+		NSInteger start = [options[@"start"] integerValue];
+		NSInteger end = [options[@"end"] integerValue];
+		NSInteger timeScope = [options[@"timeScope"] integerValue];
 		BOOL friendsOnly = [options[@"friendsOnly"] boolValue];
 		if (!start) {
 			start = 1;
