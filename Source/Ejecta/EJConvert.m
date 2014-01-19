@@ -132,7 +132,7 @@ NSObject *JSValueToNSObject( JSContextRef ctx, JSValueRef value ) {
 		case kJSTypeString: return JSValueToNSString(ctx, value);
 		case kJSTypeBoolean: return [NSNumber numberWithBool:JSValueToBoolean(ctx, value)];
 		case kJSTypeNumber: return [NSNumber numberWithDouble:JSValueToNumberFast(ctx, value)];
-		case kJSTypeNull: return [NSNull null];
+		case kJSTypeNull: return nil;
 		case kJSTypeUndefined: return nil;
 		case kJSTypeObject: break;
 	}
@@ -153,7 +153,8 @@ NSObject *JSValueToNSObject( JSContextRef ctx, JSValueRef value ) {
 			
 			NSMutableArray *array = [NSMutableArray arrayWithCapacity:count];
 			for( size_t i = 0; i < count; i++ ) {
-				[array addObject:JSValueToNSObject(ctx, JSObjectGetPropertyAtIndex(ctx, jsObj, i, NULL))];
+				NSObject *obj = JSValueToNSObject(ctx, JSObjectGetPropertyAtIndex(ctx, jsObj, i, NULL));
+				[array addObject:(obj ? obj : NSNull.null)];
 			}
 			return array;
 		}
@@ -167,11 +168,9 @@ NSObject *JSValueToNSObject( JSContextRef ctx, JSValueRef value ) {
 				JSStringRef jsName = JSPropertyNameArrayGetNameAtIndex(properties, i);
 				NSObject *obj = JSValueToNSObject(ctx, JSObjectGetProperty(ctx, jsObj, jsName, NULL));
 				
-				if( obj ) {
-					NSString *name = (NSString *)JSStringCopyCFString( kCFAllocatorDefault, jsName );
-					dict[name] = obj;
-					[name release];
-				}
+				NSString *name = (NSString *)JSStringCopyCFString( kCFAllocatorDefault, jsName );
+				dict[name] = obj ? obj : NSNull.null;
+				[name release];
 			}
 			
 			JSPropertyNameArrayRelease(properties);
