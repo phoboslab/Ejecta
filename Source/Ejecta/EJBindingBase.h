@@ -21,6 +21,22 @@
 
 #define EJ_BINDING_CLASS_PREFIX "EJBinding"
 
+// We need to cast objc_msgSend into the proper function types for bound functions
+// to ensure 64bit compatability
+
+#define _EJ_CALL_BOUND_OBJC_FUNC(INSTANCE, NAME, CTX, ARGC, ARGV) \
+	((JSValueRef(*)(id, SEL, JSContextRef, size_t, const JSValueRef [])) \
+		objc_msgSend)(INSTANCE, @selector(NAME), CTX, ARGC, ARGV)
+
+#define _EJ_CALL_BOUND_OBJC_GET(INSTANCE, NAME, CTX) \
+	((JSValueRef(*)(id, SEL, JSContextRef)) \
+		objc_msgSend)(INSTANCE, @selector(NAME), CTX)
+
+#define _EJ_CALL_BOUND_OBJC_SET(INSTANCE, NAME, CTX, VALUE) \
+	((void(*)(id, SEL, JSContextRef, JSValueRef)) \
+		objc_msgSend)(INSTANCE, @selector(NAME), CTX, VALUE)
+		
+
 // The class method that returns a pointer to the static C callback function
 #define __EJ_GET_POINTER_TO(NAME) \
 	+ (void *)_ptr_to##NAME { \
@@ -43,7 +59,7 @@
 		JSValueRef* exception \
 	) { \
 		id instance = (id)JSObjectGetPrivate(object); \
-		JSValueRef ret = (JSValueRef)objc_msgSend(instance, @selector(_func_##NAME:argc:argv:), ctx, argc, argv); \
+		JSValueRef ret = _EJ_CALL_BOUND_OBJC_FUNC(instance, _func_##NAME:argc:argv:, ctx, argc, argv); \
 		return ret ? ret : ((EJBindingBase *)instance)->scriptView->jsUndefined; \
 	} \
 	__EJ_GET_POINTER_TO(_func_##NAME)\
@@ -65,7 +81,7 @@
 		JSValueRef* exception \
 	) { \
 		id instance = (id)JSObjectGetPrivate(object); \
-		return (JSValueRef)objc_msgSend(instance, @selector(_get_##NAME:), ctx); \
+		return _EJ_CALL_BOUND_OBJC_GET(instance, _get_##NAME:, ctx); \
 	} \
 	__EJ_GET_POINTER_TO(_get_##NAME)\
 	\
@@ -87,7 +103,7 @@
 		JSValueRef* exception \
 	) { \
 		id instance = (id)JSObjectGetPrivate(object); \
-		objc_msgSend(instance, @selector(_set_##NAME:value:), ctx, value); \
+		_EJ_CALL_BOUND_OBJC_SET(instance, _set_##NAME:value:, ctx, value); \
 		return true; \
 	} \
 	__EJ_GET_POINTER_TO(_set_##NAME) \
@@ -137,7 +153,7 @@
 	EJ_BIND_SET(NAME, ctx, value) { \
 		JSStringRef _str = JSValueToStringCopy(ctx, value, NULL); \
 		const JSChar *_strptr = JSStringGetCharactersPtr( _str ); \
-		int _length = JSStringGetLength(_str)-1; \
+		size_t _length = JSStringGetLength(_str)-1; \
 		const char ** _names = _##NAME##EnumNames; \
 		int _target; \
 		EJ_MAP_EXT(0, _EJ_LITERAL(else), _EJ_BIND_ENUM_COMPARE, __VA_ARGS__) \
@@ -149,8 +165,8 @@
 #define _EJ_BIND_ENUM_COMPARE(INDEX, NAME) \
 	if( _length == sizeof(NAME)-2 && JSStrIsEqualToStr( _strptr, _names[INDEX], _length) ) { _target = INDEX; }
 	
-static inline bool JSStrIsEqualToStr( const JSChar *s1, const char *s2, int length ) {
-	for( int i = 0; i < length && *s1 == *s2; i++ ) {
+static inline bool JSStrIsEqualToStr( const JSChar *s1, const char *s2, size_t length ) {
+	for( size_t i = 0; i < length && *s1 == *s2; i++ ) {
 		s1++;
 		s2++;
 	}

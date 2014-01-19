@@ -12,7 +12,7 @@ typedef enum {
 
 typedef struct {
 	float pos;
-	int order;
+	unsigned int order;
 	EJColorRGBA color;
 } EJCanvasGradientColorStop;
 

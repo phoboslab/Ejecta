@@ -8,7 +8,7 @@ TYPE *NAME(JSContextRef ctx, JSValueRef value, GLsizei elementSize, GLsizei *num
 	if( JSTypedArrayGetType(ctx, value) == ARRAY_TYPE ) { \
 		size_t byteLength; \
 		TYPE *arrayValue = JSTypedArrayGetDataPtr(ctx, value, &byteLength); \
-		GLsizei count = byteLength/sizeof(TYPE); \
+		GLsizei count = (GLsizei)(byteLength/sizeof(TYPE)); \
 		if( arrayValue && count && (count % elementSize) == 0 ) { \
 			*numElements = count / elementSize; \
 			return arrayValue; \

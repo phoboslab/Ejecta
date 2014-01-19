@@ -18,7 +18,7 @@
 + (GLuint)indexFromJSValue:(JSValueRef)value {
 	if( !value ) { return 0; }
 	
-	EJBindingWebGLObject *binding = (EJBindingWebGLObject *)JSObjectGetPrivate((JSObjectRef)value);
+	EJBindingWebGLObject *binding = (EJBindingWebGLObject *)JSValueGetPrivate(value);
 	return (binding && [binding isMemberOfClass:[self class]]) ? binding->index : 0;
 }
 
@@ -81,7 +81,7 @@
 + (EJTexture *)textureFromJSValue:(JSValueRef)value {
 	if( !value ) { return NULL; }
 	
-	EJBindingWebGLTexture *binding = (EJBindingWebGLTexture *)JSObjectGetPrivate((JSObjectRef)value);
+	EJBindingWebGLTexture *binding = (EJBindingWebGLTexture *)JSValueGetPrivate(value);
 	return (binding && [binding isMemberOfClass:[self class]]) ? binding->texture : NULL;
 }
 

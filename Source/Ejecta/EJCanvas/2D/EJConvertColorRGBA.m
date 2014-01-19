@@ -166,9 +166,9 @@ static const unsigned char ColorHashesToColorNames[498] = {
 	118,116,0,0,37,0,0,0,0,0,0,0,0,0,0,0,112,120,0,34,0,0,0
 };
 
-static inline unsigned int ColorHashForString( const JSChar *s, int length ) {
+static inline unsigned int ColorHashForString( const JSChar *s, size_t length ) {
 	unsigned int h = 0;
-	for( int i = 0; i < length; i++ ) {
+	for( size_t i = 0; i < length; i++ ) {
 		h = (h << 6) ^ (h >> 26) ^ (tolower(s[i]) * 1978555465);
 	}
 	return (h % 498);
@@ -219,7 +219,7 @@ EJColorRGBA JSValueToColorRGBA(JSContextRef ctx, JSValueRef value) {
 	JSStringRef jsString = JSValueToStringCopy( ctx, value, NULL );
 	if( !jsString ) { return c; }
 	
-	int length = JSStringGetLength( jsString );
+	size_t length = JSStringGetLength( jsString );
 	if( length < 3 ) { return c; }
 	
 	const JSChar *jsc = JSStringGetCharactersPtr(jsString);
@@ -230,7 +230,7 @@ EJColorRGBA JSValueToColorRGBA(JSContextRef ctx, JSValueRef value) {
 		str[0] = str[1] = jsc[3];
 		str[2] = str[3] = jsc[2];
 		str[4] = str[5] = jsc[1];
-		c.hex = 0xff000000 | strtol( str, NULL, 16 );
+		c.hex = 0xff000000 | (unsigned int)strtol( str, NULL, 16 );
 	}
 	
 	// #ff00ff format
@@ -241,7 +241,7 @@ EJColorRGBA JSValueToColorRGBA(JSContextRef ctx, JSValueRef value) {
 		str[3] = jsc[4];
 		str[4] = jsc[1];
 		str[5] = jsc[2];
-		c.hex = 0xff000000 | strtol( str, NULL, 16 );
+		c.hex = 0xff000000 | (unsigned int)strtol( str, NULL, 16 );
 	}
 	
 	// rgb(255,0,255) or rgba(255,0,255,0.5) format

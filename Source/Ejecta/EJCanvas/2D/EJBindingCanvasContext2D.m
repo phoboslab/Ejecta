@@ -241,7 +241,7 @@ EJ_BIND_FUNCTION(drawImage, ctx, argc, argv) {
 	// as the image being drawn; i.e. a texture canvas drawing into itself.
 	scriptView.currentRenderingContext = renderingContext;
 	
-	NSObject<EJDrawable> *drawable = (NSObject<EJDrawable> *)JSObjectGetPrivate((JSObjectRef)argv[0]);
+	NSObject<EJDrawable> *drawable = (NSObject<EJDrawable> *)JSValueGetPrivate(argv[0]);
 	EJTexture *image = drawable.texture;
 	
 	if( !image ) { return NULL; }
@@ -328,7 +328,7 @@ EJ_BIND_FUNCTION(createImageData, ctx, argc, argv) {
 
 EJ_BIND_FUNCTION(putImageData, ctx, argc, argv) {
 	EJ_UNPACK_ARGV_OFFSET(1, float dx, float dy);
-	EJBindingImageData *jsImageData = (EJBindingImageData *)JSObjectGetPrivate((JSObjectRef)argv[0]);
+	EJBindingImageData *jsImageData = (EJBindingImageData *)JSValueGetPrivate(argv[0]);
 	
 	scriptView.currentRenderingContext = renderingContext;
 	[renderingContext putImageData:jsImageData.imageData dx:dx dy:dy];
@@ -358,7 +358,7 @@ EJ_BIND_FUNCTION(createImageDataHD, ctx, argc, argv) {
 
 EJ_BIND_FUNCTION(putImageDataHD, ctx, argc, argv) {
 	EJ_UNPACK_ARGV_OFFSET(1, float dx, float dy);
-	EJBindingImageData *jsImageData = (EJBindingImageData *)JSObjectGetPrivate((JSObjectRef)argv[0]);
+	EJBindingImageData *jsImageData = (EJBindingImageData *)JSValueGetPrivate(argv[0]);
 	
 	scriptView.currentRenderingContext = renderingContext;
 	[renderingContext putImageDataHD:jsImageData.imageData dx:dx dy:dy];
@@ -384,7 +384,7 @@ EJ_BIND_FUNCTION(createRadialGradient, ctx, argc, argv) {
 
 EJ_BIND_FUNCTION(createPattern, ctx, argc, argv) {
 	if( argc < 1 ) { return NULL; }
-	NSObject<EJDrawable> *drawable = (NSObject<EJDrawable> *)JSObjectGetPrivate((JSObjectRef)argv[0]);
+	NSObject<EJDrawable> *drawable = (NSObject<EJDrawable> *)JSValueGetPrivate(argv[0]);
 	EJTexture *image = drawable.texture;
 	
 	if( !image ) { return NULL; }

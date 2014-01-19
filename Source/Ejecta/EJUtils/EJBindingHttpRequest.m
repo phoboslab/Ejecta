@@ -38,7 +38,7 @@
 	[password release]; password = NULL;
 }
 
-- (int)getStatusCode {
+- (NSInteger)getStatusCode {
 	if( !response ) {
 		return 0;
 	}
@@ -314,7 +314,7 @@ EJ_BIND_GET(status, ctx) {
 
 EJ_BIND_GET(statusText, ctx) {
 	// FIXME: should be "200 OK" instead of just "200"
-	NSString *code = [NSString stringWithFormat:@"%d", [self getStatusCode]];	
+	NSString *code = [NSString stringWithFormat:@"%ld", (long)[self getStatusCode]];	
 	return NSStringToJSValue(ctx, code);
 }
 

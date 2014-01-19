@@ -129,7 +129,7 @@ static const char Pad64 = '=';
  */
 
 #if !defined(HAVE_B64_NTOP) && !defined(HAVE___B64_NTOP) 
-int
+size_t
 b64_ntop(u_char const *src, size_t srclength, char *target, size_t targsize)
 {
 	size_t datalength = 0;
@@ -192,7 +192,7 @@ b64_ntop(u_char const *src, size_t srclength, char *target, size_t targsize)
  it returns the number of data bytes stored at the target, or -1 on error.
  */
 
-int
+size_t
 b64_pton(char const *src, u_char *target, size_t targsize)
 {
 	u_int tarindex, state;

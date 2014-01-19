@@ -18,7 +18,7 @@
 + (EJCanvasGradient *)gradientFromJSValue:(JSValueRef)value {
 	if( !value ) { return NULL; }
 	
-	EJBindingCanvasGradient *binding = (EJBindingCanvasGradient *)JSObjectGetPrivate((JSObjectRef)value);
+	EJBindingCanvasGradient *binding = (EJBindingCanvasGradient *)JSValueGetPrivate(value);
 	return (binding && [binding isMemberOfClass:[EJBindingCanvasGradient class]]) ? binding->gradient : NULL;
 }
 
