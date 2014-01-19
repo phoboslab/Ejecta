@@ -132,32 +132,50 @@ NSObject *JSValueToNSObject( JSContextRef ctx, JSValueRef value ) {
 		case kJSTypeString: return JSValueToNSString(ctx, value);
 		case kJSTypeBoolean: return [NSNumber numberWithBool:JSValueToBoolean(ctx, value)];
 		case kJSTypeNumber: return [NSNumber numberWithDouble:JSValueToNumberFast(ctx, value)];
-		case kJSTypeNull: return [NSNull null];
+		case kJSTypeNull: return nil;
 		case kJSTypeUndefined: return nil;
 		case kJSTypeObject: break;
 	}
 	
-	// All objects are converted to NSDictionary; even Arrays.
-	// Doesn't handle Regexp or Date objects correctly. FIXME.
 	if( type == kJSTypeObject ) {
 		JSObjectRef jsObj = (JSObjectRef)value;
-		JSPropertyNameArrayRef properties = JSObjectCopyPropertyNames(ctx, jsObj);
-		size_t count = JSPropertyNameArrayGetCount(properties);
 		
-		NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity:count];
-		for( size_t i = 0; i < count; i++ ) {
-			JSStringRef jsName = JSPropertyNameArrayGetNameAtIndex(properties, i);
-			NSObject *obj = JSValueToNSObject(ctx, JSObjectGetProperty(ctx, jsObj, jsName, NULL));
+		// Get the Array constructor to check if this Object is an Array
+		JSStringRef arrayName = JSStringCreateWithUTF8CString("Array");
+		JSObjectRef arrayConstructor = (JSObjectRef)JSObjectGetProperty(ctx, JSContextGetGlobalObject(ctx), arrayName, NULL);
+		JSStringRelease(arrayName);
 			
-			if( obj ) {
+		if( JSValueIsInstanceOfConstructor(ctx, jsObj, arrayConstructor, NULL) ) {
+			// Array
+			JSStringRef lengthName = JSStringCreateWithUTF8CString("length");
+			size_t count = JSValueToNumberFast(ctx, JSObjectGetProperty(ctx, jsObj, lengthName, NULL));
+			JSStringRelease(lengthName);
+			
+			NSMutableArray *array = [NSMutableArray arrayWithCapacity:count];
+			for( size_t i = 0; i < count; i++ ) {
+				NSObject *obj = JSValueToNSObject(ctx, JSObjectGetPropertyAtIndex(ctx, jsObj, i, NULL));
+				[array addObject:(obj ? obj : NSNull.null)];
+			}
+			return array;
+		}
+		else {
+			// Plain Object
+			JSPropertyNameArrayRef properties = JSObjectCopyPropertyNames(ctx, jsObj);
+			size_t count = JSPropertyNameArrayGetCount(properties);
+			
+			NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity:count];
+			for( size_t i = 0; i < count; i++ ) {
+				JSStringRef jsName = JSPropertyNameArrayGetNameAtIndex(properties, i);
+				NSObject *obj = JSValueToNSObject(ctx, JSObjectGetProperty(ctx, jsObj, jsName, NULL));
+				
 				NSString *name = (NSString *)JSStringCopyCFString( kCFAllocatorDefault, jsName );
-				dict[name] = obj;
+				dict[name] = obj ? obj : NSNull.null;
 				[name release];
 			}
+			
+			JSPropertyNameArrayRelease(properties);
+			return dict;
 		}
-		
-		JSPropertyNameArrayRelease(properties);
-		return dict;
 	}
 	
 	return nil;
