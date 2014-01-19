@@ -12,6 +12,7 @@
 	if( self = [super initWithContext:ctx argc:argc argv:argv] ) {
 		volume = 1;
 		paused = true;
+		muted = false;
 		preload = kEJAudioPreloadNone;
 		
 		if( argc > 0 ) {
@@ -97,9 +98,7 @@
 	[source setVolume:volume];
 	
 	if( playAfterLoad ) {
-		if( !muted ) {
-			[source play];
-		}
+        [source play];
 		paused = false;
 	}
 	
@@ -129,9 +128,7 @@ EJ_BIND_FUNCTION(play, ctx, argc, argv) {
 		[self load];
 	}
 	else {
-		if( !muted ) {
-			[source play];
-		}
+        [source play];
 		paused = false;
 		ended = false;
 	}
@@ -206,7 +203,9 @@ EJ_BIND_GET(volume, ctx) {
 
 EJ_BIND_SET(volume, ctx, value) {
 	volume = MIN(1,MAX(JSValueToNumberFast(ctx, value),0));
-	[source setVolume:volume];
+    if (!muted){
+        [source setVolume:volume];
+    }
 }
 
 EJ_BIND_GET(currentTime, ctx) {
@@ -234,13 +233,16 @@ EJ_BIND_GET(muted, ctx) {
 }
 
 EJ_BIND_SET(muted, ctx, value) {
-	muted = JSValueToBoolean(ctx, value);
-	if( muted && !paused ) {
-		[source pause];
-	}
-	else if( !muted && !paused ) {
-		[source play];
-	}
+	BOOL newMuted = JSValueToBoolean(ctx, value);
+    if (muted == newMuted){
+        return;
+    }
+    muted = newMuted;
+    if (muted){
+        [source setVolume:0];
+    }else{
+        [source setVolume:volume];
+    }
 }
 
 EJ_BIND_GET(ended, ctx) {
