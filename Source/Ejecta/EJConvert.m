@@ -137,27 +137,46 @@ NSObject *JSValueToNSObject( JSContextRef ctx, JSValueRef value ) {
 		case kJSTypeObject: break;
 	}
 	
-	// All objects are converted to NSDictionary; even Arrays.
-	// Doesn't handle Regexp or Date objects correctly. FIXME.
 	if( type == kJSTypeObject ) {
 		JSObjectRef jsObj = (JSObjectRef)value;
-		JSPropertyNameArrayRef properties = JSObjectCopyPropertyNames(ctx, jsObj);
-		size_t count = JSPropertyNameArrayGetCount(properties);
 		
-		NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity:count];
-		for( size_t i = 0; i < count; i++ ) {
-			JSStringRef jsName = JSPropertyNameArrayGetNameAtIndex(properties, i);
-			NSObject *obj = JSValueToNSObject(ctx, JSObjectGetProperty(ctx, jsObj, jsName, NULL));
+		// Get the Array constructor to check if this Object is an Array
+		JSStringRef arrayName = JSStringCreateWithUTF8CString("Array");
+		JSObjectRef arrayConstructor = (JSObjectRef)JSObjectGetProperty(ctx, JSContextGetGlobalObject(ctx), arrayName, NULL);
+		JSStringRelease(arrayName);
 			
-			if( obj ) {
-				NSString *name = (NSString *)JSStringCopyCFString( kCFAllocatorDefault, jsName );
-				dict[name] = obj;
-				[name release];
+		if( JSValueIsInstanceOfConstructor(ctx, jsObj, arrayConstructor, NULL) ) {
+			// Array
+			JSStringRef lengthName = JSStringCreateWithUTF8CString("length");
+			size_t count = JSValueToNumberFast(ctx, JSObjectGetProperty(ctx, jsObj, lengthName, NULL));
+			JSStringRelease(lengthName);
+			
+			NSMutableArray *array = [NSMutableArray arrayWithCapacity:count];
+			for( size_t i = 0; i < count; i++ ) {
+				[array addObject:JSValueToNSObject(ctx, JSObjectGetPropertyAtIndex(ctx, jsObj, i, NULL))];
 			}
+			return array;
 		}
-		
-		JSPropertyNameArrayRelease(properties);
-		return dict;
+		else {
+			// Plain Object
+			JSPropertyNameArrayRef properties = JSObjectCopyPropertyNames(ctx, jsObj);
+			size_t count = JSPropertyNameArrayGetCount(properties);
+			
+			NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity:count];
+			for( size_t i = 0; i < count; i++ ) {
+				JSStringRef jsName = JSPropertyNameArrayGetNameAtIndex(properties, i);
+				NSObject *obj = JSValueToNSObject(ctx, JSObjectGetProperty(ctx, jsObj, jsName, NULL));
+				
+				if( obj ) {
+					NSString *name = (NSString *)JSStringCopyCFString( kCFAllocatorDefault, jsName );
+					dict[name] = obj;
+					[name release];
+				}
+			}
+			
+			JSPropertyNameArrayRelease(properties);
+			return dict;
+		}
 	}
 	
 	return nil;
