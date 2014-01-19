@@ -148,11 +148,11 @@ NSObject *JSValueToNSObject( JSContextRef ctx, JSValueRef value ) {
 		if( JSValueIsInstanceOfConstructor(ctx, jsObj, arrayConstructor, NULL) ) {
 			// Array
 			JSStringRef lengthName = JSStringCreateWithUTF8CString("length");
-			size_t count = JSValueToNumberFast(ctx, JSObjectGetProperty(ctx, jsObj, lengthName, NULL));
+			int count = JSValueToNumberFast(ctx, JSObjectGetProperty(ctx, jsObj, lengthName, NULL));
 			JSStringRelease(lengthName);
 			
 			NSMutableArray *array = [NSMutableArray arrayWithCapacity:count];
-			for( size_t i = 0; i < count; i++ ) {
+			for( int i = 0; i < count; i++ ) {
 				NSObject *obj = JSValueToNSObject(ctx, JSObjectGetPropertyAtIndex(ctx, jsObj, i, NULL));
 				[array addObject:(obj ? obj : NSNull.null)];
 			}

@@ -16,11 +16,14 @@
 		<dict>
 			<key>CFBundleIconFiles</key>
 			<array>
-				<string></string>
 				<string>Icon.png</string>
 				<string>Icon@2x.png</string>
+				<string>Icon-60.png</string>
+				<string>Icon-60@2x.png</string>
 				<string>Icon-72.png</string>
 				<string>Icon-72@2x.png</string>
+				<string>Icon-76.png</string>
+				<string>Icon-76@2x.png</string>
 			</array>
 		</dict>
 	</dict>
