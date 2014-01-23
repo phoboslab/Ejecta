@@ -380,11 +380,11 @@ typedef struct {
 }
 
 - (NSMutableData *)loadPixelsFromPath:(NSString *)path {
-	BOOL isURI = [path hasPrefix:@"data:"] ||
-		[path hasPrefix:@"http:"] || [path hasPrefix:@"https:"];
+	BOOL isURL = [path hasPrefix:@"http:"] || [path hasPrefix:@"https:"];
+	BOOL isDataURI = !isURL && [path hasPrefix:@"data:"];
 	
 	// Try @2x texture?
-	if( !isURI && [UIScreen mainScreen].scale == 2 ) {
+	if( !isURL && !isDataURI && [UIScreen mainScreen].scale == 2 ) {
 		NSString *path2x = [[[path stringByDeletingPathExtension]
 			stringByAppendingString:@"@2x"]
 			stringByAppendingPathExtension:[path pathExtension]];
@@ -397,13 +397,18 @@ typedef struct {
 	
 	
 	NSMutableData *pixels;
-	if( isURI ) {
-		// Load directly from a Data URI string
+	if( isDataURI || isURL ) {
+		// Load directly from a Data URI string or an URL
 		UIImage *tmpImage = [[UIImage alloc] initWithData:
 			[NSData dataWithContentsOfURL:[NSURL URLWithString:path]]];
 		
 		if( !tmpImage ) {
-			NSLog(@"Error Loading image from URI.");
+			if( isDataURI ) {
+				NSLog(@"Error Loading image from Data URI.");
+			}
+			if( isURL ) {
+				NSLog(@"Error Loading image from URL: %@", path);
+			}
 			return NULL;
 		}
 		pixels = [self loadPixelsFromUIImage:tmpImage];

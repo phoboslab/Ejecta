@@ -17,10 +17,13 @@
 	
 	NSString *fullPath;
 
-	// If path is a Data URI we don't want to prepend resource paths
-	if( [path hasPrefix:@"data:"] || 
-			[path hasPrefix:@"http:"] || [path hasPrefix:@"https:"]) {
-		NSLog(@"Loading Image from URI");
+	// If path is a Data URI or remote URL we don't want to prepend resource paths
+	if( [path hasPrefix:@"data:"] ) {
+		NSLog(@"Loading Image from Data URI");
+		fullPath = path;
+	}
+	else if( [path hasPrefix:@"http:"] || [path hasPrefix:@"https:"] ) {
+		NSLog(@"Loading Image from URL: %@", path);
 		fullPath = path;
 	}
 	else {
