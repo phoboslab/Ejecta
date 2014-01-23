@@ -109,7 +109,7 @@ EJ_BIND_FUNCTION(isSourceTypeAvailable, ctx, argc, argv) {
 	if( argc < 1 ) return NULL;
 	
 	NSString *sourceType = JSValueToNSString(ctx, argv[0]);
-	return [EJBindingImagePicker isSourceTypeAvailable:sourceType];
+	return JSValueMakeBoolean(ctx, [EJBindingImagePicker isSourceTypeAvailable:sourceType]);
 }
 
 
