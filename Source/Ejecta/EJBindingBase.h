@@ -175,19 +175,12 @@ static inline bool JSStrIsEqualToStr( const JSChar *s1, const char *s2, size_t l
 
 
 // ------------------------------------------------------------------------------------
-// Shorthand to bind const numbers
+// Shorthand to bind const numbers and strings
 
 #define EJ_BIND_CONST(NAME, VALUE) \
-	static JSValueRef _get_##NAME( \
-		JSContextRef ctx, \
-		JSObjectRef object, \
-		JSStringRef propertyName, \
-		JSValueRef* exception \
-	) { \
-		return JSValueMakeNumber(ctx, VALUE); \
-	} \
-	__EJ_GET_POINTER_TO(_get_##NAME)
-
+	+ (NSObject *)_const_##NAME { \
+		return @(VALUE); \
+	}
 
 // Commas can't be used directly in macro arguments
 #define _EJ_COMMA() ,
