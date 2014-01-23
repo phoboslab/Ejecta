@@ -200,4 +200,8 @@ EJ_BIND_EVENT(loadedmetadata);
 EJ_BIND_EVENT(ended);
 EJ_BIND_EVENT(click);
 
+EJ_BIND_GET(nodeName, ctx ) {
+	return NSStringToJSValue(ctx, @"VIDEO");
+}
+
 @end
