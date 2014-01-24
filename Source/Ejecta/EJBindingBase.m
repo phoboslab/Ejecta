@@ -27,7 +27,28 @@
 	instance:(EJBindingBase *)instance
 {
 	// Create JSObject with the JSClass for this ObjC-Class
-	JSObjectRef obj = JSObjectMake( ctx, [scriptView.classLoader getJSClass:self], NULL );
+	EJLoadedJSClass *class = [scriptView.classLoader getJSClass:self];
+	JSObjectRef obj = JSObjectMake( ctx, class.jsClass, NULL );
+	
+	// Attach all constant values to the object. Doing this on instantiation is a bit slower
+	// than just having the callbacks in the StaticProperties, but it makes access to them
+	// much faster because we never have to leave JS land. This is especially important for
+	// the CanvasContextWebGL which has A LOT of const values.
+	NSDictionary *constantValues = class.constantValues;
+	
+	for( NSString* key in constantValues ) {
+		NSObject *value = [constantValues objectForKey:key];
+		JSValueRef jsValue = [value isKindOfClass:NSString.class]
+			? NSStringToJSValue(ctx, (NSString *)value)
+			: JSValueMakeNumber(ctx, ((NSNumber *)value).doubleValue);
+			
+		JSStringRef name = JSStringCreateWithCFString((CFStringRef)key);
+		JSObjectSetProperty(
+			ctx, obj, name, jsValue,
+			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete, NULL
+		);
+		JSStringRelease(name);
+	}
 	
 	// The JSObject retains the instance; it will be released by EJBindingBaseFinalize
 	JSObjectSetPrivate( obj, (void *)[instance retain] );

@@ -173,8 +173,9 @@ EJ_BIND_SET(font, ctx, value) {
 	if( font ) {
 		renderingContext.font = font;
 	}
-	else {
-		NSLog(@"Warning: No font with name %s", name);
+	else if( size ) {
+		// Font name not found, but we have a size? Use the current font and just change the size
+		renderingContext.font = [EJFontDescriptor descriptorWithName:renderingContext.font.name size:size];
 	}
 	
 	JSStringRelease(jsString);

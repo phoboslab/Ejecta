@@ -252,4 +252,8 @@ EJ_BIND_EVENT(loadedmetadata);
 EJ_BIND_EVENT(canplaythrough);
 EJ_BIND_EVENT(ended);
 
+EJ_BIND_GET(nodeName, ctx ) {
+	return NSStringToJSValue(ctx, @"AUDIO");
+}
+
 @end
