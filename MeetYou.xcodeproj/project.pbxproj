@@ -887,11 +887,7 @@
 					"${SOURCE_ROOT}/Source/lib",
 				);
 				INFOPLIST_FILE = "";
-<<<<<<< HEAD:MeetYou.xcodeproj/project.pbxproj
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
-=======
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
->>>>>>> 404bfc2dfc3bdea2a71b9535e0cff1089da5d8d0:Ejecta.xcodeproj/project.pbxproj
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = "-DDEBUG";
 				PROVISIONING_PROFILE = "";
@@ -914,11 +910,7 @@
 					"${SOURCE_ROOT}/Source/lib",
 				);
 				INFOPLIST_FILE = "";
-<<<<<<< HEAD:MeetYou.xcodeproj/project.pbxproj
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
-=======
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
->>>>>>> 404bfc2dfc3bdea2a71b9535e0cff1089da5d8d0:Ejecta.xcodeproj/project.pbxproj
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
