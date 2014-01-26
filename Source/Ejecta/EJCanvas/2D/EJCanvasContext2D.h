@@ -46,7 +46,8 @@ typedef enum {
 	kEJCompositeOperationDestinationOut,
 	kEJCompositeOperationDestinationOver,
 	kEJCompositeOperationSourceAtop,
-	kEJCompositeOperationXOR
+	kEJCompositeOperationXOR,
+	kEJCompositeOperationCopy
 } EJCompositeOperation;
 
 typedef struct { GLenum source; GLenum destination; float alphaFactor; } EJCompositeOperationFunc;
