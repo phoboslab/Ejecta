@@ -756,8 +756,13 @@ const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
 	
 	static EJColorRGBA white = {.hex = 0xffffffff};
 	
+	EJCompositeOperation oldOp = state->globalCompositeOperation;
+	self.globalCompositeOperation = kEJCompositeOperationCopy;
+	
 	[self pushTexturedRectX:dx y:dy w:tw h:th tx:0 ty:0 tw:1 th:1 color:white withTransform:CGAffineTransformIdentity];
 	[self flushBuffers];
+	
+	self.globalCompositeOperation = oldOp;
 }
 
 - (void)putImageData:(EJImageData*)imageData dx:(float)dx dy:(float)dy {
