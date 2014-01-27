@@ -15,12 +15,13 @@ const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
 	[kEJCompositeOperationDestinationOver] = {GL_ONE_MINUS_DST_ALPHA, GL_ONE, 1},
 	[kEJCompositeOperationSourceAtop] = {GL_DST_ALPHA, GL_ONE_MINUS_SRC_ALPHA, 1},
 	[kEJCompositeOperationXOR] = {GL_ONE_MINUS_DST_ALPHA, GL_ONE_MINUS_SRC_ALPHA, 1},
+    [kEJCompositeOperationCopy] = {GL_ONE, GL_ZERO, 1},
     
     [kEJCompositeOperationDestinationIn] = {GL_ZERO, GL_SRC_ALPHA, 1},
     [kEJCompositeOperationSourceIn] = {GL_DST_ALPHA, GL_ZERO, 1},
     [kEJCompositeOperationSourceOut] = {GL_ONE_MINUS_DST_ALPHA,GL_ZERO,1},
-    [kEJCompositeOperationDestinationAtop] = {GL_ONE_MINUS_DST_ALPHA, GL_SRC_ALPHA, 1},
-    [kEJCompositeOperationCopy] = {GL_ONE,GL_ZERO,1}
+    [kEJCompositeOperationDestinationAtop] = {GL_ONE_MINUS_DST_ALPHA, GL_SRC_ALPHA, 1}
+    
 };
 
 
@@ -761,8 +762,13 @@ const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
 	
 	static EJColorRGBA white = {.hex = 0xffffffff};
 	
+	EJCompositeOperation oldOp = state->globalCompositeOperation;
+	self.globalCompositeOperation = kEJCompositeOperationCopy;
+	
 	[self pushTexturedRectX:dx y:dy w:tw h:th tx:0 ty:0 tw:1 th:1 color:white withTransform:CGAffineTransformIdentity];
 	[self flushBuffers];
+	
+	self.globalCompositeOperation = oldOp;
 }
 
 - (void)putImageData:(EJImageData*)imageData dx:(float)dx dy:(float)dy {
