@@ -6,22 +6,10 @@
 
 @implementation EJBindingImagePicker
 
-- (id)initWithContext:(JSContextRef) ctx argc:(size_t)argc argv:(const JSValueRef [])argv {
-    if( self = [super initWithContext:ctx argc:argc argv:argv] ) {
-		NSLog(@"An ImagePicker instance have been created.");
-	}
-    return self;
-}
-
-- (void)dealloc {
-	NSLog(@"An ImagePicker instance is being deallocated.");
-    [super dealloc];
-}
-
 
 // pick a picture
 EJ_BIND_FUNCTION(getPicture, ctx, argc, argv) {
-	if( argc < 1 ) return NULL;
+	if( argc < 1 ) { return NULL; }
 	
 	// retrieve the callback
 	JSValueUnprotectSafe(ctx, callback);
@@ -62,22 +50,26 @@ EJ_BIND_FUNCTION(getPicture, ctx, argc, argv) {
 	maxTexHeight = maxJsHeight * [UIScreen mainScreen].scale;
 	
 	// identify the type of picker we need: full screen or popup
-	if( IDIOM == IPAD && ![sourceType isEqualToString:@"Camera"] ) {
-		pickerType = PICKER_TYPE_POPUP;
-	} else {
-		pickerType = PICKER_TYPE_FULLSCREEN;
+	if(
+		UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad &&
+		![sourceType isEqualToString:@"Camera"]
+	) {
+		pickerType = kEJImagePickerTypePopup;
+	}
+	else {
+		pickerType = kEJImagePickerTypeFullscreen;
 	}
 	
 	// init and alloc
 	picker = [[UIImagePickerController alloc] init];
 	picker.delegate = self;
-	if( pickerType == PICKER_TYPE_POPUP ) {
+	if( pickerType == kEJImagePickerTypePopup ) {
 		popover = [[UIPopoverController alloc] initWithContentViewController:picker];
 		popover.delegate = self;
 	}
 	
 	// limit to pictures only
-	[picker setMediaTypes: [NSArray arrayWithObject:(NSString *)kUTTypeImage]];
+	[picker setMediaTypes: @[(NSString *)kUTTypeImage]];
 	
 	// set the source type
 	picker.sourceType = [EJBindingImagePicker getSourceTypeClass:sourceType];
@@ -90,13 +82,14 @@ EJ_BIND_FUNCTION(getPicture, ctx, argc, argv) {
 	JSValueProtect(scriptView.jsGlobalContext, jsObject);
 	
 	// open it
-	if ( pickerType == PICKER_TYPE_POPUP ) {
+	if ( pickerType == kEJImagePickerTypePopup ) {
 		[popover
-		    presentPopoverFromRect:CGRectMake(popupX, popupY, popupWidth, popupHeight)
-		    inView:scriptView.window.rootViewController.view
-		    permittedArrowDirections:UIPopoverArrowDirectionAny
-		    animated:YES];
-	} else {
+			presentPopoverFromRect:CGRectMake(popupX, popupY, popupWidth, popupHeight)
+			inView:scriptView.window.rootViewController.view
+			permittedArrowDirections:UIPopoverArrowDirectionAny
+			animated:YES];
+	}
+	else {
 		[scriptView.window.rootViewController presentModalViewController:picker animated:YES];
 	}
 	
@@ -106,7 +99,7 @@ EJ_BIND_FUNCTION(getPicture, ctx, argc, argv) {
 
 // to know if a source type (`PhotoLibrary`, `SavedPhotosAlbum` or `Camera`) is available on the device at the moment
 EJ_BIND_FUNCTION(isSourceTypeAvailable, ctx, argc, argv) {
-	if( argc < 1 ) return NULL;
+	if( argc < 1 ) { return NULL; }
 	
 	NSString *sourceType = JSValueToNSString(ctx, argv[0]);
 	return JSValueMakeBoolean(ctx, [EJBindingImagePicker isSourceTypeAvailable:sourceType]);
@@ -122,7 +115,8 @@ EJ_BIND_FUNCTION(isSourceTypeAvailable, ctx, argc, argv) {
 	// resize it if required
 	if( (rawImage.size.width * rawImage.scale) > maxTexWidth || (rawImage.size.height * rawImage.scale) > maxTexHeight ) {
 		chosenImage = [self reduceImageSize:rawImage];
-	} else {
+	}
+	else {
 		chosenImage = rawImage;
 	}
 	
@@ -191,7 +185,7 @@ EJ_BIND_FUNCTION(isSourceTypeAvailable, ctx, argc, argv) {
 	[picker dismissViewControllerAnimated:YES completion:NULL];
 	
 	// close the popup
-	if( pickerType == PICKER_TYPE_POPUP ) {
+	if( pickerType == kEJImagePickerTypePopup ) {
 		[popover dismissPopoverAnimated:TRUE];
 	}
 	
@@ -199,7 +193,7 @@ EJ_BIND_FUNCTION(isSourceTypeAvailable, ctx, argc, argv) {
 	JSValueUnprotectSafe(ctx, callback);
 	[picker release];
 	NSLog(@"picker released");
-	if ( pickerType == PICKER_TYPE_POPUP ) {
+	if ( pickerType == kEJImagePickerTypePopup ) {
 		[popover release];
 		NSLog(@"popup released");
 	}

@@ -62,17 +62,12 @@
 }
 
 - (void)setTexture:(EJTexture *)texturep path:(NSString *)pathp {
-	texture = texturep;
-	path = pathp;
-	[texture retain];
-	[path retain];
+	texture = [texturep retain];
+	path = [pathp retain];
 }
 
-EJ_BIND_GET(src, ctx ) { 
-	JSStringRef src = JSStringCreateWithUTF8CString( path.UTF8String );
-	JSValueRef ret = JSValueMakeString(ctx, src);
-	JSStringRelease(src);
-	return ret;
+EJ_BIND_GET(src, ctx ) {
+	return NSStringToJSValue(ctx, path);
 }
 
 EJ_BIND_SET(src, ctx, value) {
@@ -95,7 +90,7 @@ EJ_BIND_SET(src, ctx, value) {
 		texture = nil;
 	}
 	
-	if( !JSValueIsNull(ctx, value) && [newPath length] ) {
+	if( !JSValueIsNull(ctx, value) && newPath.length ) {
 		path = [newPath retain];
 		[self beginLoad];
 	}

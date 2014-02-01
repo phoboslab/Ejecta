@@ -1,23 +1,24 @@
 #import "EJBindingBase.h"
 
-#define IDIOM UI_USER_INTERFACE_IDIOM()
-#define IPAD  UIUserInterfaceIdiomPad
+#define EJ_PICKER_TYPE_FULLSCREEN 1
+#define EJ_PICKER_TYPE_POPUP      2
 
-#define PICKER_TYPE_FULLSCREEN 1
-#define PICKER_TYPE_POPUP      2
+typedef enum {
+	kEJImagePickerTypeFullscreen,
+	kEJImagePickerTypePopup
+} EJImagePickerType;
 
 @interface EJBindingImagePicker : EJBindingBase <UIImagePickerControllerDelegate, UIPopoverControllerDelegate, UINavigationControllerDelegate> {
 	JSObjectRef callback;
-	UIImagePickerController * picker;
-	UIPopoverController * popover;
-	NSString * imgFormat;
+	UIImagePickerController *picker;
+	UIPopoverController *popover;
+	NSString *imgFormat;
 	float jpgCompression;
-	short pickerType;
+	EJImagePickerType pickerType;
 	float maxJsWidth, maxJsHeight;
 	float maxTexWidth, maxTexHeight;
 }
 
-- (void)dealloc;
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info;
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker;
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)popup;

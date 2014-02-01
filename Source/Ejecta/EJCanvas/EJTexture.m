@@ -176,7 +176,8 @@ typedef struct {
 	if( self = [super init] ) {
 		if( [UIScreen mainScreen].scale == 2 ) {
 			contentScale = 2;
-		} else {
+		}
+		else {
 			contentScale = 1;
 		}
 
