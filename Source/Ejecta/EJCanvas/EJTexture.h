@@ -35,6 +35,7 @@ typedef enum {
 - (id)initWithWidth:(int)widthp height:(int)heightp format:(GLenum) format;
 - (id)initWithWidth:(int)widthp height:(int)heightp pixels:(NSData *)pixels;
 - (id)initAsRenderTargetWithWidth:(int)widthp height:(int)heightp fbo:(GLuint)fbo contentScale:(float)contentScalep;
+- (id)initWithUIImage:(UIImage *)image;
 
 - (void)ensureMutableKeepPixels:(BOOL)keepPixels forTarget:(GLenum)target;
 

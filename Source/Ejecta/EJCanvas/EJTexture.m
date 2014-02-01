@@ -172,6 +172,24 @@ typedef struct {
 	return self;
 }
 
+- (id)initWithUIImage:(UIImage *)image {
+	if( self = [super init] ) {
+		if( [UIScreen mainScreen].scale == 2 ) {
+			contentScale = 2;
+		} else {
+			contentScale = 1;
+		}
+
+		owningContext = kEJTextureOwningContextCanvas2D;
+
+		NSMutableData *pixels = [self loadPixelsFromUIImage:image];
+		if( pixels ) {
+			[self createWithPixels:pixels format:GL_RGBA];
+		}
+	}
+	return self;
+}
+
 - (void)dealloc {
 	if( cached ) {
 		[[EJSharedTextureCache instance].textures removeObjectForKey:fullPath];
