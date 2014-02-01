@@ -5,12 +5,6 @@
 
 #import "EJTextureStorage.h"
 
-
-typedef enum {
-	kEJTextureOwningContextCanvas2D,
-	kEJTextureOwningContextWebGL
-} EJTextureOwningContext;
-
 @interface EJTexture : NSObject <NSCopying> {
 	BOOL cached;
 	BOOL drawFlippedY;
@@ -22,7 +16,6 @@ typedef enum {
 	GLuint fbo;
 	float contentScale;
 	
-	EJTextureOwningContext owningContext;
 	EJTextureParams params;
 	NSBlockOperation *loadCallback;
 }

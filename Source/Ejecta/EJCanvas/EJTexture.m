@@ -42,7 +42,6 @@ typedef struct {
 	
 	if( self = [super init] ) {
 		contentScale = 1;
-		owningContext = kEJTextureOwningContextWebGL;
 		
 		params[kEJTextureParamMinFilter] = GL_LINEAR;
 		params[kEJTextureParamMagFilter] = GL_LINEAR;
@@ -58,7 +57,6 @@ typedef struct {
 	if( self = [super init] ) {
 		contentScale = 1;
 		fullPath = [path retain];
-		owningContext = kEJTextureOwningContextCanvas2D;
 		
 		NSMutableData *pixels = [self loadPixelsFromPath:path];
 		if( pixels ) {
@@ -104,7 +102,6 @@ typedef struct {
 	if( self = [super init] ) {
 		contentScale = 1;
 		fullPath = [path retain];
-		owningContext = kEJTextureOwningContextCanvas2D;
 		
 		loadCallback = [[NSBlockOperation alloc] init];
 		
@@ -141,7 +138,6 @@ typedef struct {
 	
 	if( self = [super init] ) {
 		contentScale = 1;
-		owningContext = kEJTextureOwningContextCanvas2D;
 		
 		width = widthp;
 		height = heightp;
@@ -155,7 +151,6 @@ typedef struct {
 	
 	if( self = [super init] ) {
 		contentScale = 1;
-		owningContext = kEJTextureOwningContextCanvas2D;
 		
 		width = widthp;
 		height = heightp;
@@ -180,8 +175,6 @@ typedef struct {
 		else {
 			contentScale = 1;
 		}
-
-		owningContext = kEJTextureOwningContextCanvas2D;
 
 		NSMutableData *pixels = [self loadPixelsFromUIImage:image];
 		if( pixels ) {
@@ -242,10 +235,8 @@ typedef struct {
 	// This retains the textureStorage object and sets the associated properties
 	[copy createWithTexture:self];
 	
-	// Copy texture parameters and owningContext, not handled
-	// by createWithTexture
+	// Copy texture parameters not handled by createWithTexture
 	memcpy(copy->params, params, sizeof(EJTextureParams));
-	copy->owningContext = owningContext;
 	copy->isCompressed = isCompressed;
 	
 	if( self.isDynamic && !isCompressed ) {
