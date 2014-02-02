@@ -167,26 +167,17 @@ EJ_BIND_FUNCTION(getProducts, ctx, argc, argv) {
 		return NULL;
 	}
 	
-	// Gather all product ids from the js array into an NSSet
-	JSObjectRef jsProductIds = (JSObjectRef)argv[0];
-	
-	JSStringRef jsLengthName = JSStringCreateWithUTF8CString("length");
-	GLsizei count = JSValueToNumberFast(ctx, JSObjectGetProperty(ctx, jsProductIds, jsLengthName, NULL));
-	JSStringRelease(jsLengthName);
-	
-	NSMutableSet *productIds = [NSMutableSet new];
-	for( int i = 0; i < count; i++ ) {
-		[productIds addObject:JSValueToNSString(ctx, JSObjectGetPropertyAtIndex(ctx, jsProductIds, i, NULL))];
+	NSArray *productIds = (NSArray *)JSValueToNSObject(ctx, argv[0]);
+	if( ![productIds isKindOfClass:NSArray.class] ) {
+		return NULL;
 	}
-	
-	NSLog(@"IAP: Requesting product info: %@", [[productIds allObjects] componentsJoinedByString:@", "]);
+	NSLog(@"IAP: Requesting product info: %@", [productIds componentsJoinedByString:@", "]);
 	
 	// Construct the request and insert it together with the callback into the
 	// productRequestCallbacks dict
-	SKProductsRequest *request = [[SKProductsRequest alloc] initWithProductIdentifiers:productIds];
+	SKProductsRequest *request = [[SKProductsRequest alloc]
+		initWithProductIdentifiers:[NSSet setWithArray:productIds]];
 	request.delegate = self;
-	
-	[productIds release];
 	
 	JSValueProtect(ctx, argv[1]);
 	NSValue *callback = [NSValue valueWithPointer:argv[1]];

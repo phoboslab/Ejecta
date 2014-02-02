@@ -11,7 +11,7 @@
     
 	// Optionally set the idle timer disabled, this prevents the device from sleep when
 	// not being interacted with by touch. ie. games with motion control.
-	application.idleTimerDisabled = NO;
+	application.idleTimerDisabled = YES;
 	
 	[self loadViewControllerWithScriptAtPath:@"index.js"];
 	

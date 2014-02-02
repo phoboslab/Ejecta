@@ -42,7 +42,6 @@ typedef struct {
 	
 	if( self = [super init] ) {
 		contentScale = 1;
-		owningContext = kEJTextureOwningContextWebGL;
 		
 		params[kEJTextureParamMinFilter] = GL_LINEAR;
 		params[kEJTextureParamMagFilter] = GL_LINEAR;
@@ -58,7 +57,6 @@ typedef struct {
 	if( self = [super init] ) {
 		contentScale = 1;
 		fullPath = [path retain];
-		owningContext = kEJTextureOwningContextCanvas2D;
 		
 		NSMutableData *pixels = [self loadPixelsFromPath:path];
 		if( pixels ) {
@@ -114,7 +112,6 @@ typedef struct {
 	if( self = [super init] ) {
 		contentScale = 1;
 		fullPath = [path retain];
-		owningContext = kEJTextureOwningContextCanvas2D;
 		
 		loadCallback = [[NSBlockOperation alloc] init];
 		
@@ -151,7 +148,6 @@ typedef struct {
 	
 	if( self = [super init] ) {
 		contentScale = 1;
-		owningContext = kEJTextureOwningContextCanvas2D;
 		
 		width = widthp;
 		height = heightp;
@@ -165,7 +161,6 @@ typedef struct {
 	
 	if( self = [super init] ) {
 		contentScale = 1;
-		owningContext = kEJTextureOwningContextCanvas2D;
 		
 		width = widthp;
 		height = heightp;
@@ -178,6 +173,23 @@ typedef struct {
 	if( self = [self initWithWidth:widthp*contentScalep height:heightp*contentScalep] ) {
 		fbo = fbop;
 		contentScale = contentScalep;
+	}
+	return self;
+}
+
+- (id)initWithUIImage:(UIImage *)image {
+	if( self = [super init] ) {
+		if( [UIScreen mainScreen].scale == 2 ) {
+			contentScale = 2;
+		}
+		else {
+			contentScale = 1;
+		}
+
+		NSMutableData *pixels = [self loadPixelsFromUIImage:image];
+		if( pixels ) {
+			[self createWithPixels:pixels format:GL_RGBA];
+		}
 	}
 	return self;
 }
@@ -233,10 +245,8 @@ typedef struct {
 	// This retains the textureStorage object and sets the associated properties
 	[copy createWithTexture:self];
 	
-	// Copy texture parameters and owningContext, not handled
-	// by createWithTexture
+	// Copy texture parameters not handled by createWithTexture
 	memcpy(copy->params, params, sizeof(EJTextureParams));
-	copy->owningContext = owningContext;
 	copy->isCompressed = isCompressed;
 	
 	if( self.isDynamic && !isCompressed ) {
@@ -368,25 +378,35 @@ typedef struct {
 }
 
 - (NSMutableData *)pixels {
-	if( fullPath ) {
-		return [self loadPixelsFromPath:fullPath];
+	GLint boundFrameBuffer;
+	GLuint tempFramebuffer;
+	glGetIntegerv( GL_FRAMEBUFFER_BINDING, &boundFrameBuffer );
+	
+	// If this texture doesn't have an FBO (i.e. its not used as the backing store
+	// for an offscreen canvas2d), we have to create a new, temporary framebuffer
+	// containing the texture. We can then read the pixel data using glReadPixels
+	// as usual
+	if( !fbo ) {
+		glGenFramebuffers(1, &tempFramebuffer);
+		glBindFramebuffer(GL_FRAMEBUFFER_OES, tempFramebuffer);
+		glFramebufferTexture2D(GL_FRAMEBUFFER_OES, GL_COLOR_ATTACHMENT0_OES, GL_TEXTURE_2D, textureStorage.textureId, 0);
 	}
-	else if( fbo ) {
-		GLint boundFrameBuffer;
-		glGetIntegerv( GL_FRAMEBUFFER_BINDING, &boundFrameBuffer );
-		
+	else {
 		glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-		
-		int size = width * height * EJGetBytesPerPixel(GL_UNSIGNED_BYTE, format);
-		NSMutableData *data = [NSMutableData dataWithLength:size];
-		glReadPixels(0, 0, width, height, format, GL_UNSIGNED_BYTE, data.mutableBytes);
-		
-		glBindFramebuffer(GL_FRAMEBUFFER, boundFrameBuffer);
-		return data;
 	}
-
-	NSLog(@"Warning: Can't get pixels from texture - dynamicly created but not attached to an FBO.");
-	return NULL;
+	
+	int size = width * height * EJGetBytesPerPixel(GL_UNSIGNED_BYTE, format);
+	NSMutableData *data = [NSMutableData dataWithLength:size];
+	glReadPixels(0, 0, width, height, format, GL_UNSIGNED_BYTE, data.mutableBytes);
+	
+	glBindFramebuffer(GL_FRAMEBUFFER, boundFrameBuffer);
+	
+	
+	if( !fbo ) {
+		glDeleteFramebuffers(1, &tempFramebuffer);
+	}
+	
+	return data;
 }
 
 - (NSMutableData *)loadPixelsFromPath:(NSString *)path {

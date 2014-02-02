@@ -1400,6 +1400,11 @@ EJ_BIND_FUNCTION(texImage2D, ctx, argc, argv) {
 		EJ_UNPACK_ARGV_OFFSET(3, GLenum format, GLenum type);
 		
 		NSObject<EJDrawable> *drawable = (NSObject<EJDrawable> *)JSValueGetPrivate(argv[5]);
+		if( !drawable || ![drawable conformsToProtocol:@protocol(EJDrawable)] ) {
+			NSLog(@"ERROR: texImage2D image is not an Image, ImageData or Canvas element");
+			return NULL;
+		}
+		
 		EJTexture *sourceTexture = drawable.texture;		
 		
 		// We don't care about internalFormat, format or type params here; the source image will
@@ -1536,6 +1541,11 @@ EJ_BIND_FUNCTION(texSubImage2D, ctx, argc, argv) {
 		EJ_UNPACK_ARGV_OFFSET(4, GLenum format, GLenum type);
 		
 		NSObject<EJDrawable> *drawable = (NSObject<EJDrawable> *)JSValueGetPrivate(argv[5]);
+		if( !drawable || ![drawable conformsToProtocol:@protocol(EJDrawable)] ) {
+			NSLog(@"ERROR: texSubImage2D image is not an Image, ImageData or Canvas element");
+			return NULL;
+		}
+		
 		EJTexture *sourceTexture = drawable.texture;		
 		
 		// We don't care about internalFormat, format or type params here; the source image will
