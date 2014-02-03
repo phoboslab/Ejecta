@@ -11,6 +11,8 @@
 #import "EJDrawable.h"
 #import "EJConvertColorRGBA.h"
 
+#import "EJBindingMaterial.h"
+
 
 @implementation EJBindingCanvasContext2D
 
@@ -18,12 +20,14 @@
 	if( self = [super initWithContext:NULL argc:0 argv:NULL] ) {
 		renderingContext = [renderingContextp retain];
 		jsCanvas = canvas;
+		materialName = JSStringCreateWithUTF8CString("material");
 	}
 	return self;
 }
 
 - (void)dealloc {	
 	[renderingContext release];
+	JSStringRelease(materialName);
 	[super dealloc];
 }
 
@@ -234,11 +238,21 @@ EJ_BIND_FUNCTION(drawImage, ctx, argc, argv) {
 	// as the image being drawn; i.e. a texture canvas drawing into itself.
 	scriptView.currentRenderingContext = renderingContext;
 	
-	NSObject<EJDrawable> *drawable = (NSObject<EJDrawable> *)JSObjectGetPrivate((JSObjectRef)argv[0]);
+	JSObjectRef imageRef = (JSObjectRef)argv[0];
+
+	NSObject<EJDrawable> *drawable = (NSObject<EJDrawable> *)JSObjectGetPrivate(imageRef);
 	EJTexture *image = drawable.texture;
 	
 	if( !image ) { return NULL; }
 	
+	// Check if the drawable has a material attached to it
+	EJBindingMaterial *material = NULL;
+	if (JSObjectHasProperty(ctx, imageRef, materialName)) {
+		JSValueRef materialProperty = JSObjectGetProperty(ctx, imageRef, materialName, NULL);
+		JSObjectRef jsMaterial = JSValueToObject(ctx, materialProperty, NULL);
+		material = (EJBindingMaterial *)JSObjectGetPrivate(jsMaterial);
+	}
+
 	float scale = image.contentScale;
 	
 	short sx = 0, sy = 0, sw, sh;
@@ -270,7 +284,7 @@ EJ_BIND_FUNCTION(drawImage, ctx, argc, argv) {
 		return NULL;
 	}
 	
-	[renderingContext drawImage:image sx:sx sy:sy sw:sw sh:sh dx:dx dy:dy dw:dw dh:dh];
+	[renderingContext drawImage:image sx:sx sy:sy sw:sw sh:sh dx:dx dy:dy dw:dw dh:dh material:material];
 	return NULL;
 }
 

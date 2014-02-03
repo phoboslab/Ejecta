@@ -13,6 +13,7 @@ enum {
 @interface EJGLProgram2D : NSObject {
 	GLuint program;
 	GLuint screen;
+	NSDictionary *additionalUniforms;
 }
 
 - (id)initWithVertexShader:(NSString *)vertexShaderFile fragmentShader:(NSString *)fragmentShaderFile;
@@ -27,5 +28,7 @@ enum {
 
 @property (nonatomic, readonly) GLuint screen;
 @property (nonatomic, readonly) GLuint translate;
+
+@property (nonatomic, retain) NSDictionary *additionalUniforms;
 
 @end

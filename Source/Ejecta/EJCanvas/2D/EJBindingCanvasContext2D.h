@@ -5,6 +5,7 @@
 @interface EJBindingCanvasContext2D : EJBindingBase {
 	JSObjectRef jsCanvas;
 	EJCanvasContext2D *renderingContext;
+	JSStringRef materialName;
 }
 
 - (id)initWithCanvas:(JSObjectRef)canvas renderingContext:(EJCanvasContext2D *)renderingContextp;

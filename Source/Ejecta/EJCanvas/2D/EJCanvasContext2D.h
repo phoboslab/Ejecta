@@ -7,6 +7,7 @@
 #import "EJFont.h"
 #import "EJFontCache.h"
 #import "EJSharedOpenGLContext.h"
+#import "EJBindingMaterial.h"
 
 #define EJ_CANVAS_STATE_STACK_SIZE 16
 
@@ -132,6 +133,7 @@ static inline EJColorRGBA EJCanvasBlendStrokeColor( EJCanvasState *state ) {
 	
 	EJJavaScriptView *scriptView;
 	EJGLProgram2D *currentProgram;
+	EJBindingMaterial *currentMaterial;
 	EJSharedOpenGLContext *sharedGLContext;
 }
 
@@ -143,6 +145,7 @@ static inline EJColorRGBA EJCanvasBlendStrokeColor( EJCanvasState *state ) {
 - (void)bindVertexBuffer;
 - (void)prepare;
 - (void)setTexture:(EJTexture *)newTexture;
+- (void)setMaterial:(EJBindingMaterial *)newMaterial;
 - (void)setProgram:(EJGLProgram2D *)program;
 - (void)pushTriX1:(float)x1 y1:(float)y1 x2:(float)x2 y2:(float)y2
 	x3:(float)x3 y3:(float)y3
@@ -179,7 +182,7 @@ static inline EJColorRGBA EJCanvasBlendStrokeColor( EJCanvasState *state ) {
 - (void)scaleX:(float)x y:(float)y;
 - (void)transformM11:(float)m11 m12:(float)m12 m21:(float)m21 m22:(float)m2 dx:(float)dx dy:(float)dy;
 - (void)setTransformM11:(float)m11 m12:(float)m12 m21:(float)m21 m22:(float)m2 dx:(float)dx dy:(float)dy;
-- (void)drawImage:(EJTexture *)image sx:(float)sx sy:(float)sy sw:(float)sw sh:(float)sh dx:(float)dx dy:(float)dy dw:(float)dw dh:(float)dh;
+- (void)drawImage:(EJTexture *)image sx:(float)sx sy:(float)sy sw:(float)sw sh:(float)sh dx:(float)dx dy:(float)dy dw:(float)dw dh:(float)dh material:(EJBindingMaterial *)material;
 - (void)fillRectX:(float)x y:(float)y w:(float)w h:(float)h;
 - (void)strokeRectX:(float)x y:(float)y w:(float)w h:(float)h;
 - (void)clearRectX:(float)x y:(float)y w:(float)w h:(float)h;

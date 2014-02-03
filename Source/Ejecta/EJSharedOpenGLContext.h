@@ -1,6 +1,7 @@
 #import <Foundation/Foundation.h>
 #import "EJGLProgram2D.h"
 #import "EJGLProgram2DRadialGradient.h"
+#import "EJGLProgram2DTint.h"
 
 #define EJ_OPENGL_VERTEX_BUFFER_SIZE (32 * 1024) // 32kb
 
@@ -10,6 +11,7 @@
 	EJGLProgram2D *glProgram2DAlphaTexture;
 	EJGLProgram2D *glProgram2DPattern;
 	EJGLProgram2DRadialGradient *glProgram2DRadialGradient;
+	EJGLProgram2DTint *glProgram2DTint;
 	
 	EAGLContext *glContext2D;
 	EAGLSharegroup *glSharegroup;
@@ -23,6 +25,7 @@
 @property (nonatomic, readonly) EJGLProgram2D *glProgram2DAlphaTexture;
 @property (nonatomic, readonly) EJGLProgram2D *glProgram2DPattern;
 @property (nonatomic, readonly) EJGLProgram2DRadialGradient *glProgram2DRadialGradient;
+@property (nonatomic, readonly) EJGLProgram2DTint *glProgram2DTint;
 
 @property (nonatomic, readonly) EAGLContext *glContext2D;
 @property (nonatomic, readonly) EAGLSharegroup *glSharegroup;

@@ -5,6 +5,8 @@
 @synthesize program;
 @synthesize screen;
 
+@synthesize additionalUniforms;
+
 - (id)initWithVertexShader:(NSString *)vertexShaderFile fragmentShader:(NSString *)fragmentShaderFile {
 	if( self = [super init] ) {
 		program = glCreateProgram();
@@ -31,6 +33,8 @@
 
 - (void)dealloc {
 	if( program ) { glDeleteProgram(program); }
+	[additionalUniforms release];
+	additionalUniforms = nil;
 	[super dealloc];
 }
 

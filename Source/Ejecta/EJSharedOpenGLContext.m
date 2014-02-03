@@ -7,6 +7,7 @@
 @synthesize glProgram2DAlphaTexture;
 @synthesize glProgram2DPattern;
 @synthesize glProgram2DRadialGradient;
+@synthesize glProgram2DTint;
 @synthesize glContext2D;
 @synthesize glSharegroup;
 
@@ -34,6 +35,7 @@ static EJSharedOpenGLContext *sharedOpenGLContext;
 	[glProgram2DAlphaTexture release];
 	[glProgram2DPattern release];
 	[glProgram2DRadialGradient release];
+	[glProgram2DTint release];
 	[glContext2D release];
 	[vertexBuffer release];
 	
@@ -61,6 +63,7 @@ EJ_GL_PROGRAM_GETTER(EJGLProgram2D, Texture);
 EJ_GL_PROGRAM_GETTER(EJGLProgram2D, AlphaTexture);
 EJ_GL_PROGRAM_GETTER(EJGLProgram2D, Pattern);
 EJ_GL_PROGRAM_GETTER(EJGLProgram2DRadialGradient, RadialGradient);
+EJ_GL_PROGRAM_GETTER(EJGLProgram2DTint, Tint);
 
 #undef EJ_GL_PROGRAM_GETTER
 
