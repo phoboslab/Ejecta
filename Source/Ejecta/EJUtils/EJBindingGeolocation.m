@@ -49,7 +49,7 @@
 }
 
 - (void)invokeCallbacksWithLocation:(CLLocation *)location heading:(CLHeading *)heading {
-	if( callbacks.count == 0 ) { return; } // Nothing to do here?
+	if( callbacks.count == 0 || !location ) { return; } // Nothing to do here?
 
 	// Build the position object
 	JSValueRef position = NSObjectToJSValue(scriptView.jsGlobalContext, @{
