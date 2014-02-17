@@ -1188,6 +1188,8 @@ EJ_BIND_FUNCTION(getUniformLocation, ctx, argc, argv) {
 	NSString *name = JSValueToNSString(ctx, argv[1]);
 	
 	GLuint uniform = glGetUniformLocation(program, [name UTF8String]);
+	if (uniform == -1)
+		return NULL;
 	return [EJBindingWebGLUniformLocation createJSObjectWithContext:ctx
 		scriptView:scriptView webglContext:self index:uniform];
 }
