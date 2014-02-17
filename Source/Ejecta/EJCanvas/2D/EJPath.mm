@@ -28,7 +28,6 @@ typedef std::vector<subpath_t> path_t;
 	self = [super init];
 	if(self) {
 		transform = CGAffineTransformIdentity;
-		stencilMask = 0x1;
 		[self reset];
 	}
 	return self;
@@ -519,9 +518,8 @@ typedef std::vector<subpath_t> path_t;
 }
 
 - (void)drawLinesToContext:(EJCanvasContext2D *)context {
-	//[self endSubPath];
-	
 	EJCanvasState *state = context.state;
+	GLubyte stencilMask;
 	
 	// Find the width of the line as it is projected onto the screen.
 	float projectedLineWidth = CGAffineTransformGetScale( state->transform ) * state->lineWidth;
@@ -543,6 +541,7 @@ typedef std::vector<subpath_t> path_t;
 	if( useStencil ) {
 		[context flushBuffers];
 		[context createStencilBufferOnce];
+		stencilMask = context.stencilMask;
 		
 		glEnable(GL_STENCIL_TEST);
 		
@@ -787,14 +786,14 @@ typedef std::vector<subpath_t> path_t;
 		glDisable(GL_STENCIL_TEST);
 		
 		if( stencilMask == (1<<7) ) {
-			stencilMask = (1<<0);
+			context.stencilMask = (1<<0);
 			
 			glStencilMask(0xff);
 			glClearStencil(0x0);
 			glClear(GL_STENCIL_BUFFER_BIT);
 		}
 		else {
-			stencilMask <<= 1;
+			context.stencilMask = (stencilMask << 1);
 		}
 	}
 }
