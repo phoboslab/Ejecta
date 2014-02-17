@@ -25,8 +25,6 @@ typedef enum {
 	EJPathFillRule fillRule;
 	unsigned int longestSubpath;
 	
-	GLubyte stencilMask;
-	
 	float distanceTolerance;
 	
 	CGAffineTransform transform;

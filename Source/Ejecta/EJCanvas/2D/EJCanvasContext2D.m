@@ -29,6 +29,7 @@ const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
 @synthesize backingStoreRatio;
 @synthesize useRetinaResolution;
 @synthesize imageSmoothingEnabled;
+@synthesize stencilMask;
 
 - (id)initWithScriptView:(EJJavaScriptView *)scriptViewp width:(short)widthp height:(short)heightp {
 	if( self = [super init] ) {
@@ -64,6 +65,7 @@ const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
 		textureFilter = GL_LINEAR;
 		msaaEnabled = NO;
 		msaaSamples = 2;
+		stencilMask = 0x1;
 	}
 	return self;
 }

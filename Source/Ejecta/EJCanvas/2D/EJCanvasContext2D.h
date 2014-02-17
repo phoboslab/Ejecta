@@ -116,6 +116,7 @@ static inline EJColorRGBA EJCanvasBlendStrokeColor( EJCanvasState *state ) {
 	GLuint viewFrameBuffer, viewRenderBuffer;
 	GLuint msaaFrameBuffer, msaaRenderBuffer;
 	GLuint stencilBuffer;
+	GLubyte stencilMask;
 	
 	short bufferWidth, bufferHeight;
 	
@@ -222,6 +223,7 @@ static inline EJColorRGBA EJCanvasBlendStrokeColor( EJCanvasState *state ) {
 @property (nonatomic, assign) float backingStoreRatio;
 @property (nonatomic) BOOL useRetinaResolution;
 @property (nonatomic) BOOL imageSmoothingEnabled;
+@property (nonatomic) GLubyte stencilMask;
 
 /* TODO: not yet implemented:
 	shadowOffsetX
