@@ -269,6 +269,7 @@ EJColorRGBA JSValueToColorRGBA(JSContextRef ctx, JSValueRef value) {
 	
 	// hsl(120,100%,50%) or hsla(120,100%,50%,0.5) format
 	else if( (jsc[0] == 'h' || jsc[0] == 'H') && (jsc[1] == 's' || jsc[1] == 'S') ) {
+		bool skipDigits = false;
 		float hsla[4] = {0,0,0,1};
 		int component = 0;
 		for( int i = 4; i < length-1 && component < 4; i++ ) {
@@ -282,10 +283,14 @@ EJColorRGBA JSValueToColorRGBA(JSContextRef ctx, JSValueRef value) {
 				hsla[component] = atof(alpha);
 				component++;
 			}
-			else if( isdigit(jsc[i]) ) {
+			else if( isdigit(jsc[i]) && !skipDigits ) {
 				hsla[component] = hsla[component] * 10 + (jsc[i] - '0');
 			}
+			else if( jsc[i] == '.' ) {
+				skipDigits = true;
+			}
 			else if( jsc[i] == ',' || jsc[i] == ')' ) {
+				skipDigits = false;
 				component++;
 			}
 		}
