@@ -49,6 +49,9 @@
 	banner.hidden = YES;
 }
 
+EJ_BIND_GET( isReady, ctx ) {
+	return JSValueMakeBoolean(ctx, isReady);
+}
 
 EJ_BIND_GET( isAtBottom, ctx ) {
 	return JSValueMakeBoolean(ctx, isAtBottom);
