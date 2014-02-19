@@ -27,7 +27,7 @@ Execute the command in terminal:
 
 Load in Ejecta :
 
-    ejecta.include("my-game.js");
+    ejectaUtils.include("my-game.js");
 
 
 Yes, there is NO difference between encrypted(encoded) and original.
@@ -45,45 +45,45 @@ Because the secret-key must be written into the "EJJavaScriptView.h" for securit
 
 
 var fs = require('fs');
-var path = require('path');
+var Path = require('path');
 
-
-var EJECTA_JSVIEW_FILE = "../Source/Ejecta/EJJavaScriptView.h";
+var ROOT = "../";
+var DEFAULT_NATIVE_FILE = "Extension/EJBindingAppUtils.h";
 var DEFAULT_SECRET_KEY = "SecretKey (Don't include Breakline)";
 //Please Don't change the value of EJECTA_SECRET_PREFIX, unless you understand it.
 var SECRET_PREFIX = "=S=";
 
 
-var argv = process.argv;
-var argsStart = 2;
-
-var secretKey = argv[argsStart++] || DEFAULT_SECRET_KEY;
-var jsFilename = argv[argsStart++];
-var outputFilename = argv[argsStart++];
-
 
 if (!module.parent) {
-    start();
+    var argv = process.argv;
+    var argsStart = 2;
+
+    var secretKey = argv[argsStart++] || DEFAULT_SECRET_KEY;
+    var jsFilename = argv[argsStart++];
+    var outputFilename = argv[argsStart++];
+
+    encrypt(jsFilename, ROOT, secretKey, outputFilename);
 }
 
 
-function start() {
+function encrypt(jsFile, projectPath, secretKey, outFile) {
 
-    if (jsFilename) {
-        
-        var buffer = fs.readFileSync(jsFilename);
+    if (jsFile) {
+
+        var buffer = fs.readFileSync(jsFile);
         var script = buffer.toString();
         var scriptEncode = encode(script, secretKey);
-        
-        if (!outputFilename){
-            outputFilename=jsFilename;
-            var dirname = path.dirname(jsFilename);
-            var filename = "ORIGINAL_" + path.basename(jsFilename);
-            var backup=path.join(dirname,filename);
+
+        if (!outFile) {
+            outFile = jsFile;
+            var dirname = Path.dirname(jsFile);
+            var filename = "ORIGINAL_" + Path.basename(jsFile);
+            var backup = Path.join(dirname, filename);
             fs.writeFileSync(backup, buffer);
         }
 
-        fs.writeFileSync(outputFilename, new Buffer(scriptEncode));
+        fs.writeFileSync(outFile, new Buffer(scriptEncode));
         console.log(" ==== Encode OK ==== ");
         console.log(scriptEncode);
 
@@ -92,14 +92,16 @@ function start() {
         console.log(scriptDecode);
     }
 
-
-    updateSecretKeyInEjecta(secretKey);
+    var nativeFile = Path.normalize(projectPath + "/" + DEFAULT_NATIVE_FILE);
+    updateSecretKeyInNative(nativeFile, secretKey);
 
     console.log(" ==== Update SecretKey OK ==== ");
 
 }
 
 function encode(script, key) {
+    key = key || DEFAULT_SECRET_KEY;
+
     var keyBuffer = new Buffer(key, "utf8");
     var keyLen = keyBuffer.length;
 
@@ -118,6 +120,7 @@ function encode(script, key) {
 }
 
 function decode(scriptEncode, key) {
+    key = key || DEFAULT_SECRET_KEY;
 
     scriptEncode = scriptEncode.substring(SECRET_PREFIX.length);
 
@@ -144,8 +147,10 @@ function escapeQuote(str) {
     return str.replace(/(")/g, '\\$1');
 }
 
-function updateSecretKeyInEjecta(key) {
-    var content = fs.readFileSync(EJECTA_JSVIEW_FILE, "utf8");
+function updateSecretKeyInNative(file, key) {
+    key = key || DEFAULT_SECRET_KEY;
+
+    var content = fs.readFileSync(file, "utf8");
     var str = content.toString();
     // console.log(str)
 
@@ -154,10 +159,11 @@ function updateSecretKeyInEjecta(key) {
     str = str.replace(/(\#define[\s]+EJECTA_SECRET_KEY[\s]+)[^\n]+/gm, '$1' + key);
 
     var newContent = new Buffer(str);
-    fs.writeFileSync(EJECTA_JSVIEW_FILE, newContent, "utf8");
+    fs.writeFileSync(file, newContent, "utf8");
     return str;
 }
 
+exports.encrypt = encrypt;
 exports.encode = encode;
 exports.decode = decode;
-exports.updateSecretKeyInEjecta = updateSecretKeyInEjecta;
+exports.updateSecretKeyInNative = updateSecretKeyInNative;
