@@ -420,7 +420,6 @@ EJ_BIND_FUNCTION(retrievePlayers, ctx, argc, argv)
 
 // get scores in range
 //      args: category, options(timeScope,friendsOnly,start,end), callback
-// playerScope
 EJ_BIND_FUNCTION(retrieveScores, ctx, argc, argv)
 {
 	GKLeaderboard *leaderboardRequest = [[GKLeaderboard alloc] init];
@@ -485,33 +484,6 @@ EJ_BIND_FUNCTION(retrieveScores, ctx, argc, argv)
 }
 
 
-
-- (void)loadPlayers:(NSArray *)identifiers callback:(JSObjectRef)callback {
-	[GKPlayer loadPlayersForIdentifiers:identifiers withCompletionHandler: ^(NSArray *players, NSError *error)
-     {
-         JSObjectRef jsPlayers = NULL;
-         JSContextRef gctx = scriptView.jsGlobalContext;
-         if (players != nil) {
-             NSUInteger size = players.count;
-             JSValueRef *jsArrayItems = malloc(sizeof(JSValueRef) * size);
-             int count = 0;
-             for (GKPlayer * player in players) {
-                 jsArrayItems[count++] = NSObjectToJSValue(gctx,
-                                                           @{
-                                                             @"alias": player.alias,
-                                                             @"displayName": player.displayName,
-                                                             @"playerID": player.playerID,
-                                                             @"isFriend": @(player.isFriend)
-                                                             });
-             }
-             jsPlayers = JSObjectMakeArray(gctx, count, jsArrayItems, NULL);
-         }
-         JSValueRef params[] = { jsPlayers, JSValueMakeBoolean(gctx, error) };
-         [scriptView invokeCallback:callback thisObject:NULL argc:2 argv:params];
-         JSValueUnprotectSafe(gctx, callback);
-     }];
-}
-
 - (void)loadPlayersAndScores:(NSArray *)identifiers scores:(NSArray *)scores callback:(JSObjectRef)callback {
 	[GKPlayer loadPlayersForIdentifiers:identifiers withCompletionHandler: ^(NSArray *players, NSError *error)
      {
@@ -528,6 +500,7 @@ EJ_BIND_FUNCTION(retrieveScores, ctx, argc, argv)
                                                              @"alias": player.alias,
                                                              @"displayName": player.displayName,
                                                              @"playerID": player.playerID,
+                                                             @"isFriend": @(player.isFriend),
                                                              @"category": score.category,
                                                              @"date": score.date,
                                                              @"formattedValue": score.formattedValue,
@@ -543,6 +516,27 @@ EJ_BIND_FUNCTION(retrieveScores, ctx, argc, argv)
      }];
 }
 
+
+
+- (void)loadPlayers:(NSArray *)identifiers callback:(JSObjectRef)callback {
+	[GKPlayer loadPlayersForIdentifiers:identifiers withCompletionHandler: ^(NSArray *players, NSError *error)
+     {
+         JSObjectRef jsPlayers = NULL;
+         JSContextRef gctx = scriptView.jsGlobalContext;
+         if (players != nil) {
+             NSUInteger size = players.count;
+             JSValueRef *jsArrayItems = malloc(sizeof(JSValueRef) * size);
+             int count = 0;
+             for (GKPlayer * player in players) {
+                 jsArrayItems[count++] = NSObjectToJSValue(gctx, GKPlayerToNSDict(player));
+             }
+             jsPlayers = JSObjectMakeArray(gctx, count, jsArrayItems, NULL);
+         }
+         JSValueRef params[] = { jsPlayers, JSValueMakeBoolean(gctx, error) };
+         [scriptView invokeCallback:callback thisObject:NULL argc:2 argv:params];
+         JSValueUnprotectSafe(gctx, callback);
+     }];
+}
 
 
 #undef InvokeAndUnprotectCallback
