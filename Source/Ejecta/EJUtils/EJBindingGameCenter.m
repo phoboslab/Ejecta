@@ -35,6 +35,11 @@
 	viewIsActive = false;
 }
 
+- (void)gameCenterViewControllerDidFinish:(GKGameCenterViewController *)viewController {
+    [viewController.presentingViewController dismissModalViewControllerAnimated:YES];
+	viewIsActive = false;
+}
+
 // authenticate( callback(error){} )
 EJ_BIND_FUNCTION( authenticate, ctx, argc, argv ) {
 	__block JSObjectRef callback = NULL;
@@ -259,25 +264,6 @@ EJ_BIND_GET(authed, ctx) {
 		@"isFriend": @(player.isFriend) \
 	}
 
-
-
-
-// showGameCenter()
-EJ_BIND_FUNCTION( showGameCenter, ctx, argc, argv ) {
-	if( argc < 1 || viewIsActive ) { return NULL; }
-	if( !authed ) { NSLog(@"GameKit Error: Not authed. Can't show GameCenter."); return NULL; }
-	
-    GKGameCenterViewController *gameCenterController = [[GKGameCenterViewController alloc] init];
-    if (gameCenterController != nil)
-    {
-        gameCenterController.gameCenterDelegate = self;
-        [scriptView.window.rootViewController presentModalViewController: gameCenterController animated: YES ];
-    }
-    
-	return NULL;
-}
-
-
 // loadFriends( callback(error, players[]){} )
 EJ_BIND_FUNCTION( loadFriends, ctx, argc, argv ) {
 	if( argc < 1 || !JSValueIsObject(ctx, argv[0]) ) { return NULL; }
@@ -392,6 +378,27 @@ EJ_BIND_FUNCTION( getLocalPlayerInfo, ctx, argc, argv ) {
 	GKLocalPlayer * player = [GKLocalPlayer localPlayer];
 	return NSObjectToJSValue(ctx, GKPlayerToNSDict(player));
 }
+
+
+
+
+
+// showGameCenter()
+EJ_BIND_FUNCTION( showGameCenter, ctx, argc, argv ) {
+	if( viewIsActive ) { return NULL; }
+	if( !authed ) { NSLog(@"GameKit Error: Not authed. Can't show GameCenter."); return NULL; }
+	
+    GKGameCenterViewController *gameCenterController = [[[GKGameCenterViewController alloc] init] autorelease];
+    if (gameCenterController) {
+        viewIsActive = true;
+        gameCenterController.gameCenterDelegate = self;
+        gameCenterController.viewState = GKGameCenterViewControllerStateDefault;
+        [scriptView.window.rootViewController presentModalViewController: gameCenterController animated: YES ];
+    }
+    
+	return NULL;
+}
+
 
 
 // get friends base info
@@ -513,27 +520,6 @@ EJ_BIND_FUNCTION(retrieveScores, ctx, argc, argv)
 	}
 	return NULL;
 }
-
-//// get scores in range
-////      args: category, options(timeScope,friendsOnly,start,end), callback
-//EJ_BIND_FUNCTION(retrieveLocalPlayerScore, ctx, argc, argv)
-////-(void) retrieveScoreForLocalPlayerWithCategory:(NSString*)category
-//{
-//    GKLeaderboard *leaderboardRequest = [[[GKLeaderboard alloc] init] autorelease];
-//    leaderboardRequest.category = category;
-//    
-//    if (leaderboardRequest != nil) {
-//        
-//        [leaderboardRequest loadScoresWithCompletionHandler:^(NSArray *scores, NSError *error){
-//            if (error != nil) {
-//                //Handle error <- don't care
-//            }
-//            else{
-//                NSLog(@"Retrieved localScore:%lld",leaderboardRequest.localPlayerScore.value);
-//            }
-//        }];
-//    }
-//}
 
 - (void)loadPlayersAndScores:(NSArray *)identifiers scores:(NSArray *)scores callback:(JSObjectRef)callback {
 	[GKPlayer loadPlayersForIdentifiers:identifiers withCompletionHandler: ^(NSArray *players, NSError *error)
