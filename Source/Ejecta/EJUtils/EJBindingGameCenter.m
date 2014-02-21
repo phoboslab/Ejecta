@@ -400,7 +400,6 @@ EJ_BIND_FUNCTION( showGameCenter, ctx, argc, argv ) {
 }
 
 
-
 // get friends base info
 EJ_BIND_FUNCTION(retrieveFriends, ctx, argc, argv)
 {
