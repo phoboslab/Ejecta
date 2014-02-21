@@ -259,6 +259,25 @@ EJ_BIND_GET(authed, ctx) {
 		@"isFriend": @(player.isFriend) \
 	}
 
+
+
+
+// showGameCenter()
+EJ_BIND_FUNCTION( showGameCenter, ctx, argc, argv ) {
+	if( argc < 1 || viewIsActive ) { return NULL; }
+	if( !authed ) { NSLog(@"GameKit Error: Not authed. Can't show GameCenter."); return NULL; }
+	
+    GKGameCenterViewController *gameCenterController = [[GKGameCenterViewController alloc] init];
+    if (gameCenterController != nil)
+    {
+        gameCenterController.gameCenterDelegate = self;
+        [scriptView.window.rootViewController presentModalViewController: gameCenterController animated: YES ];
+    }
+    
+	return NULL;
+}
+
+
 // loadFriends( callback(error, players[]){} )
 EJ_BIND_FUNCTION( loadFriends, ctx, argc, argv ) {
 	if( argc < 1 || !JSValueIsObject(ctx, argv[0]) ) { return NULL; }
@@ -419,7 +438,7 @@ EJ_BIND_FUNCTION(retrievePlayers, ctx, argc, argv)
 }
 
 // get scores in range
-//      args: category, options(timeScope,friendsOnly,start,end), callback
+//      args: category, options(timeScope,friendsOnly,localPlayer, start,end), callback
 EJ_BIND_FUNCTION(retrieveScores, ctx, argc, argv)
 {
 	GKLeaderboard *leaderboardRequest = [[GKLeaderboard alloc] init];
@@ -436,12 +455,19 @@ EJ_BIND_FUNCTION(retrieveScores, ctx, argc, argv)
 		NSInteger end = [options[@"end"] integerValue];
 		NSInteger timeScope = [options[@"timeScope"] integerValue];
 		BOOL friendsOnly = [options[@"friendsOnly"] boolValue];
-		if (!start) {
-			start = 1;
-		}
-		if (!end) {
-			end = start + 100 - 1;
-		}
+		BOOL localPlayerOnly = [options[@"localPlayerOnly"] boolValue];
+        
+        if (localPlayerOnly){
+            start=1;
+            end=1;
+        }else{
+            if (!start) {
+                start = 1;
+            }
+            if (!end) {
+                end = start + 100 - 1;
+            }
+        }
         
 		switch (timeScope) {
 			case 0:
@@ -470,12 +496,17 @@ EJ_BIND_FUNCTION(retrieveScores, ctx, argc, argv)
 		[leaderboardRequest loadScoresWithCompletionHandler: ^(NSArray *scores, NSError *error) {
 		    NSMutableArray *identifiers = [[NSMutableArray alloc] init];
 		    NSMutableArray *scoreList = [[NSMutableArray alloc] init];
-		    if (scores != NULL) {
+            if (scores != NULL && !localPlayerOnly) {
 		        for (GKScore * obj in leaderboardRequest.scores) {
 		            [identifiers addObject:obj.playerID];
 		            [scoreList addObject:obj];
 				}
 			}
+            
+            // Notice: the last item in the array is localPlayer's score-info.
+            GKScore* localPlayer=leaderboardRequest.localPlayerScore;
+            [identifiers addObject:localPlayer.playerID];
+            [scoreList addObject:localPlayer];
             
 		    [self loadPlayersAndScores:identifiers scores:scoreList callback:callback];
 		}];
@@ -483,6 +514,26 @@ EJ_BIND_FUNCTION(retrieveScores, ctx, argc, argv)
 	return NULL;
 }
 
+//// get scores in range
+////      args: category, options(timeScope,friendsOnly,start,end), callback
+//EJ_BIND_FUNCTION(retrieveLocalPlayerScore, ctx, argc, argv)
+////-(void) retrieveScoreForLocalPlayerWithCategory:(NSString*)category
+//{
+//    GKLeaderboard *leaderboardRequest = [[[GKLeaderboard alloc] init] autorelease];
+//    leaderboardRequest.category = category;
+//    
+//    if (leaderboardRequest != nil) {
+//        
+//        [leaderboardRequest loadScoresWithCompletionHandler:^(NSArray *scores, NSError *error){
+//            if (error != nil) {
+//                //Handle error <- don't care
+//            }
+//            else{
+//                NSLog(@"Retrieved localScore:%lld",leaderboardRequest.localPlayerScore.value);
+//            }
+//        }];
+//    }
+//}
 
 - (void)loadPlayersAndScores:(NSArray *)identifiers scores:(NSArray *)scores callback:(JSObjectRef)callback {
 	[GKPlayer loadPlayersForIdentifiers:identifiers withCompletionHandler: ^(NSArray *players, NSError *error)
