@@ -462,6 +462,7 @@ EJ_BIND_FUNCTION(retrieveScores, ctx, argc, argv)
 		NSInteger timeScope = [options[@"timeScope"] integerValue];
 		BOOL friendsOnly = [options[@"friendsOnly"] boolValue];
 		BOOL localPlayerOnly = [options[@"localPlayerOnly"] boolValue];
+        BOOL withLocalPlayer = [options[@"withLocalPlayer"] boolValue];
         
         if (localPlayerOnly){
             start=1;
@@ -508,11 +509,13 @@ EJ_BIND_FUNCTION(retrieveScores, ctx, argc, argv)
 		            [scoreList addObject:obj];
 				}
 			}
-            
-            // Notice: the last item in the array is localPlayer's score-info.
-            GKScore* localPlayer=leaderboardRequest.localPlayerScore;
-            [identifiers addObject:localPlayer.playerID];
-            [scoreList addObject:localPlayer];
+            if (withLocalPlayer){
+                // Notice: the last item in the array is localPlayer's score-info.
+                GKScore* localPlayer=leaderboardRequest.localPlayerScore;
+                [identifiers addObject:localPlayer.playerID];
+                [scoreList addObject:localPlayer];
+            }
+
             
 		    [self loadPlayersAndScores:identifiers scores:scoreList callback:callback];
 		}];
