@@ -18,6 +18,10 @@ window.devicePixelRatio = ej.devicePixelRatio;
 window.innerWidth = ej.screenWidth;
 window.innerHeight = ej.screenHeight;
 
+Object.defineProperty(window, 'orientation', {
+    get: function() {return ej.orientation; }
+});
+
 window.screen = {
 	availWidth: window.innerWidth,
 	availHeight: window.innerHeight

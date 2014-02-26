@@ -7,7 +7,9 @@
 	EJBindingCanvasContextWebGL *webglContext;
 }
 - (id)initWithWebGLContext:(EJBindingCanvasContextWebGL *)webglContext index:(GLuint)index;
+- (void)invalidate;
 + (GLuint)indexFromJSValue:(JSValueRef)value;
++ (EJBindingWebGLObject *)webGLObjectFromJSValue:(JSValueRef)value;
 + (JSObjectRef)createJSObjectWithContext:(JSContextRef)ctx
 	scriptView:(EJJavaScriptView *)scriptView
 	webglContext:(EJBindingCanvasContextWebGL *)webglContext

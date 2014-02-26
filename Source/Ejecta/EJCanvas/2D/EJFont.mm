@@ -126,7 +126,13 @@ int EJFontGlyphLayoutSortByTextureIndex(const void *a, const void *b) {
 	CFErrorRef error;
 	CGDataProviderRef provider = CGDataProviderCreateWithCFData((CFDataRef)inData);
 	CGFontRef font = CGFontCreateWithDataProvider(provider);
-	if( !CTFontManagerRegisterGraphicsFont(font, &error) ){
+	
+	if( CTFontManagerRegisterGraphicsFont(font, &error) ){
+		CFStringRef name = CGFontCopyPostScriptName(font);
+		NSLog(@"Loaded Font: %@", (NSString *)name);
+		CFRelease(name);
+	}
+	else {
 		CFStringRef errorDescription = CFErrorCopyDescription(error);
 		NSLog(@"Failed to load font: %@", errorDescription);
 		CFRelease(errorDescription);
