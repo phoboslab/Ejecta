@@ -540,8 +540,7 @@ EJ_BIND_FUNCTION_DIRECT(cullFace, glCullFace, mode);
 #define EJ_BIND_DELETE_OBJECT(I, NAME) \
 	EJ_BIND_FUNCTION(delete##NAME, ctx, argc, argv) { \
 		if( argc < 1 ) { return NULL; } \
-		GLuint index = [EJBindingWebGL##NAME indexFromJSValue:argv[0]]; \
-		[self delete##NAME:index]; \
+		[[EJBindingWebGLObject webGLObjectFromJSValue:argv[0]] invalidate]; \
 		return NULL; \
 	}
 
