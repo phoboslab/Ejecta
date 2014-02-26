@@ -207,6 +207,17 @@ EJ_BIND_GET(appVersion, ctx ) {
 	return NSStringToJSValue( ctx, EJECTA_VERSION );
 }
 
+EJ_BIND_GET(orientation, ctx ) {
+	int angle = 0;
+	switch( UIApplication.sharedApplication.statusBarOrientation ) {
+		case UIDeviceOrientationPortrait: angle = 0; break;
+		case UIInterfaceOrientationLandscapeLeft: angle = -90; break;
+		case UIInterfaceOrientationLandscapeRight: angle = 90; break;
+		case UIInterfaceOrientationPortraitUpsideDown: angle = 180; break;
+	}
+	return JSValueMakeNumber(ctx, angle);
+}
+
 EJ_BIND_GET(onLine, ctx) {
 	struct sockaddr_in zeroAddress;
 	bzero(&zeroAddress, sizeof(zeroAddress));
