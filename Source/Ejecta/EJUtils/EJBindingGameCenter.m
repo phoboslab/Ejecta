@@ -518,7 +518,6 @@ EJ_BIND_FUNCTION(retrieveScores, ctx, argc, argv)
                 [scoreList addObject:localPlayer];
             }
 
-            
 		    [self loadPlayersAndScores:identifiers scores:scoreList callback:callback];
 		}];
 	}
