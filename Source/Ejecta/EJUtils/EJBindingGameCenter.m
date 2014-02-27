@@ -509,7 +509,7 @@ EJ_BIND_FUNCTION(retrieveScores, ctx, argc, argv)
 		            [scoreList addObject:obj];
 				}
 			}
-            if (withLocalPlayer){
+            if (localPlayerOnly || withLocalPlayer){
                 // Notice: the last item in the array is localPlayer's score-info.
                 GKScore* localPlayer=leaderboardRequest.localPlayerScore;
                 [identifiers addObject:localPlayer.playerID];
