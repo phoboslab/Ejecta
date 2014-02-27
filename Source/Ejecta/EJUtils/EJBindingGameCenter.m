@@ -511,7 +511,8 @@ EJ_BIND_FUNCTION(retrieveScores, ctx, argc, argv)
 				}
 			}
             if (localPlayerOnly || withLocalPlayer){
-                // Notice: the last item in the array is localPlayer's score-info.
+                // Notice: Append the localPlayer's score-info to the array.
+                //         So the array.length == (end-start+1)+1
                 GKScore* localPlayer=leaderboardRequest.localPlayerScore;
                 [identifiers addObject:localPlayer.playerID];
                 [scoreList addObject:localPlayer];
