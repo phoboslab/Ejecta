@@ -514,8 +514,10 @@ EJ_BIND_FUNCTION(retrieveScores, ctx, argc, argv)
                 // Notice: Append the localPlayer's score-info to the array.
                 //         So the array.length == (end-start+1)+1
                 GKScore* localPlayer=leaderboardRequest.localPlayerScore;
-                [identifiers addObject:localPlayer.playerID];
-                [scoreList addObject:localPlayer];
+                if (localPlayer){
+                    [identifiers addObject:localPlayer.playerID];
+                    [scoreList addObject:localPlayer];
+                }
             }
 
 		    [self loadPlayersAndScores:identifiers scores:scoreList callback:callback];
