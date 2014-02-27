@@ -444,7 +444,7 @@ EJ_BIND_FUNCTION(retrievePlayers, ctx, argc, argv)
 }
 
 // get scores in range
-//      args: category, options(timeScope,friendsOnly,localPlayer, start,end), callback
+//      args: category, options(timeScope,friendsOnly,withLocalPlayer,localPlayerOnly, start,end), callback
 EJ_BIND_FUNCTION(retrieveScores, ctx, argc, argv)
 {
 	GKLeaderboard *leaderboardRequest = [[GKLeaderboard alloc] init];
@@ -465,6 +465,7 @@ EJ_BIND_FUNCTION(retrieveScores, ctx, argc, argv)
         BOOL withLocalPlayer = [options[@"withLocalPlayer"] boolValue];
         
         if (localPlayerOnly){
+            friendsOnly = false;
             start=1;
             end=1;
         }else{
