@@ -31,6 +31,8 @@
 		5C76942E18B51B8E00FED816 /* App in Resources */ = {isa = PBXBuildFile; fileRef = B68C5AEF132E6CD60015092E /* App */; };
 		5C7C694518BDF11C00FF8995 /* Icon-Spotlight@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5C7C694418BDF11C00FF8995 /* Icon-Spotlight@2x.png */; };
 		5C7C694718BDF31C00FF8995 /* Icon-Spotlight.png in Resources */ = {isa = PBXBuildFile; fileRef = 5C7C694618BDF31C00FF8995 /* Icon-Spotlight.png */; };
+		5C9280DF18BFC91800A9124C /* Icon-60.png in Resources */ = {isa = PBXBuildFile; fileRef = B99F05BD188C4125002F194D /* Icon-60.png */; };
+		5C9280E018BFC91800A9124C /* Icon-60@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B99F05BE188C4125002F194D /* Icon-60@2x.png */; };
 		B6074FF315F8E41700D987F9 /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6074FF215F8E41600D987F9 /* GameKit.framework */; };
 		B607AB67132EA6C300D7C3EA /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B607AB66132EA6C300D7C3EA /* OpenAL.framework */; };
 		B607AC33132EA75F00D7C3EA /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B607AC32132EA75F00D7C3EA /* AudioToolbox.framework */; };
@@ -769,6 +771,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5C9280DF18BFC91800A9124C /* Icon-60.png in Resources */,
+				5C9280E018BFC91800A9124C /* Icon-60@2x.png in Resources */,
 				5C34E64E18BDECD900F9FA1E /* Default-Landscape~ipad.png in Resources */,
 				5C34E65318BDECD900F9FA1E /* iTunesArtwork in Resources */,
 				5C7C694518BDF11C00FF8995 /* Icon-Spotlight@2x.png in Resources */,
