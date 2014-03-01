@@ -23,6 +23,7 @@
 		5C34E65818BDECD900F9FA1E /* Default-Landscape@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 5C34E64918BDECD900F9FA1E /* Default-Landscape@2x~ipad.png */; };
 		5C34E65918BDECD900F9FA1E /* Default-Portrait@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 5C34E64A18BDECD900F9FA1E /* Default-Portrait@2x~ipad.png */; };
 		5C34E65A18BDECD900F9FA1E /* Default-Portrait~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 5C34E64B18BDECD900F9FA1E /* Default-Portrait~ipad.png */; };
+		5C3A473018C26B3B00A84B21 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C3A472F18C26B3B00A84B21 /* Social.framework */; };
 		5C76942718B513EB00FED816 /* EJBindingAppUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C76941F18B513EB00FED816 /* EJBindingAppUtils.m */; };
 		5C76942818B513EB00FED816 /* EJBindingWebView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C76942018B513EB00FED816 /* EJBindingWebView.m */; };
 		5C76942918B513EB00FED816 /* EJBindingAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C76942318B513EB00FED816 /* EJBindingAlertView.m */; };
@@ -154,6 +155,7 @@
 		5C34E64918BDECD900F9FA1E /* Default-Landscape@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape@2x~ipad.png"; sourceTree = "<group>"; };
 		5C34E64A18BDECD900F9FA1E /* Default-Portrait@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Portrait@2x~ipad.png"; sourceTree = "<group>"; };
 		5C34E64B18BDECD900F9FA1E /* Default-Portrait~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Portrait~ipad.png"; sourceTree = "<group>"; };
+		5C3A472F18C26B3B00A84B21 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		5C76941F18B513EB00FED816 /* EJBindingAppUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingAppUtils.m; sourceTree = "<group>"; };
 		5C76942018B513EB00FED816 /* EJBindingWebView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingWebView.m; sourceTree = "<group>"; };
 		5C76942118B513EB00FED816 /* EJBindingAppUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingAppUtils.h; sourceTree = "<group>"; };
@@ -347,6 +349,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5C3A473018C26B3B00A84B21 /* Social.framework in Frameworks */,
 				B6D4B283183CF43A008251EB /* CoreLocation.framework in Frameworks */,
 				B6CDA16018295A5F00190074 /* libc++.dylib in Frameworks */,
 				B60FA92A1702297C00078D20 /* MediaPlayer.framework in Frameworks */,
@@ -398,6 +401,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				5C3A472F18C26B3B00A84B21 /* Social.framework */,
 				B6D4B282183CF43A008251EB /* CoreLocation.framework */,
 				B6CDA15F18295A5F00190074 /* libc++.dylib */,
 				B66F1E7F1476B6A40090D208 /* libstdc++.dylib */,
