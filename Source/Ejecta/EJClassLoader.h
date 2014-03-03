@@ -9,7 +9,7 @@
 }
 
 - (EJLoadedJSClass *)getJSClass:(id)class;
-- (EJLoadedJSClass *)createJSClass:(id)class;
+- (EJLoadedJSClass *)loadJSClass:(id)class;
 
 - (id)initWithScriptView:(EJJavaScriptView *)scriptView name:(NSString *)name;
 

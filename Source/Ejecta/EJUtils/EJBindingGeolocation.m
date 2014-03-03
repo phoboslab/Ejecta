@@ -147,7 +147,7 @@
 	
 	currentIndex++;
 	callbacks[@(currentIndex)] = [[[EJGeolocationCallback alloc] initWithScriptView:scriptView
-		callback:callback errback:errback oneShot:oneShot]autorelease];
+		callback:callback errback:errback oneShot:oneShot] autorelease];
 		
 	return currentIndex;
 }

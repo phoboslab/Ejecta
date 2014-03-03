@@ -115,16 +115,14 @@ bool EJConstructorHasInstance(JSContextRef ctx, JSObjectRef constructor, JSValue
 		return loadedClass;
 	}
 	
-	// Still here? Create and insert into cache
-	loadedClass = [self createJSClass:class];
+	// Still here? Load and insert into cache
+	loadedClass = [self loadJSClass:class];
 	classCache[class] = loadedClass;
-	
-	[loadedClass release]; // retained by the cache dict
 	
 	return loadedClass;
 }
 
-- (EJLoadedJSClass *)createJSClass:(id)class {
+- (EJLoadedJSClass *)loadJSClass:(id)class {
 	// Gather all class methods that return C callbacks for this class or it's parents
 	NSMutableArray *methods = [[NSMutableArray alloc] init];
 	NSMutableArray *properties = [[NSMutableArray alloc] init];
@@ -210,7 +208,7 @@ bool EJConstructorHasInstance(JSContextRef ctx, JSObjectRef constructor, JSValue
 	JSClassRelease(jsClass);
 	[constantValues release];
 	
-	return loadedClass;
+	return [loadedClass autorelease];
 }
 
 @end
