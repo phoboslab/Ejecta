@@ -13,6 +13,8 @@
 		3EBC19BE16CECE190036F9F3 /* EJBindingKeyInput.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EBC19BD16CECE190036F9F3 /* EJBindingKeyInput.m */; };
 		3EF00C5916C29360004599A4 /* EJJavaScriptView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EF00C5816C29360004599A4 /* EJJavaScriptView.m */; };
 		5B7B76761619DB9700691910 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B7B76751619DB9700691910 /* CoreText.framework */; };
+		5C21D91D18C2F1DF00FB522F /* EJBindingLocalNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C21D91C18C2F1DF00FB522F /* EJBindingLocalNotification.m */; };
+		5C21D92018C30BC600FB522F /* EJBindingSocial.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C21D91F18C30BC600FB522F /* EJBindingSocial.m */; };
 		5C34E64E18BDECD900F9FA1E /* Default-Landscape~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 5C34E63F18BDECD900F9FA1E /* Default-Landscape~ipad.png */; };
 		5C34E65218BDECD900F9FA1E /* Icon-Small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5C34E64318BDECD900F9FA1E /* Icon-Small@2x.png */; };
 		5C34E65318BDECD900F9FA1E /* iTunesArtwork in Resources */ = {isa = PBXBuildFile; fileRef = 5C34E64418BDECD900F9FA1E /* iTunesArtwork */; };
@@ -27,13 +29,13 @@
 		5C76942718B513EB00FED816 /* EJBindingAppUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C76941F18B513EB00FED816 /* EJBindingAppUtils.m */; };
 		5C76942818B513EB00FED816 /* EJBindingWebView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C76942018B513EB00FED816 /* EJBindingWebView.m */; };
 		5C76942918B513EB00FED816 /* EJBindingAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C76942318B513EB00FED816 /* EJBindingAlertView.m */; };
-		5C76942A18B513EB00FED816 /* EJBindingNotificationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C76942518B513EB00FED816 /* EJBindingNotificationManager.m */; };
 		5C76942D18B5142700FED816 /* OpenUDID.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C76942C18B5142700FED816 /* OpenUDID.m */; };
 		5C76942E18B51B8E00FED816 /* App in Resources */ = {isa = PBXBuildFile; fileRef = B68C5AEF132E6CD60015092E /* App */; };
 		5C7C694518BDF11C00FF8995 /* Icon-Spotlight@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5C7C694418BDF11C00FF8995 /* Icon-Spotlight@2x.png */; };
 		5C7C694718BDF31C00FF8995 /* Icon-Spotlight.png in Resources */ = {isa = PBXBuildFile; fileRef = 5C7C694618BDF31C00FF8995 /* Icon-Spotlight.png */; };
 		5C9280DF18BFC91800A9124C /* Icon-60.png in Resources */ = {isa = PBXBuildFile; fileRef = B99F05BD188C4125002F194D /* Icon-60.png */; };
 		5C9280E018BFC91800A9124C /* Icon-60@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B99F05BE188C4125002F194D /* Icon-60@2x.png */; };
+		5CCE727218C3502C00258A5A /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CCE727118C3502C00258A5A /* Accounts.framework */; };
 		B6074FF315F8E41700D987F9 /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6074FF215F8E41600D987F9 /* GameKit.framework */; };
 		B607AB67132EA6C300D7C3EA /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B607AB66132EA6C300D7C3EA /* OpenAL.framework */; };
 		B607AC33132EA75F00D7C3EA /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B607AC32132EA75F00D7C3EA /* AudioToolbox.framework */; };
@@ -145,6 +147,10 @@
 		3EF00C5716C29360004599A4 /* EJJavaScriptView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJJavaScriptView.h; sourceTree = "<group>"; };
 		3EF00C5816C29360004599A4 /* EJJavaScriptView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJJavaScriptView.m; sourceTree = "<group>"; };
 		5B7B76751619DB9700691910 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
+		5C21D91B18C2F18400FB522F /* EJBindingLocalNotification.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EJBindingLocalNotification.h; sourceTree = "<group>"; };
+		5C21D91C18C2F1DF00FB522F /* EJBindingLocalNotification.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingLocalNotification.m; sourceTree = "<group>"; };
+		5C21D91E18C30B1B00FB522F /* EJBindingSocial.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EJBindingSocial.h; sourceTree = "<group>"; };
+		5C21D91F18C30BC600FB522F /* EJBindingSocial.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingSocial.m; sourceTree = "<group>"; };
 		5C34E63F18BDECD900F9FA1E /* Default-Landscape~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape~ipad.png"; sourceTree = "<group>"; };
 		5C34E64318BDECD900F9FA1E /* Icon-Small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small@2x.png"; sourceTree = "<group>"; };
 		5C34E64418BDECD900F9FA1E /* iTunesArtwork */ = {isa = PBXFileReference; lastKnownFileType = file; path = iTunesArtwork; sourceTree = "<group>"; };
@@ -161,13 +167,12 @@
 		5C76942118B513EB00FED816 /* EJBindingAppUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingAppUtils.h; sourceTree = "<group>"; };
 		5C76942218B513EB00FED816 /* EJBindingAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingAlertView.h; sourceTree = "<group>"; };
 		5C76942318B513EB00FED816 /* EJBindingAlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingAlertView.m; sourceTree = "<group>"; };
-		5C76942418B513EB00FED816 /* EJBindingNotificationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingNotificationManager.h; sourceTree = "<group>"; };
-		5C76942518B513EB00FED816 /* EJBindingNotificationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingNotificationManager.m; sourceTree = "<group>"; };
 		5C76942618B513EB00FED816 /* EJBindingWebView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingWebView.h; sourceTree = "<group>"; };
 		5C76942B18B5142700FED816 /* OpenUDID.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenUDID.h; sourceTree = "<group>"; };
 		5C76942C18B5142700FED816 /* OpenUDID.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OpenUDID.m; sourceTree = "<group>"; };
 		5C7C694418BDF11C00FF8995 /* Icon-Spotlight@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Spotlight@2x.png"; sourceTree = "<group>"; };
 		5C7C694618BDF31C00FF8995 /* Icon-Spotlight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Spotlight.png"; sourceTree = "<group>"; };
+		5CCE727118C3502C00258A5A /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		B6074FF215F8E41600D987F9 /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
 		B607AB66132EA6C300D7C3EA /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
 		B607AC32132EA75F00D7C3EA /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
@@ -349,6 +354,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5CCE727218C3502C00258A5A /* Accounts.framework in Frameworks */,
 				5C3A473018C26B3B00A84B21 /* Social.framework in Frameworks */,
 				B6D4B283183CF43A008251EB /* CoreLocation.framework in Frameworks */,
 				B6CDA16018295A5F00190074 /* libc++.dylib in Frameworks */,
@@ -401,28 +407,29 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				5C3A472F18C26B3B00A84B21 /* Social.framework */,
-				B6D4B282183CF43A008251EB /* CoreLocation.framework */,
-				B6CDA15F18295A5F00190074 /* libc++.dylib */,
-				B66F1E7F1476B6A40090D208 /* libstdc++.dylib */,
-				B66F1E771476B3AC0090D208 /* libicucore.dylib */,
-				B60FA9291702297C00078D20 /* MediaPlayer.framework */,
-				B6D6E09916F7D03C009AB75F /* StoreKit.framework */,
-				B63D256916E8DF33007E6034 /* Security.framework */,
-				B63D256716E8DF23007E6034 /* CFNetwork.framework */,
-				B6F1151B1677FCF2001F1324 /* CoreMotion.framework */,
-				B6F463A31636C3FA00FC89C1 /* SystemConfiguration.framework */,
-				5B7B76751619DB9700691910 /* CoreText.framework */,
-				B6074FF215F8E41600D987F9 /* GameKit.framework */,
-				B607AD0F132EB52400D7C3EA /* QuartzCore.framework */,
-				1DF5F4DF0D08C38300B7A737 /* UIKit.framework */,
-				1D30AB110D05D00D00671497 /* Foundation.framework */,
-				288765FC0DF74451002DB57D /* CoreGraphics.framework */,
-				B607AB66132EA6C300D7C3EA /* OpenAL.framework */,
+				5CCE727118C3502C00258A5A /* Accounts.framework */,
 				B607AC32132EA75F00D7C3EA /* AudioToolbox.framework */,
-				B607AD09132EB51000D7C3EA /* OpenGLES.framework */,
 				B6CFCCD81332F152001F17AF /* AVFoundation.framework */,
+				B63D256716E8DF23007E6034 /* CFNetwork.framework */,
+				288765FC0DF74451002DB57D /* CoreGraphics.framework */,
+				B6D4B282183CF43A008251EB /* CoreLocation.framework */,
+				B6F1151B1677FCF2001F1324 /* CoreMotion.framework */,
+				5B7B76751619DB9700691910 /* CoreText.framework */,
+				1D30AB110D05D00D00671497 /* Foundation.framework */,
+				B6074FF215F8E41600D987F9 /* GameKit.framework */,
 				B6AC4A051359E7A5003C4982 /* iAd.framework */,
+				B6CDA15F18295A5F00190074 /* libc++.dylib */,
+				B66F1E771476B3AC0090D208 /* libicucore.dylib */,
+				B66F1E7F1476B6A40090D208 /* libstdc++.dylib */,
+				B60FA9291702297C00078D20 /* MediaPlayer.framework */,
+				B607AB66132EA6C300D7C3EA /* OpenAL.framework */,
+				B607AD09132EB51000D7C3EA /* OpenGLES.framework */,
+				B607AD0F132EB52400D7C3EA /* QuartzCore.framework */,
+				B63D256916E8DF33007E6034 /* Security.framework */,
+				5C3A472F18C26B3B00A84B21 /* Social.framework */,
+				B6D6E09916F7D03C009AB75F /* StoreKit.framework */,
+				B6F463A31636C3FA00FC89C1 /* SystemConfiguration.framework */,
+				1DF5F4DF0D08C38300B7A737 /* UIKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -436,8 +443,10 @@
 				5C76942018B513EB00FED816 /* EJBindingWebView.m */,
 				5C76942218B513EB00FED816 /* EJBindingAlertView.h */,
 				5C76942318B513EB00FED816 /* EJBindingAlertView.m */,
-				5C76942418B513EB00FED816 /* EJBindingNotificationManager.h */,
-				5C76942518B513EB00FED816 /* EJBindingNotificationManager.m */,
+				5C21D91B18C2F18400FB522F /* EJBindingLocalNotification.h */,
+				5C21D91C18C2F1DF00FB522F /* EJBindingLocalNotification.m */,
+				5C21D91E18C30B1B00FB522F /* EJBindingSocial.h */,
+				5C21D91F18C30BC600FB522F /* EJBindingSocial.m */,
 				399DDEA217CA8C4000267FFE /* OpenUDID */,
 			);
 			path = Extension;
@@ -817,6 +826,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5C21D91D18C2F1DF00FB522F /* EJBindingLocalNotification.m in Sources */,
 				B630048916C1A2390036D8D4 /* EJBindingTextMetrics.m in Sources */,
 				B64C87AC16B81BAA0097CD5B /* EJGLProgram2D.m in Sources */,
 				B64C87AE16B81BAA0097CD5B /* EJGLProgram2DRadialGradient.m in Sources */,
@@ -862,7 +872,6 @@
 				B6F11550167A7DA1001F1324 /* EJCanvasContextWebGL.m in Sources */,
 				B6F11556167BD59D001F1324 /* EJBindingWebGLObjects.m in Sources */,
 				B68037011682A58300833604 /* EJConvertWebGL.m in Sources */,
-				5C76942A18B513EB00FED816 /* EJBindingNotificationManager.m in Sources */,
 				B664B98B1699F3380093E04E /* EJBindingCanvasPattern.m in Sources */,
 				B66847591823FEDF00ABCDF9 /* EJCanvasContextWebGLTexture.m in Sources */,
 				B664B98E1699F49C0093E04E /* EJCanvasPattern.m in Sources */,
@@ -870,6 +879,7 @@
 				B6A0F4AF16A9D86100477789 /* EJCanvasGradient.m in Sources */,
 				B6A0F4B416AB0B4600477789 /* EJBindingCanvasGradient.m in Sources */,
 				3EBC19BE16CECE190036F9F3 /* EJBindingKeyInput.m in Sources */,
+				5C21D92018C30BC600FB522F /* EJBindingSocial.m in Sources */,
 				B668FCEE1821C08500D4F629 /* EJFontCache.m in Sources */,
 				3EF00C5916C29360004599A4 /* EJJavaScriptView.m in Sources */,
 				B630048C16CB098D0036D8D4 /* EJClassLoader.m in Sources */,
