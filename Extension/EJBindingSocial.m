@@ -3,44 +3,23 @@
 @implementation EJBindingSocial
 
 
-#define InvokeAndUnprotectPostCallback(callback, statusCode, object) \
-	JSGlobalContextRef ctx = scriptView.jsGlobalContext; \
-	JSValueRef arg = NULL; \
-	if (object == NULL) { \
-		arg = scriptView->jsNull; \
-	} else if ([object isKindOfClass : [NSString class]]) { \
-		JSValueRef jsStr =  NSStringToJSValue(ctx, (NSString *)object); \
-		arg = JSValueMakeString(ctx, (JSStringRef)jsStr); \
-	} else { \
-		arg = NSObjectToJSValue(scriptView.jsGlobalContext, object); \
-	} \
-	[scriptView invokeCallback : callback thisObject : NULL argc : 2 argv : \
-					 (JSValueRef[]) { \
-	     JSValueMakeNumber(scriptView.jsGlobalContext, statusCode), arg \
-	 } \
-	]; \
-	JSValueUnprotect(scriptView.jsGlobalContext, callback);
-
-
-
-
-- (void)invokeAndUnprotectPostCallback:(JSObjectRef)callback statusCode:(NSInteger)statusCode object:(NSObject *)object {
+- (void)invokeAndUnprotectPostCallback:(JSObjectRef)callback statusCode:(NSInteger)statusCode responseObject:(NSObject *)responseObject {
 	JSGlobalContextRef ctx = scriptView.jsGlobalContext;
 	JSValueRef arg = scriptView->jsNull;
-	if (object == NULL) {
+	if (responseObject == NULL) {
 	}
-	else if ([object isKindOfClass:[NSString class]]) {
-        JSStringRef jsStr = JSStringCreateWithUTF8CString([(NSString *)object UTF8String]);
+	else if ([responseObject isKindOfClass:[NSString class]]) {
+		JSStringRef jsStr = JSStringCreateWithUTF8CString([(NSString *)responseObject UTF8String]);
 		arg = JSValueMakeString(ctx, (JSStringRef)jsStr);
 	}
 	else {
-		arg = NSObjectToJSValue(scriptView.jsGlobalContext, object);
+		arg = NSObjectToJSValue(scriptView.jsGlobalContext, responseObject);
 	}
 	[scriptView invokeCallback:callback thisObject:NULL argc:2 argv:
 	 (JSValueRef[]) {
 	     JSValueMakeNumber(scriptView.jsGlobalContext, statusCode), arg
 	 }
-     ];
+	];
 	JSValueUnprotect(scriptView.jsGlobalContext, callback);
 }
 
@@ -99,7 +78,7 @@
 	if ([snsName isEqualToString:@"facebook"]) {
 		NSURL *url = [NSURL URLWithString:@"https://graph.facebook.com/me/photos"];
 		NSDictionary *params = @{ @"message" : message };
-		request = [SLRequest requestForServiceType:SLServiceTypeTwitter
+		request = [SLRequest requestForServiceType:SLServiceTypeFacebook
 		                             requestMethod:SLRequestMethodPOST
 		                                       URL:url
 		                                parameters:params];
@@ -125,19 +104,47 @@
 	return request;
 }
 
-- (NSDictionary *)createRequestOption:(NSString *)snsName appKey:(NSString *)appKey{
-    NSDictionary *options = NULL ;
-    
-    if ([snsName isEqualToString:@"facebook"] && appKey!=nil){
-        options = @{ ACFacebookAppIdKey: appKey,
-                     ACFacebookPermissionsKey: @[@"email", @"publish_stream", @"publish_actions"],
-                     ACFacebookAudienceKey: ACFacebookAudienceEveryone
-                     };
-    }
-    
-    return options;
+- (NSDictionary *)createRequestOption:(NSString *)snsName appKey:(NSString *)appKey {
+	NSDictionary *options = nil;
+
+	if ([snsName isEqualToString:@"facebook"] && appKey != nil) {
+		if (appKey != nil) {
+			options = @{ ACFacebookAppIdKey:appKey,
+				         ACFacebookPermissionsKey: @[@"publish_stream", @"publish_actions"],
+				         ACFacebookAudienceKey:ACFacebookAudienceEveryone };
+		}
+		else {
+			options = @{ ACFacebookPermissionsKey: @[@"publish_stream", @"publish_actions"],
+				         ACFacebookAudienceKey:ACFacebookAudienceEveryone };
+		}
+	}
+
+	return options;
 }
 
+- (void)prepareForFacebook:(NSString *)snsName message:(NSString *)message imgSrc:(NSString *)imgSrc appKey:(NSString *)appKey callback:(JSObjectRef)callback {
+	// separate request for read and writes
+	ACAccountType *accountType = [self.accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierFacebook];
+	NSDictionary *readOptions = nil;
+	if (appKey != nil) {
+		readOptions = @{ ACFacebookAppIdKey:appKey,
+			             ACFacebookPermissionsKey: @[@"email", @"read_stream", @"user_photos"],
+			             ACFacebookAudienceKey:ACFacebookAudienceEveryone };
+	}
+	else {
+		readOptions = @{ ACFacebookPermissionsKey: @[@"email", @"read_stream", @"user_photos"],
+			             ACFacebookAudienceKey:ACFacebookAudienceEveryone };
+	}
+	[self.accountStore requestAccessToAccountsWithType:accountType options:readOptions completion: ^(BOOL granted, NSError *e) {
+	    if (granted) {
+	        [self post:snsName message:message imgSrc:imgSrc appKey:appKey callback:callback];
+		}
+	    else {
+	        //Fail gracefully...
+	        NSLog(@"error getting permission %@", e);
+		}
+	}];
+}
 
 - (void)post:(NSString *)snsName message:(NSString *)message imgSrc:(NSString *)imgSrc appKey:(NSString *)appKey callback:(JSObjectRef)callback {
 	ACAccountType *accountType = NULL;
@@ -145,11 +152,9 @@
 	snsName = [snsName lowercaseString];
 	if ([snsName isEqualToString:@"twitter"]) {
 		accountType = [self.accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierTwitter];
-	}
-	if ([snsName isEqualToString:@"facebook"]) {
+	}else if ([snsName isEqualToString:@"facebook"]) {
 		accountType = [self.accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierFacebook];
-	}
-	if ([snsName isEqualToString:@"sinaweibo"]) {
+	}else if ([snsName isEqualToString:@"sinaweibo"]) {
 		accountType = [self.accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierSinaWeibo];
 	}
 	if (!accountType) {
@@ -165,23 +170,21 @@
 				                                                                 options:NSJSONReadingMutableContainers
 				                                                                   error:NULL];
 				NSLog(@"[SUCCESS] %@ Server responded: status code %d", snsName, statusCode);
-//				InvokeAndUnprotectPostCallback(callback, statusCode, postResponseData);
-				[self invokeAndUnprotectPostCallback:callback statusCode:statusCode object:postResponseData];
+				[self invokeAndUnprotectPostCallback:callback statusCode:statusCode responseObject:postResponseData];
 			}
 			else {
 				NSLog(@"[ERROR] %@ Server responded: status code %d %@", snsName, statusCode,
 				      [NSHTTPURLResponse localizedStringForStatusCode:statusCode]);
 				NSString *responseText = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
 
-//				InvokeAndUnprotectPostCallback(callback, statusCode, responseText);
-				[self invokeAndUnprotectPostCallback:callback statusCode:statusCode object:responseText];
+				[self invokeAndUnprotectPostCallback:callback statusCode:statusCode responseObject:responseText];
+				[responseText release];
 			}
 		}
 		else {
 			NSLog(@"[ERROR] An error occurred while posting: %@", [error localizedDescription]);
 			responseData = NULL;
-//			InvokeAndUnprotectPostCallback(callback, statusCode, [error localizedDescription]);
-			[self invokeAndUnprotectPostCallback:callback statusCode:statusCode object:[error localizedDescription]];
+			[self invokeAndUnprotectPostCallback:callback statusCode:statusCode responseObject:[error localizedDescription]];
 		}
 	};
 
@@ -195,21 +198,19 @@
 			}
 			else {
 				NSLog(@"Not granted by SNS");
-//				InvokeAndUnprotectPostCallback(callback, 0, @"Not granted by SNS");
-				[self invokeAndUnprotectPostCallback:callback statusCode:0 object:@"Not granted by SNS"];
+				[self invokeAndUnprotectPostCallback:callback statusCode:0 responseObject:@"Not granted by SNS"];
 			}
 		}
 		else {
 			NSLog(@"[ERROR] An error occurred while asking for user authorization: %@",
 			      [error localizedDescription]);
-//			InvokeAndUnprotectPostCallback(callback, 0, [error localizedDescription]);
-			[self invokeAndUnprotectPostCallback:callback statusCode:0 object:[error localizedDescription]];
+			[self invokeAndUnprotectPostCallback:callback statusCode:0 responseObject:[error localizedDescription]];
 		}
 	};
 
 
 	NSDictionary *options = [self createRequestOption:snsName appKey:appKey];
-    
+
 	[self.accountStore requestAccessToAccountsWithType:accountType
 	                                           options:options
 	                                        completion:accountStoreHandler];
@@ -221,16 +222,12 @@
 	if ([snsName isEqualToString:@"twitter"] && [SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter]) {
 		sns = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
 	}
-	if ([snsName isEqualToString:@"facebook"] && [SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook]) {
+	else if ([snsName isEqualToString:@"facebook"] && [SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook]) {
 		sns = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
 	}
-	if (([snsName isEqualToString:@"sinaweibo"] || [snsName isEqualToString:@"weibo"]) && [SLComposeViewController isAvailableForServiceType:SLServiceTypeSinaWeibo]) {
+	else if ([snsName isEqualToString:@"sinaweibo"] && [SLComposeViewController isAvailableForServiceType:SLServiceTypeSinaWeibo]) {
 		sns = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeSinaWeibo];
 	}
-	if ([snsName isEqualToString:@"tencentweibo"] && [SLComposeViewController isAvailableForServiceType:SLServiceTypeTencentWeibo]) {
-		sns = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTencentWeibo];
-	}
-	NSLog(@"sns %@", sns);
 	if (sns) {
 		[sns setInitialText:message];
 		if (imgSrc) {
@@ -242,9 +239,8 @@
 			}
 		}
 		if (url) {
-			[sns addURL:[[NSURL alloc] initWithString:url]];
+			[sns addURL:[NSURL URLWithString:url]];
 		}
-
 		[sns setCompletionHandler: ^(SLComposeViewControllerResult result) {
 		    NSInteger statusCode = 0;
 		    switch (result) {
@@ -265,10 +261,11 @@
 			}
 		    [sns dismissViewControllerAnimated:YES completion:nil];
 		    NSString *responseText = NULL;
-		    InvokeAndUnprotectPostCallback(callback, statusCode, responseText);
+		    [self invokeAndUnprotectPostCallback:callback statusCode:statusCode responseObject:responseText];
 		}];
 
 		[scriptView.window.rootViewController presentViewController:sns animated:YES completion: ^{
+		    // on displayed
 		}];
 	}
 }
@@ -282,25 +279,32 @@ EJ_BIND_FUNCTION(post, ctx, argc, argv)
 	NSString *snsName = JSValueToNSString(ctx, argv[0]);
 	NSString *message = JSValueToNSString(ctx, argv[1]);
 	NSString *imgSrc = JSValueToNSString(ctx, argv[2]);
-    NSString *appKey;
-    JSObjectRef callback;
-    if (argc>4){
-        appKey= JSValueToNSString(ctx, argv[3]);
-        callback = JSValueToObject(ctx, argv[4], NULL);
-    }else{
-        appKey = NULL;
-        callback = JSValueToObject(ctx, argv[3], NULL);
-    }
+	NSString *appKey;
+	JSObjectRef callback;
+	if (argc > 4) {
+		appKey = JSValueToNSString(ctx, argv[3]);
+		callback = JSValueToObject(ctx, argv[4], NULL);
+	}
+	else {
+		appKey = NULL;
+		callback = JSValueToObject(ctx, argv[3], NULL);
+	}
 
 	if (callback) {
 		JSValueProtect(ctx, callback);
 	}
 
 	snsName = [snsName lowercaseString];
-	[self post:snsName message:message imgSrc:imgSrc appKey:appKey callback:callback];
+	if ([snsName isEqualToString:@"facebook"]) {
+		[self prepareForFacebook:snsName message:message imgSrc:imgSrc appKey:appKey callback:callback];
+	}
+	else {
+		[self post:snsName message:message imgSrc:imgSrc appKey:appKey callback:callback];
+	}
 
 	return JSValueMakeBoolean(ctx, true);
 }
+
 
 EJ_BIND_FUNCTION(showPostDialog, ctx, argc, argv)
 {
