@@ -128,7 +128,7 @@
 - (NSDictionary *)createRequestOption:(NSString *)snsName appKey:(NSString *)appKey{
     NSDictionary *options = NULL ;
     
-    if ([snsName isEqualToString:@"facebook"]){
+    if ([snsName isEqualToString:@"facebook"] && appKey!=nil){
         options = @{ ACFacebookAppIdKey: appKey,
                      ACFacebookPermissionsKey: @[@"email", @"publish_stream", @"publish_actions"],
                      ACFacebookAudienceKey: ACFacebookAudienceEveryone
