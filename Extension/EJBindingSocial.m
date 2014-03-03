@@ -135,13 +135,14 @@
 		readOptions = @{ ACFacebookPermissionsKey: @[@"email", @"read_stream", @"user_photos"],
 			             ACFacebookAudienceKey:ACFacebookAudienceEveryone };
 	}
-	[self.accountStore requestAccessToAccountsWithType:accountType options:readOptions completion: ^(BOOL granted, NSError *e) {
+	[self.accountStore requestAccessToAccountsWithType:accountType options:readOptions completion: ^(BOOL granted, NSError *error) {
 	    if (granted) {
 	        [self post:snsName message:message imgSrc:imgSrc appKey:appKey callback:callback];
 		}
 	    else {
 	        //Fail gracefully...
-	        NSLog(@"error getting permission %@", e);
+	        NSLog(@"error getting permission %@", error);
+            [self invokeAndUnprotectPostCallback:callback statusCode:error.code responseObject:[error localizedDescription]];
 		}
 	}];
 }
@@ -184,7 +185,7 @@
 		else {
 			NSLog(@"[ERROR] An error occurred while posting: %@", [error localizedDescription]);
 			responseData = NULL;
-			[self invokeAndUnprotectPostCallback:callback statusCode:statusCode responseObject:[error localizedDescription]];
+			[self invokeAndUnprotectPostCallback:callback statusCode:error.code responseObject:[error localizedDescription]];
 		}
 	};
 
@@ -204,7 +205,7 @@
 		else {
 			NSLog(@"[ERROR] An error occurred while asking for user authorization: %@",
 			      [error localizedDescription]);
-			[self invokeAndUnprotectPostCallback:callback statusCode:0 responseObject:[error localizedDescription]];
+			[self invokeAndUnprotectPostCallback:callback statusCode:error.code responseObject:[error localizedDescription]];
 		}
 	};
 
