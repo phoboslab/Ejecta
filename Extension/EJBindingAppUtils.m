@@ -112,6 +112,9 @@ EJ_BIND_FUNCTION( eval, ctx, argc, argv ) {
 
 }
 
+EJ_BIND_GET(systemVersion, ctx ) {
+	return NSStringToJSValue(ctx, [[UIDevice currentDevice] systemVersion]);
+}
 
 
 @end
