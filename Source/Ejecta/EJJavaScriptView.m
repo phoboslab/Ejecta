@@ -196,6 +196,13 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 #pragma mark Script loading and execution
 
 - (NSString *)pathForResource:(NSString *)path {
+	// Check for a newer resource in cache folder
+	NSArray *pathList = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+	NSString *cachePath = [NSString stringWithFormat:@"%@/%@%@", [pathList objectAtIndex:0], appFolder, path];
+	if ([[NSFileManager defaultManager] fileExistsAtPath:cachePath]) {
+		return cachePath;
+	}
+	// Return resource from main bundle
 	return [NSString stringWithFormat:@"%@/%@%@", [[NSBundle mainBundle] resourcePath], appFolder, path];
 }
 
