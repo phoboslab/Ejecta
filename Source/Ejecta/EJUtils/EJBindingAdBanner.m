@@ -3,6 +3,18 @@
 
 @implementation EJBindingAdBanner
 
+- (id)initWithContext:(JSContextRef)ctx argc:(size_t)argc argv:(const JSValueRef[])argv {
+	if (self = [super initWithContext:ctx argc:argc argv:argv]) {
+		if (argc > 0) {
+			type = [JSValueToNSString(ctx, argv[0]) retain];
+			if (type) {
+				type = [type lowercaseString];
+			}
+		}
+	}
+	return self;
+}
+
 - (void)createWithJSObject:(JSObjectRef)obj scriptView:(EJJavaScriptView *)view {
 	[super createWithJSObject:obj scriptView:view];
 
@@ -13,14 +25,25 @@
 	alwaysPortrait = NO;
 	x = 0;
 	y = 0;
+	banner = nil;
+	isRectangle = NO;
 
-	banner = [[ADBannerView alloc] initWithFrame:CGRectZero];
+	if ([type isEqualToString:@"rect"] || [type isEqualToString:@"rectangle"] || [type isEqualToString:@"mediumrectangle"]) {
+		banner = [[ADBannerView alloc] initWithAdType:ADAdTypeMediumRectangle];
+	}
+	if (!banner) {
+		// Not ADAdTypeMediumRectangle or iOS can't support ADAdTypeMediumRectangle
+		banner = [[ADBannerView alloc] initWithFrame:CGRectZero];
+	}
+	else {
+		isRectangle = YES;
+	}
+
 	banner.delegate = self;
 	banner.hidden = YES;
 
 	[self doLayout];
 	[scriptView addSubview:banner];
-	NSLog(@"AdBanner: init at y %f", banner.frame.origin.y);
 }
 
 - (void)doLayout {
@@ -39,14 +62,16 @@
 		h = scriptView.bounds.size.height;
 	}
 
-	banner.requiredContentSizeIdentifiers = [NSSet setWithObjects:
-	                                         (landscape
-	                                          ? ADBannerContentSizeIdentifierPortrait
-											  : ADBannerContentSizeIdentifierLandscape),
-	                                         nil];
-	banner.currentContentSizeIdentifier = (landscape
-	                                       ? ADBannerContentSizeIdentifierPortrait
-										   : ADBannerContentSizeIdentifierLandscape);
+	if (!isRectangle) {
+		banner.requiredContentSizeIdentifiers = [NSSet setWithObjects:
+		                                         (landscape
+		                                          ? ADBannerContentSizeIdentifierPortrait
+												  : ADBannerContentSizeIdentifierLandscape),
+		                                         nil];
+		banner.currentContentSizeIdentifier = (landscape
+		                                       ? ADBannerContentSizeIdentifierPortrait
+											   : ADBannerContentSizeIdentifierLandscape);
+	}
 	CGRect rect = CGRectMake(x, y, w, h);
 	CGSize adSize = [banner sizeThatFits:rect.size];
 	[banner setFrame:CGRectMake(x, y, adSize.width, adSize.height)];
@@ -116,6 +141,12 @@ EJ_BIND_SET(isAtRight, ctx, value)
 	[self doLocate];
 }
 
+
+EJ_BIND_GET(isRectangle, ctx)
+{
+	return JSValueMakeBoolean(ctx, isRectangle);
+}
+
 EJ_BIND_FUNCTION(hide, ctx, argc, argv)
 {
 	banner.hidden = YES;
@@ -183,6 +214,10 @@ EJ_BIND_GET(width, ctx)
 EJ_BIND_GET(height, ctx)
 {
 	return JSValueMakeNumber(ctx, banner.frame.size.height);
+}
+EJ_BIND_GET(type, ctx)
+{
+	return NSStringToJSValue(ctx, type);
 }
 
 EJ_BIND_EVENT(load);
