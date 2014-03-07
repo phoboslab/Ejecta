@@ -29,10 +29,15 @@
 	isRectangle = NO;
 
 	if ([type isEqualToString:@"rect"] || [type isEqualToString:@"rectangle"] || [type isEqualToString:@"mediumrectangle"]) {
-		banner = [[ADBannerView alloc] initWithAdType:ADAdTypeMediumRectangle];
+		@try {
+			banner = [[ADBannerView alloc] initWithAdType:ADAdTypeMediumRectangle];
+		}
+		@catch (NSException *exception)
+		{
+			NSLog(@"Current iOS version doesn't supports iAd with ADAdTypeMediumRectangle");
+		}
 	}
 	if (!banner) {
-		// Not ADAdTypeMediumRectangle or iOS can't support ADAdTypeMediumRectangle
 		banner = [[ADBannerView alloc] initWithFrame:CGRectZero];
 	}
 	else {
