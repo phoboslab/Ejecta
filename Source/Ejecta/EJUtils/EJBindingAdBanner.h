@@ -5,8 +5,9 @@
 
 @interface EJBindingAdBanner : EJBindingEventedBase <ADBannerViewDelegate> {
 	ADBannerView *banner;
-	BOOL isAtBottom, isAtRight, wantsToShow, isReady, alwaysPortrait;
-    short x, y;
+	BOOL wantsToShow, isReady;
+	BOOL isAtBottom, isAtRight, alwaysPortrait;
+	short x, y;
 }
 
 @end

@@ -7,7 +7,7 @@
 	[super createWithJSObject:obj scriptView:view];
 
 	isAtBottom = NO;
-    isAtRight = NO;
+	isAtRight = NO;
 	wantsToShow = NO;
 	isReady = NO;
 	alwaysPortrait = NO;
@@ -18,7 +18,7 @@
 	banner.delegate = self;
 	banner.hidden = YES;
 
-    [self doLayout];
+	[self doLayout];
 	[scriptView addSubview:banner];
 	NSLog(@"AdBanner: init at y %f", banner.frame.origin.y);
 }
@@ -28,7 +28,7 @@
 	BOOL landscape = false;
 	CGRect screenRect = [[UIScreen mainScreen] bounds];
 	if (alwaysPortrait) {
-        landscape = false;
+		landscape = false;
 		w = screenRect.size.width;
 		h = screenRect.size.height;
 	}
