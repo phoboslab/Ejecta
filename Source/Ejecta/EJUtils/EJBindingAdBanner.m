@@ -25,10 +25,10 @@
 
 - (void)doLayout {
 	short w = 0, h = 0;
-	BOOL landscape = false;
+	BOOL landscape = NO;
 	CGRect screenRect = [[UIScreen mainScreen] bounds];
 	if (alwaysPortrait) {
-		landscape = false;
+		landscape = NO;
 		w = screenRect.size.width;
 		h = screenRect.size.height;
 	}
