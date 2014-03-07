@@ -22,7 +22,14 @@
 			? ADBannerContentSizeIdentifierLandscape
 			: ADBannerContentSizeIdentifierPortrait),
 		nil];
-	
+	// for iOS 6
+	banner.currentContentSizeIdentifier = (landscape
+                                           ? ADBannerContentSizeIdentifierLandscape
+                                           : ADBannerContentSizeIdentifierPortrait);
+	// for iOS 6 later
+	CGSize adSize = [banner sizeThatFits:scriptView.bounds.size];
+	[banner setFrame:CGRectMake(0, 0, adSize.width, adSize.height)];
+    
 	[scriptView addSubview:banner];
 	NSLog(@"AdBanner: init at y %f", banner.frame.origin.y);
 }
