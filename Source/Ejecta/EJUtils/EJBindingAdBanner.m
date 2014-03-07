@@ -16,13 +16,17 @@
 	
 	BOOL landscape = [[[NSBundle mainBundle] infoDictionary][@"UIInterfaceOrientation"]
 		hasPrefix:@"UIInterfaceOrientationLandscape"];
-	
 	banner.requiredContentSizeIdentifiers = [NSSet setWithObjects:
 		(landscape
 			? ADBannerContentSizeIdentifierLandscape
 			: ADBannerContentSizeIdentifierPortrait),
 		nil];
-	
+	banner.currentContentSizeIdentifier = (landscape
+                                           ? ADBannerContentSizeIdentifierLandscape
+                                           : ADBannerContentSizeIdentifierPortrait);
+    CGSize adSize = [banner sizeThatFits:scriptView.bounds.size];
+    [banner setFrame:CGRectMake(0, 0, adSize.width, adSize.height)];
+
 	[scriptView addSubview:banner];
 	NSLog(@"AdBanner: init at y %f", banner.frame.origin.y);
 }
