@@ -5,30 +5,58 @@
 
 - (void)createWithJSObject:(JSObjectRef)obj scriptView:(EJJavaScriptView *)view {
 	[super createWithJSObject:obj scriptView:view];
-	
+
 	isAtBottom = NO;
+    isAtRight = NO;
 	wantsToShow = NO;
 	isReady = NO;
-	
+	alwaysPortrait = NO;
+	x = 0;
+	y = 0;
+
 	banner = [[ADBannerView alloc] initWithFrame:CGRectZero];
 	banner.delegate = self;
 	banner.hidden = YES;
-	
-	BOOL landscape = [[[NSBundle mainBundle] infoDictionary][@"UIInterfaceOrientation"]
-		hasPrefix:@"UIInterfaceOrientationLandscape"];
-	banner.requiredContentSizeIdentifiers = [NSSet setWithObjects:
-		(landscape
-			? ADBannerContentSizeIdentifierLandscape
-			: ADBannerContentSizeIdentifierPortrait),
-		nil];
-	banner.currentContentSizeIdentifier = (landscape
-                                           ? ADBannerContentSizeIdentifierLandscape
-                                           : ADBannerContentSizeIdentifierPortrait);
-    CGSize adSize = [banner sizeThatFits:scriptView.bounds.size];
-    [banner setFrame:CGRectMake(0, 0, adSize.width, adSize.height)];
 
+    [self doLayout];
 	[scriptView addSubview:banner];
 	NSLog(@"AdBanner: init at y %f", banner.frame.origin.y);
+}
+
+- (void)doLayout {
+	short w = 0, h = 0;
+	BOOL landscape = false;
+	CGRect screenRect = [[UIScreen mainScreen] bounds];
+	if (alwaysPortrait) {
+        landscape = false;
+		w = screenRect.size.width;
+		h = screenRect.size.height;
+	}
+	else {
+		landscape = [[[NSBundle mainBundle] infoDictionary][@"UIInterfaceOrientation"]
+		             hasPrefix:@"UIInterfaceOrientationLandscape"];
+		w = scriptView.bounds.size.width;
+		h = scriptView.bounds.size.height;
+	}
+
+	banner.requiredContentSizeIdentifiers = [NSSet setWithObjects:
+	                                         (landscape
+	                                          ? ADBannerContentSizeIdentifierPortrait
+											  : ADBannerContentSizeIdentifierLandscape),
+	                                         nil];
+	banner.currentContentSizeIdentifier = (landscape
+	                                       ? ADBannerContentSizeIdentifierPortrait
+										   : ADBannerContentSizeIdentifierLandscape);
+	CGRect rect = CGRectMake(x, y, w, h);
+	CGSize adSize = [banner sizeThatFits:rect.size];
+	[banner setFrame:CGRectMake(x, y, adSize.width, adSize.height)];
+}
+
+- (void)doLocate {
+	CGRect frame = banner.frame;
+	frame.origin.x = x;
+	frame.origin.y = y;
+	banner.frame = frame;
 }
 
 - (void)dealloc {
@@ -40,7 +68,7 @@
 - (void)bannerViewDidLoadAd:(ADBannerView *)theBanner {
 	NSLog(@"AdBanner: Ad loaded");
 	isReady = YES;
-	if( wantsToShow ) {
+	if (wantsToShow) {
 		[scriptView bringSubviewToFront:banner];
 		banner.hidden = NO;
 	}
@@ -53,38 +81,108 @@
 	banner.hidden = YES;
 }
 
-EJ_BIND_GET( isReady, ctx ) {
+EJ_BIND_GET(isReady, ctx)
+{
 	return JSValueMakeBoolean(ctx, isReady);
 }
 
-EJ_BIND_GET( isAtBottom, ctx ) {
+EJ_BIND_GET(isAtBottom, ctx)
+{
 	return JSValueMakeBoolean(ctx, isAtBottom);
 }
 
-EJ_BIND_SET( isAtBottom, ctx, value ) {
+EJ_BIND_SET(isAtBottom, ctx, value)
+{
 	isAtBottom = JSValueToBoolean(ctx, value);
-	
-	CGRect frame = banner.frame;
-	frame.origin.y = isAtBottom
-		? scriptView.bounds.size.height - frame.size.height
+	y = isAtBottom
+	    ? scriptView.bounds.size.height - banner.frame.size.height
 		: 0;
-		
-	banner.frame = frame;
+	[self doLocate];
 }
 
-EJ_BIND_FUNCTION(hide, ctx, argc, argv ) {
+
+
+EJ_BIND_GET(isAtRight, ctx)
+{
+	return JSValueMakeBoolean(ctx, isAtRight);
+}
+
+EJ_BIND_SET(isAtRight, ctx, value)
+{
+	isAtRight = JSValueToBoolean(ctx, value);
+	x = isAtRight
+	    ? scriptView.bounds.size.width - banner.frame.size.width
+		: 0;
+	[self doLocate];
+}
+
+EJ_BIND_FUNCTION(hide, ctx, argc, argv)
+{
 	banner.hidden = YES;
 	wantsToShow = NO;
 	return NULL;
 }
 
-EJ_BIND_FUNCTION(show, ctx, argc, argv ) {
+EJ_BIND_FUNCTION(show, ctx, argc, argv)
+{
 	wantsToShow = YES;
-	if( isReady ) {
+	if (isReady) {
 		[scriptView bringSubviewToFront:banner];
 		banner.hidden = NO;
 	}
 	return NULL;
+}
+
+EJ_BIND_GET(alwaysPortrait, ctx)
+{
+	return JSValueMakeBoolean(ctx, alwaysPortrait);
+}
+
+EJ_BIND_SET(alwaysPortrait, ctx, value)
+{
+	alwaysPortrait = JSValueToBoolean(ctx, value);
+
+	[self doLayout];
+}
+
+
+EJ_BIND_GET(x, ctx)
+{
+	return JSValueMakeNumber(ctx, x);
+}
+
+EJ_BIND_SET(x, ctx, value)
+{
+	short newX = JSValueToNumberFast(ctx, value);
+	if (newX != x) {
+		x = newX;
+		CGRect frame = banner.frame;
+		frame.origin.x = x;
+	}
+}
+
+EJ_BIND_GET(y, ctx)
+{
+	return JSValueMakeNumber(ctx, y);
+}
+
+EJ_BIND_SET(y, ctx, value)
+{
+	short newY = JSValueToNumberFast(ctx, value);
+	if (newY != y) {
+		y = newY;
+		CGRect frame = banner.frame;
+		frame.origin.y = y;
+	}
+}
+
+EJ_BIND_GET(width, ctx)
+{
+	return JSValueMakeNumber(ctx, banner.frame.size.width);
+}
+EJ_BIND_GET(height, ctx)
+{
+	return JSValueMakeNumber(ctx, banner.frame.size.height);
 }
 
 EJ_BIND_EVENT(load);
