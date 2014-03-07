@@ -37,6 +37,7 @@
 	}
 	else {
 		isRectangle = YES;
+		alwaysPortrait = NO;
 	}
 
 	banner.delegate = self;
@@ -126,7 +127,6 @@ EJ_BIND_SET(isAtBottom, ctx, value)
 }
 
 
-
 EJ_BIND_GET(isAtRight, ctx)
 {
 	return JSValueMakeBoolean(ctx, isAtRight);
@@ -171,6 +171,9 @@ EJ_BIND_GET(alwaysPortrait, ctx)
 
 EJ_BIND_SET(alwaysPortrait, ctx, value)
 {
+	if (isRectangle) {
+		return;
+	}
 	alwaysPortrait = JSValueToBoolean(ctx, value);
 
 	[self doLayout];
