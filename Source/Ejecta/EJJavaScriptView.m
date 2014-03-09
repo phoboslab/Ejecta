@@ -76,7 +76,7 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 		// Create the global JS context in its own group, so it can be released properly
 		jsGlobalContext = JSGlobalContextCreateInGroup(NULL, NULL);
 		jsUndefined = JSValueMakeUndefined(jsGlobalContext);
-        jsNull = JSValueMakeNull(jsGlobalContext);
+		jsNull = JSValueMakeNull(jsGlobalContext);
 		JSValueProtect(jsGlobalContext, jsUndefined);
 		
 		// Attach all native class constructors to 'Ejecta'
