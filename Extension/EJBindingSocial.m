@@ -170,11 +170,11 @@
 				NSDictionary *postResponseData = [NSJSONSerialization JSONObjectWithData:responseData
 				                                  options:NSJSONReadingMutableContainers
 				                                  error:NULL];
-				NSLog(@"[SUCCESS] %@ Server responded: status code %d", snsName, statusCode);
+				NSLog(@"[SUCCESS] %@ Server responded: status code %ld", snsName, (long)statusCode);
 				[self invokeAndUnprotectPostCallback:callback statusCode:statusCode responseObject:postResponseData];
 			}
 			else {
-				NSLog(@"[ERROR] %@ Server responded: status code %d %@", snsName, statusCode,
+				NSLog(@"[ERROR] %@ Server responded: status code %ld %@", snsName, (long)statusCode,
 				      [NSHTTPURLResponse localizedStringForStatusCode:statusCode]);
 				NSString *responseText = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
 

@@ -62,7 +62,7 @@ EJ_BIND_FUNCTION (schedule, ctx, argc, argv) {
 			[self scheduleAlarm: id title: title message: message delay: delay showInGame: showInGame ];
 		}
 
-		NSLog(@"Notification: #%d %@. Show in %d seconds.", id, title, delay);
+		NSLog(@"Notification: #%ld %@. Show in %ld seconds.", (long)id, title, (long)delay);
 	}
 
 	return 0;
@@ -73,7 +73,7 @@ EJ_BIND_FUNCTION (cancel, ctx, argc, argv) {
 		NSInteger id = JSValueToNumberFast(ctx, argv[0]);
 		[self cancelAlarm: id];
 
-		NSLog(@"Notification cancelled: #%d.", id);
+		NSLog(@"Notification cancelled: #%ld.", (long)id);
 	}
 
 	return 0;
