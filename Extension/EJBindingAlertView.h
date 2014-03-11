@@ -3,6 +3,6 @@
 
 @interface EJBindingAlertView : EJBindingEventedBase<UIAlertViewDelegate>
 {
-    UIAlertView *alertView;
+	UIAlertView *alertView;
 }
 @end

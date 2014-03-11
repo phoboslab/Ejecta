@@ -5,8 +5,8 @@
 
 @interface EJBindingTimer : EJBindingBase
 {
-    int uniqueId;
-    NSMutableDictionary * timers;
+	int uniqueId;
+	NSMutableDictionary * timers;
 	NSDate * pauseTime;
 	NSMutableDictionary * timerTimes;
 

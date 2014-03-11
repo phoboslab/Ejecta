@@ -5,14 +5,14 @@
 
 
 @interface EJBindingWebView : EJBindingEventedBase <UIWebViewDelegate>  {
-    
-    short width, height;
-    short left, top;
-    BOOL loading;
-    NSString *src;
-    NSString *evalProtocol;
-    UIWebView *webView;
-    
+
+	short width, height;
+	short left, top;
+	BOOL loading;
+	NSString *src;
+	NSString *evalProtocol;
+	UIWebView *webView;
+
 }
 
 @property (nonatomic,assign) BOOL loaded;
