@@ -99,24 +99,36 @@ EJ_BIND_FUNCTION( softAuthenticate, ctx, argc, argv ) {
 }
 
 
-// reportScore( category, score )
+// reportScore( category, score, [contextNum], cb )
 EJ_BIND_FUNCTION( reportScore, ctx, argc, argv ) {
 	if( argc < 2 ) { return NULL; }
 	if( !authed ) { NSLog(@"GameKit Error: Not authed. Can't report score."); return NULL; }
 	
 	NSString *category = JSValueToNSString(ctx, argv[0]);
 	int64_t score = JSValueToNumberFast(ctx, argv[1]);
-	
+	uint64_t contextNum=0;
 	JSObjectRef callback = NULL;
-	if( argc > 2 && JSValueIsObject(ctx, argv[2]) ) {
-		callback = JSValueToObject(ctx, argv[2], NULL);
-		JSValueProtect(ctx, callback);
+    
+    if( argc > 3) {
+        contextNum = JSValueToNumberFast(ctx, argv[2]);
+        if (JSValueIsObject(ctx, argv[3])){
+            callback = JSValueToObject(ctx, argv[2], NULL);
+        }
+    }else if( argc == 3 ) {
+        if (JSValueIsObject(ctx, argv[2])){
+            callback = JSValueToObject(ctx, argv[2], NULL);
+        }else{
+            contextNum = JSValueToNumberFast(ctx, argv[2]);
+        }
 	}
-	
+    if(callback){
+        JSValueProtect(ctx, callback);
+    }
+    
 	GKScore *scoreReporter = [[[GKScore alloc] initWithCategory:category] autorelease];
 	if( scoreReporter ) {
 		scoreReporter.value = score;
-
+        scoreReporter.context= contextNum;
 		[scoreReporter reportScoreWithCompletionHandler:^(NSError *error) {
 			if( callback ) {
 				JSContextRef gctx = scriptView.jsGlobalContext;
