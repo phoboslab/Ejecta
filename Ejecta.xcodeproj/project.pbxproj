@@ -16,6 +16,8 @@
 		3EF00C5916C29360004599A4 /* EJJavaScriptView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EF00C5816C29360004599A4 /* EJJavaScriptView.m */; };
 		5B7B76761619DB9700691910 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B7B76751619DB9700691910 /* CoreText.framework */; };
 		5C2387D818CEFBFD00D0CC1A /* EJBindingTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C2387D718CEFBFD00D0CC1A /* EJBindingTimer.m */; };
+		5C2C1F7B18D21C1B0028F3B1 /* mongoose.c in Sources */ = {isa = PBXBuildFile; fileRef = 5C2C1F7918D21C1B0028F3B1 /* mongoose.c */; };
+		5C2C1F8218D21CE30028F3B1 /* EJBindingWebServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C2C1F8118D21CE30028F3B1 /* EJBindingWebServer.m */; };
 		5C8E33EC18C4EF03007206AE /* Default-Portrait~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 5C8E33E018C4EF03007206AE /* Default-Portrait~ipad.png */; };
 		5C8E33ED18C4EF03007206AE /* Default-Portrait@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 5C8E33E118C4EF03007206AE /* Default-Portrait@2x~ipad.png */; };
 		5C8E33EE18C4EF03007206AE /* Default-Landscape@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 5C8E33E218C4EF03007206AE /* Default-Landscape@2x~ipad.png */; };
@@ -155,6 +157,10 @@
 		5B7B76751619DB9700691910 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
 		5C2387D618CEFBFD00D0CC1A /* EJBindingTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingTimer.h; sourceTree = "<group>"; };
 		5C2387D718CEFBFD00D0CC1A /* EJBindingTimer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingTimer.m; sourceTree = "<group>"; };
+		5C2C1F7918D21C1B0028F3B1 /* mongoose.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = mongoose.c; sourceTree = "<group>"; };
+		5C2C1F7A18D21C1B0028F3B1 /* mongoose.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mongoose.h; sourceTree = "<group>"; };
+		5C2C1F8018D21CBA0028F3B1 /* EJBindingWebServer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EJBindingWebServer.h; sourceTree = "<group>"; };
+		5C2C1F8118D21CE30028F3B1 /* EJBindingWebServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingWebServer.m; sourceTree = "<group>"; };
 		5C8E33E018C4EF03007206AE /* Default-Portrait~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Portrait~ipad.png"; sourceTree = "<group>"; };
 		5C8E33E118C4EF03007206AE /* Default-Portrait@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Portrait@2x~ipad.png"; sourceTree = "<group>"; };
 		5C8E33E218C4EF03007206AE /* Default-Landscape@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape@2x~ipad.png"; sourceTree = "<group>"; };
@@ -444,6 +450,15 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		5C2C1F7818D21C1B0028F3B1 /* mongoose */ = {
+			isa = PBXGroup;
+			children = (
+				5C2C1F7918D21C1B0028F3B1 /* mongoose.c */,
+				5C2C1F7A18D21C1B0028F3B1 /* mongoose.h */,
+			);
+			path = mongoose;
+			sourceTree = "<group>";
+		};
 		5C8E33FC18C4EF40007206AE /* Extension */ = {
 			isa = PBXGroup;
 			children = (
@@ -457,8 +472,11 @@
 				5C8E340418C4EF40007206AE /* EJBindingSocial.m */,
 				5C2387D618CEFBFD00D0CC1A /* EJBindingTimer.h */,
 				5C2387D718CEFBFD00D0CC1A /* EJBindingTimer.m */,
+				5C2C1F8018D21CBA0028F3B1 /* EJBindingWebServer.h */,
+				5C2C1F8118D21CE30028F3B1 /* EJBindingWebServer.m */,
 				5C8E340518C4EF40007206AE /* EJBindingWebView.h */,
 				5C8E340618C4EF40007206AE /* EJBindingWebView.m */,
+				5C2C1F7818D21C1B0028F3B1 /* mongoose */,
 				5C8E340818C4EF40007206AE /* OpenUDID */,
 			);
 			path = Extension;
@@ -770,7 +788,7 @@
 				LastUpgradeCheck = 0510;
 				TargetAttributes = {
 					1D6058900D05DD3D006BFB54 = {
-						DevelopmentTeam = TYQN4X28QA;
+						DevelopmentTeam = VGH3FADBFA;
 					};
 				};
 			};
@@ -852,6 +870,7 @@
 				B64CE668166682700087CF94 /* EJBindingBase.m in Sources */,
 				B64CE669166682700087CF94 /* EJBindingEjectaCore.m in Sources */,
 				B64CE66A166682700087CF94 /* EJBindingEventedBase.m in Sources */,
+				5C2C1F8218D21CE30028F3B1 /* EJBindingWebServer.m in Sources */,
 				B64CE66B166682700087CF94 /* EAGLView.m in Sources */,
 				5C8E341118C4EF40007206AE /* OpenUDID.m in Sources */,
 				B64CE66D166682700087CF94 /* EJBindingImage.m in Sources */,
@@ -894,6 +913,7 @@
 				B664B98E1699F49C0093E04E /* EJCanvasPattern.m in Sources */,
 				B6D4B281183CDFBB008251EB /* EJBindingGeolocation.m in Sources */,
 				B6A0F4AF16A9D86100477789 /* EJCanvasGradient.m in Sources */,
+				5C2C1F7B18D21C1B0028F3B1 /* mongoose.c in Sources */,
 				B6A0F4B416AB0B4600477789 /* EJBindingCanvasGradient.m in Sources */,
 				3EBC19BE16CECE190036F9F3 /* EJBindingKeyInput.m in Sources */,
 				B668FCEE1821C08500D4F629 /* EJFontCache.m in Sources */,
@@ -925,6 +945,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -944,6 +966,7 @@
 				);
 				OTHER_CFLAGS = "-DDEBUG";
 				PRODUCT_NAME = Ejecta;
+				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -952,6 +975,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -967,6 +992,7 @@
 					"\"$(SRCROOT)/Source/lib\"",
 				);
 				PRODUCT_NAME = Ejecta;
+				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
