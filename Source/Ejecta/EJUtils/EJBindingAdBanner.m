@@ -69,15 +69,16 @@
 	}
 
 	if (!isRectangle) {
+	if (!isRectangle) {
 		banner.requiredContentSizeIdentifiers = [NSSet setWithObjects:
 		                                         (landscape
-		                                          ? ADBannerContentSizeIdentifierPortrait
-												  : ADBannerContentSizeIdentifierLandscape),
+		                                          ? ADBannerContentSizeIdentifierLandscape
+		                                          : ADBannerContentSizeIdentifierPortrait),
 		                                         nil];
 		banner.currentContentSizeIdentifier = (landscape
-		                                       ? ADBannerContentSizeIdentifierPortrait
-											   : ADBannerContentSizeIdentifierLandscape);
-	}
+		                                       ? ADBannerContentSizeIdentifierLandscape
+		                                       : ADBannerContentSizeIdentifierPortrait);
+	}	}
 	CGRect rect = CGRectMake(x, y, w, h);
 	CGSize adSize = [banner sizeThatFits:rect.size];
 	[banner setFrame:CGRectMake(x, y, adSize.width, adSize.height)];
