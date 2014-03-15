@@ -51,7 +51,7 @@
 	// Create the frame- and renderbuffers
 	glGenFramebuffers(1, &viewFrameBuffer);	
 	glGenRenderbuffers(1, &viewRenderBuffer);
-	glGenRenderbuffers(1, &depthRenderBuffer);
+	glGenRenderbuffers(1, &depthStencilBuffer);
 	
 	[self resizeToWidth:width height:height];
 }
@@ -66,7 +66,7 @@
 	
 	if( viewFrameBuffer ) { glDeleteFramebuffers( 1, &viewFrameBuffer); }
 	if( viewRenderBuffer ) { glDeleteRenderbuffers(1, &viewRenderBuffer); }
-	if( depthRenderBuffer ) { glDeleteRenderbuffers(1, &depthRenderBuffer); }
+	if( depthStencilBuffer ) { glDeleteRenderbuffers(1, &depthStencilBuffer); }
 	[glContext release];
 	
 	[EAGLContext setCurrentContext:oldContext];
