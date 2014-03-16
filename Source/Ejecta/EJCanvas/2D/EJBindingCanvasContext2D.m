@@ -245,7 +245,7 @@ EJ_BIND_FUNCTION(drawImage, ctx, argc, argv) {
 	NSObject<EJDrawable> *drawable = (NSObject<EJDrawable> *)JSValueGetPrivate(argv[0]);
 	EJTexture *image = drawable.texture;
 	
-	if( !image ) { return NULL; }
+	if( !image.textureId ) { return NULL; }
 	
 	float scale = image.contentScale;
 	
