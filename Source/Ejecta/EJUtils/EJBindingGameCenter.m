@@ -169,7 +169,7 @@ EJ_BIND_FUNCTION( showLeaderboard, ctx, argc, argv ) {
 	if( achievement ) {
 		// Already reported with same or higher percentage or already at 100%?
 		if(
-			achievement.percentComplete == 100.0f ||
+			achievement.completed || achievement.percentComplete == 100.0f ||
 			(!isIncrement && achievement.percentComplete >= percentage)
 		) {
 			return;
