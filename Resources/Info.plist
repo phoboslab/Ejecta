@@ -68,9 +68,7 @@
 	<key>NSMainNibFile~ipad</key>
 	<string>MainWindow</string>
 	<key>UIAppFonts</key>
-	<array>
-		<string>Dominican.ttf</string>
-	</array>
+	<array/>
 	<key>UIFileSharingEnabled</key>
 	<true/>
 	<key>UIInterfaceOrientation</key>

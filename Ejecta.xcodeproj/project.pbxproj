@@ -38,6 +38,12 @@
 		5C8E340E18C4EF40007206AE /* EJBindingSocial.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C8E340418C4EF40007206AE /* EJBindingSocial.m */; };
 		5C8E340F18C4EF40007206AE /* EJBindingWebView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C8E340618C4EF40007206AE /* EJBindingWebView.m */; };
 		5C8E341118C4EF40007206AE /* OpenUDID.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C8E340A18C4EF40007206AE /* OpenUDID.m */; };
+		5C91E59C18E1AD9B00FCF013 /* EJBindingAdMobPage.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C91E59B18E1AD9B00FCF013 /* EJBindingAdMobPage.m */; };
+		5C91E5A818E1AFF100FCF013 /* libGoogleAdMobAds.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C91E5A718E1AFF100FCF013 /* libGoogleAdMobAds.a */; };
+		5C91E5AE18E1C45700FCF013 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C91E5AD18E1C45700FCF013 /* MessageUI.framework */; };
+		5C91E5B018E1C47F00FCF013 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C91E5AF18E1C47F00FCF013 /* AdSupport.framework */; };
+		5C91E5B118E1C4A800FCF013 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C91E5AA18E1C43A00FCF013 /* CoreTelephony.framework */; };
+		5C91E5B418E1CEFE00FCF013 /* EJBindingAdMobBanner.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C91E5B318E1CEFE00FCF013 /* EJBindingAdMobBanner.m */; };
 		B6074FF315F8E41700D987F9 /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6074FF215F8E41600D987F9 /* GameKit.framework */; };
 		B607AB67132EA6C300D7C3EA /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B607AB66132EA6C300D7C3EA /* OpenAL.framework */; };
 		B607AC33132EA75F00D7C3EA /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B607AC32132EA75F00D7C3EA /* AudioToolbox.framework */; };
@@ -187,6 +193,24 @@
 		5C8E340618C4EF40007206AE /* EJBindingWebView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingWebView.m; sourceTree = "<group>"; };
 		5C8E340918C4EF40007206AE /* OpenUDID.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenUDID.h; sourceTree = "<group>"; };
 		5C8E340A18C4EF40007206AE /* OpenUDID.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OpenUDID.m; sourceTree = "<group>"; };
+		5C91E59A18E1AD9B00FCF013 /* EJBindingAdMobPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingAdMobPage.h; sourceTree = "<group>"; };
+		5C91E59B18E1AD9B00FCF013 /* EJBindingAdMobPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingAdMobPage.m; sourceTree = "<group>"; };
+		5C91E59E18E1AFF100FCF013 /* GADAdMobExtras.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GADAdMobExtras.h; sourceTree = "<group>"; };
+		5C91E59F18E1AFF100FCF013 /* GADAdNetworkExtras.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GADAdNetworkExtras.h; sourceTree = "<group>"; };
+		5C91E5A018E1AFF100FCF013 /* GADAdSize.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GADAdSize.h; sourceTree = "<group>"; };
+		5C91E5A118E1AFF100FCF013 /* GADBannerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GADBannerView.h; sourceTree = "<group>"; };
+		5C91E5A218E1AFF100FCF013 /* GADBannerViewDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GADBannerViewDelegate.h; sourceTree = "<group>"; };
+		5C91E5A318E1AFF100FCF013 /* GADInterstitial.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GADInterstitial.h; sourceTree = "<group>"; };
+		5C91E5A418E1AFF100FCF013 /* GADInterstitialDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GADInterstitialDelegate.h; sourceTree = "<group>"; };
+		5C91E5A518E1AFF100FCF013 /* GADRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GADRequest.h; sourceTree = "<group>"; };
+		5C91E5A618E1AFF100FCF013 /* GADRequestError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GADRequestError.h; sourceTree = "<group>"; };
+		5C91E5A718E1AFF100FCF013 /* libGoogleAdMobAds.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libGoogleAdMobAds.a; sourceTree = "<group>"; };
+		5C91E5A918E1C43A00FCF013 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		5C91E5AA18E1C43A00FCF013 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
+		5C91E5AD18E1C45700FCF013 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
+		5C91E5AF18E1C47F00FCF013 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
+		5C91E5B218E1CEFE00FCF013 /* EJBindingAdMobBanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingAdMobBanner.h; sourceTree = "<group>"; };
+		5C91E5B318E1CEFE00FCF013 /* EJBindingAdMobBanner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingAdMobBanner.m; sourceTree = "<group>"; };
 		B6074FF215F8E41600D987F9 /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
 		B607AB66132EA6C300D7C3EA /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
 		B607AC32132EA75F00D7C3EA /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
@@ -368,6 +392,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5C91E5B118E1C4A800FCF013 /* CoreTelephony.framework in Frameworks */,
+				5C91E5B018E1C47F00FCF013 /* AdSupport.framework in Frameworks */,
+				5C91E5AE18E1C45700FCF013 /* MessageUI.framework in Frameworks */,
 				5C8E33FB18C4EF23007206AE /* Accounts.framework in Frameworks */,
 				5C8E33F918C4EF1D007206AE /* Social.framework in Frameworks */,
 				33BE9DE41868183900E0D16E /* MobileCoreServices.framework in Frameworks */,
@@ -382,6 +409,7 @@
 				5B7B76761619DB9700691910 /* CoreText.framework in Frameworks */,
 				B6074FF315F8E41700D987F9 /* GameKit.framework in Frameworks */,
 				B66F1E811476B6B90090D208 /* libicucore.dylib in Frameworks */,
+				5C91E5A818E1AFF100FCF013 /* libGoogleAdMobAds.a in Frameworks */,
 				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
 				288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */,
@@ -422,30 +450,34 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				5C91E5AF18E1C47F00FCF013 /* AdSupport.framework */,
+				5C91E5AD18E1C45700FCF013 /* MessageUI.framework */,
+				5C91E5A918E1C43A00FCF013 /* CoreData.framework */,
+				5C91E5AA18E1C43A00FCF013 /* CoreTelephony.framework */,
 				5C8E33FA18C4EF23007206AE /* Accounts.framework */,
-				5C8E33F818C4EF1D007206AE /* Social.framework */,
-				33BE9DE31868183900E0D16E /* MobileCoreServices.framework */,
-				B6D4B282183CF43A008251EB /* CoreLocation.framework */,
-				B6CDA15F18295A5F00190074 /* libc++.dylib */,
-				B66F1E7F1476B6A40090D208 /* libstdc++.dylib */,
-				B66F1E771476B3AC0090D208 /* libicucore.dylib */,
-				B60FA9291702297C00078D20 /* MediaPlayer.framework */,
-				B6D6E09916F7D03C009AB75F /* StoreKit.framework */,
-				B63D256916E8DF33007E6034 /* Security.framework */,
-				B63D256716E8DF23007E6034 /* CFNetwork.framework */,
-				B6F1151B1677FCF2001F1324 /* CoreMotion.framework */,
-				B6F463A31636C3FA00FC89C1 /* SystemConfiguration.framework */,
-				5B7B76751619DB9700691910 /* CoreText.framework */,
-				B6074FF215F8E41600D987F9 /* GameKit.framework */,
-				B607AD0F132EB52400D7C3EA /* QuartzCore.framework */,
-				1DF5F4DF0D08C38300B7A737 /* UIKit.framework */,
-				1D30AB110D05D00D00671497 /* Foundation.framework */,
-				288765FC0DF74451002DB57D /* CoreGraphics.framework */,
-				B607AB66132EA6C300D7C3EA /* OpenAL.framework */,
 				B607AC32132EA75F00D7C3EA /* AudioToolbox.framework */,
-				B607AD09132EB51000D7C3EA /* OpenGLES.framework */,
 				B6CFCCD81332F152001F17AF /* AVFoundation.framework */,
+				B63D256716E8DF23007E6034 /* CFNetwork.framework */,
+				288765FC0DF74451002DB57D /* CoreGraphics.framework */,
+				B6D4B282183CF43A008251EB /* CoreLocation.framework */,
+				B6F1151B1677FCF2001F1324 /* CoreMotion.framework */,
+				5B7B76751619DB9700691910 /* CoreText.framework */,
+				1D30AB110D05D00D00671497 /* Foundation.framework */,
+				B6074FF215F8E41600D987F9 /* GameKit.framework */,
 				B6AC4A051359E7A5003C4982 /* iAd.framework */,
+				B6CDA15F18295A5F00190074 /* libc++.dylib */,
+				B66F1E771476B3AC0090D208 /* libicucore.dylib */,
+				B66F1E7F1476B6A40090D208 /* libstdc++.dylib */,
+				B60FA9291702297C00078D20 /* MediaPlayer.framework */,
+				33BE9DE31868183900E0D16E /* MobileCoreServices.framework */,
+				B607AB66132EA6C300D7C3EA /* OpenAL.framework */,
+				B607AD09132EB51000D7C3EA /* OpenGLES.framework */,
+				B607AD0F132EB52400D7C3EA /* QuartzCore.framework */,
+				B63D256916E8DF33007E6034 /* Security.framework */,
+				5C8E33F818C4EF1D007206AE /* Social.framework */,
+				B6D6E09916F7D03C009AB75F /* StoreKit.framework */,
+				B6F463A31636C3FA00FC89C1 /* SystemConfiguration.framework */,
+				1DF5F4DF0D08C38300B7A737 /* UIKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -462,6 +494,10 @@
 		5C8E33FC18C4EF40007206AE /* Extension */ = {
 			isa = PBXGroup;
 			children = (
+				5C91E5B218E1CEFE00FCF013 /* EJBindingAdMobBanner.h */,
+				5C91E5B318E1CEFE00FCF013 /* EJBindingAdMobBanner.m */,
+				5C91E59A18E1AD9B00FCF013 /* EJBindingAdMobPage.h */,
+				5C91E59B18E1AD9B00FCF013 /* EJBindingAdMobPage.m */,
 				5C8E33FD18C4EF40007206AE /* EJBindingAlertView.h */,
 				5C8E33FE18C4EF40007206AE /* EJBindingAlertView.m */,
 				5C8E33FF18C4EF40007206AE /* EJBindingAppUtils.h */,
@@ -476,6 +512,7 @@
 				5C2C1F8118D21CE30028F3B1 /* EJBindingWebServer.m */,
 				5C8E340518C4EF40007206AE /* EJBindingWebView.h */,
 				5C8E340618C4EF40007206AE /* EJBindingWebView.m */,
+				5C91E59D18E1AFF100FCF013 /* AdMobSDK */,
 				5C2C1F7818D21C1B0028F3B1 /* mongoose */,
 				5C8E340818C4EF40007206AE /* OpenUDID */,
 			);
@@ -489,6 +526,23 @@
 				5C8E340A18C4EF40007206AE /* OpenUDID.m */,
 			);
 			path = OpenUDID;
+			sourceTree = "<group>";
+		};
+		5C91E59D18E1AFF100FCF013 /* AdMobSDK */ = {
+			isa = PBXGroup;
+			children = (
+				5C91E59E18E1AFF100FCF013 /* GADAdMobExtras.h */,
+				5C91E59F18E1AFF100FCF013 /* GADAdNetworkExtras.h */,
+				5C91E5A018E1AFF100FCF013 /* GADAdSize.h */,
+				5C91E5A118E1AFF100FCF013 /* GADBannerView.h */,
+				5C91E5A218E1AFF100FCF013 /* GADBannerViewDelegate.h */,
+				5C91E5A318E1AFF100FCF013 /* GADInterstitial.h */,
+				5C91E5A418E1AFF100FCF013 /* GADInterstitialDelegate.h */,
+				5C91E5A518E1AFF100FCF013 /* GADRequest.h */,
+				5C91E5A618E1AFF100FCF013 /* GADRequestError.h */,
+				5C91E5A718E1AFF100FCF013 /* libGoogleAdMobAds.a */,
+			);
+			path = AdMobSDK;
 			sourceTree = "<group>";
 		};
 		B609F2CB16AD873900A3B2B9 /* Shaders */ = {
@@ -882,6 +936,7 @@
 				B64CE67A166682700087CF94 /* EJBindingAdBanner.m in Sources */,
 				B64CE67B166682700087CF94 /* EJBindingGameCenter.m in Sources */,
 				5C8E340C18C4EF40007206AE /* EJBindingAppUtils.m in Sources */,
+				5C91E5B418E1CEFE00FCF013 /* EJBindingAdMobBanner.m in Sources */,
 				B64CE67C166682700087CF94 /* EJBindingHttpRequest.m in Sources */,
 				33BE9DE2186817D900E0D16E /* EJBindingImagePicker.m in Sources */,
 				B64CE67D166682700087CF94 /* EJBindingLocalStorage.m in Sources */,
@@ -921,6 +976,7 @@
 				B630048C16CB098D0036D8D4 /* EJClassLoader.m in Sources */,
 				B699669816CC4E6E006B9456 /* EJTextureStorage.m in Sources */,
 				B699669B16CC55F5006B9456 /* EJSharedTextureCache.m in Sources */,
+				5C91E59C18E1AD9B00FCF013 /* EJBindingAdMobPage.m in Sources */,
 				B699669E16CC579E006B9456 /* EJSharedOpenGLContext.m in Sources */,
 				B6E02BC016D4110D00616925 /* EJNonRetainingProxy.m in Sources */,
 				5C8E340D18C4EF40007206AE /* EJBindingLocalNotification.m in Sources */,
@@ -950,19 +1006,26 @@
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/Source/lib\"",
+					"$(SRCROOT)/Source/lib",
+					"$(PROJECT_DIR)/Extension/AdMobSDK",
 				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Source/Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = "";
+				HEADER_SEARCH_PATHS = (
+					"${SOURCE_ROOT}",
+					"${SOURCE_ROOT}/Source/lib",
+					"$(PROJECT_DIR)/Extension/AdMobSDK",
+				);
 				INFOPLIST_FILE = Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)\"",
-					"\"$(SRCROOT)/Source/lib\"",
+					"$(SRCROOT)",
+					"$(SRCROOT)/Source/lib",
+					"$(PROJECT_DIR)/Extension/AdMobSDK",
 				);
 				OTHER_CFLAGS = "-DDEBUG";
 				PRODUCT_NAME = Ejecta;
@@ -980,16 +1043,23 @@
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/Source/lib\"",
+					"$(SRCROOT)/Source/lib",
+					"$(PROJECT_DIR)/Extension/AdMobSDK",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Source/Prefix.pch;
+				HEADER_SEARCH_PATHS = (
+					"${SOURCE_ROOT}",
+					"${SOURCE_ROOT}/Source/lib",
+					"$(PROJECT_DIR)/Extension/AdMobSDK",
+				);
 				INFOPLIST_FILE = Resources/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)\"",
-					"\"$(SRCROOT)/Source/lib\"",
+					"$(SRCROOT)",
+					"$(SRCROOT)/Source/lib",
+					"$(PROJECT_DIR)/Extension/AdMobSDK",
 				);
 				PRODUCT_NAME = Ejecta;
 				PROVISIONING_PROFILE = "";
@@ -1015,6 +1085,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = "-DDEBUG";
+				OTHER_LDFLAGS = "-ObjC";
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				VALID_ARCHS = "armv7 armv7s arm64";
@@ -1036,6 +1107,7 @@
 				INFOPLIST_FILE = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				OTHER_LDFLAGS = "-ObjC";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;

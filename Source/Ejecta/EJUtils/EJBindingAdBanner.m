@@ -112,6 +112,15 @@
 	banner.hidden = YES;
 }
 
+- (BOOL)bannerViewActionShouldBegin:(ADBannerView *)banner willLeaveApplication:(BOOL)willLeave {
+	[self triggerEvent:@"click"];
+    return YES;
+}
+
+- (void)bannerViewActionDidFinish:(ADBannerView *)banner {
+	[self triggerEvent:@"finish"];
+}
+
 EJ_BIND_GET(isReady, ctx)
 {
 	return JSValueMakeBoolean(ctx, isReady);
@@ -230,5 +239,7 @@ EJ_BIND_GET(type, ctx)
 
 EJ_BIND_EVENT(load);
 EJ_BIND_EVENT(error);
+EJ_BIND_EVENT(click);
+EJ_BIND_EVENT(finish);
 
 @end
