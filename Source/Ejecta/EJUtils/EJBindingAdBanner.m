@@ -47,7 +47,6 @@
 
 	banner.delegate = self;
 	banner.hidden = YES;
-
 	[self doLayout];
 	[scriptView addSubview:banner];
 }
@@ -69,16 +68,16 @@
 	}
 
 	if (!isRectangle) {
-	if (!isRectangle) {
 		banner.requiredContentSizeIdentifiers = [NSSet setWithObjects:
 		                                         (landscape
 		                                          ? ADBannerContentSizeIdentifierLandscape
-		                                          : ADBannerContentSizeIdentifierPortrait),
+												  : ADBannerContentSizeIdentifierPortrait),
 		                                         nil];
 		banner.currentContentSizeIdentifier = (landscape
 		                                       ? ADBannerContentSizeIdentifierLandscape
-		                                       : ADBannerContentSizeIdentifierPortrait);
-	}	}
+											   : ADBannerContentSizeIdentifierPortrait);
+	}
+
 	CGRect rect = CGRectMake(x, y, w, h);
 	CGSize adSize = [banner sizeThatFits:rect.size];
 	[banner setFrame:CGRectMake(x, y, adSize.width, adSize.height)];
@@ -111,6 +110,15 @@
 	NSLog(@"AdBanner: Failed to receive Ad. Error: %ld - %@", (long)error.code, error.localizedDescription);
 	[self triggerEvent:@"error"];
 	banner.hidden = YES;
+}
+
+- (BOOL)bannerViewActionShouldBegin:(ADBannerView *)banner willLeaveApplication:(BOOL)willLeave {
+	[self triggerEvent:@"click"];
+    return YES;
+}
+
+- (void)bannerViewActionDidFinish:(ADBannerView *)banner {
+	[self triggerEvent:@"finish"];
 }
 
 EJ_BIND_GET(isReady, ctx)
@@ -231,5 +239,7 @@ EJ_BIND_GET(type, ctx)
 
 EJ_BIND_EVENT(load);
 EJ_BIND_EVENT(error);
+EJ_BIND_EVENT(click);
+EJ_BIND_EVENT(finish);
 
 @end
