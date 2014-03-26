@@ -39,7 +39,11 @@ EJ_BIND_ENUM(globalCompositeOperation, renderingContext.globalCompositeOperation
 	"destination-over",	// kEJCompositeOperationDestinationOver
 	"source-atop",		// kEJCompositeOperationSourceAtop
 	"xor",				// kEJCompositeOperationXOR
-	"copy"				// kEJCompositeOperationCopy
+	"copy",				// kEJCompositeOperationCopy
+	"source-in",		// kEJCompositeOperationSourceIn
+	"destination-in",	// kEJCompositeOperationDestinationIn
+	"source-out",		// kEJCompositeOperationSourceOut
+	"destination-atop"	// kEJCompositeOperationDestinationAtop
 );
 
 EJ_BIND_ENUM(lineCap, renderingContext.state->lineCap,
