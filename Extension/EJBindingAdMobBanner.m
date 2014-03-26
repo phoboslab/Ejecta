@@ -15,7 +15,6 @@
 			NSLog(@"Error: Must set adUnitID");
 		}
 	}
-	isReady = NO;
 	return self;
 }
 

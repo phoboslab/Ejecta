@@ -12,8 +12,12 @@
 			NSLog(@"Error: Must set adUnitID");
 		}
 	}
-	isReady = NO;
 	return self;
+}
+
+- (void)createWithJSObject:(JSObjectRef)obj scriptView:(EJJavaScriptView *)view {
+	[super createWithJSObject:obj scriptView:view];
+	isReady = NO;
 }
 
 - (void)dealloc {
