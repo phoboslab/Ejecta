@@ -205,7 +205,6 @@
 		5C91E5A518E1AFF100FCF013 /* GADRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GADRequest.h; sourceTree = "<group>"; };
 		5C91E5A618E1AFF100FCF013 /* GADRequestError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GADRequestError.h; sourceTree = "<group>"; };
 		5C91E5A718E1AFF100FCF013 /* libGoogleAdMobAds.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libGoogleAdMobAds.a; sourceTree = "<group>"; };
-		5C91E5A918E1C43A00FCF013 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		5C91E5AA18E1C43A00FCF013 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 		5C91E5AD18E1C45700FCF013 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		5C91E5AF18E1C47F00FCF013 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
@@ -450,17 +449,15 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				5C91E5AF18E1C47F00FCF013 /* AdSupport.framework */,
-				5C91E5AD18E1C45700FCF013 /* MessageUI.framework */,
-				5C91E5A918E1C43A00FCF013 /* CoreData.framework */,
-				5C91E5AA18E1C43A00FCF013 /* CoreTelephony.framework */,
 				5C8E33FA18C4EF23007206AE /* Accounts.framework */,
+				5C91E5AF18E1C47F00FCF013 /* AdSupport.framework */,
 				B607AC32132EA75F00D7C3EA /* AudioToolbox.framework */,
 				B6CFCCD81332F152001F17AF /* AVFoundation.framework */,
 				B63D256716E8DF23007E6034 /* CFNetwork.framework */,
 				288765FC0DF74451002DB57D /* CoreGraphics.framework */,
 				B6D4B282183CF43A008251EB /* CoreLocation.framework */,
 				B6F1151B1677FCF2001F1324 /* CoreMotion.framework */,
+				5C91E5AA18E1C43A00FCF013 /* CoreTelephony.framework */,
 				5B7B76751619DB9700691910 /* CoreText.framework */,
 				1D30AB110D05D00D00671497 /* Foundation.framework */,
 				B6074FF215F8E41600D987F9 /* GameKit.framework */,
@@ -469,6 +466,7 @@
 				B66F1E771476B3AC0090D208 /* libicucore.dylib */,
 				B66F1E7F1476B6A40090D208 /* libstdc++.dylib */,
 				B60FA9291702297C00078D20 /* MediaPlayer.framework */,
+				5C91E5AD18E1C45700FCF013 /* MessageUI.framework */,
 				33BE9DE31868183900E0D16E /* MobileCoreServices.framework */,
 				B607AB66132EA6C300D7C3EA /* OpenAL.framework */,
 				B607AD09132EB51000D7C3EA /* OpenGLES.framework */,
@@ -1000,70 +998,34 @@
 		1D6058940D05DD3E006BFB54 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(SRCROOT)/Source/lib",
-					"$(PROJECT_DIR)/Extension/AdMobSDK",
-				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Source/Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = "";
-				HEADER_SEARCH_PATHS = (
-					"${SOURCE_ROOT}",
-					"${SOURCE_ROOT}/Source/lib",
-					"$(PROJECT_DIR)/Extension/AdMobSDK",
-				);
 				INFOPLIST_FILE = Resources/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(SRCROOT)",
-					"$(SRCROOT)/Source/lib",
 					"$(PROJECT_DIR)/Extension/AdMobSDK",
 				);
 				OTHER_CFLAGS = "-DDEBUG";
 				PRODUCT_NAME = Ejecta;
-				PROVISIONING_PROFILE = "";
-				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
 		1D6058950D05DD3E006BFB54 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(SRCROOT)/Source/lib",
-					"$(PROJECT_DIR)/Extension/AdMobSDK",
-				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Source/Prefix.pch;
-				HEADER_SEARCH_PATHS = (
-					"${SOURCE_ROOT}",
-					"${SOURCE_ROOT}/Source/lib",
-					"$(PROJECT_DIR)/Extension/AdMobSDK",
-				);
 				INFOPLIST_FILE = Resources/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(SRCROOT)",
-					"$(SRCROOT)/Source/lib",
 					"$(PROJECT_DIR)/Extension/AdMobSDK",
 				);
 				PRODUCT_NAME = Ejecta;
-				PROVISIONING_PROFILE = "";
-				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -1071,47 +1033,42 @@
 		C01FCF4F08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = armv7;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = "$(SOURCE_ROOT)/Source/lib";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_PREPROCESSOR_DEFINITIONS = NS_BLOCK_ASSERTIONS;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = (
-					"${SOURCE_ROOT}",
-					"${SOURCE_ROOT}/Source/lib",
-				);
-				INFOPLIST_FILE = "";
+				HEADER_SEARCH_PATHS = "$(SOURCE_ROOT)";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = "-DDEBUG";
 				OTHER_LDFLAGS = "-ObjC";
-				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
-				VALID_ARCHS = "armv7 armv7s arm64";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALID_ARCHS = armv7;
 			};
 			name = Debug;
 		};
 		C01FCF5008A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = armv7;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				FRAMEWORK_SEARCH_PATHS = "$(SOURCE_ROOT)/Source/lib";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = (
-					"${SOURCE_ROOT}",
-					"${SOURCE_ROOT}/Source/lib",
-				);
-				INFOPLIST_FILE = "";
+				HEADER_SEARCH_PATHS = "$(SOURCE_ROOT)";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				OTHER_LDFLAGS = "-ObjC";
-				PROVISIONING_PROFILE = "";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
-				VALID_ARCHS = "armv7 armv7s arm64";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALID_ARCHS = armv7;
 			};
 			name = Release;
 		};
