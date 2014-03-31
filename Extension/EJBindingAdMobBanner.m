@@ -82,7 +82,9 @@
 
 - (void)doLayout {
 	CGSize size = [self getSize];
-	[banner setFrame:CGRectMake(x, y, size.width, size.height)];
+	width = size.width;
+	height = size.height;
+	[banner setFrame:CGRectMake(x, y, width, height)];
 }
 
 - (GADRequest *)request {
@@ -149,7 +151,6 @@ EJ_BIND_FUNCTION(show, ctx, argc, argv)
 }
 
 
-
 EJ_BIND_GET(x, ctx)
 {
 	return JSValueMakeNumber(ctx, x);
@@ -160,8 +161,7 @@ EJ_BIND_SET(x, ctx, value)
 	short newX = JSValueToNumberFast(ctx, value);
 	if (newX != x) {
 		x = newX;
-		CGRect frame = banner.frame;
-		frame.origin.x = x;
+		[banner setFrame:CGRectMake(x, y, width, height)];
 	}
 }
 
@@ -175,19 +175,18 @@ EJ_BIND_SET(y, ctx, value)
 	short newY = JSValueToNumberFast(ctx, value);
 	if (newY != y) {
 		y = newY;
-		CGRect frame = banner.frame;
-		frame.origin.y = y;
+		[banner setFrame:CGRectMake(x, y, width, height)];
 	}
 }
 
 EJ_BIND_GET(width, ctx)
 {
-	return JSValueMakeNumber(ctx, banner.frame.size.width);
+	return JSValueMakeNumber(ctx, width);
 }
 
 EJ_BIND_GET(height, ctx)
 {
-	return JSValueMakeNumber(ctx, banner.frame.size.height);
+	return JSValueMakeNumber(ctx, height);
 }
 
 EJ_BIND_ENUM(type, self.bannerType,

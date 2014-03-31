@@ -12,7 +12,7 @@ typedef enum {
 	skyscraper,         // 120x600
 	portrait,           // portraitx32/50/90
 	landscape,          // landscapex32/50/90
-	invalid             // 
+	invalid             //
 } BannerType;
 
 @interface EJBindingAdMobBanner : EJBindingEventedBase <GADBannerViewDelegate>
@@ -22,6 +22,8 @@ typedef enum {
 	NSString *adUnitID;
 	BOOL wantsToShow, isReady;
 	short x, y;
+    CGFloat width;
+    CGFloat height;
 }
 
 @property (readwrite, nonatomic) BannerType bannerType;
