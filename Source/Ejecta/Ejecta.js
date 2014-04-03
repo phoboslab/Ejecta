@@ -106,7 +106,9 @@ window.clearInterval = function(id){ return ej.clearInterval(id); };
 window.requestAnimationFrame = function(cb, element){
 	return ej.setTimeout(function(){ cb(ej.performanceNow()); }, 16);
 };
-
+window.cancelAnimationFrame = function (id) {
+	return ej.clearTimeout(id);
+};
 
 
 // The native Image, Audio, HttpRequest and LocalStorage class mimic the real elements
