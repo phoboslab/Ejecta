@@ -10,6 +10,7 @@
 	// This will begin loading the texture in a background thread and will call the
 	// JavaScript onload callback when done
 	loading = YES;
+	lazyload = NO;
 	
 	// Protect this image object from garbage collection, as its callback function
 	// may be the only thing holding on to it
@@ -27,8 +28,16 @@
 		fullPath = path;
 	}
 	else {
-		NSLog(@"Loading Image: %@", path);
-		fullPath = [scriptView pathForResource:path];
+		// Only local assets are lazy-loaded
+		NSLog(@"Will lazy-load image: %@", path);
+		lazyload = YES;
+		lazypath = [scriptView pathForResource:path];
+		
+		// Fire load event immediately and exit without loading the texture
+		loading = NO;
+		[self triggerEvent:@"load"];
+		JSValueUnprotect(scriptView.jsGlobalContext, jsObject);
+		return;
 	}
 	
 	// Use a non-retaining proxy for the callback operation and take care that the
@@ -41,6 +50,29 @@
 		loadOnQueue:scriptView.backgroundQueue callback:loadCallback] retain];
 }
 
+- (EJTexture *)getTexture {
+	if( lazyload && !texture ) {
+	
+		NSLog(@"Lazy-loaded image: %@", path);
+		
+		// Load texture blocking on main thread
+		texture = [[EJTexture alloc] initWithPath:lazypath];
+		
+		sizeknown = YES;
+		knownwidth = texture.width / texture.contentScale;
+		knownheight = texture.height / texture.contentScale;
+	}
+	
+	return texture;
+}
+
+- (void)releaseTexture {
+	if( lazyload && texture ) {
+		[texture release];
+		texture = nil;
+	}
+}
+
 - (void)prepareGarbageCollection {
 	[loadCallback cancel];
 	[loadCallback release];
@@ -51,7 +83,14 @@
 	[loadCallback cancel];
 	[loadCallback release];
 	
-	[texture release];
+	if ( texture ) {
+		[texture release];
+	}
+	
+	if( lazypath ) {
+		[lazypath release];
+	}
+	
 	[path release];
 	[super dealloc];
 }
@@ -61,7 +100,17 @@
 	[loadCallback release];
 	loadCallback = nil;
 	
-	[self triggerEvent:(texture.textureId ? @"load" : @"error")];
+	if( texture.textureId ) {
+		[self triggerEvent:@"load"];
+		sizeknown = YES;
+		knownwidth = texture.width / texture.contentScale;
+		knownheight = texture.height / texture.contentScale;
+	}
+	else {
+		[self triggerEvent:@"error"];
+		sizeknown = NO;
+	}
+	
 	JSValueUnprotect(scriptView.jsGlobalContext, jsObject);
 }
 
@@ -89,10 +138,19 @@ EJ_BIND_SET(src, ctx, value) {
 	if( path ) {
 		[path release];
 		path = nil;
-		
+	}
+	
+	if( texture ) {
 		[texture release];
 		texture = nil;
 	}
+	
+	if( lazypath ) {
+		[lazypath release];
+		lazypath = nil;
+	}
+	
+	sizeknown = NO;
 	
 	if( !JSValueIsNull(ctx, value) && newPath.length ) {
 		path = [newPath retain];
@@ -101,15 +159,41 @@ EJ_BIND_SET(src, ctx, value) {
 }
 
 EJ_BIND_GET(width, ctx ) {
-	return JSValueMakeNumber( ctx, texture ? (texture.width / texture.contentScale) : 0);
+	short ret = 0;
+	
+	if( sizeknown )
+		ret = knownwidth;
+	else if( texture )
+		ret = texture.width / texture.contentScale;
+	else
+	{
+		// Have to load texture to find out correct size
+		[self getTexture];
+		ret = texture.width / texture.contentScale;
+	}
+	
+	return JSValueMakeNumber( ctx, ret );
 }
 
 EJ_BIND_GET(height, ctx ) { 
-	return JSValueMakeNumber( ctx, texture ? (texture.height / texture.contentScale) : 0 );
+	short ret = 0;
+	
+	if( sizeknown )
+		ret = knownheight;
+	else if( texture )
+		ret = texture.height / texture.contentScale;
+	else
+	{
+		// Have to load texture to find out correct size
+		[self getTexture];
+		ret = texture.height / texture.contentScale;
+	}
+	
+	return JSValueMakeNumber( ctx, ret);
 }
 
 EJ_BIND_GET(complete, ctx ) {
-	return JSValueMakeBoolean(ctx, (texture && texture.textureId) );
+	return JSValueMakeBoolean(ctx, (lazyload || (texture && texture.textureId)) );
 }
 
 EJ_BIND_EVENT(load);

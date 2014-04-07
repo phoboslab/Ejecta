@@ -40,6 +40,14 @@
 	return imageData.texture;
 }
 
+- (EJTexture *)getTexture {
+	return self.texture;
+}
+
+- (void)releaseTexture {
+	// no-op
+}
+
 EJ_BIND_GET(data, ctx ) {
 	if( !dataArray ) {
 		// Copy values from image data into a JSArray and unpremultiply it

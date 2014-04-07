@@ -1408,7 +1408,7 @@ EJ_BIND_FUNCTION(texImage2D, ctx, argc, argv) {
 			return NULL;
 		}
 		
-		EJTexture *sourceTexture = drawable.texture;		
+		EJTexture *sourceTexture = [drawable getTexture];		
 		
 		// We don't care about internalFormat, format or type params here; the source image will
 		// always be GL_RGBA and loaded as GL_UNSIGNED_BYTE
@@ -1448,6 +1448,10 @@ EJ_BIND_FUNCTION(texImage2D, ctx, argc, argv) {
 				}
 			}
 		}
+		
+		// The active texture now has a copy of the texture from the original drawable,
+		// so perhaps release the original so memory is not wasted.
+		[drawable releaseTexture];
 	}
 	
 	// With ArrayBufferView
@@ -1549,7 +1553,7 @@ EJ_BIND_FUNCTION(texSubImage2D, ctx, argc, argv) {
 			return NULL;
 		}
 		
-		EJTexture *sourceTexture = drawable.texture;		
+		EJTexture *sourceTexture = [drawable getTexture];		
 		
 		// We don't care about internalFormat, format or type params here; the source image will
 		// always be GL_RGBA and loaded as GL_UNSIGNED_BYTE
@@ -1577,6 +1581,8 @@ EJ_BIND_FUNCTION(texSubImage2D, ctx, argc, argv) {
 				glTexSubImage2D(target, level, xoffset, yoffset, width, height, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
 			}
 		}
+		
+		[drawable releaseTexture];
 	}
 	
 	// With ArrayBufferView
