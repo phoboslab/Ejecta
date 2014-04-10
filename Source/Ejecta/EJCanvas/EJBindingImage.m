@@ -31,7 +31,6 @@
 		// Only local assets are lazy-loaded
 		NSLog(@"Will lazy-load image: %@", path);
 		lazyload = YES;
-		lazypath = [scriptView pathForResource:path];
 		
 		// Fire load event immediately and exit without loading the texture
 		loading = NO;
@@ -56,6 +55,7 @@
 		NSLog(@"Lazy-loaded image: %@", path);
 		
 		// Load texture blocking on main thread
+		NSString* lazypath = [scriptView pathForResource:path];
 		texture = [[EJTexture alloc] initWithPath:lazypath];
 		
 		sizeknown = YES;
@@ -85,10 +85,6 @@
 	
 	if ( texture ) {
 		[texture release];
-	}
-	
-	if( lazypath ) {
-		[lazypath release];
 	}
 	
 	[path release];
@@ -143,11 +139,6 @@ EJ_BIND_SET(src, ctx, value) {
 	if( texture ) {
 		[texture release];
 		texture = nil;
-	}
-	
-	if( lazypath ) {
-		[lazypath release];
-		lazypath = nil;
 	}
 	
 	sizeknown = NO;
