@@ -449,14 +449,13 @@ typedef struct {
 	}
 	
 	else {
-		// Use UIImage for PNG, JPG and everything else
-		UIImage *tmpImage = [[UIImage alloc] initWithContentsOfFile:path];
-		
-		if( !tmpImage ) {
+		pixels = [NSMutableData dataWithContentsOfFile:path];
+		if( !pixels ) {
 			NSLog(@"Error Loading image %@ - not found.", path);
 			return NULL;
 		}
-		
+		// Use UIImage for PNG, JPG and everything else
+		UIImage *tmpImage = [[UIImage alloc] initWithData:pixels];
 		pixels = [self loadPixelsFromUIImage:tmpImage];
 		[tmpImage release];
 	}
