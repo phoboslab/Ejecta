@@ -63,10 +63,6 @@
 	}
 }
 
-- (EJTexture *)getTexture {
-	return self.texture;
-}
-
 - (void)releaseTexture {
 	// no-op
 }

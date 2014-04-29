@@ -241,7 +241,7 @@ EJ_BIND_FUNCTION(drawImage, ctx, argc, argv) {
 	scriptView.currentRenderingContext = renderingContext;
 	
 	NSObject<EJDrawable> *drawable = (NSObject<EJDrawable> *)JSValueGetPrivate(argv[0]);
-	EJTexture *image = [drawable getTexture];
+	EJTexture *image = drawable.texture;
 	
 	if( !image.textureId ) { return NULL; }
 	
@@ -384,7 +384,7 @@ EJ_BIND_FUNCTION(createRadialGradient, ctx, argc, argv) {
 EJ_BIND_FUNCTION(createPattern, ctx, argc, argv) {
 	if( argc < 1 ) { return NULL; }
 	NSObject<EJDrawable> *drawable = (NSObject<EJDrawable> *)JSValueGetPrivate(argv[0]);
-	EJTexture *image = [drawable getTexture];
+	EJTexture *image = drawable.texture;
 	
 	if( !image ) { return NULL; }
 	

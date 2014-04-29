@@ -1408,7 +1408,7 @@ EJ_BIND_FUNCTION(texImage2D, ctx, argc, argv) {
 			return NULL;
 		}
 		
-		EJTexture *sourceTexture = [drawable getTexture];		
+		EJTexture *sourceTexture = drawable.texture;
 		
 		// We don't care about internalFormat, format or type params here; the source image will
 		// always be GL_RGBA and loaded as GL_UNSIGNED_BYTE
@@ -1553,7 +1553,7 @@ EJ_BIND_FUNCTION(texSubImage2D, ctx, argc, argv) {
 			return NULL;
 		}
 		
-		EJTexture *sourceTexture = [drawable getTexture];		
+		EJTexture *sourceTexture = drawable.texture;
 		
 		// We don't care about internalFormat, format or type params here; the source image will
 		// always be GL_RGBA and loaded as GL_UNSIGNED_BYTE

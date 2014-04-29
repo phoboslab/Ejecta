@@ -49,7 +49,7 @@
 		loadOnQueue:scriptView.backgroundQueue callback:loadCallback] retain];
 }
 
-- (EJTexture *)getTexture {
+- (EJTexture *)texture {
 	if( lazyload && !texture ) {
 	
 		NSLog(@"Lazy-loaded image: %@", path);
@@ -83,9 +83,7 @@
 	[loadCallback cancel];
 	[loadCallback release];
 	
-	if ( texture ) {
-		[texture release];
-	}
+	[texture release];
 	
 	[path release];
 	[super dealloc];
@@ -150,37 +148,21 @@ EJ_BIND_SET(src, ctx, value) {
 }
 
 EJ_BIND_GET(width, ctx ) {
-	short ret = 0;
-	
-	if( sizeknown )
-		ret = knownwidth;
-	else if( texture )
-		ret = texture.width / texture.contentScale;
-	else
-	{
-		// Have to load texture to find out correct size
-		[self getTexture];
-		ret = texture.width / texture.contentScale;
+	if( sizeknown ) {
+		return JSValueMakeNumber( ctx, knownwidth );
 	}
-	
-	return JSValueMakeNumber( ctx, ret );
+	else {
+		return JSValueMakeNumber( ctx, self.texture.width / self.texture.contentScale );
+	}
 }
 
-EJ_BIND_GET(height, ctx ) { 
-	short ret = 0;
-	
-	if( sizeknown )
-		ret = knownheight;
-	else if( texture )
-		ret = texture.height / texture.contentScale;
-	else
-	{
-		// Have to load texture to find out correct size
-		[self getTexture];
-		ret = texture.height / texture.contentScale;
+EJ_BIND_GET(height, ctx ) {
+	if( sizeknown ) {
+		return JSValueMakeNumber( ctx, knownheight );
 	}
-	
-	return JSValueMakeNumber( ctx, ret);
+	else {
+		return JSValueMakeNumber( ctx, self.texture.height / self.texture.contentScale );
+	}
 }
 
 EJ_BIND_GET(complete, ctx ) {
