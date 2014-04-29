@@ -1449,9 +1449,7 @@ EJ_BIND_FUNCTION(texImage2D, ctx, argc, argv) {
 			}
 		}
 		
-		// The active texture now has a copy of the texture from the original drawable,
-		// so perhaps release the original so memory is not wasted.
-		[drawable releaseTexture];
+		[sourceTexture maybeReleaseStorage];
 	}
 	
 	// With ArrayBufferView
@@ -1582,7 +1580,7 @@ EJ_BIND_FUNCTION(texSubImage2D, ctx, argc, argv) {
 			}
 		}
 		
-		[drawable releaseTexture];
+		[sourceTexture maybeReleaseStorage];
 	}
 	
 	// With ArrayBufferView

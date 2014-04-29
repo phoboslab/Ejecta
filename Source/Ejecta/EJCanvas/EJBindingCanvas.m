@@ -63,10 +63,6 @@
 	}
 }
 
-- (void)releaseTexture {
-	// no-op
-}
-
 #define EJ_GET_SET_STYLE(GETTER, SETTER, TARGET) \
 	- (float)GETTER { return TARGET; } \
 	- (void)SETTER:(float)value { \

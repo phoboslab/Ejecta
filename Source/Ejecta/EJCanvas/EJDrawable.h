@@ -4,6 +4,5 @@
 @protocol EJDrawable
 
 @property (readonly, nonatomic) EJTexture *texture;
-- (void)releaseTexture;
 
 @end
