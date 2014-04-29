@@ -67,6 +67,26 @@ typedef struct {
 	return self;
 }
 
++ (id)cachedTextureWithPath:(NSString *)path {
+	// For loading on the main thread (blocking), but tries the cache first
+	
+	// If path is a Data URI the string size may be very huge. In this case we don't want to use
+	// it as cache key (even if it works it would be a waste of memory), we use a hash instead.
+	NSString *cacheKey = [path hasPrefix:@"data:"] ? path.md5 : path;
+	
+	EJTexture *texture = EJSharedTextureCache.instance.textures[cacheKey];
+	
+	if( !texture ) {
+		// Create a new texture and add it to the cache
+		texture = [[EJTexture alloc] initWithPath:path];
+		
+		[EJSharedTextureCache instance].textures[cacheKey] = texture;
+		[texture autorelease];
+		texture->cached = true;
+	}
+	return texture;
+}
+
 + (id)cachedTextureWithPath:(NSString *)path loadOnQueue:(NSOperationQueue *)queue callback:(NSOperation *)callback {
 	// For loading on a background thread (non-blocking), but tries the cache first
 	

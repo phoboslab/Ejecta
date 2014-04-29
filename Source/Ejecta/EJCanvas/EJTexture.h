@@ -21,6 +21,7 @@
 }
 - (id)initEmptyForWebGL;
 - (id)initWithPath:(NSString *)path;
++ (id)cachedTextureWithPath:(NSString *)path;
 + (id)cachedTextureWithPath:(NSString *)path loadOnQueue:(NSOperationQueue *)queue callback:(NSOperation *)callback;
 - (id)initWithPath:(NSString *)path loadOnQueue:(NSOperationQueue *)queue callback:(NSOperation *)callback;
 

@@ -54,8 +54,8 @@
 		NSLog(@"Lazy-loaded image: %@", path);
 		
 		// Load texture blocking on main thread
-		NSString* lazypath = [scriptView pathForResource:path];
-		texture = [[EJTexture alloc] initWithPath:lazypath];
+		NSString *fullPath = [scriptView pathForResource:path];
+		texture = [[EJTexture cachedTextureWithPath:fullPath] retain];
 		
 		sizeKnown = YES;
 		knownWidth = texture.width / texture.contentScale;
