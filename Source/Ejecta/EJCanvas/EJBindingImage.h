@@ -7,12 +7,12 @@
 	NSString *path;
 	BOOL loading;
 	
-	BOOL lazyload;					// create texture from path blocking main thread on first use
+	BOOL lazyLoad;					// create texture from path blocking main thread on first use
 	
-	BOOL sizeknown;					// cache the size of the image so the width/height accessors
+	BOOL sizeKnown;					// cache the size of the image so the width/height accessors
 									// don't need to have the texture loaded even if it was transferred
-	short knownwidth;
-	short knownheight;
+	short knownWidth;
+	short knownHeight;
 	
 	NSOperation *loadCallback;
 }

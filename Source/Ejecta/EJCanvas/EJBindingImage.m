@@ -10,7 +10,6 @@
 	// This will begin loading the texture in a background thread and will call the
 	// JavaScript onload callback when done
 	loading = YES;
-	lazyload = NO;
 	
 	// Protect this image object from garbage collection, as its callback function
 	// may be the only thing holding on to it
@@ -30,7 +29,7 @@
 	else {
 		// Only local assets are lazy-loaded
 		NSLog(@"Will lazy-load image: %@", path);
-		lazyload = YES;
+		lazyLoad = YES;
 	}
 	
 	// Use a non-retaining proxy for the callback operation and take care that the
@@ -40,7 +39,7 @@
 		selector:@selector(endLoad) object:nil];
 	
 	// When lazy loading, blindly execute the onload callback on the next frame.
-	if( lazyload ) {
+	if( lazyLoad ) {
 		[NSOperationQueue.mainQueue addOperation:loadCallback];
 	}
 	else {
@@ -50,7 +49,7 @@
 }
 
 - (EJTexture *)texture {
-	if( lazyload && !texture ) {
+	if( lazyLoad && !texture ) {
 	
 		NSLog(@"Lazy-loaded image: %@", path);
 		
@@ -58,16 +57,16 @@
 		NSString* lazypath = [scriptView pathForResource:path];
 		texture = [[EJTexture alloc] initWithPath:lazypath];
 		
-		sizeknown = YES;
-		knownwidth = texture.width / texture.contentScale;
-		knownheight = texture.height / texture.contentScale;
+		sizeKnown = YES;
+		knownWidth = texture.width / texture.contentScale;
+		knownHeight = texture.height / texture.contentScale;
 	}
 	
 	return texture;
 }
 
 - (void)releaseTexture {
-	if( lazyload && texture ) {
+	if( lazyLoad && texture ) {
 		[texture release];
 		texture = nil;
 	}
@@ -94,7 +93,7 @@
 	[loadCallback release];
 	loadCallback = nil;
 	
-	if( lazyload || texture.textureId ) {
+	if( lazyLoad || texture.textureId ) {
 		[self triggerEvent:@"load"];
 	}
 	else {
@@ -135,7 +134,7 @@ EJ_BIND_SET(src, ctx, value) {
 		texture = nil;
 	}
 	
-	sizeknown = NO;
+	sizeKnown = NO;
 	
 	if( !JSValueIsNull(ctx, value) && newPath.length ) {
 		path = [newPath retain];
@@ -144,8 +143,8 @@ EJ_BIND_SET(src, ctx, value) {
 }
 
 EJ_BIND_GET(width, ctx ) {
-	if( sizeknown ) {
-		return JSValueMakeNumber( ctx, knownwidth );
+	if( sizeKnown ) {
+		return JSValueMakeNumber( ctx, knownWidth );
 	}
 	else {
 		return JSValueMakeNumber( ctx, self.texture.width / self.texture.contentScale );
@@ -153,8 +152,8 @@ EJ_BIND_GET(width, ctx ) {
 }
 
 EJ_BIND_GET(height, ctx ) {
-	if( sizeknown ) {
-		return JSValueMakeNumber( ctx, knownheight );
+	if( sizeKnown ) {
+		return JSValueMakeNumber( ctx, knownHeight );
 	}
 	else {
 		return JSValueMakeNumber( ctx, self.texture.height / self.texture.contentScale );
@@ -162,7 +161,7 @@ EJ_BIND_GET(height, ctx ) {
 }
 
 EJ_BIND_GET(complete, ctx ) {
-	return JSValueMakeBoolean(ctx, (lazyload || (texture && texture.textureId)) );
+	return JSValueMakeBoolean(ctx, (lazyLoad || (texture && texture.textureId)) );
 }
 
 EJ_BIND_EVENT(load);
