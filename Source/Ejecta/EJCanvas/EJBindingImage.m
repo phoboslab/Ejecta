@@ -27,7 +27,7 @@
 		fullPath = path;
 	}
 	else {
-		NSLog(@"Loading Image: %@", path);
+		NSLog(@"Loading Image (lazy): %@", path);
 		fullPath = [scriptView pathForResource:path];
 	}
 	
@@ -52,6 +52,7 @@
 	[loadCallback release];
 	
 	[texture release];
+	
 	[path release];
 	[super dealloc];
 }
@@ -61,7 +62,13 @@
 	[loadCallback release];
 	loadCallback = nil;
 	
-	[self triggerEvent:(texture.textureId ? @"load" : @"error")];
+	if( texture.lazyLoaded || texture.textureId ) {
+		[self triggerEvent:@"load"];
+	}
+	else {
+		[self triggerEvent:@"error"];
+	}
+	
 	JSValueUnprotect(scriptView.jsGlobalContext, jsObject);
 }
 
@@ -89,7 +96,9 @@ EJ_BIND_SET(src, ctx, value) {
 	if( path ) {
 		[path release];
 		path = nil;
-		
+	}
+	
+	if( texture ) {
 		[texture release];
 		texture = nil;
 	}
@@ -101,15 +110,15 @@ EJ_BIND_SET(src, ctx, value) {
 }
 
 EJ_BIND_GET(width, ctx ) {
-	return JSValueMakeNumber( ctx, texture ? (texture.width / texture.contentScale) : 0);
+	return JSValueMakeNumber( ctx, texture.width / texture.contentScale );
 }
 
-EJ_BIND_GET(height, ctx ) { 
-	return JSValueMakeNumber( ctx, texture ? (texture.height / texture.contentScale) : 0 );
+EJ_BIND_GET(height, ctx ) {
+	return JSValueMakeNumber( ctx, texture.height / texture.contentScale );
 }
 
 EJ_BIND_GET(complete, ctx ) {
-	return JSValueMakeBoolean(ctx, (texture && texture.textureId) );
+	return JSValueMakeBoolean(ctx, (texture && (texture.lazyLoaded || texture.textureId)) );
 }
 
 EJ_BIND_EVENT(load);

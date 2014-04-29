@@ -18,6 +18,7 @@ typedef EJTextureParam EJTextureParams[kEJTextureParamLast];
 	EJTextureParams params;
 	GLuint textureId;
 	BOOL immutable;
+	NSTimeInterval lastBound;
 }
 - (id)init;
 - (id)initImmutable;
@@ -25,5 +26,6 @@ typedef EJTextureParam EJTextureParams[kEJTextureParamLast];
 
 @property (readonly, nonatomic) GLuint textureId;
 @property (readonly, nonatomic) BOOL immutable;
+@property (readonly, nonatomic) NSTimeInterval lastBound;
 
 @end
