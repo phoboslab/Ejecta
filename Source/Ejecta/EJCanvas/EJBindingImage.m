@@ -31,12 +31,6 @@
 		// Only local assets are lazy-loaded
 		NSLog(@"Will lazy-load image: %@", path);
 		lazyload = YES;
-		
-		// Fire load event immediately and exit without loading the texture
-		loading = NO;
-		[self triggerEvent:@"load"];
-		JSValueUnprotect(scriptView.jsGlobalContext, jsObject);
-		return;
 	}
 	
 	// Use a non-retaining proxy for the callback operation and take care that the
@@ -45,8 +39,14 @@
 		initWithTarget:[EJNonRetainingProxy proxyWithTarget:self]
 		selector:@selector(endLoad) object:nil];
 	
-	texture = [[EJTexture cachedTextureWithPath:fullPath
-		loadOnQueue:scriptView.backgroundQueue callback:loadCallback] retain];
+	// When lazy loading, blindly execute the onload callback on the next frame.
+	if( lazyload ) {
+		[NSOperationQueue.mainQueue addOperation:loadCallback];
+	}
+	else {
+		texture = [[EJTexture cachedTextureWithPath:fullPath
+			loadOnQueue:scriptView.backgroundQueue callback:loadCallback] retain];
+	}
 }
 
 - (EJTexture *)texture {
@@ -94,15 +94,11 @@
 	[loadCallback release];
 	loadCallback = nil;
 	
-	if( texture.textureId ) {
+	if( lazyload || texture.textureId ) {
 		[self triggerEvent:@"load"];
-		sizeknown = YES;
-		knownwidth = texture.width / texture.contentScale;
-		knownheight = texture.height / texture.contentScale;
 	}
 	else {
 		[self triggerEvent:@"error"];
-		sizeknown = NO;
 	}
 	
 	JSValueUnprotect(scriptView.jsGlobalContext, jsObject);
