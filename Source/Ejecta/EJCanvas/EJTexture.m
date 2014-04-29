@@ -265,7 +265,7 @@ typedef struct {
 		NSMutableData *pixels = [self loadPixelsFromPath:fullPath]; \
 		if( pixels ) { \
 			[self createWithPixels:pixels format:GL_RGBA]; \
-		} NSLog(@"lazy loaded %@", fullPath); \
+		} \
 	}
 
 - (GLuint)textureId {
