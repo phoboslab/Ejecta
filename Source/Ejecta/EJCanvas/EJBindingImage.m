@@ -28,7 +28,7 @@
 	}
 	else {
 		// Only local assets are lazy-loaded
-		NSLog(@"Will lazy-load image: %@", path);
+		NSLog(@"Loading Image (lazy): %@", path);
 		lazyLoad = YES;
 	}
 	
@@ -51,7 +51,7 @@
 - (EJTexture *)texture {
 	if( lazyLoad && !texture ) {
 	
-		NSLog(@"Lazy-loaded image: %@", path);
+		NSLog(@"Creating Texture for Image: %@", path);
 		
 		// Load texture blocking on main thread
 		NSString *fullPath = [scriptView pathForResource:path];
