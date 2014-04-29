@@ -7,6 +7,7 @@
 }
 
 + (EJSharedTextureCache *)instance;
+- (void)releaseStoragesOlderThan:(NSTimeInterval)seconds;
 
 @property (nonatomic, readonly) NSMutableDictionary *textures;
 @property (nonatomic, readonly) NSData *premultiplyTable;

@@ -215,9 +215,15 @@ typedef struct {
 - (void)maybeReleaseStorage {
 	// Releases the texture storage if it can be easily reloaded from
 	// a local file
-	if( lazyLoaded ) {
-		[textureStorage release];
-		textureStorage = nil;
+	if( lazyLoaded && textureStorage ) {
+	
+		// Make sure this isnt' the currently bound texture
+		GLint boundTexture = 0;
+		glGetIntegerv(GL_TEXTURE_BINDING_2D, &boundTexture);
+		if( boundTexture != textureStorage.textureId ) {
+			[textureStorage release];
+			textureStorage = nil;
+		}
 	}
 }
 
@@ -247,6 +253,9 @@ typedef struct {
 	}
 }
 
+- (NSTimeInterval)lastUsed {
+	return textureStorage.lastBound;
+}
 
 // When accessing the .textureId, .width, .height or .contentScale we need to
 // ensure that lazyLoaded textures are actually loaded by now.
@@ -559,6 +568,7 @@ typedef struct {
 }
 
 - (void)bindToTarget:(GLenum)target {
+	EJ_ENSURE_LAZY_LOADED_STORAGE();
 	[textureStorage bindToTarget:target withParams:params];
 }
 

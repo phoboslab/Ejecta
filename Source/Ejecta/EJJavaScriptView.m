@@ -358,6 +358,10 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 
 - (void)clearCaches {
 	JSGarbageCollect(jsGlobalContext);
+	
+	// Release all texture storages that haven't been bound in
+	// the last 5 seconds
+	[textureCache releaseStoragesOlderThan:5];
 }
 
 - (void)setCurrentRenderingContext:(EJCanvasContext *)renderingContext {

@@ -1,4 +1,5 @@
 #import "EJSharedTextureCache.h"
+#import "EJTexture.h"
 
 @implementation EJSharedTextureCache
 @synthesize textures;
@@ -18,6 +19,16 @@ static EJSharedTextureCache *sharedTextureCache;
 		textures = (NSMutableDictionary *)CFDictionaryCreateMutable(NULL, 8, &kCFCopyStringDictionaryKeyCallBacks, NULL);
 	}
 	return self;
+}
+
+- (void)releaseStoragesOlderThan:(NSTimeInterval)seconds {
+	NSTimeInterval now = NSProcessInfo.processInfo.systemUptime;
+	for( NSString *key in textures ) {
+		EJTexture *texture = [textures objectForKey:key];
+		if( now - texture.lastUsed > seconds ) {
+			[texture maybeReleaseStorage];
+		}
+	}
 }
 
 - (void)dealloc {

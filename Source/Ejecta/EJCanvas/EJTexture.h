@@ -65,5 +65,6 @@
 @property (readonly, nonatomic) GLuint textureId;
 @property (readonly, nonatomic) GLenum format;
 @property (readonly, nonatomic) short width, height;
+@property (readonly, nonatomic) NSTimeInterval lastUsed;
 
 @end
