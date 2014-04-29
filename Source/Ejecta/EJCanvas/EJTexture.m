@@ -5,7 +5,6 @@
 
 #import "EJSharedTextureCache.h"
 #import "EJJavaScriptView.h"
-#import "NSString+Hashes.h"
 
 #define PVR_TEXTURE_FLAG_TYPE_MASK 0xff
 
@@ -70,19 +69,22 @@ typedef struct {
 + (id)cachedTextureWithPath:(NSString *)path {
 	// For loading on the main thread (blocking), but tries the cache first
 	
-	// If path is a Data URI the string size may be very huge. In this case we don't want to use
-	// it as cache key (even if it works it would be a waste of memory), we use a hash instead.
-	NSString *cacheKey = [path hasPrefix:@"data:"] ? path.md5 : path;
+	// Only try the cache if path is not a data URI
+	BOOL isDataURI = [path hasPrefix:@"data:"];
 	
-	EJTexture *texture = EJSharedTextureCache.instance.textures[cacheKey];
+	EJTexture *texture = !isDataURI
+		? EJSharedTextureCache.instance.textures[path]
+		: nil;
 	
 	if( !texture ) {
 		// Create a new texture and add it to the cache
 		texture = [[EJTexture alloc] initWithPath:path];
 		
-		[EJSharedTextureCache instance].textures[cacheKey] = texture;
+		if( !isDataURI ) {
+			EJSharedTextureCache.instance.textures[path] = texture;
+			texture->cached = true;
+		}
 		[texture autorelease];
-		texture->cached = true;
 	}
 	return texture;
 }
@@ -90,11 +92,12 @@ typedef struct {
 + (id)cachedTextureWithPath:(NSString *)path loadOnQueue:(NSOperationQueue *)queue callback:(NSOperation *)callback {
 	// For loading on a background thread (non-blocking), but tries the cache first
 	
-	// If path is a Data URI the string size may be very huge. In this case we don't want to use
-	// it as cache key (even if it works it would be a waste of memory), we use a hash instead.
-	NSString *cacheKey = [path hasPrefix:@"data:"] ? path.md5 : path;
+	// Only try the cache if path is not a data URI
+	BOOL isDataURI = [path hasPrefix:@"data:"];
 	
-	EJTexture *texture = [EJSharedTextureCache instance].textures[cacheKey];
+	EJTexture *texture = !isDataURI
+		? EJSharedTextureCache.instance.textures[path]
+		: nil;
 	
 	if( texture ) {
 		// We already have a texture, but it may hasn't finished loading yet. If
@@ -110,9 +113,11 @@ typedef struct {
 		// Create a new texture and add it to the cache
 		texture = [[EJTexture alloc] initWithPath:path loadOnQueue:queue callback:callback];
 		
-		[EJSharedTextureCache instance].textures[cacheKey] = texture;
+		if( !isDataURI ) {
+			EJSharedTextureCache.instance.textures[path] = texture;
+			texture->cached = true;
+		}
 		[texture autorelease];
-		texture->cached = true;
 	}
 	return texture;
 }
@@ -206,7 +211,7 @@ typedef struct {
 
 - (void)dealloc {
 	if( cached ) {
-		[[EJSharedTextureCache instance].textures removeObjectForKey:fullPath];
+		[EJSharedTextureCache.instance.textures removeObjectForKey:fullPath];
 	}
 	[loadCallback release];
 	
@@ -562,7 +567,7 @@ typedef struct {
 }
 
 + (void)premultiplyPixels:(const GLubyte *)inPixels to:(GLubyte *)outPixels byteLength:(int)byteLength format:(GLenum)format {
-	const GLubyte *premultiplyTable = [EJSharedTextureCache instance].premultiplyTable.bytes;
+	const GLubyte *premultiplyTable = EJSharedTextureCache.instance.premultiplyTable.bytes;
 	
 	if( format == GL_RGBA ) {
 		for( int i = 0; i < byteLength; i += 4 ) {
@@ -583,7 +588,7 @@ typedef struct {
 }
 
 + (void)unPremultiplyPixels:(const GLubyte *)inPixels to:(GLubyte *)outPixels byteLength:(int)byteLength format:(GLenum)format {
-	const GLubyte *unPremultiplyTable = [EJSharedTextureCache instance].unPremultiplyTable.bytes;
+	const GLubyte *unPremultiplyTable = EJSharedTextureCache.instance.unPremultiplyTable.bytes;
 	
 	if( format == GL_RGBA ) {
 		for( int i = 0; i < byteLength; i += 4 ) {
