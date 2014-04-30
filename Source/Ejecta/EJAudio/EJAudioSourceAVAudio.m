@@ -17,7 +17,6 @@
 			return NULL;
 		}
         [interceptorManager interceptData:AFTER_LOAD_AUDIO data:data];
-        NSLog(@" audio data %d", data.length);
         player = [[AVAudioPlayer alloc] initWithData:data error:nil];
 		player.delegate = self;
 	}
