@@ -15,6 +15,9 @@
 		3EBC19BE16CECE190036F9F3 /* EJBindingKeyInput.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EBC19BD16CECE190036F9F3 /* EJBindingKeyInput.m */; };
 		3EF00C5916C29360004599A4 /* EJJavaScriptView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EF00C5816C29360004599A4 /* EJJavaScriptView.m */; };
 		5B7B76761619DB9700691910 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B7B76751619DB9700691910 /* CoreText.framework */; };
+		5C631C0F19114DAD009AF7F0 /* EJBindingDecryptorXOR.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C631C0E19114DAD009AF7F0 /* EJBindingDecryptorXOR.m */; };
+		5C631C1519115470009AF7F0 /* EJBindingBaseInterceptor.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C631C1119115470009AF7F0 /* EJBindingBaseInterceptor.m */; };
+		5C631C1619115470009AF7F0 /* EJInterceptorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C631C1419115470009AF7F0 /* EJInterceptorManager.m */; };
 		B6074FF315F8E41700D987F9 /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6074FF215F8E41600D987F9 /* GameKit.framework */; };
 		B607AB67132EA6C300D7C3EA /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B607AB66132EA6C300D7C3EA /* OpenAL.framework */; };
 		B607AC33132EA75F00D7C3EA /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B607AC32132EA75F00D7C3EA /* AudioToolbox.framework */; };
@@ -132,6 +135,13 @@
 		3EF00C5716C29360004599A4 /* EJJavaScriptView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJJavaScriptView.h; sourceTree = "<group>"; };
 		3EF00C5816C29360004599A4 /* EJJavaScriptView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJJavaScriptView.m; sourceTree = "<group>"; };
 		5B7B76751619DB9700691910 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
+		5C631C0D19114DAD009AF7F0 /* EJBindingDecryptorXOR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingDecryptorXOR.h; sourceTree = "<group>"; };
+		5C631C0E19114DAD009AF7F0 /* EJBindingDecryptorXOR.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingDecryptorXOR.m; sourceTree = "<group>"; };
+		5C631C1019115470009AF7F0 /* EJBindingBaseInterceptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingBaseInterceptor.h; sourceTree = "<group>"; };
+		5C631C1119115470009AF7F0 /* EJBindingBaseInterceptor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingBaseInterceptor.m; sourceTree = "<group>"; };
+		5C631C1219115470009AF7F0 /* EJInterceptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJInterceptor.h; sourceTree = "<group>"; };
+		5C631C1319115470009AF7F0 /* EJInterceptorManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJInterceptorManager.h; sourceTree = "<group>"; };
+		5C631C1419115470009AF7F0 /* EJInterceptorManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJInterceptorManager.m; sourceTree = "<group>"; };
 		B6074FF215F8E41600D987F9 /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
 		B607AB66132EA6C300D7C3EA /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
 		B607AC32132EA75F00D7C3EA /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
@@ -351,6 +361,7 @@
 			isa = PBXGroup;
 			children = (
 				B68C5AEF132E6CD60015092E /* App */,
+				5C631C0C19114DAD009AF7F0 /* Extension */,
 				B64CE60E166682700087CF94 /* Source */,
 				B64CE683166682B10087CF94 /* Resources */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
@@ -386,6 +397,27 @@
 				B6AC4A051359E7A5003C4982 /* iAd.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		5C631C0419114B11009AF7F0 /* EJInterceptor */ = {
+			isa = PBXGroup;
+			children = (
+				5C631C1019115470009AF7F0 /* EJBindingBaseInterceptor.h */,
+				5C631C1119115470009AF7F0 /* EJBindingBaseInterceptor.m */,
+				5C631C1219115470009AF7F0 /* EJInterceptor.h */,
+				5C631C1319115470009AF7F0 /* EJInterceptorManager.h */,
+				5C631C1419115470009AF7F0 /* EJInterceptorManager.m */,
+			);
+			path = EJInterceptor;
+			sourceTree = "<group>";
+		};
+		5C631C0C19114DAD009AF7F0 /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				5C631C0D19114DAD009AF7F0 /* EJBindingDecryptorXOR.h */,
+				5C631C0E19114DAD009AF7F0 /* EJBindingDecryptorXOR.m */,
+			);
+			path = Extension;
 			sourceTree = "<group>";
 		};
 		B609F2CB16AD873900A3B2B9 /* Shaders */ = {
@@ -429,6 +461,7 @@
 			children = (
 				B64CE612166682700087CF94 /* EJAudio */,
 				B64CE624166682700087CF94 /* EJCanvas */,
+				5C631C0419114B11009AF7F0 /* EJInterceptor */,
 				B64CE642166682700087CF94 /* EJUtils */,
 				B64CE610166682700087CF94 /* EJAppViewController.h */,
 				B64CE611166682700087CF94 /* EJAppViewController.m */,
@@ -767,7 +800,10 @@
 				B6F114FF1676BD40001F1324 /* EJFont.mm in Sources */,
 				B668475C182419A500ABCDF9 /* EJCanvasContextWebGLScreen.m in Sources */,
 				B6F115001676BD40001F1324 /* EJImageData.m in Sources */,
+				5C631C0F19114DAD009AF7F0 /* EJBindingDecryptorXOR.m in Sources */,
 				B6F115011676BD40001F1324 /* EJPath.mm in Sources */,
+				5C631C1619115470009AF7F0 /* EJInterceptorManager.m in Sources */,
+				5C631C1519115470009AF7F0 /* EJBindingBaseInterceptor.m in Sources */,
 				B6F115061676BE18001F1324 /* EJConvertColorRGBA.m in Sources */,
 				B6F1151A1677F08A001F1324 /* EJBindingDeviceMotion.m in Sources */,
 				B6F1154D167A7D17001F1324 /* EJBindingCanvasContextWebGL.m in Sources */,
