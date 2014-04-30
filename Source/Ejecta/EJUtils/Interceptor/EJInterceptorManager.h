@@ -2,6 +2,7 @@
 
 #define AFTER_LOAD_JS @"afterLoadJS"
 #define AFTER_LOAD_IMAGE @"afterLoadImage"
+#define AFTER_LOAD_AUDIO @"afterLoadAudio"
 
 @interface EJInterceptorManager : NSObject {
 	NSMutableDictionary *interceptors;

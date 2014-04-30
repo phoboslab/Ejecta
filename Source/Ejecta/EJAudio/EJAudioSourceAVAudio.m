@@ -8,7 +8,17 @@
 - (id)initWithPath:(NSString *)pathp {
 	if( self = [super init] ) {
 		path = [pathp retain];
-		player = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:path] error:nil];
+
+        interceptorManager = [[EJInterceptorManager instance] retain];
+        
+        NSMutableData *data = [NSMutableData dataWithContentsOfURL:[NSURL fileURLWithPath:path]];
+		if( !data ) {
+			NSLog(@"Error Loading audio %@ - not found.", path);
+			return NULL;
+		}
+        [interceptorManager interceptData:AFTER_LOAD_AUDIO data:data];
+        NSLog(@" audio data %d", data.length);
+        player = [[AVAudioPlayer alloc] initWithData:data error:nil];
 		player.delegate = self;
 	}
 	return self;
@@ -17,7 +27,7 @@
 - (void)dealloc {
 	[path release];
 	[player release];
-	
+    [interceptorManager release];
 	[super dealloc];
 }
 
