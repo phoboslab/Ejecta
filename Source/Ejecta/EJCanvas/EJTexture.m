@@ -419,10 +419,8 @@ typedef struct {
 	NSMutableData *pixels;
 	if( isDataURI || isURL ) {
 		// Load directly from a Data URI string or an URL
-		UIImage *tmpImage = [[UIImage alloc] initWithData:
-			[NSData dataWithContentsOfURL:[NSURL URLWithString:path]]];
-		
-		if( !tmpImage ) {
+		pixels = [NSMutableData dataWithContentsOfURL:[NSURL URLWithString:path]];
+		if (!pixels){
 			if( isDataURI ) {
 				NSLog(@"Error Loading image from Data URI.");
 			}
@@ -431,6 +429,7 @@ typedef struct {
 			}
 			return NULL;
 		}
+		UIImage *tmpImage = [[UIImage alloc] initWithData:pixels];
 		pixels = [self loadPixelsFromUIImage:tmpImage];
 		[tmpImage release];
 	}
