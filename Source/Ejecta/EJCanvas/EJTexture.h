@@ -10,6 +10,7 @@
 	BOOL cached;
 	BOOL drawFlippedY;
 	BOOL isCompressed;
+	BOOL lazyLoaded;
 	short width, height;
 	NSString *fullPath;
 	EJTextureStorage *textureStorage;
@@ -32,6 +33,8 @@
 - (id)initWithWidth:(int)widthp height:(int)heightp pixels:(NSData *)pixels;
 - (id)initAsRenderTargetWithWidth:(int)widthp height:(int)heightp fbo:(GLuint)fbo contentScale:(float)contentScalep;
 - (id)initWithUIImage:(UIImage *)image;
+
+- (void)maybeReleaseStorage;
 
 - (void)ensureMutableKeepPixels:(BOOL)keepPixels forTarget:(GLenum)target;
 
@@ -59,10 +62,12 @@
 
 @property (readwrite, nonatomic) BOOL drawFlippedY;
 @property (readonly, nonatomic) BOOL isDynamic;
+@property (readonly, nonatomic) BOOL lazyLoaded;
 @property (readonly, nonatomic) NSMutableData *pixels;
 @property (readwrite, nonatomic) float contentScale;
 @property (readonly, nonatomic) GLuint textureId;
 @property (readonly, nonatomic) GLenum format;
 @property (readonly, nonatomic) short width, height;
+@property (readonly, nonatomic) NSTimeInterval lastUsed;
 
 @end

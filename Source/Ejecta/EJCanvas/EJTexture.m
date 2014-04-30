@@ -5,7 +5,6 @@
 
 #import "EJSharedTextureCache.h"
 #import "EJJavaScriptView.h"
-#import "NSString+Hashes.h"
 
 #define PVR_TEXTURE_FLAG_TYPE_MASK 0xff
 
@@ -31,11 +30,11 @@ typedef struct {
 } PVRTextureHeader;
 
 @implementation EJTexture
-
 @synthesize contentScale;
 @synthesize format;
-@synthesize width, height;
 @synthesize drawFlippedY;
+
+@synthesize lazyLoaded;
 
 - (id)initEmptyForWebGL {
 	// For WebGL textures; this will not create a textureStorage
@@ -73,11 +72,12 @@ typedef struct {
 + (id)cachedTextureWithPath:(NSString *)path loadOnQueue:(NSOperationQueue *)queue callback:(NSOperation *)callback {
 	// For loading on a background thread (non-blocking), but tries the cache first
 	
-	// If path is a Data URI the string size may be very huge. In this case we don't want to use
-	// it as cache key (even if it works it would be a waste of memory), we use a hash instead.
-	NSString *cacheKey = [path hasPrefix:@"data:"] ? path.md5 : path;
+	// Only try the cache if path is not a data URI
+	BOOL isDataURI = [path hasPrefix:@"data:"];
 	
-	EJTexture *texture = [EJSharedTextureCache instance].textures[cacheKey];
+	EJTexture *texture = !isDataURI
+		? EJSharedTextureCache.instance.textures[path]
+		: nil;
 	
 	if( texture ) {
 		// We already have a texture, but it may hasn't finished loading yet. If
@@ -93,9 +93,11 @@ typedef struct {
 		// Create a new texture and add it to the cache
 		texture = [[EJTexture alloc] initWithPath:path loadOnQueue:queue callback:callback];
 		
-		[EJSharedTextureCache instance].textures[cacheKey] = texture;
+		if( !isDataURI ) {
+			EJSharedTextureCache.instance.textures[path] = texture;
+			texture->cached = true;
+		}
 		[texture autorelease];
-		texture->cached = true;
 	}
     else{
         // Create a new texture and add it to the cache (blocking)
@@ -112,9 +114,24 @@ typedef struct {
 
 - (id)initWithPath:(NSString *)path loadOnQueue:(NSOperationQueue *)queue callback:(NSOperation *)callback {
 	// For loading on a background thread (non-blocking)
+	// This will defer loading for local images
+	
 	if( self = [super init] ) {
 		contentScale = 1;
 		fullPath = [path retain];
+		
+		BOOL isURL = [path hasPrefix:@"http:"] || [path hasPrefix:@"https:"];
+		BOOL isDataURI = !isURL && [path hasPrefix:@"data:"];
+		
+		// Neither a URL nor a data URI? We can lazy load the texture. Just add the callback
+		// to the load queue and return
+		if( !isURL && !isDataURI ) {
+			lazyLoaded = true;
+			format = GL_RGBA;
+			[NSOperationQueue.mainQueue addOperation:callback];
+			return self;
+		}
+		
 		
 		loadCallback = [[NSBlockOperation alloc] init];
 		
@@ -199,7 +216,7 @@ typedef struct {
 
 - (void)dealloc {
 	if( cached ) {
-		[[EJSharedTextureCache instance].textures removeObjectForKey:fullPath];
+		[EJSharedTextureCache.instance.textures removeObjectForKey:fullPath];
 	}
 	[loadCallback release];
 	
@@ -207,6 +224,21 @@ typedef struct {
 	[textureStorage release];
     [interceptorManager release];
 	[super dealloc];
+}
+
+- (void)maybeReleaseStorage {
+	// Releases the texture storage if it can be easily reloaded from
+	// a local file
+	if( lazyLoaded && textureStorage ) {
+	
+		// Make sure this isnt' the currently bound texture
+		GLint boundTexture = 0;
+		glGetIntegerv(GL_TEXTURE_BINDING_2D, &boundTexture);
+		if( boundTexture != textureStorage.textureId ) {
+			[textureStorage release];
+			textureStorage = nil;
+		}
+	}
 }
 
 - (void)ensureMutableKeepPixels:(BOOL)keepPixels forTarget:(GLenum)target {
@@ -235,12 +267,43 @@ typedef struct {
 	}
 }
 
+- (NSTimeInterval)lastUsed {
+	return textureStorage.lastBound;
+}
+
+// When accessing the .textureId, .width, .height or .contentScale we need to
+// ensure that lazyLoaded textures are actually loaded by now.
+
+#define EJ_ENSURE_LAZY_LOADED_STORAGE() \
+	if( !textureStorage && lazyLoaded ) { \
+		NSMutableData *pixels = [self loadPixelsFromPath:fullPath]; \
+		if( pixels ) { \
+			[self createWithPixels:pixels format:GL_RGBA]; \
+		} \
+	}
+
 - (GLuint)textureId {
+	EJ_ENSURE_LAZY_LOADED_STORAGE();
 	return textureStorage.textureId;
 }
 
 - (BOOL)isDynamic {
 	return !!fbo;
+}
+
+- (short)width {
+	EJ_ENSURE_LAZY_LOADED_STORAGE();
+	return width;
+}
+
+- (short)height {
+	EJ_ENSURE_LAZY_LOADED_STORAGE();
+	return height;
+}
+
+- (float)contentScale {
+	EJ_ENSURE_LAZY_LOADED_STORAGE();
+	return contentScale;
 }
 
 - (id)copyWithZone:(NSZone *)zone {
@@ -273,6 +336,7 @@ typedef struct {
 	width = other->width;
 	height = other->height;
 	isCompressed = other->isCompressed;
+	lazyLoaded = other->lazyLoaded;
 	
 	textureStorage = [other->textureStorage retain];
 }
@@ -382,6 +446,8 @@ typedef struct {
 }
 
 - (NSMutableData *)pixels {
+	EJ_ENSURE_LAZY_LOADED_STORAGE();
+	
 	GLint boundFrameBuffer;
 	GLuint tempFramebuffer;
 	glGetIntegerv( GL_FRAMEBUFFER_BINDING, &boundFrameBuffer );
@@ -514,6 +580,7 @@ typedef struct {
 }
 
 - (void)bindToTarget:(GLenum)target {
+	EJ_ENSURE_LAZY_LOADED_STORAGE();
 	[textureStorage bindToTarget:target withParams:params];
 }
 
@@ -554,7 +621,7 @@ typedef struct {
 }
 
 + (void)premultiplyPixels:(const GLubyte *)inPixels to:(GLubyte *)outPixels byteLength:(int)byteLength format:(GLenum)format {
-	const GLubyte *premultiplyTable = [EJSharedTextureCache instance].premultiplyTable.bytes;
+	const GLubyte *premultiplyTable = EJSharedTextureCache.instance.premultiplyTable.bytes;
 	
 	if( format == GL_RGBA ) {
 		for( int i = 0; i < byteLength; i += 4 ) {
@@ -575,7 +642,7 @@ typedef struct {
 }
 
 + (void)unPremultiplyPixels:(const GLubyte *)inPixels to:(GLubyte *)outPixels byteLength:(int)byteLength format:(GLenum)format {
-	const GLubyte *unPremultiplyTable = [EJSharedTextureCache instance].unPremultiplyTable.bytes;
+	const GLubyte *unPremultiplyTable = EJSharedTextureCache.instance.unPremultiplyTable.bytes;
 	
 	if( format == GL_RGBA ) {
 		for( int i = 0; i < byteLength; i += 4 ) {
