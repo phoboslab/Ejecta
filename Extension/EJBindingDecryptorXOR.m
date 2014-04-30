@@ -1,6 +1,6 @@
-#import "EJBindingEncryptorXOR.h"
+#import "EJBindingDecryptorXOR.h"
 
-@implementation EJBindingEncryptorXOR
+@implementation EJBindingDecryptorXOR
 
 
 -(void)interceptData:(NSMutableData *)data {

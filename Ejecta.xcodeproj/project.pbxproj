@@ -18,7 +18,7 @@
 		5C2387D818CEFBFD00D0CC1A /* EJBindingTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C2387D718CEFBFD00D0CC1A /* EJBindingTimer.m */; };
 		5C2C1F7B18D21C1B0028F3B1 /* mongoose.c in Sources */ = {isa = PBXBuildFile; fileRef = 5C2C1F7918D21C1B0028F3B1 /* mongoose.c */; };
 		5C2C1F8218D21CE30028F3B1 /* EJBindingWebServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C2C1F8118D21CE30028F3B1 /* EJBindingWebServer.m */; };
-		5C631BFB19110679009AF7F0 /* EJBindingEncryptorXOR.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C631BFA19110679009AF7F0 /* EJBindingEncryptorXOR.m */; };
+		5C631BFB19110679009AF7F0 /* EJBindingDecryptorXOR.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C631BFA19110679009AF7F0 /* EJBindingDecryptorXOR.m */; };
 		5C631C021911446F009AF7F0 /* EJBindingBaseInterceptor.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C631BFE1911446F009AF7F0 /* EJBindingBaseInterceptor.m */; };
 		5C631C031911446F009AF7F0 /* EJInterceptorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C631C011911446F009AF7F0 /* EJInterceptorManager.m */; };
 		5C8E33EC18C4EF03007206AE /* Default-Portrait~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 5C8E33E018C4EF03007206AE /* Default-Portrait~ipad.png */; };
@@ -168,8 +168,8 @@
 		5C2C1F7A18D21C1B0028F3B1 /* mongoose.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mongoose.h; sourceTree = "<group>"; };
 		5C2C1F8018D21CBA0028F3B1 /* EJBindingWebServer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EJBindingWebServer.h; sourceTree = "<group>"; };
 		5C2C1F8118D21CE30028F3B1 /* EJBindingWebServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingWebServer.m; sourceTree = "<group>"; };
-		5C631BF919110679009AF7F0 /* EJBindingEncryptorXOR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingEncryptorXOR.h; sourceTree = "<group>"; };
-		5C631BFA19110679009AF7F0 /* EJBindingEncryptorXOR.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingEncryptorXOR.m; sourceTree = "<group>"; };
+		5C631BF919110679009AF7F0 /* EJBindingDecryptorXOR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingDecryptorXOR.h; sourceTree = "<group>"; };
+		5C631BFA19110679009AF7F0 /* EJBindingDecryptorXOR.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingDecryptorXOR.m; sourceTree = "<group>"; };
 		5C631BFD1911446F009AF7F0 /* EJBindingBaseInterceptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingBaseInterceptor.h; sourceTree = "<group>"; };
 		5C631BFE1911446F009AF7F0 /* EJBindingBaseInterceptor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingBaseInterceptor.m; sourceTree = "<group>"; };
 		5C631BFF1911446F009AF7F0 /* EJInterceptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJInterceptor.h; sourceTree = "<group>"; };
@@ -516,6 +516,8 @@
 				5C8E33FE18C4EF40007206AE /* EJBindingAlertView.m */,
 				5C8E33FF18C4EF40007206AE /* EJBindingAppUtils.h */,
 				5C8E340018C4EF40007206AE /* EJBindingAppUtils.m */,
+				5C631BF919110679009AF7F0 /* EJBindingDecryptorXOR.h */,
+				5C631BFA19110679009AF7F0 /* EJBindingDecryptorXOR.m */,
 				5C8E340118C4EF40007206AE /* EJBindingLocalNotification.h */,
 				5C8E340218C4EF40007206AE /* EJBindingLocalNotification.m */,
 				5C8E340318C4EF40007206AE /* EJBindingSocial.h */,
@@ -529,8 +531,6 @@
 				5C91E59D18E1AFF100FCF013 /* AdMobSDK */,
 				5C2C1F7818D21C1B0028F3B1 /* mongoose */,
 				5C8E340818C4EF40007206AE /* OpenUDID */,
-				5C631BF919110679009AF7F0 /* EJBindingEncryptorXOR.h */,
-				5C631BFA19110679009AF7F0 /* EJBindingEncryptorXOR.m */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -930,7 +930,7 @@
 				B64C87AE16B81BAA0097CD5B /* EJGLProgram2DRadialGradient.m in Sources */,
 				B64CE662166682700087CF94 /* EJAppViewController.m in Sources */,
 				B64CE663166682700087CF94 /* EJAudioSourceAVAudio.m in Sources */,
-				5C631BFB19110679009AF7F0 /* EJBindingEncryptorXOR.m in Sources */,
+				5C631BFB19110679009AF7F0 /* EJBindingDecryptorXOR.m in Sources */,
 				B64CE664166682700087CF94 /* EJAudioSourceOpenAL.m in Sources */,
 				B64CE665166682700087CF94 /* EJBindingAudio.m in Sources */,
 				B64CE666166682700087CF94 /* EJOpenALBuffer.m in Sources */,

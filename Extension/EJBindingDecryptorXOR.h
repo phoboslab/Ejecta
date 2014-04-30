@@ -4,6 +4,6 @@
 #define EJ_SECRET_HEADER @"=S="
 #define EJ_SECRET_KEY @"SecretKey (Don't include Breakline)"
 
-@interface EJBindingEncryptorXOR : EJBindingBaseInterceptor
+@interface EJBindingDecryptorXOR : EJBindingBaseInterceptor
 
 @end
