@@ -17,11 +17,11 @@
 	GLenum format;
 	GLuint fbo;
 	float contentScale;
-	
+
 	EJTextureParams params;
 	NSBlockOperation *loadCallback;
-    
-    EJInterceptorManager *interceptorManager;
+
+	EJInterceptorManager *interceptorManager;
 }
 - (id)initEmptyForWebGL;
 - (id)initWithPath:(NSString *)path;

@@ -56,21 +56,19 @@ typedef struct {
 	if( self = [super init] ) {
 		contentScale = 1;
 		fullPath = [path retain];
-        
-        interceptorManager = [[EJInterceptorManager instance] retain];
+		
+		interceptorManager = [[EJInterceptorManager instance] retain];
 		
 		NSMutableData *pixels = [self loadPixelsFromPath:path];
 		if( pixels ) {
 			[self createWithPixels:pixels format:GL_RGBA];
 		}
-        
 	}
 
 	return self;
 }
 
 + (id)cachedTextureWithPath:(NSString *)path loadOnQueue:(NSOperationQueue *)queue callback:(NSOperation *)callback {
-    
 	// For loading on a background thread (non-blocking), but tries the cache first
 	
 	// Only try the cache if path is not a data URI
@@ -90,7 +88,7 @@ typedef struct {
 		}
 		[NSOperationQueue.mainQueue addOperation:callback];
 	}
-	else if( queue ){
+	else {
 		// Create a new texture and add it to the cache
 		texture = [[EJTexture alloc] initWithPath:path loadOnQueue:queue callback:callback];
 		
@@ -100,16 +98,6 @@ typedef struct {
 		}
 		[texture autorelease];
 	}
-    else{
-        // Create a new texture and add it to the cache (blocking)
-        texture = [[EJTexture alloc] initWithPath:path];
-
-		[EJSharedTextureCache instance].textures[path] = texture;
-		[texture autorelease];
-		texture->cached = true;
-        
-        [NSOperationQueue.mainQueue addOperation:callback];
-    }
 	return texture;
 }
 
@@ -121,8 +109,8 @@ typedef struct {
 		contentScale = 1;
 		fullPath = [path retain];
 		
-        interceptorManager = [[EJInterceptorManager instance] retain];
-        
+		interceptorManager = [[EJInterceptorManager instance] retain];
+		
 		BOOL isURL = [path hasPrefix:@"http:"] || [path hasPrefix:@"https:"];
 		BOOL isDataURI = !isURL && [path hasPrefix:@"data:"];
 		
@@ -225,7 +213,7 @@ typedef struct {
 	
 	[fullPath release];
 	[textureStorage release];
-    [interceptorManager release];
+	[interceptorManager release];
 	[super dealloc];
 }
 
@@ -391,7 +379,7 @@ typedef struct {
 - (void)uploadCompressedPixels:(NSData *)pixels target:(GLenum)target {
 	PVRTextureHeader *header = (PVRTextureHeader *) pixels.bytes;
 	
-    uint32_t formatFlags = header->flags & PVR_TEXTURE_FLAG_TYPE_MASK;
+	uint32_t formatFlags = header->flags & PVR_TEXTURE_FLAG_TYPE_MASK;
 	
 	GLenum internalFormat;
 	uint32_t bpp;
@@ -498,22 +486,23 @@ typedef struct {
 		}
 	}
 	
+	
 	NSMutableData *pixels;
 	if( isDataURI || isURL ) {
 		// Load directly from a Data URI string or an URL
-        pixels = [NSMutableData dataWithContentsOfURL:[NSURL URLWithString:path]];
-        if (!pixels){
-            if( isDataURI ) {
+		pixels = [NSMutableData dataWithContentsOfURL:[NSURL URLWithString:path]];
+		if (!pixels){
+			if( isDataURI ) {
 				NSLog(@"Error Loading image from Data URI.");
 			}
 			if( isURL ) {
 				NSLog(@"Error Loading image from URL: %@", path);
 			}
 			return NULL;
-        }
+		}
 
-        [interceptorManager interceptData:AFTER_LOAD_IMAGE data:pixels];
-        
+		[interceptorManager interceptData:AFTER_LOAD_IMAGE data:pixels];
+		
 		UIImage *tmpImage = [[UIImage alloc] initWithData:pixels];
 		pixels = [self loadPixelsFromUIImage:tmpImage];
 		[tmpImage release];
@@ -526,7 +515,7 @@ typedef struct {
 			return NULL;
 		}
 
-        [interceptorManager interceptData:AFTER_LOAD_IMAGE data:pixels];
+		[interceptorManager interceptData:AFTER_LOAD_IMAGE data:pixels];
 
 		PVRTextureHeader *header = (PVRTextureHeader *)pixels.bytes;
 		width = header->width;
@@ -534,14 +523,14 @@ typedef struct {
 		isCompressed = true;
 	}
 	else {
-        pixels = [NSMutableData dataWithContentsOfFile:path];
+		pixels = [NSMutableData dataWithContentsOfFile:path];
 		if( !pixels ) {
 			NSLog(@"Error Loading image %@ - not found.", path);
 			return NULL;
 		}
 
 
-        [interceptorManager interceptData:AFTER_LOAD_IMAGE data:pixels];
+		[interceptorManager interceptData:AFTER_LOAD_IMAGE data:pixels];
 
 		// Use UIImage for PNG, JPG and everything else
 		UIImage *tmpImage = [[UIImage alloc] initWithData:pixels];

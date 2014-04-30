@@ -67,8 +67,8 @@
 
 	NSOperationQueue *backgroundQueue;
 	JSClassRef jsBlockFunctionClass;
-    
-    EJInterceptorManager *interceptorManager;
+	
+	EJInterceptorManager *interceptorManager;
 	
 	// Public for fast access in bound functions
 	@public JSValueRef jsUndefined;

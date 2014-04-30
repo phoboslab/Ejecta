@@ -9,7 +9,7 @@
 	NSString *path;
 	AVAudioPlayer *player;
 	NSObject<EJAudioSourceDelegate> *delegate;
-    
+
     EJInterceptorManager *interceptorManager;
 }
 
