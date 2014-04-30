@@ -70,6 +70,7 @@ typedef struct {
 }
 
 + (id)cachedTextureWithPath:(NSString *)path loadOnQueue:(NSOperationQueue *)queue callback:(NSOperation *)callback {
+    
 	// For loading on a background thread (non-blocking), but tries the cache first
 	
 	// Only try the cache if path is not a data URI
@@ -120,6 +121,8 @@ typedef struct {
 		contentScale = 1;
 		fullPath = [path retain];
 		
+        interceptorManager = [[EJInterceptorManager instance] retain];
+        
 		BOOL isURL = [path hasPrefix:@"http:"] || [path hasPrefix:@"https:"];
 		BOOL isDataURI = !isURL && [path hasPrefix:@"data:"];
 		
@@ -495,7 +498,6 @@ typedef struct {
 		}
 	}
 	
-	
 	NSMutableData *pixels;
 	if( isDataURI || isURL ) {
 		// Load directly from a Data URI string or an URL
@@ -509,11 +511,13 @@ typedef struct {
 			}
 			return NULL;
         }
+
+        [interceptorManager interceptData:AFTER_LOAD_IMAGE data:pixels];
+        
 		UIImage *tmpImage = [[UIImage alloc] initWithData:pixels];
 		pixels = [self loadPixelsFromUIImage:tmpImage];
 		[tmpImage release];
 	}
-	
 	else if( [path.pathExtension isEqualToString:@"pvr"] ) {
 		// Compressed PVRTC? Only load raw data bytes
 		pixels = [NSMutableData dataWithContentsOfFile:path];
@@ -521,18 +525,24 @@ typedef struct {
 			NSLog(@"Error Loading image %@ - not found.", path);
 			return NULL;
 		}
+
+        [interceptorManager interceptData:AFTER_LOAD_IMAGE data:pixels];
+
 		PVRTextureHeader *header = (PVRTextureHeader *)pixels.bytes;
 		width = header->width;
 		height = header->height;
 		isCompressed = true;
 	}
-	
 	else {
         pixels = [NSMutableData dataWithContentsOfFile:path];
 		if( !pixels ) {
 			NSLog(@"Error Loading image %@ - not found.", path);
 			return NULL;
 		}
+
+
+        [interceptorManager interceptData:AFTER_LOAD_IMAGE data:pixels];
+
 		// Use UIImage for PNG, JPG and everything else
 		UIImage *tmpImage = [[UIImage alloc] initWithData:pixels];
 		pixels = [self loadPixelsFromUIImage:tmpImage];

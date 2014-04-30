@@ -1,9 +1,7 @@
 #import <Foundation/Foundation.h>
-#import "EJInterceptor.h"
 
-
-#define BEFORE_RUN_JS_FILE @"beforeRunJSFile"
-#define BEFORE_CREATE_IMAGE @"beforeCreateImage"
+#define AFTER_LOAD_JS @"afterLoadJS"
+#define AFTER_LOAD_IMAGE @"afterLoadImage"
 
 @interface EJInterceptorManager : NSObject {
 	NSMutableDictionary *interceptors;
@@ -13,9 +11,12 @@
 
 - (void)setInterceptor:(NSString *)name interceptor:(id)interceptor;
 - (id)getInterceptor:(NSString *)name;
+- (void)removeInterceptor:(NSString *)name;
+- (BOOL)hasInterceptor:(NSString *)name;
+- (NSArray *)getAllInterceptorNames;
 
--(void)interceptData:(NSString *)interceptorName data:(NSMutableData *)data;
--(void)interceptString:(NSString *)interceptorName data:(NSString *)str;
+
+- (void)interceptData:(NSString *)interceptorName data:(NSMutableData *)data;
 
 
 @end

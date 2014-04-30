@@ -1,20 +1,20 @@
-
 #import "EJInterceptorManager.h"
+#import "EJInterceptor.h"
 
 @implementation EJInterceptorManager
 
 static EJInterceptorManager *interceptorManager;
 
 + (EJInterceptorManager *)instance {
-	if( !interceptorManager ) {
+	if (!interceptorManager) {
 		interceptorManager = [[[EJInterceptorManager alloc] init] autorelease];
 	}
-    return interceptorManager;
+	return interceptorManager;
 }
 
 - (id)init {
-	if( self = [super init] ) {
-        interceptors = [[NSMutableDictionary alloc] init];
+	if (self = [super init]) {
+		interceptors = [[NSMutableDictionary alloc] init];
 	}
 	return self;
 }
@@ -25,29 +25,31 @@ static EJInterceptorManager *interceptorManager;
 	[super dealloc];
 }
 
-
--(void)setInterceptor:(NSString *)name interceptor:(id)interceptor {
-    interceptors[name] = interceptor;
+- (void)setInterceptor:(NSString *)name interceptor:(id)interceptor {
+	[interceptors setObject:interceptor forKey:name];
 }
 
--(id)getInterceptor:(NSString *)name {
-    return interceptors[name];
+- (id)getInterceptor:(NSString *)name {
+	return [interceptors objectForKey:name];
 }
 
-
--(void)interceptData:(NSString *)interceptorName data:(NSMutableData *)data {
-    id interceptor=interceptors[interceptorName];
-    if( interceptor && [interceptor conformsToProtocol:@protocol(EJInterceptor)] ) {
-        [interceptor interceptData:data];
-    }
+- (void)removeInterceptor:(NSString *)name {
+	[interceptors removeObjectForKey:name];
 }
 
--(void)interceptString:(NSString *)interceptorName data:(NSString *)str {
-    id interceptor=interceptors[interceptorName];
-    if( interceptor && [interceptor conformsToProtocol:@protocol(EJInterceptor)] ) {
-        [interceptor interceptString:str];
-    }
+- (BOOL)hasInterceptor:(NSString *)name {
+	return [self getInterceptor:name] != nil;
 }
 
+- (NSArray *)getAllInterceptorNames {
+	return [interceptors allKeys];
+}
+
+- (void)interceptData:(NSString *)interceptorName data:(NSMutableData *)data {
+	id interceptor = [self getInterceptor:interceptorName];
+	if (interceptor && [interceptor conformsToProtocol:@protocol(EJInterceptor)]) {
+		[interceptor interceptData:data];
+	}
+}
 
 @end

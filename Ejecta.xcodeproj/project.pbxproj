@@ -20,6 +20,7 @@
 		5C2C1F8218D21CE30028F3B1 /* EJBindingWebServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C2C1F8118D21CE30028F3B1 /* EJBindingWebServer.m */; };
 		5C631BF31910D84C009AF7F0 /* EJInterceptorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C631BF21910D84C009AF7F0 /* EJInterceptorManager.m */; };
 		5C631BF61910DC77009AF7F0 /* EJBindingBaseInterceptor.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C631BF51910DC77009AF7F0 /* EJBindingBaseInterceptor.m */; };
+		5C631BFB19110679009AF7F0 /* EJBindingEncryptorXOR.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C631BFA19110679009AF7F0 /* EJBindingEncryptorXOR.m */; };
 		5C8E33EC18C4EF03007206AE /* Default-Portrait~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 5C8E33E018C4EF03007206AE /* Default-Portrait~ipad.png */; };
 		5C8E33ED18C4EF03007206AE /* Default-Portrait@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 5C8E33E118C4EF03007206AE /* Default-Portrait@2x~ipad.png */; };
 		5C8E33EE18C4EF03007206AE /* Default-Landscape@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 5C8E33E218C4EF03007206AE /* Default-Landscape@2x~ipad.png */; };
@@ -172,6 +173,8 @@
 		5C631BF21910D84C009AF7F0 /* EJInterceptorManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJInterceptorManager.m; sourceTree = "<group>"; };
 		5C631BF41910DC77009AF7F0 /* EJBindingBaseInterceptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingBaseInterceptor.h; sourceTree = "<group>"; };
 		5C631BF51910DC77009AF7F0 /* EJBindingBaseInterceptor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingBaseInterceptor.m; sourceTree = "<group>"; };
+		5C631BF919110679009AF7F0 /* EJBindingEncryptorXOR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingEncryptorXOR.h; sourceTree = "<group>"; };
+		5C631BFA19110679009AF7F0 /* EJBindingEncryptorXOR.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingEncryptorXOR.m; sourceTree = "<group>"; };
 		5C8E33E018C4EF03007206AE /* Default-Portrait~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Portrait~ipad.png"; sourceTree = "<group>"; };
 		5C8E33E118C4EF03007206AE /* Default-Portrait@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Portrait@2x~ipad.png"; sourceTree = "<group>"; };
 		5C8E33E218C4EF03007206AE /* Default-Landscape@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape@2x~ipad.png"; sourceTree = "<group>"; };
@@ -526,6 +529,8 @@
 				5C91E59D18E1AFF100FCF013 /* AdMobSDK */,
 				5C2C1F7818D21C1B0028F3B1 /* mongoose */,
 				5C8E340818C4EF40007206AE /* OpenUDID */,
+				5C631BF919110679009AF7F0 /* EJBindingEncryptorXOR.h */,
+				5C631BFA19110679009AF7F0 /* EJBindingEncryptorXOR.m */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -925,6 +930,7 @@
 				B64C87AE16B81BAA0097CD5B /* EJGLProgram2DRadialGradient.m in Sources */,
 				B64CE662166682700087CF94 /* EJAppViewController.m in Sources */,
 				B64CE663166682700087CF94 /* EJAudioSourceAVAudio.m in Sources */,
+				5C631BFB19110679009AF7F0 /* EJBindingEncryptorXOR.m in Sources */,
 				B64CE664166682700087CF94 /* EJAudioSourceOpenAL.m in Sources */,
 				B64CE665166682700087CF94 /* EJBindingAudio.m in Sources */,
 				B64CE666166682700087CF94 /* EJOpenALBuffer.m in Sources */,
