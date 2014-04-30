@@ -4,6 +4,7 @@
 #import <OpenGLES/ES1/glext.h>
 
 #import "EJTextureStorage.h"
+#import "EJInterceptorManager.h"
 
 @interface EJTexture : NSObject <NSCopying> {
 	BOOL cached;
@@ -18,6 +19,8 @@
 	
 	EJTextureParams params;
 	NSBlockOperation *loadCallback;
+    
+    EJInterceptorManager *interceptorManager;
 }
 - (id)initEmptyForWebGL;
 - (id)initWithPath:(NSString *)path;
