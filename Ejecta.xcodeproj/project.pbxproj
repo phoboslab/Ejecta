@@ -1050,7 +1050,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = armv7;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = "$(SOURCE_ROOT)/Source/lib";
 				GCC_C_LANGUAGE_STANDARD = c99;
@@ -1072,7 +1071,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = armv7;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				FRAMEWORK_SEARCH_PATHS = "$(SOURCE_ROOT)/Source/lib";
 				GCC_C_LANGUAGE_STANDARD = c99;

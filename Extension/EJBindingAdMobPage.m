@@ -21,6 +21,7 @@
 }
 
 - (void)dealloc {
+	isReady = NO;
 	interstitial.delegate = nil;
 	[interstitial release];
 	[super dealloc];
@@ -32,12 +33,13 @@
 }
 
 - (void)interstitial:(GADInterstitial *)interstitial didFailToReceiveAdWithError:(GADRequestError *)error {
+	NSLog(@"Failed to receive ad with error: %@", [error localizedFailureReason]);
 	isReady = NO;
-	NSLog(@"error %@", [error localizedDescription]);
 	[self triggerEvent:@"error"];
 }
 
 - (void)interstitialDidDismissScreen:(GADInterstitial *)ad {
+	isReady = NO;
 	[self triggerEvent:@"close"];
 }
 
@@ -87,6 +89,7 @@ EJ_BIND_FUNCTION(show, ctx, argc, argv)
 	}
 	return NULL;
 }
+
 
 
 EJ_BIND_EVENT(load);

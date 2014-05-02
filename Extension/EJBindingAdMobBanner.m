@@ -36,6 +36,7 @@
 }
 
 - (void)dealloc {
+	isReady = NO;
 	banner.delegate = nil;
 	[banner release];
 	[super dealloc];
@@ -114,6 +115,7 @@
 }
 
 - (void)adViewDidDismissScreen:(GADBannerView *)adView {
+	isReady = NO;
 	[self triggerEvent:@"close"];
 }
 
@@ -133,6 +135,7 @@ EJ_BIND_FUNCTION(load, ctx, argc, argv)
 	[banner loadRequest:[self request]];
 	return NULL;
 }
+
 EJ_BIND_FUNCTION(hide, ctx, argc, argv)
 {
 	banner.hidden = YES;

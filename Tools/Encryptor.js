@@ -31,30 +31,31 @@ if (!module.parent) {
 
 function encrypt(fileName, outputFileName, secretKey, projectPath) {
 
-    var newBuffer = encode(fileName, secretKey);
+    var orignalBuffer = fs.readFileSync(fileName);
+    var newBuffer = encode(orignalBuffer, secretKey);
     fs.writeFileSync(outputFileName, newBuffer);
-
-    if (check) {
-        var buffer = fs.readFileSync(fileName);
-        var decodedBuffer = decode(outputFileName, secretKey);
-
-        if (buffer.length != decodedBuffer.length) {
-            console.log("Check Failed!");
-            return;
-        }
-        for (var i = 0; i < buffer.length; i++) {
-            var b1 = buffer.readInt8(i);
-            var b2 = decodedBuffer.readInt8(i);
-            if (b1 != b2) {
-                console.log("Check Failed!");
-                return;
-            }
-        }
-        console.log("Check OK!");
-    }
 
     updateSecretInfo(secretKey, projectPath);
 
+    if (check) {
+        var decodedBuffer = decode(outputFileName, secretKey);
+
+        var baseName = Path.basename(fileName);
+        if (orignalBuffer.length != decodedBuffer.length) {
+            // console.log("Check failed: " + baseName + " , error length .");
+            return false;
+        }
+        for (var i = 0; i < orignalBuffer.length; i++) {
+            var b1 = orignalBuffer.readInt8(i);
+            var b2 = decodedBuffer.readInt8(i);
+            if (b1 != b2) {
+                // console.log("Check failed: " + baseName + " , error byte .");
+                return false;
+            }
+        }
+        // console.log("Check OK: " + baseName + " .");
+    }
+    return true;
 }
 
 function unencrypt(fileName, outputFileName, secretKey) {
@@ -62,16 +63,21 @@ function unencrypt(fileName, outputFileName, secretKey) {
     fs.writeFileSync(outputFileName, newBuffer);
 }
 
-function encode(fileName, secretKey) {
+function encode(file, secretKey) {
 
-    var buffer = fs.readFileSync(fileName);
-    var bufferSize = buffer.length;
+    var orignalBuffer;
+    if (typeof file == "string") {
+        orignalBuffer = fs.readFileSync(fileName);
+    } else {
+        orignalBuffer = file;
+    }
+    var orignalBufferSize = orignalBuffer.length;
 
 
     var headBuffer = new Buffer(SECRET_HEADER, "utf8");
     var headLen = headBuffer.length;
 
-    var newBuffer = new Buffer(bufferSize + headLen);
+    var newBuffer = new Buffer(orignalBufferSize + headLen);
     for (var i = 0; i < headLen; i++) {
         var hv = headBuffer.readInt8(i);
         newBuffer.writeInt8(hv, i);
@@ -80,8 +86,8 @@ function encode(fileName, secretKey) {
     var keyBuffer = new Buffer(secretKey || DEFAULT_SECRET_KEY, "utf8");
     var keyLen = keyBuffer.length;
 
-    for (var i = 0; i < bufferSize; i++) {
-        var v = buffer.readInt8(i);
+    for (var i = 0; i < orignalBufferSize; i++) {
+        var v = orignalBuffer.readInt8(i);
         var kv = keyBuffer.readInt8(i % keyLen);
         var newV = v ^ kv;
         newBuffer.writeInt8(newV, i + headLen);
