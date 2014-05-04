@@ -21,5 +21,7 @@ DerivedData
 # ease of implementation
 /App/
 /App-src/
+/App-web/
 /App-tools/
+/AppTools/
 /_*/
