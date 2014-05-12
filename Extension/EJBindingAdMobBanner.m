@@ -138,8 +138,17 @@ EJ_BIND_FUNCTION(load, ctx, argc, argv)
 
 EJ_BIND_FUNCTION(hide, ctx, argc, argv)
 {
-	banner.hidden = YES;
 	wantsToShow = NO;
+	banner.hidden = YES;
+	
+//	[UIView animateWithDuration:1.0 animations: ^{
+//	    banner.frame = CGRectMake(x,
+//	                              -height,
+//	                              width,
+//	                              height);
+//	} completion: ^(BOOL finished) {
+//	    banner.hidden = YES;
+//	}];
 	return NULL;
 }
 
@@ -149,6 +158,15 @@ EJ_BIND_FUNCTION(show, ctx, argc, argv)
 	if (isReady) {
 		[scriptView bringSubviewToFront:banner];
 		banner.hidden = NO;
+//		[UIView animateWithDuration:1.0 animations: ^{
+//		    // Final frame of ad should be docked to bottom of screen
+//		    banner.frame = CGRectMake(x,
+//		                              y,
+//		                              width,
+//		                              height);
+//		} completion: ^(BOOL finished) {
+//			
+//		}];
 	}
 	return NULL;
 }

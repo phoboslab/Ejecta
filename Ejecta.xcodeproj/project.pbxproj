@@ -218,6 +218,9 @@
 		5C91E5AF18E1C47F00FCF013 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		5C91E5B218E1CEFE00FCF013 /* EJBindingAdMobBanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingAdMobBanner.h; sourceTree = "<group>"; };
 		5C91E5B318E1CEFE00FCF013 /* EJBindingAdMobBanner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingAdMobBanner.m; sourceTree = "<group>"; };
+		5CA090F019214AE500E16E8E /* GADModules.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GADModules.h; sourceTree = "<group>"; };
+		5CA090F119214B2900E16E8E /* GADInAppPurchase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GADInAppPurchase.h; sourceTree = "<group>"; };
+		5CA090F219214B2900E16E8E /* GADInAppPurchaseDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GADInAppPurchaseDelegate.h; sourceTree = "<group>"; };
 		B6074FF215F8E41600D987F9 /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
 		B607AB66132EA6C300D7C3EA /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
 		B607AC32132EA75F00D7C3EA /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
@@ -547,6 +550,8 @@
 		5C91E59D18E1AFF100FCF013 /* AdMobSDK */ = {
 			isa = PBXGroup;
 			children = (
+				5CA090F119214B2900E16E8E /* GADInAppPurchase.h */,
+				5CA090F219214B2900E16E8E /* GADInAppPurchaseDelegate.h */,
 				5C91E59E18E1AFF100FCF013 /* GADAdMobExtras.h */,
 				5C91E59F18E1AFF100FCF013 /* GADAdNetworkExtras.h */,
 				5C91E5A018E1AFF100FCF013 /* GADAdSize.h */,
@@ -554,6 +559,7 @@
 				5C91E5A218E1AFF100FCF013 /* GADBannerViewDelegate.h */,
 				5C91E5A318E1AFF100FCF013 /* GADInterstitial.h */,
 				5C91E5A418E1AFF100FCF013 /* GADInterstitialDelegate.h */,
+				5CA090F019214AE500E16E8E /* GADModules.h */,
 				5C91E5A518E1AFF100FCF013 /* GADRequest.h */,
 				5C91E5A618E1AFF100FCF013 /* GADRequestError.h */,
 				5C91E5A718E1AFF100FCF013 /* libGoogleAdMobAds.a */,
