@@ -339,8 +339,6 @@ EJ_BIND_FUNCTION(toDataURLHD, ctx, argc, argv) {
 	return [self toDataURLWithCtx:ctx argc:argc argv:argv hd:YES];
 }
 
-EJ_BIND_GET(nodeName, ctx ) {
-	return NSStringToJSValue(ctx, @"CANVAS");
-}
+EJ_BIND_CONST(nodeName, "CANVAS");
 
 @end
