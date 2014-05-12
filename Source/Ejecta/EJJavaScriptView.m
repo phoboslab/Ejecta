@@ -53,6 +53,8 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 		appFolder = [folder retain];
 		
 		isPaused = false;
+		
+		interceptorManager = [[EJInterceptorManager instance] retain];
 
 		// CADisplayLink (and NSNotificationCenter?) retains it's target, but this
 		// is causing a retain loop - we can't completely release the scriptView
@@ -141,6 +143,9 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 	[openGLContext release];
 	[appFolder release];
 	[proxy release];
+	
+	[interceptorManager release];
+	
 	[super dealloc];
 }
 
@@ -200,9 +205,13 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 }
 
 - (void)loadScriptAtPath:(NSString *)path {
-	NSString *script = [NSString stringWithContentsOfFile:[self pathForResource:path]
-		encoding:NSUTF8StringEncoding error:NULL];
 	
+	NSMutableData *fileData = [NSMutableData dataWithContentsOfFile:[self pathForResource:path]];
+
+	[interceptorManager interceptData:AFTER_LOAD_JS data:fileData];
+
+	NSString* script = [[[NSString alloc] initWithData:fileData encoding:NSUTF8StringEncoding] autorelease];
+	   
 	[self evaluateScript:script sourceURL:path];
 }
 
@@ -218,20 +227,20 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 		);
 		return NULL;
 	}
-    
+	
 	JSStringRef scriptJS = JSStringCreateWithCFString((CFStringRef)script);
 	JSStringRef sourceURLJS = NULL;
-    
+	
 	if( [sourceURL length] > 0 ) {
 		sourceURLJS = JSStringCreateWithCFString((CFStringRef)sourceURL);
 	}
-    
+	
 	JSValueRef exception = NULL;
 	JSValueRef ret = JSEvaluateScript(jsGlobalContext, scriptJS, NULL, sourceURLJS, 0, &exception );
 	[self logException:exception ctx:jsGlobalContext];
 	
 	JSStringRelease( scriptJS );
-    
+	
 	if ( sourceURLJS ) {
 		JSStringRelease( sourceURLJS );
 	}
@@ -240,9 +249,13 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 
 - (JSValueRef)loadModuleWithId:(NSString *)moduleId module:(JSValueRef)module exports:(JSValueRef)exports {
 	NSString *path = [moduleId stringByAppendingString:@".js"];
-	NSString *script = [NSString stringWithContentsOfFile:[self pathForResource:path]
-		encoding:NSUTF8StringEncoding error:NULL];
+
+	NSMutableData *fileData = [NSMutableData dataWithContentsOfFile:[self pathForResource:path]];
 	
+	[interceptorManager interceptData:AFTER_LOAD_JS data:fileData];
+
+	NSString* script = [[[NSString alloc] initWithData:fileData encoding:NSUTF8StringEncoding] autorelease];
+
 	if( !script ) {
 		NSLog(@"Error: Can't Find Module %@", moduleId );
 		return NULL;

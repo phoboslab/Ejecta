@@ -10,6 +10,8 @@
 #import "EJSharedOpenGLContext.h"
 #import "EJNonRetainingProxy.h"
 
+#import "EJInterceptorManager.h"
+
 #define EJECTA_VERSION @"1.5"
 #define EJECTA_DEFAULT_APP_FOLDER @"App/"
 
@@ -65,6 +67,8 @@
 
 	NSOperationQueue *backgroundQueue;
 	JSClassRef jsBlockFunctionClass;
+	
+	EJInterceptorManager *interceptorManager;
 	
 	// Public for fast access in bound functions
 	@public JSValueRef jsUndefined;
