@@ -261,9 +261,7 @@ EJ_BIND_EVENT(loadedmetadata);
 EJ_BIND_EVENT(canplaythrough);
 EJ_BIND_EVENT(ended);
 
-EJ_BIND_GET(nodeName, ctx ) {
-	return NSStringToJSValue(ctx, @"AUDIO");
-}
+EJ_BIND_CONST(nodeName, "AUDIO");
 
 EJ_BIND_CONST(HAVE_NOTHING, kEJAudioHaveNothing);
 EJ_BIND_CONST(HAVE_METADATA, kEJAudioHaveMetadata);
