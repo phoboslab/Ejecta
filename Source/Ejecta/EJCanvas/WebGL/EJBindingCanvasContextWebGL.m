@@ -1545,7 +1545,7 @@ EJ_BIND_FUNCTION(texSubImage2D, ctx, argc, argv) {
 	if( argc == 7) {
 		EJ_UNPACK_ARGV_OFFSET(4, GLenum format, GLenum type);
 		
-		NSObject<EJDrawable> *drawable = (NSObject<EJDrawable> *)JSValueGetPrivate(argv[5]);
+		NSObject<EJDrawable> *drawable = (NSObject<EJDrawable> *)JSValueGetPrivate(argv[6]);
 		if( !drawable || ![drawable conformsToProtocol:@protocol(EJDrawable)] ) {
 			NSLog(@"ERROR: texSubImage2D image is not an Image, ImageData or Canvas element");
 			return NULL;
