@@ -41,12 +41,11 @@
 }
 
 - (void)dealloc {
-	NSLog(@" ===== canvas dealloc: %d, %d ===== ",width,height);
+	NSLog(@" -- canvas dealloc: %d, %d -- ",width,height);
 	if( isScreenCanvas ) {
 		scriptView.hasScreenCanvas = NO;
 	}
 	[renderingContext release];
-	JSValueUnprotectSafe(scriptView.jsGlobalContext, jsCanvasContext);
 	
 	JSValueUnprotectSafe(scriptView.jsGlobalContext, styleObject.jsObject);
 	styleObject.binding = nil;
@@ -246,7 +245,6 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 	}
 	
 	[self addCanvasToContext];
-//	JSValueProtect(ctx, jsCanvasContext);
 	
 	contextMode = newContextMode;
 	

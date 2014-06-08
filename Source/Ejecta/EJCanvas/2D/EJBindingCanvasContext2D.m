@@ -22,7 +22,8 @@
 	return self;
 }
 
-- (void)dealloc {	
+- (void)dealloc {
+	NSLog(@" -- context dealloc -- ");
 	[renderingContext release];
 	jsCanvas = nil;
 	[super dealloc];
