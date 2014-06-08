@@ -259,13 +259,13 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 	return jsCanvasContext;
 }
 
-- (void)linkCanvasAndContext{
+- (void)linkCanvasAndContext {
 	JSStringRef canvasName = JSStringCreateWithUTF8CString("canvas");
-	JSObjectSetProperty(scriptView.jsGlobalContext, jsCanvasContext, canvasName, jsObject, kJSPropertyAttributeReadOnly, NULL);
+	JSObjectSetProperty(scriptView.jsGlobalContext, jsCanvasContext, canvasName, jsObject, kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete, NULL);
 	JSStringRelease(canvasName);
 	
-	JSStringRef contextName = JSStringCreateWithUTF8CString("__context");
-	JSObjectSetProperty(scriptView.jsGlobalContext, jsObject, contextName, jsCanvasContext, kJSPropertyAttributeDontEnum, NULL);
+	JSStringRef contextName = JSStringCreateWithUTF8CString("__context__");
+	JSObjectSetProperty(scriptView.jsGlobalContext, jsObject, contextName, jsCanvasContext, kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontEnum|kJSPropertyAttributeDontDelete, NULL);
 	JSStringRelease(contextName);
 }
 
