@@ -245,7 +245,7 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 		[binding release];
 	}
 	
-	[self addCanvasToContext];
+	[self linkCanvasAndContext];
 	
 	contextMode = newContextMode;
 	
@@ -260,10 +260,14 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 	return jsCanvasContext;
 }
 
-- (void)addCanvasToContext{
+- (void)linkCanvasAndContext {
 	JSStringRef canvasName = JSStringCreateWithUTF8CString("canvas");
 	JSObjectSetProperty(scriptView.jsGlobalContext, jsCanvasContext, canvasName, jsObject, kJSPropertyAttributeReadOnly, NULL);
 	JSStringRelease(canvasName);
+	
+	JSStringRef contextName = JSStringCreateWithUTF8CString("__context");
+	JSObjectSetProperty(scriptView.jsGlobalContext, jsObject, contextName, jsCanvasContext, kJSPropertyAttributeDontEnum, NULL);
+	JSStringRelease(contextName);
 }
 
 - (JSValueRef)toDataURLWithCtx:(JSContextRef)ctx argc:(size_t)argc argv:(const JSValueRef [])argv hd:(BOOL)hd {
