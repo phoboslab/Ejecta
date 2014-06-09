@@ -41,8 +41,9 @@
 }
 
 - (void)dealloc {
+#if DEBUG
 	NSLog(@" -- canvas dealloc: %d, %d -- ",width,height);
-	
+#endif
 	if( isScreenCanvas ) {
 		scriptView.hasScreenCanvas = NO;
 	}
