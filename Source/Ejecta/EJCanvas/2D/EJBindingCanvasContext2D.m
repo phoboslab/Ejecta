@@ -23,7 +23,9 @@
 }
 
 - (void)dealloc {
+#if DEBUG
 	NSLog(@" -- context dealloc -- ");
+#endif
 	[renderingContext release];
 	jsCanvas = nil;
 	[super dealloc];
