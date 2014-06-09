@@ -22,13 +22,13 @@
 	return self;
 }
 
-- (void)dealloc {	
+- (void)dealloc {
+#if DEBUG
+	NSLog(@" -- context dealloc -- ");
+#endif
 	[renderingContext release];
+	jsCanvas = nil;
 	[super dealloc];
-}
-
-EJ_BIND_GET(canvas, ctx) {
-	return jsCanvas;
 }
 
 EJ_BIND_ENUM(globalCompositeOperation, renderingContext.globalCompositeOperation,

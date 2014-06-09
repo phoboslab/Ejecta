@@ -41,12 +41,14 @@
 }
 
 - (void)dealloc {
+#if DEBUG
+	NSLog(@" -- canvas dealloc: %d, %d -- ",width,height);
+#endif
 	if( isScreenCanvas ) {
 		scriptView.hasScreenCanvas = NO;
 	}
 	[renderingContext release];
-	JSValueUnprotectSafe(scriptView.jsGlobalContext, jsCanvasContext);
-	
+
 	JSValueUnprotectSafe(scriptView.jsGlobalContext, styleObject.jsObject);
 	styleObject.binding = nil;
 	[styleObject release];
@@ -217,7 +219,6 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 			initWithCanvas:jsObject renderingContext:(EJCanvasContext2D *)renderingContext];
 		jsCanvasContext = [EJBindingCanvasContext2D createJSObjectWithContext:ctx scriptView:scriptView instance:binding];
 		[binding release];
-		JSValueProtect(ctx, jsCanvasContext);
 	}
 	
 	// WebGL Screen or Texture
@@ -243,9 +244,9 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 			initWithCanvas:jsObject renderingContext:(EJCanvasContextWebGL *)renderingContext];
 		jsCanvasContext = [EJBindingCanvasContextWebGL createJSObjectWithContext:ctx scriptView:scriptView instance:binding];
 		[binding release];
-		JSValueProtect(ctx, jsCanvasContext);
 	}
 	
+	[self linkCanvasAndContext];
 	
 	contextMode = newContextMode;
 	
@@ -258,6 +259,16 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 	
 	
 	return jsCanvasContext;
+}
+
+- (void)linkCanvasAndContext {
+	JSStringRef canvasName = JSStringCreateWithUTF8CString("canvas");
+	JSObjectSetProperty(scriptView.jsGlobalContext, jsCanvasContext, canvasName, jsObject, kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete, NULL);
+	JSStringRelease(canvasName);
+	
+	JSStringRef contextName = JSStringCreateWithUTF8CString("__context__");
+	JSObjectSetProperty(scriptView.jsGlobalContext, jsObject, contextName, jsCanvasContext, kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontEnum|kJSPropertyAttributeDontDelete, NULL);
+	JSStringRelease(contextName);
 }
 
 - (JSValueRef)toDataURLWithCtx:(JSContextRef)ctx argc:(size_t)argc argv:(const JSValueRef [])argv hd:(BOOL)hd {
