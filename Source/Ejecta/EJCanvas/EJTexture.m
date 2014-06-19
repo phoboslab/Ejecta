@@ -444,8 +444,8 @@ typedef struct {
 	// as usual
 	if( !fbo ) {
 		glGenFramebuffers(1, &tempFramebuffer);
-		glBindFramebuffer(GL_FRAMEBUFFER_OES, tempFramebuffer);
-		glFramebufferTexture2D(GL_FRAMEBUFFER_OES, GL_COLOR_ATTACHMENT0_OES, GL_TEXTURE_2D, textureStorage.textureId, 0);
+		glBindFramebuffer(GL_FRAMEBUFFER, tempFramebuffer);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureStorage.textureId, 0);
 	}
 	else {
 		glBindFramebuffer(GL_FRAMEBUFFER, fbo);
