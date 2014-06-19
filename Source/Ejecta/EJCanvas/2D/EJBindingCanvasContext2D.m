@@ -22,7 +22,7 @@
 	return self;
 }
 
-- (void)dealloc {	
+- (void)dealloc {
 	[renderingContext release];
 	[super dealloc];
 }
