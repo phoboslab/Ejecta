@@ -10,6 +10,7 @@
 	BOOL drawFlippedY;
 	BOOL isCompressed;
 	BOOL lazyLoaded;
+	BOOL dimensionsKnown;
 	short width, height;
 	NSString *fullPath;
 	EJTextureStorage *textureStorage;

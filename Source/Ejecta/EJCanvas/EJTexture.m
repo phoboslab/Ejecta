@@ -158,6 +158,7 @@ typedef struct {
 		
 		width = widthp;
 		height = heightp;
+		dimensionsKnown = true;
 		[self createWithPixels:NULL format:formatp];
 	}
 	return self;
@@ -171,6 +172,7 @@ typedef struct {
 		
 		width = widthp;
 		height = heightp;
+		dimensionsKnown = true;
 		[self createWithPixels:pixels format:GL_RGBA];
 	}
 	return self;
@@ -278,16 +280,25 @@ typedef struct {
 }
 
 - (short)width {
+	if( dimensionsKnown ) {
+		return width;
+	}
 	EJ_ENSURE_LAZY_LOADED_STORAGE();
 	return width;
 }
 
 - (short)height {
+	if( dimensionsKnown ) {
+		return height;
+	}
 	EJ_ENSURE_LAZY_LOADED_STORAGE();
 	return height;
 }
 
 - (float)contentScale {
+	if( dimensionsKnown ) {
+		return contentScale;
+	}
 	EJ_ENSURE_LAZY_LOADED_STORAGE();
 	return contentScale;
 }
@@ -323,6 +334,7 @@ typedef struct {
 	height = other->height;
 	isCompressed = other->isCompressed;
 	lazyLoaded = other->lazyLoaded;
+	dimensionsKnown = other->dimensionsKnown;
 	
 	textureStorage = [other->textureStorage retain];
 }
@@ -511,6 +523,7 @@ typedef struct {
 		PVRTextureHeader *header = (PVRTextureHeader *)pixels.bytes;
 		width = header->width;
 		height = header->height;
+		dimensionsKnown = true;
 		isCompressed = true;
 	}
 	
@@ -535,6 +548,7 @@ typedef struct {
 	
 	width = CGImageGetWidth(cgImage);
 	height = CGImageGetHeight(cgImage);
+	dimensionsKnown = true;
 	
 	NSMutableData *pixels = [NSMutableData dataWithLength:width*height*4];
 	CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
