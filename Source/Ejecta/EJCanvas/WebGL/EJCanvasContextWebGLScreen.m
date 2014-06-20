@@ -64,8 +64,8 @@
 	
 	if( contentScale != 1 && contentScale != 2 ) {
 		NSLog(
-			@"Warning: contentScale for the WebGL ScreenCanvas is %f."
-			@"You'll likely get a blank screen. The canvas's style width and height"
+			@"Warning: contentScale for the WebGL ScreenCanvas is %f. "
+			@"You'll likely get a blank screen. The canvas's style width and height "
 			@"must be 1x or 2x the internal width and height.",
 			contentScale
 		);
