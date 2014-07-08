@@ -22,7 +22,7 @@
 	return self;
 }
 
-- (void)dealloc {	
+- (void)dealloc {
 	[renderingContext release];
 	[super dealloc];
 }
@@ -39,7 +39,11 @@ EJ_BIND_ENUM(globalCompositeOperation, renderingContext.globalCompositeOperation
 	"destination-over",	// kEJCompositeOperationDestinationOver
 	"source-atop",		// kEJCompositeOperationSourceAtop
 	"xor",				// kEJCompositeOperationXOR
-	"copy"				// kEJCompositeOperationCopy
+	"copy",				// kEJCompositeOperationCopy
+	"source-in",		// kEJCompositeOperationSourceIn
+	"destination-in",	// kEJCompositeOperationDestinationIn
+	"source-out",		// kEJCompositeOperationSourceOut
+	"destination-atop"	// kEJCompositeOperationDestinationAtop
 );
 
 EJ_BIND_ENUM(lineCap, renderingContext.state->lineCap,
@@ -251,7 +255,7 @@ EJ_BIND_FUNCTION(drawImage, ctx, argc, argv) {
 	NSObject<EJDrawable> *drawable = (NSObject<EJDrawable> *)JSValueGetPrivate(argv[0]);
 	EJTexture *image = drawable.texture;
 	
-	if( !image ) { return NULL; }
+	if( !image.textureId ) { return NULL; }
 	
 	float scale = image.contentScale;
 	

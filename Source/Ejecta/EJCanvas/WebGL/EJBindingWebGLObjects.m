@@ -24,14 +24,14 @@
 	if( !value ) { return 0; }
 	
 	EJBindingWebGLObject *binding = (EJBindingWebGLObject *)JSValueGetPrivate(value);
-	return (binding && [binding isMemberOfClass:[self class]]) ? binding->index : 0;
+	return (binding && [binding isKindOfClass:[self class]]) ? binding->index : 0;
 }
 
 + (EJBindingWebGLObject *)webGLObjectFromJSValue:(JSValueRef)value {
 	if( !value ) { return nil; }
 	
 	EJBindingWebGLObject *binding = (EJBindingWebGLObject *)JSValueGetPrivate(value);
-	return (binding && [binding isMemberOfClass:[self class]]) ? binding : nil;
+	return (binding && [binding isKindOfClass:[self class]]) ? binding : nil;
 }
 
 + (JSObjectRef)createJSObjectWithContext:(JSContextRef)ctx
@@ -95,7 +95,7 @@
 	if( !value ) { return NULL; }
 	
 	EJBindingWebGLTexture *binding = (EJBindingWebGLTexture *)JSValueGetPrivate(value);
-	return (binding && [binding isMemberOfClass:[self class]]) ? binding->texture : NULL;
+	return (binding && [binding isKindOfClass:[self class]]) ? binding->texture : NULL;
 }
 
 + (JSObjectRef)createJSObjectWithContext:(JSContextRef)ctx

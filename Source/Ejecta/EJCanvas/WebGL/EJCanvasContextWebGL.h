@@ -3,7 +3,7 @@
 @class EJJavaScriptView;
 @interface EJCanvasContextWebGL : EJCanvasContext {
 	GLuint viewFrameBuffer, viewRenderBuffer;
-	GLuint depthRenderBuffer;
+	GLuint depthStencilBuffer;
 	
 	GLuint boundFramebuffer;
 	GLuint boundRenderbuffer;

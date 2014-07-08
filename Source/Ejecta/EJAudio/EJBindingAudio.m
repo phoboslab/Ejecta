@@ -248,12 +248,25 @@ EJ_BIND_ENUM(preload, self.preload,
 	"auto"		// kEJAudioPreloadAuto
 );
 
+EJ_BIND_GET(readyState, ctx) {
+	EJAudioReadyState state = kEJAudioHaveNothing;
+	if( source ) {
+		state = ended ? kEJAudioHaveCurrentData : kEJAudioHaveEnoughData;
+	}
+	return JSValueMakeNumber(ctx, state);
+}
+
+
 EJ_BIND_EVENT(loadedmetadata);
 EJ_BIND_EVENT(canplaythrough);
 EJ_BIND_EVENT(ended);
 
-EJ_BIND_GET(nodeName, ctx ) {
-	return NSStringToJSValue(ctx, @"AUDIO");
-}
+EJ_BIND_CONST(nodeName, "AUDIO");
+
+EJ_BIND_CONST(HAVE_NOTHING, kEJAudioHaveNothing);
+EJ_BIND_CONST(HAVE_METADATA, kEJAudioHaveMetadata);
+EJ_BIND_CONST(HAVE_CURRENT_DATA, kEJAudioHaveCurrentData);
+EJ_BIND_CONST(HAVE_FUTURE_DATA, kEJAudioHaveFutureData);
+EJ_BIND_CONST(HAVE_ENOUGH_DATA, kEJAudioHaveEnoughData);
 
 @end

@@ -1,7 +1,7 @@
 #import <Foundation/Foundation.h>
 #import <OpenGLES/EAGL.h>
-#import <OpenGLES/ES1/gl.h>
-#import <OpenGLES/ES1/glext.h>
+#import <OpenGLES/ES2/gl.h>
+#import <OpenGLES/ES2/glext.h>
 
 typedef enum {
 	kEJTextureParamMinFilter,
@@ -18,6 +18,7 @@ typedef EJTextureParam EJTextureParams[kEJTextureParamLast];
 	EJTextureParams params;
 	GLuint textureId;
 	BOOL immutable;
+	NSTimeInterval lastBound;
 }
 - (id)init;
 - (id)initImmutable;
@@ -25,5 +26,6 @@ typedef EJTextureParam EJTextureParams[kEJTextureParamLast];
 
 @property (readonly, nonatomic) GLuint textureId;
 @property (readonly, nonatomic) BOOL immutable;
+@property (readonly, nonatomic) NSTimeInterval lastBound;
 
 @end

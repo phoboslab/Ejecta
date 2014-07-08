@@ -106,7 +106,9 @@ window.clearInterval = function(id){ return ej.clearInterval(id); };
 window.requestAnimationFrame = function(cb, element){
 	return ej.setTimeout(function(){ cb(ej.performanceNow()); }, 16);
 };
-
+window.cancelAnimationFrame = function (id) {
+	return ej.clearTimeout(id);
+};
 
 
 // The native Image, Audio, HttpRequest and LocalStorage class mimic the real elements
@@ -117,6 +119,24 @@ window.XMLHttpRequest = Ejecta.HttpRequest;
 window.localStorage = new Ejecta.LocalStorage();
 window.WebSocket = Ejecta.WebSocket;
 
+
+window.Event = function (type) {
+	this.type = type;
+	this.cancelBubble = false;
+	this.cancelable = false;
+	this.target = null;
+	
+	this.initEvent = function (type, bubbles, cancelable) {
+		this.type = type;
+		this.cancelBubble = bubbles;
+		this.cancelable = cancelable;
+	};
+
+	this.preventDefault = function () {};
+	this.stopPropagation = function () {};
+};
+
+window.location = { href: 'index' };
 
 // Set up a "fake" HTMLElement
 HTMLElement = function( tagName ){
@@ -161,9 +181,10 @@ HTMLElement.prototype.getBoundingClientRect = function() {
 window.document = {
 	readystate: 'complete',
 	documentElement: window,
-	location: { href: 'index' },
+	location: window.location,
 	visibilityState: 'visible',
 	hidden: false,
+	style: {},
 	
 	head: new HTMLElement( 'head' ),
 	body: new HTMLElement( 'body' ),
@@ -206,6 +227,10 @@ window.document = {
 			return [document.body];
 		}
 		return [];
+	},
+
+	createEvent: function (type) { 
+		return new window.Event(type); 
 	},
 	
 	addEventListener: function( type, callback, useCapture ){

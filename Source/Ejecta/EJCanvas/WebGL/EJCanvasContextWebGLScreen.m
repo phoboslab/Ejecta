@@ -64,8 +64,8 @@
 	
 	if( contentScale != 1 && contentScale != 2 ) {
 		NSLog(
-			@"Warning: contentScale for the WebGL ScreenCanvas is %f."
-			@"You'll likely get a blank screen. The canvas's style width and height"
+			@"Warning: contentScale for the WebGL ScreenCanvas is %f. "
+			@"You'll likely get a blank screen. The canvas's style width and height "
 			@"must be 1x or 2x the internal width and height.",
 			contentScale
 		);
@@ -97,10 +97,11 @@
 	[glContext renderbufferStorage:GL_RENDERBUFFER fromDrawable:(CAEAGLLayer *)glview.layer];
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, viewRenderBuffer);
 	
-	// Set up the depth buffer
-	glBindRenderbuffer(GL_RENDERBUFFER, depthRenderBuffer);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, bufferWidth, bufferHeight);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRenderBuffer);
+	// Set up the depth and stencil buffer
+	glBindRenderbuffer(GL_RENDERBUFFER, depthStencilBuffer);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8_OES, bufferWidth, bufferHeight);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthStencilBuffer);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, depthStencilBuffer);
 	
 	// Clear
 	glViewport(0, 0, width, height);

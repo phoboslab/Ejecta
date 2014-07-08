@@ -214,6 +214,7 @@ EJ_BIND_GET(orientation, ctx ) {
 		case UIInterfaceOrientationLandscapeLeft: angle = -90; break;
 		case UIInterfaceOrientationLandscapeRight: angle = 90; break;
 		case UIInterfaceOrientationPortraitUpsideDown: angle = 180; break;
+		default: angle = 0; break;
 	}
 	return JSValueMakeNumber(ctx, angle);
 }

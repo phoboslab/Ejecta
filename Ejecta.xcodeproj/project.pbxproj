@@ -21,13 +21,12 @@
 		B607AD0A132EB51000D7C3EA /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B607AD09132EB51000D7C3EA /* OpenGLES.framework */; };
 		B607AD10132EB52400D7C3EA /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B607AD0F132EB52400D7C3EA /* QuartzCore.framework */; };
 		B609F2D416AD877E00A3B2B9 /* RadialGradient.fsh in Resources */ = {isa = PBXBuildFile; fileRef = B609F2CE16AD873A00A3B2B9 /* RadialGradient.fsh */; };
+		B60EA4021910655C00FA45E7 /* base64.c in Sources */ = {isa = PBXBuildFile; fileRef = B60EA4001910655C00FA45E7 /* base64.c */; };
 		B60FA92817021E0900078D20 /* EJBindingVideo.m in Sources */ = {isa = PBXBuildFile; fileRef = B60FA92717021E0900078D20 /* EJBindingVideo.m */; };
 		B60FA92A1702297C00078D20 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B60FA9291702297C00078D20 /* MediaPlayer.framework */; };
 		B62436681666851E0046B8C7 /* Ejecta.js in Resources */ = {isa = PBXBuildFile; fileRef = B64CE63F166682700087CF94 /* Ejecta.js */; };
 		B630048916C1A2390036D8D4 /* EJBindingTextMetrics.m in Sources */ = {isa = PBXBuildFile; fileRef = B630048816C1A1960036D8D4 /* EJBindingTextMetrics.m */; };
 		B630048C16CB098D0036D8D4 /* EJClassLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = B630048B16CB09850036D8D4 /* EJClassLoader.m */; };
-		B63D256416E8DE23007E6034 /* base64.c in Sources */ = {isa = PBXBuildFile; fileRef = B63D255D16E8DE23007E6034 /* base64.c */; };
-		B63D256516E8DE23007E6034 /* NSData+SRB64Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = B63D256016E8DE23007E6034 /* NSData+SRB64Additions.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		B63D256616E8DE23007E6034 /* SRWebSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = B63D256316E8DE23007E6034 /* SRWebSocket.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		B63D256816E8DF23007E6034 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B63D256716E8DF23007E6034 /* CFNetwork.framework */; };
 		B63D256A16E8DF33007E6034 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B63D256916E8DF33007E6034 /* Security.framework */; };
@@ -71,7 +70,6 @@
 		B64CE697166682B10087CF94 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = B64CE68C166682B10087CF94 /* Icon.png */; };
 		B64CE698166682B10087CF94 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B64CE68D166682B10087CF94 /* Icon@2x.png */; };
 		B64CE699166682B10087CF94 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = B64CE68E166682B10087CF94 /* MainWindow.xib */; };
-		B655F2371866177C00740034 /* NSString+Hashes.m in Sources */ = {isa = PBXBuildFile; fileRef = B655F2361866177C00740034 /* NSString+Hashes.m */; };
 		B664B98B1699F3380093E04E /* EJBindingCanvasPattern.m in Sources */ = {isa = PBXBuildFile; fileRef = B664B98A1699F3380093E04E /* EJBindingCanvasPattern.m */; };
 		B664B98E1699F49C0093E04E /* EJCanvasPattern.m in Sources */ = {isa = PBXBuildFile; fileRef = B664B98D1699F49B0093E04E /* EJCanvasPattern.m */; };
 		B66847591823FEDF00ABCDF9 /* EJCanvasContextWebGLTexture.m in Sources */ = {isa = PBXBuildFile; fileRef = B66847581823FEDF00ABCDF9 /* EJCanvasContextWebGLTexture.m */; };
@@ -140,6 +138,8 @@
 		B607AD09132EB51000D7C3EA /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		B607AD0F132EB52400D7C3EA /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		B609F2CE16AD873A00A3B2B9 /* RadialGradient.fsh */ = {isa = PBXFileReference; explicitFileType = sourcecode.glsl; fileEncoding = 4; path = RadialGradient.fsh; sourceTree = "<group>"; };
+		B60EA4001910655C00FA45E7 /* base64.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = base64.c; sourceTree = "<group>"; };
+		B60EA4011910655C00FA45E7 /* base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = base64.h; sourceTree = "<group>"; };
 		B60FA92617021E0900078D20 /* EJBindingVideo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingVideo.h; sourceTree = "<group>"; };
 		B60FA92717021E0900078D20 /* EJBindingVideo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingVideo.m; sourceTree = "<group>"; };
 		B60FA9291702297C00078D20 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
@@ -147,10 +147,6 @@
 		B630048816C1A1960036D8D4 /* EJBindingTextMetrics.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EJBindingTextMetrics.m; sourceTree = "<group>"; };
 		B630048A16CB097F0036D8D4 /* EJClassLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJClassLoader.h; sourceTree = "<group>"; };
 		B630048B16CB09850036D8D4 /* EJClassLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJClassLoader.m; sourceTree = "<group>"; };
-		B63D255D16E8DE23007E6034 /* base64.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = base64.c; sourceTree = "<group>"; };
-		B63D255E16E8DE23007E6034 /* base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = base64.h; sourceTree = "<group>"; };
-		B63D255F16E8DE23007E6034 /* NSData+SRB64Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+SRB64Additions.h"; sourceTree = "<group>"; };
-		B63D256016E8DE23007E6034 /* NSData+SRB64Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+SRB64Additions.m"; sourceTree = "<group>"; };
 		B63D256116E8DE23007E6034 /* SocketRocket-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SocketRocket-Prefix.pch"; sourceTree = "<group>"; };
 		B63D256216E8DE23007E6034 /* SRWebSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SRWebSocket.h; sourceTree = "<group>"; };
 		B63D256316E8DE23007E6034 /* SRWebSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SRWebSocket.m; sourceTree = "<group>"; };
@@ -224,8 +220,6 @@
 		B64CE68C166682B10087CF94 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		B64CE68D166682B10087CF94 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
 		B64CE68E166682B10087CF94 /* MainWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
-		B655F2351866177C00740034 /* NSString+Hashes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Hashes.h"; sourceTree = "<group>"; };
-		B655F2361866177C00740034 /* NSString+Hashes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Hashes.m"; sourceTree = "<group>"; };
 		B664B9891699F3370093E04E /* EJBindingCanvasPattern.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingCanvasPattern.h; sourceTree = "<group>"; };
 		B664B98A1699F3380093E04E /* EJBindingCanvasPattern.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingCanvasPattern.m; sourceTree = "<group>"; };
 		B664B98C1699F49B0093E04E /* EJCanvasPattern.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJCanvasPattern.h; sourceTree = "<group>"; };
@@ -410,10 +404,6 @@
 		B63D255C16E8DE23007E6034 /* SocketRocket */ = {
 			isa = PBXGroup;
 			children = (
-				B63D255D16E8DE23007E6034 /* base64.c */,
-				B63D255E16E8DE23007E6034 /* base64.h */,
-				B63D255F16E8DE23007E6034 /* NSData+SRB64Additions.h */,
-				B63D256016E8DE23007E6034 /* NSData+SRB64Additions.m */,
 				B63D256116E8DE23007E6034 /* SocketRocket-Prefix.pch */,
 				B63D256216E8DE23007E6034 /* SRWebSocket.h */,
 				B63D256316E8DE23007E6034 /* SRWebSocket.m */,
@@ -547,8 +537,8 @@
 			children = (
 				B6468005188AB3260087F098 /* JavaScriptCore.framework */,
 				B63D255C16E8DE23007E6034 /* SocketRocket */,
-				B655F2351866177C00740034 /* NSString+Hashes.h */,
-				B655F2361866177C00740034 /* NSString+Hashes.m */,
+				B60EA4001910655C00FA45E7 /* base64.c */,
+				B60EA4011910655C00FA45E7 /* base64.h */,
 			);
 			path = lib;
 			sourceTree = "<group>";
@@ -678,7 +668,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0500;
+				LastUpgradeCheck = 0600;
 				TargetAttributes = {
 					1D6058900D05DD3D006BFB54 = {
 						DevelopmentTeam = TYQN4X28QA;
@@ -798,12 +788,10 @@
 				B699669B16CC55F5006B9456 /* EJSharedTextureCache.m in Sources */,
 				B699669E16CC579E006B9456 /* EJSharedOpenGLContext.m in Sources */,
 				B6E02BC016D4110D00616925 /* EJNonRetainingProxy.m in Sources */,
-				B63D256416E8DE23007E6034 /* base64.c in Sources */,
-				B63D256516E8DE23007E6034 /* NSData+SRB64Additions.m in Sources */,
-				B655F2371866177C00740034 /* NSString+Hashes.m in Sources */,
 				B63D256616E8DE23007E6034 /* SRWebSocket.m in Sources */,
 				B63D256D16E8E0EE007E6034 /* EJBindingWebSocket.m in Sources */,
 				B6F629D116F353C800F16BAC /* EJBindingCanvasStyle.m in Sources */,
+				B60EA4021910655C00FA45E7 /* base64.c in Sources */,
 				B870BDE916F2E11A00827F01 /* EJBindingWebGLExtensions.m in Sources */,
 				B6D6E0A016F7E7B4009AB75F /* EJBindingIAPManager.m in Sources */,
 				B6D6E0A316F7E7D8009AB75F /* EJBindingIAPTransaction.m in Sources */,

@@ -56,9 +56,9 @@ static const float radToDeg = (180/M_PI);
 	params[8] = JSValueMakeNumber(ctx, motion.rotationRate.z * radToDeg);
 	
 	// orientation {alpha, beta, gamma}
-	params[9] = JSValueMakeNumber(ctx, motion.attitude.roll * radToDeg);
+	params[9] = JSValueMakeNumber(ctx, motion.attitude.yaw * radToDeg);
 	params[10] = JSValueMakeNumber(ctx, motion.attitude.pitch * radToDeg);
-	params[11] = JSValueMakeNumber(ctx, motion.attitude.yaw * radToDeg);
+	params[11] = JSValueMakeNumber(ctx, motion.attitude.roll * radToDeg);
 	
 	[self triggerEvent:@"devicemotion" argc:12 argv:params];
 }

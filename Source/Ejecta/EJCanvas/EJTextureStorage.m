@@ -1,6 +1,7 @@
 #import "EJTextureStorage.h"
 
 @implementation EJTextureStorage
+@synthesize lastBound;
 @synthesize textureId;
 @synthesize immutable;
 
@@ -47,6 +48,8 @@
 		params[kEJTextureParamWrapT] = newParams[kEJTextureParamWrapT];
 		glTexParameteri(target, GL_TEXTURE_WRAP_T, params[kEJTextureParamWrapT]);
 	}
+	
+	lastBound = NSProcessInfo.processInfo.systemUptime;
 }
 
 @end
