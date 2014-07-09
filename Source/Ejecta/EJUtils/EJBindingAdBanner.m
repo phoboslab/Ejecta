@@ -22,6 +22,9 @@
 			? ADBannerContentSizeIdentifierLandscape
 			: ADBannerContentSizeIdentifierPortrait),
 		nil];
+ 	if( landscape ) {
+ 		banner.currentContentSizeIdentifier = ADBannerContentSizeIdentifierLandscape;
+ 	}
 	
 	[scriptView addSubview:banner];
 	NSLog(@"AdBanner: init at y %f", banner.frame.origin.y);
