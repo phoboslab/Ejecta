@@ -47,6 +47,8 @@
 		5C91E5B018E1C47F00FCF013 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C91E5AF18E1C47F00FCF013 /* AdSupport.framework */; };
 		5C91E5B118E1C4A800FCF013 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C91E5AA18E1C43A00FCF013 /* CoreTelephony.framework */; };
 		5C91E5B418E1CEFE00FCF013 /* EJBindingAdMobBanner.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C91E5B318E1CEFE00FCF013 /* EJBindingAdMobBanner.m */; };
+		5C9AA4DA1973046A00089207 /* libMobClickGameLibrary.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C9AA4D71973046A00089207 /* libMobClickGameLibrary.a */; };
+		5C9AA4DD19730B6200089207 /* EJBindingAnalytic.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C9AA4DC19730B6200089207 /* EJBindingAnalytic.m */; };
 		B6074FF315F8E41700D987F9 /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6074FF215F8E41600D987F9 /* GameKit.framework */; };
 		B607AB67132EA6C300D7C3EA /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B607AB66132EA6C300D7C3EA /* OpenAL.framework */; };
 		B607AC33132EA75F00D7C3EA /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B607AC32132EA75F00D7C3EA /* AudioToolbox.framework */; };
@@ -218,6 +220,11 @@
 		5C91E5AF18E1C47F00FCF013 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		5C91E5B218E1CEFE00FCF013 /* EJBindingAdMobBanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingAdMobBanner.h; sourceTree = "<group>"; };
 		5C91E5B318E1CEFE00FCF013 /* EJBindingAdMobBanner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingAdMobBanner.m; sourceTree = "<group>"; };
+		5C9AA4D71973046A00089207 /* libMobClickGameLibrary.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libMobClickGameLibrary.a; sourceTree = "<group>"; };
+		5C9AA4D81973046A00089207 /* MobClick.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MobClick.h; sourceTree = "<group>"; };
+		5C9AA4D91973046A00089207 /* MobClickGameAnalytics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MobClickGameAnalytics.h; sourceTree = "<group>"; };
+		5C9AA4DB19730B6200089207 /* EJBindingAnalytic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingAnalytic.h; sourceTree = "<group>"; };
+		5C9AA4DC19730B6200089207 /* EJBindingAnalytic.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingAnalytic.m; sourceTree = "<group>"; };
 		5CA090F019214AE500E16E8E /* GADModules.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GADModules.h; sourceTree = "<group>"; };
 		5CA090F119214B2900E16E8E /* GADInAppPurchase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GADInAppPurchase.h; sourceTree = "<group>"; };
 		5CA090F219214B2900E16E8E /* GADInAppPurchaseDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GADInAppPurchaseDelegate.h; sourceTree = "<group>"; };
@@ -422,6 +429,7 @@
 				B607AB67132EA6C300D7C3EA /* OpenAL.framework in Frameworks */,
 				B607AC33132EA75F00D7C3EA /* AudioToolbox.framework in Frameworks */,
 				B607AD0A132EB51000D7C3EA /* OpenGLES.framework in Frameworks */,
+				5C9AA4DA1973046A00089207 /* libMobClickGameLibrary.a in Frameworks */,
 				B607AD10132EB52400D7C3EA /* QuartzCore.framework in Frameworks */,
 				B6CFCCD91332F152001F17AF /* AVFoundation.framework in Frameworks */,
 				B6AC4A061359E7A5003C4982 /* iAd.framework in Frameworks */,
@@ -511,6 +519,8 @@
 		5C8E33FC18C4EF40007206AE /* Extension */ = {
 			isa = PBXGroup;
 			children = (
+				5C9AA4DB19730B6200089207 /* EJBindingAnalytic.h */,
+				5C9AA4DC19730B6200089207 /* EJBindingAnalytic.m */,
 				5C91E5B218E1CEFE00FCF013 /* EJBindingAdMobBanner.h */,
 				5C91E5B318E1CEFE00FCF013 /* EJBindingAdMobBanner.m */,
 				5C91E59A18E1AD9B00FCF013 /* EJBindingAdMobPage.h */,
@@ -532,6 +542,7 @@
 				5C8E340518C4EF40007206AE /* EJBindingWebView.h */,
 				5C8E340618C4EF40007206AE /* EJBindingWebView.m */,
 				5C91E59D18E1AFF100FCF013 /* AdMobSDK */,
+				5C9AA4D61973046A00089207 /* UMengSDK */,
 				5C2C1F7818D21C1B0028F3B1 /* mongoose */,
 				5C8E340818C4EF40007206AE /* OpenUDID */,
 			);
@@ -565,6 +576,16 @@
 				5C91E5A718E1AFF100FCF013 /* libGoogleAdMobAds.a */,
 			);
 			path = AdMobSDK;
+			sourceTree = "<group>";
+		};
+		5C9AA4D61973046A00089207 /* UMengSDK */ = {
+			isa = PBXGroup;
+			children = (
+				5C9AA4D71973046A00089207 /* libMobClickGameLibrary.a */,
+				5C9AA4D81973046A00089207 /* MobClick.h */,
+				5C9AA4D91973046A00089207 /* MobClickGameAnalytics.h */,
+			);
+			path = UMengSDK;
 			sourceTree = "<group>";
 		};
 		B609F2CB16AD873900A3B2B9 /* Shaders */ = {
@@ -964,6 +985,7 @@
 				B64CE67E166682700087CF94 /* EJBindingTouchInput.m in Sources */,
 				B64CE67F166682700087CF94 /* AppDelegate.m in Sources */,
 				B64CE682166682700087CF94 /* main.m in Sources */,
+				5C9AA4DD19730B6200089207 /* EJBindingAnalytic.m in Sources */,
 				B6F9AFC0169F81D400ABD91A /* EJBindingWindowEvents.m in Sources */,
 				B6F114DF1676B4FE001F1324 /* EJBindingCanvas.m in Sources */,
 				B6F114E31676BAFB001F1324 /* EJCanvasContext.m in Sources */,
@@ -1030,6 +1052,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Extension/AdMobSDK",
+					"$(PROJECT_DIR)/Extension/UMengSDK",
 				);
 				OTHER_CFLAGS = "-DDEBUG";
 				PRODUCT_NAME = Ejecta;
@@ -1046,6 +1069,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Extension/AdMobSDK",
+					"$(PROJECT_DIR)/Extension/UMengSDK",
 				);
 				PRODUCT_NAME = Ejecta;
 				VALIDATE_PRODUCT = YES;
