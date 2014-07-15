@@ -49,6 +49,7 @@
 		5C91E5B418E1CEFE00FCF013 /* EJBindingAdMobBanner.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C91E5B318E1CEFE00FCF013 /* EJBindingAdMobBanner.m */; };
 		5C9AA4DA1973046A00089207 /* libMobClickGameLibrary.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C9AA4D71973046A00089207 /* libMobClickGameLibrary.a */; };
 		5C9AA4DD19730B6200089207 /* EJBindingAnalytic.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C9AA4DC19730B6200089207 /* EJBindingAnalytic.m */; };
+		5C9AA4DF19739F4700089207 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C9AA4DE19739F4600089207 /* libz.dylib */; };
 		B6074FF315F8E41700D987F9 /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6074FF215F8E41600D987F9 /* GameKit.framework */; };
 		B607AB67132EA6C300D7C3EA /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B607AB66132EA6C300D7C3EA /* OpenAL.framework */; };
 		B607AC33132EA75F00D7C3EA /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B607AC32132EA75F00D7C3EA /* AudioToolbox.framework */; };
@@ -225,6 +226,7 @@
 		5C9AA4D91973046A00089207 /* MobClickGameAnalytics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MobClickGameAnalytics.h; sourceTree = "<group>"; };
 		5C9AA4DB19730B6200089207 /* EJBindingAnalytic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingAnalytic.h; sourceTree = "<group>"; };
 		5C9AA4DC19730B6200089207 /* EJBindingAnalytic.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingAnalytic.m; sourceTree = "<group>"; };
+		5C9AA4DE19739F4600089207 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		5CA090F019214AE500E16E8E /* GADModules.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GADModules.h; sourceTree = "<group>"; };
 		5CA090F119214B2900E16E8E /* GADInAppPurchase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GADInAppPurchase.h; sourceTree = "<group>"; };
 		5CA090F219214B2900E16E8E /* GADInAppPurchaseDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GADInAppPurchaseDelegate.h; sourceTree = "<group>"; };
@@ -405,6 +407,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5C9AA4DF19739F4700089207 /* libz.dylib in Frameworks */,
 				5C91E5B118E1C4A800FCF013 /* CoreTelephony.framework in Frameworks */,
 				5C91E5B018E1C47F00FCF013 /* AdSupport.framework in Frameworks */,
 				5C91E5AE18E1C45700FCF013 /* MessageUI.framework in Frameworks */,
@@ -480,6 +483,7 @@
 				B6CDA15F18295A5F00190074 /* libc++.dylib */,
 				B66F1E771476B3AC0090D208 /* libicucore.dylib */,
 				B66F1E7F1476B6A40090D208 /* libstdc++.dylib */,
+				5C9AA4DE19739F4600089207 /* libz.dylib */,
 				B60FA9291702297C00078D20 /* MediaPlayer.framework */,
 				5C91E5AD18E1C45700FCF013 /* MessageUI.framework */,
 				33BE9DE31868183900E0D16E /* MobileCoreServices.framework */,
