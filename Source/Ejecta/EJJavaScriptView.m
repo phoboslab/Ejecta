@@ -152,21 +152,24 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 - (void)setPauseOnEnterBackground:(BOOL)pauses {
 	NSArray *pauseN = @[
 		UIApplicationWillResignActiveNotification,
-		UIApplicationDidEnterBackgroundNotification,
-		UIApplicationWillTerminateNotification
+		UIApplicationDidEnterBackgroundNotification
 	];
 	NSArray *resumeN = @[
 		UIApplicationWillEnterForegroundNotification,
 		UIApplicationDidBecomeActiveNotification
 	];
-	
+	NSArray *unloadN = @[
+		UIApplicationWillTerminateNotification
+	];
 	if (pauses) {
 		[self observeKeyPaths:pauseN selector:@selector(pause)];
 		[self observeKeyPaths:resumeN selector:@selector(resume)];
-	} 
+		[self observeKeyPaths:unloadN selector:@selector(unload)];
+	}
 	else {
 		[self removeObserverForKeyPaths:pauseN];
 		[self removeObserverForKeyPaths:resumeN];
+		[self removeObserverForKeyPaths:unloadN];
 	}
 	pauseOnEnterBackground = pauses;
 }
@@ -367,6 +370,10 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 	[EAGLContext setCurrentContext:glCurrentContext];
 	[displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 	isPaused = false;
+}
+
+- (void)unload {
+	[windowEventsDelegate unload];
 }
 
 - (void)clearCaches {

@@ -4,17 +4,17 @@
 
 @implementation EJBindingAnalytic
 
-// 53c2d35b56240b85bd0c9d9a
 
 - (id)initWithContext:(JSContextRef)ctx argc:(size_t)argc argv:(const JSValueRef[])argv {
 	if (self = [super initWithContext:ctx argc:argc argv:argv]) {
 		logEnabled = false;
 		crashReportEnabled = true;
-
+		appVersion = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
 		if (argc > 0) {
 			appKey = [JSValueToNSString(ctx, argv[0]) retain];
 			[MobClick startWithAppkey:appKey];
-//			[MobClick startSession:nil];
+			[MobClick startSession:nil];
+			[MobClick setAppVersion:appVersion];
 		}
 		else {
 			NSLog(@"Error: Must set appKey");
