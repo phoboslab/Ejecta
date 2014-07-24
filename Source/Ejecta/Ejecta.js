@@ -89,7 +89,7 @@ window.require = function( name ) {
 	if( !loadedModules[id] ) {
 		var exports = {};
 		var module = { id: id, uri: id + '.js', exports: exports };
-		ejecta.requireModule( id, module, exports );
+		window.ejecta.requireModule( id, module, exports );
 		// Some modules override module.exports, so use the module.exports reference only after loading the module
 		loadedModules[id] = module.exports;
 	}
@@ -140,7 +140,7 @@ window.location = { href: 'index' };
 
 // Set up a "fake" HTMLElement
 HTMLElement = function( tagName ){
-	this.tagName = tagName;
+	this.tagName = tagName.toUpperCase();
 	this.children = [];
 	this.style = {};
 };
@@ -149,11 +149,14 @@ HTMLElement.prototype.appendChild = function( element ) {
 	this.children.push( element );
 
 	// If the child is a script element, begin to load it
-	if( element.tagName == 'script' ) {
+	if( element.tagName.toLowerCase() == 'script' ) {
 		ej.setTimeout( function(){
 			ej.include( element.src );
 			if( element.onload ) {
-				element.onload();
+				element.onload({
+					type: 'load',
+					currentTarget: element
+				});
 			}
 		}, 1);
 	}
@@ -176,6 +179,25 @@ HTMLElement.prototype.getBoundingClientRect = function() {
 	return {top: 0, left: 0, width: window.innerWidth, height: window.innerHeight};
 };
 
+HTMLElement.prototype.setAttribute = function(attr, value){
+	this[attr] = value;
+};
+
+HTMLElement.prototype.getAttribute = function(attr){
+	return this[attr];
+};
+
+HTMLElement.prototype.addEventListener = function(event, method){
+	if (event === 'load') {
+		this.onload = method;
+	}
+};
+
+HTMLElement.prototype.removeEventListener = function(event, method){
+	if (event === 'load') {
+		this.onload = undefined;
+	}
+};
 
 // The document object
 window.document = {
@@ -220,13 +242,26 @@ window.document = {
 	},
 
 	getElementsByTagName: function( tagName ) {
+		var elements = [], children, i;
+
+		tagName = tagName.toLowerCase();
+
 		if( tagName === 'head' ) {
-			return [document.head];
+			elements.push(document.head);
 		}
 		else if( tagName === 'body' ) {
-			return [document.body];
+			elements.push(document.body);
 		}
-		return [];
+		else {
+			children = document.body.children;
+			for (i = 0; i < children.length; i++) {
+				if (children[i].tagName.toLowerCase() === tagName) {
+					elements.push(children[i]);
+				}
+			}
+			children = undefined;
+		}
+		return elements;
 	},
 
 	createEvent: function (type) { 
@@ -301,7 +336,7 @@ window.ontouchstart = window.ontouchend = window.ontouchmove = null;
 var touchInput = null;
 var touchEvent = {
 	type: 'touchstart',
-	target: canvas,
+	target: window.canvas,
 	touches: null,
 	targetTouches: null,
 	changedTouches: null,
@@ -333,7 +368,7 @@ eventInit.touchstart = eventInit.touchend = eventInit.touchmove = function() {
 var deviceMotion = null;
 var deviceMotionEvent = {
 	type: 'devicemotion',
-	target: canvas,
+	target: window.canvas,
 	interval: 16,
 	acceleration: {x: 0, y: 0, z: 0},
 	accelerationIncludingGravity: {x: 0, y: 0, z: 0},
@@ -344,7 +379,7 @@ var deviceMotionEvent = {
 
 var deviceOrientationEvent = {
 	type: 'deviceorientation',
-	target: canvas,
+	target: window.canvas,
 	alpha: null,
 	beta: null,
 	gamma: null,
