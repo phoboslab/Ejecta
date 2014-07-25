@@ -46,9 +46,12 @@ window.canvas.type = 'canvas';
 
 // The console object
 window.console = {
-	log: function() {
-		var args = Array.prototype.join.call(arguments, ', ');
-		ej.log( args );
+	_log: function(level, args) {
+		var txt = level + ':';
+		for (var i = 0; i < args.length; i++) {
+			txt += ' ' + (typeof args[i] === 'string' ? args[i] : JSON.stringify(args[i]));
+		}
+		ej.log( txt );
 	},
 	
 	assert: function() {
@@ -59,12 +62,12 @@ window.console = {
 		}
 	}
 };
-window.console.debug =
-	window.console.info =
-	window.console.warn =
-	window.console.error =
-	window.console.log;
-	
+window.console.debug = function () { window.console._log('DEBUG', arguments); };
+window.console.info =  function () { window.console._log('INFO', arguments); };
+window.console.warn =  function () { window.console._log('WARN', arguments); };
+window.console.error = function () { window.console._log('ERROR', arguments); };
+window.console.log =   function () { window.console._log('LOG', arguments); };
+
 var consoleTimers = {};
 console.time = function(name) {
 	consoleTimers[name] = ej.performanceNow();
