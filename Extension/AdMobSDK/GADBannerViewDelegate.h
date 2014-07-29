@@ -1,6 +1,6 @@
 //
 //  GADBannerViewDelegate.h
-//  Google AdMob Ads SDK
+//  Google Mobile Ads SDK
 //
 //  Copyright 2011 Google Inc. All rights reserved.
 //

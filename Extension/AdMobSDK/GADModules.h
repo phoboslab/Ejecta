@@ -1,3 +1,10 @@
+//
+//  GADModules.h
+//  Google Mobile Ads SDK
+//
+//  Copyright 2014 Google Inc. All rights reserved.
+//
+
 // If your target uses modules, importing this file will automatically link the frameworks used by
 // the Google Mobile Ads library.
 

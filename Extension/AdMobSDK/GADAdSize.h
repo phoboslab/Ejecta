@@ -1,6 +1,6 @@
 //
 //  GADAdSize.h
-//  Google Ads iOS SDK
+//  Google Mobile Ads SDK
 //
 //  Copyright 2012 Google Inc. All rights reserved.
 //
@@ -9,6 +9,7 @@
 //  GADAdSizeFullWidthPortraitWithHeight, GADAdSizeFullWidthLandscapeWithHeight.
 //
 
+#import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
 #import "GADModules.h"
