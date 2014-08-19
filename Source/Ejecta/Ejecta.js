@@ -152,7 +152,7 @@ HTMLElement.prototype.appendChild = function( element ) {
 	this.children.push( element );
 	
 	// If the child is a script element, begin to load it
-	if( element.tagName.toLowerCase() == 'script' ) {
+	if( element.tagName && element.tagName.toLowerCase() == 'script' ) {
 		ej.setTimeout( function(){
 			ej.include( element.src );
 			if( element.onload ) {
