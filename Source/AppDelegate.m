@@ -20,6 +20,7 @@
 
 - (void)loadViewControllerWithScriptAtPath:(NSString *)path {
 	// Release any previous ViewController
+	window.frame = UIScreen.mainScreen.bounds;
 	window.rootViewController = nil;
 	
 	EJAppViewController *vc = [[EJAppViewController alloc] initWithScriptAtPath:path];
