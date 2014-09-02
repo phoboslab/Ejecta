@@ -26,7 +26,7 @@ typedef NS_ENUM(NSInteger, GADGender) {
 @interface GADRequest : NSObject<NSCopying>
 
 /// Creates an autoreleased GADRequest.
-+ (GADRequest *)request;
++ (instancetype)request;
 
 #pragma mark Additional Parameters For Ad Networks
 
