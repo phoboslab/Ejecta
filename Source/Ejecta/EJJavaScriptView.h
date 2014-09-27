@@ -17,6 +17,9 @@
 
 #define EJECTA_BOOT_JS @"../Ejecta.js"
 
+#define EJECTA_SYSTEM_VERSION_LESS_THAN(v) \
+	([UIDevice.currentDevice.systemVersion compare:v options:NSNumericSearch] == NSOrderedAscending)
+
 
 @protocol EJTouchDelegate
 - (void)triggerEvent:(NSString *)name all:(NSSet *)all changed:(NSSet *)changed remaining:(NSSet *)remaining;
