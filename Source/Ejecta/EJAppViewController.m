@@ -26,13 +26,13 @@
 
 - (void)loadView {
 	CGRect frame = UIScreen.mainScreen.bounds;
+
+	// iOS pre 8.0 doesn't rotate the frame size in landscape mode, so we have to
+	// do it ourselfs
+	if( landscapeMode && EJECTA_SYSTEM_VERSION_LESS_THAN(@"8.0") ) {
+		frame.size = CGSizeMake(frame.size.height, frame.size.width);
+	}
 	
-	// iOS pre 8.0 doesn't rotate the frame size)
-	#if !defined(__IPHONE_8_0) || __IPHONE_OS_VERSION_MAX_ALLOWED < __IPHONE_8_0
-		if( landscapeMode ) {
-			frame.size = CGSizeMake(frame.size.height, frame.size.width);
-		}
-	#endif
 	EJJavaScriptView *view = [[EJJavaScriptView alloc] initWithFrame:frame];
 	self.view = view;
 	
