@@ -22,6 +22,7 @@
 
 - (void)didReceiveMemoryWarning {
 	[(EJJavaScriptView *)self.view clearCaches];
+	[super didReceiveMemoryWarning];
 }
 
 - (void)loadView {
