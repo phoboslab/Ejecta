@@ -14,6 +14,9 @@
 - (id)initWithContext:(JSContextRef)ctx argc:(size_t)argc argv:(const JSValueRef [])argv {
 	if( self = [super initWithContext:ctx argc:argc argv:argv] ) {
 		baseTime = [NSDate timeIntervalSinceReferenceDate];
+        animationCallbackBuffer = 0;
+        for (int i = 0; i < 2; ++i)
+            animationCallbacks[i] = [[NSPointerArray alloc] initWithOptions:(NSPointerFunctionsOpaqueMemory | NSPointerFunctionsObjectPointerPersonality)];
 	}
 	return self;
 }
@@ -41,6 +44,20 @@
 - (void)dealloc {
 	[urlToOpen release];
 	JSValueUnprotectSafe(scriptView.jsGlobalContext, getTextCallback);
+    for (int i = 0; i < 2; ++i)
+    {
+        NSPointerArray *callbackBuffer = animationCallbacks[i];
+        for (int j = 0, n = callbackBuffer.count; j < n; ++j)
+        {
+            JSObjectRef object = [callbackBuffer pointerAtIndex:j];
+            if (object)
+            {
+                JSValueUnprotectSafe(scriptView.jsGlobalContext, object);
+            }
+        }
+        [callbackBuffer setCount:0];
+        [callbackBuffer release];
+    }
 	[super dealloc];
 }
 
@@ -151,6 +168,61 @@ EJ_BIND_FUNCTION(getText, ctx, argc, argv) {
 	}
 }
 
+EJ_BIND_FUNCTION(requestAnimationFrame, ctx, argc, argv) {
+    if (!displayLink)
+    {
+        displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(displayLinkUpdate:)];
+        [displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+    }
+    
+    NSPointerArray *callbackBuffer = animationCallbacks[animationCallbackBuffer];
+    JSObjectRef callback = JSValueToObject(ctx, argv[0], NULL);
+    JSValueProtect(ctx, callback);
+    [callbackBuffer addPointer:callback];
+    
+    return JSValueMakeNumber(ctx, callbackBuffer.count);
+}
+
+EJ_BIND_FUNCTION(cancelAnimationFrame, ctx, argc, argv) {
+    NSUInteger bufferIndex = runningDisplayLinkUpdate ? (animationCallbackBuffer + 1) % 2 : animationCallbackBuffer;
+    NSPointerArray *callbackBuffer = animationCallbacks[bufferIndex];
+    NSUInteger objectIndex = (NSUInteger)(JSValueToNumberFast(ctx, argv[0]) - 1);
+    JSObjectRef callback = [callbackBuffer pointerAtIndex:objectIndex];
+    if (callback)
+    {
+        JSValueUnprotectSafe(scriptView.jsGlobalContext, callback);
+        [callbackBuffer replacePointerAtIndex:objectIndex withPointer:NULL];
+    }
+    return NULL;
+}
+
+-(void) displayLinkUpdate:(CADisplayLink*)dl
+{
+    runningDisplayLinkUpdate = YES;
+    NSPointerArray *callbackBuffer = animationCallbacks[animationCallbackBuffer];
+    animationCallbackBuffer = (animationCallbackBuffer + 1) % 2;
+    
+    JSValueRef timeParam[] = { JSValueMakeNumber(scriptView.jsGlobalContext, ([NSDate timeIntervalSinceReferenceDate] - baseTime) * 1000.0) };
+    
+    for (int j = 0, n = callbackBuffer.count; j < n; ++j)
+    {
+        JSObjectRef callback = [callbackBuffer pointerAtIndex:j];
+        if (callback)
+        {
+            [scriptView invokeCallback:callback thisObject:NULL argc:1 argv:timeParam];
+            JSValueUnprotectSafe(scriptView.jsGlobalContext, callback);
+        }
+    }
+    [callbackBuffer setCount:0];
+    
+    if (!animationCallbacks[animationCallbackBuffer].count)
+    {
+        [displayLink invalidate];
+        displayLink = nil;
+    }
+    
+    runningDisplayLinkUpdate = NO;
+}
 
 EJ_BIND_FUNCTION(setTimeout, ctx, argc, argv ) {
 	return [scriptView createTimer:ctx argc:argc argv:argv repeat:NO];

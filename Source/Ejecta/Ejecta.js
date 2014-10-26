@@ -107,10 +107,10 @@ window.setInterval = function(cb, t){ return ej.setInterval(cb, t||0); };
 window.clearTimeout = function(id){ return ej.clearTimeout(id); };
 window.clearInterval = function(id){ return ej.clearInterval(id); };
 window.requestAnimationFrame = function(cb, element){
-	return ej.setTimeout(function(){ cb(ej.performanceNow()); }, 16);
+	return ej.requestAnimationFrame(cb);
 };
 window.cancelAnimationFrame = function (id) {
-	return ej.clearTimeout(id);
+	return ej.cancelAnimationFrame(id);
 };
 
 
