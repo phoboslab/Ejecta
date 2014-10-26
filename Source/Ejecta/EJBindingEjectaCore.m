@@ -47,7 +47,7 @@
 EJ_BIND_FUNCTION(log, ctx, argc, argv ) {
 	if( argc < 1 ) return NULL;
     
-	NSLog( @"JS: %@", JSValueToNSString(ctx, argv[0]) );
+	NSLog( @"JS %@", JSValueToNSString(ctx, argv[0]) );
 	return NULL;
 }
 
