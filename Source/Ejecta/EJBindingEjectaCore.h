@@ -19,6 +19,11 @@ typedef enum {
 	NSString *deviceName;
 	EJCoreAudioSession audioSession;
 	NSTimeInterval baseTime;
+    
+    CADisplayLink *displayLink;
+    NSPointerArray *animationCallbacks[2];
+    NSUInteger animationCallbackBuffer;
+    BOOL runningDisplayLinkUpdate;
 }
 
 @property (readwrite, nonatomic) EJCoreAudioSession audioSession;
