@@ -31,9 +31,14 @@ typedef enum {
 	BOOL loading, playAfterLoad;
 	float volume;
 	NSOperation *loadCallback;
+    NSMutableArray *children;
 }
 
 - (void)load;
+- (void)appendChild:(NSDictionary*)element;
+- (void)insertBefore:(NSDictionary*)newElement oldElement:(JSObjectRef)oldElement;
+- (void)removeChild:(JSObjectRef)element;
+- (BOOL)canPlayType:(NSString*)mimeType;
 - (void)setSourcePath:(NSString *)pathp;
 
 @property (nonatomic) BOOL loop;

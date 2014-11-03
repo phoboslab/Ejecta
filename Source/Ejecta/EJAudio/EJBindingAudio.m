@@ -2,6 +2,9 @@
 #import "EJJavaScriptView.h"
 #import "EJNonRetainingProxy.h"
 
+NSString * const kEJBindingAudio_elementContext = @"context";
+NSString * const kEJBindingAudio_elementObject = @"object";
+
 @implementation EJBindingAudio
 
 @synthesize loop, ended, volume;
@@ -13,6 +16,7 @@
 		volume = 1;
 		paused = true;
 		preload = kEJAudioPreloadNone;
+        children = [[NSMutableArray alloc] init];
 		
 		if( argc > 0 ) {
 			[self setSourcePath:JSValueToNSString(ctx, argv[0])];
@@ -28,6 +32,13 @@
 	source.delegate = nil;
 	[source release];
 	[path release];
+    
+    for (NSDictionary *element in children)
+    {
+        JSValueUnprotectSafe([[element objectForKey:kEJBindingAudio_elementContext] pointerValue], [[element objectForKey:kEJBindingAudio_elementObject] pointerValue]);
+    }
+    [children release];
+    
 	[super dealloc];
 }
 
@@ -45,10 +56,34 @@
 }
 
 - (void)load {
-	if( source || !path || loading ) { return; }
+	if( source || (!path && !children.count) || loading ) { return; }
 	
 	// This will begin loading the sound in a background thread
 	loading = YES;
+    
+    if (!path)
+    {
+        /* find the first appropriate file to load based on the supported types */
+        JSStringRef type = JSStringCreateWithCFString((CFStringRef)@"type");
+        for (NSDictionary *element in children)
+        {
+            JSObjectRef child = [[element objectForKey:kEJBindingAudio_elementObject] pointerValue];
+            JSContextRef context = [[element objectForKey:kEJBindingAudio_elementContext] pointerValue];
+            JSValueRef mimeType = JSObjectGetProperty(context, child, type, NULL);
+            if ([self canPlayType:JSValueToNSString(context, mimeType)])
+            {
+                JSStringRef src = JSStringCreateWithCFString((CFStringRef)@"src");
+                JSValueRef srcValue = JSObjectGetProperty(context, child, src, NULL);
+                path = JSValueToNSString(context, srcValue);
+                [path retain];
+                JSStringRelease(src);
+                break;
+            }
+        }
+        JSStringRelease(type);
+    }
+    
+    if (!path) { return; }
 	
 	// Protect this Audio object from garbage collection, as its callback function
 	// may be the only thing holding on to it
@@ -65,6 +100,61 @@
 		
 	[scriptView.backgroundQueue addOperation:loadOp];
 	[loadOp release];
+}
+
+- (void)appendChild:(NSDictionary*)element
+{
+    JSValueProtect([[element objectForKey:kEJBindingAudio_elementContext] pointerValue], [[element objectForKey:kEJBindingAudio_elementObject] pointerValue]);
+    [children addObject:element];
+}
+
+- (void)insertBefore:(NSDictionary*)newElement oldElement:(JSObjectRef)oldElement
+{
+    int i;
+    for (i = 0; i < children.count; ++i)
+    {
+        JSObjectRef element = [[children[i] objectForKey:kEJBindingAudio_elementObject] pointerValue];
+        JSContextRef context = [[children[i] objectForKey:kEJBindingAudio_elementContext] pointerValue];
+        if (JSValueIsEqual(context, element, oldElement, NULL))
+        {
+            break;
+        }
+    }
+    
+    JSValueProtect([[newElement objectForKey:kEJBindingAudio_elementContext] pointerValue], [[newElement objectForKey:kEJBindingAudio_elementObject] pointerValue]);
+    if (i < children.count)
+    {
+        [children insertObject:newElement atIndex:i];
+    }
+    else
+    {
+        [children addObject:newElement];
+    }
+}
+
+- (void)removeChild:(JSObjectRef)element
+{
+    for (int i = 0; i < children.count; ++i)
+    {
+        JSObjectRef tester = [[children[i] objectForKey:kEJBindingAudio_elementObject] pointerValue];
+        JSContextRef context = [[children[i] objectForKey:kEJBindingAudio_elementContext] pointerValue];
+        if (JSValueIsEqual(context, element, tester, NULL))
+        {
+            JSValueUnprotectSafe(context, element);
+            [children removeObjectAtIndex:i];
+            break;
+        }
+    }
+}
+
+- (BOOL)canPlayType:(NSString*)mimeType
+{
+    return (
+            [mimeType hasPrefix:@"audio/x-caf"] ||
+            [mimeType hasPrefix:@"audio/mpeg"]  ||
+            [mimeType hasPrefix:@"audio/mp4"]   ||
+            [mimeType hasPrefix:@"audio/wav"]
+            );
 }
 
 - (void)prepareGarbageCollection {
@@ -153,15 +243,11 @@ EJ_BIND_FUNCTION(load, ctx, argc, argv) {
 EJ_BIND_FUNCTION(canPlayType, ctx, argc, argv) {
 	if( argc != 1 ) return NSStringToJSValue(ctx, @"");
 	
-	NSString *mime = JSValueToNSString(ctx, argv[0]);
-	if( 
-		[mime hasPrefix:@"audio/x-caf"] ||
-		[mime hasPrefix:@"audio/mpeg"] ||
-		[mime hasPrefix:@"audio/mp4"]
-	) {
+	if([self canPlayType:JSValueToNSString(ctx, argv[0])])
+    {
 		return NSStringToJSValue(ctx, @"probably");
 	}
-	return NSStringToJSValue(ctx, @"");
+	return NSStringToJSValue(ctx, @"maybe");
 }
 
 EJ_BIND_FUNCTION(cloneNode, ctx, argc, argv) {
@@ -181,6 +267,30 @@ EJ_BIND_FUNCTION(cloneNode, ctx, argc, argv) {
 	
 	[audio release];
 	return clone;
+}
+
+EJ_BIND_FUNCTION(appendChild, ctx, argc, argv)
+{
+    if( argc != 1 ) return NULL;
+    [self appendChild:@{kEJBindingAudio_elementContext  : [NSValue valueWithPointer:ctx],
+                        kEJBindingAudio_elementObject   : [NSValue valueWithPointer:argv[0]] }];
+    return NULL;
+}
+
+EJ_BIND_FUNCTION(insertBefore, ctx, argc, argv)
+{
+    if( argc != 2 ) return NULL;
+    [self insertBefore:@{   kEJBindingAudio_elementContext  : [NSValue valueWithPointer:ctx],
+                            kEJBindingAudio_elementObject   : [NSValue valueWithPointer:argv[0]] }
+            oldElement:JSValueToObject(ctx, argv[1], NULL)];
+    return NULL;
+}
+
+EJ_BIND_FUNCTION(removeChild, ctx, argc, argv)
+{
+    if( argc != 1 ) return NULL;
+    [self removeChild:JSValueToObject(ctx, argv[0], NULL)];
+    return NULL;
 }
 
 EJ_BIND_GET(duration, ctx) {
