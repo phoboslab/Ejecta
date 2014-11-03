@@ -55,7 +55,7 @@
 	
 	[textures release];
 	
-	for( NSValue *v in extensions ) { JSValueUnprotectSafe(scriptView.jsGlobalContext, v.pointerValue); }
+	for( NSValue *v in extensions.allValues ) { JSValueUnprotectSafe(scriptView.jsGlobalContext, v.pointerValue); }
 	[extensions release];
     
 	for( NSNumber *n in vertexArrays ) { GLuint array = n.intValue; glDeleteVertexArraysOES(1, &array); }
