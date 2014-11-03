@@ -16,6 +16,7 @@ enum {
 }
 
 - (id)initWithVertexShader:(NSString *)vertexShaderFile fragmentShader:(NSString *)fragmentShaderFile;
+- (id)initWithVertexShaderSource:(NSString *)vertexShaderSource fragmentShaderSource:(NSString *)fragmentShaderSource;
 - (void)bindAttributeLocations;
 - (void)getUniforms;
 
