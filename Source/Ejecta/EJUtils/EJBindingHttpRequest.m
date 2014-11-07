@@ -280,7 +280,7 @@ EJ_BIND_GET(readyState, ctx) {
 }
 
 EJ_BIND_GET(response, ctx) {
-	if( !response || !responseBody ) { return NULL; }
+	if( !response || !responseBody ) { return JSValueMakeNull(ctx); }
 	
 	if( type == kEJHttpRequestTypeArrayBuffer ) {
 		JSObjectRef array = JSTypedArrayMake(ctx, kJSTypedArrayTypeArrayBuffer, responseBody.length);
@@ -305,7 +305,7 @@ EJ_BIND_GET(response, ctx) {
 
 EJ_BIND_GET(responseText, ctx) {
 	NSString *responseText = [self getResponseText];	
-	return responseText ? NSStringToJSValue( ctx, responseText ) : NULL;
+	return responseText ? NSStringToJSValue( ctx, responseText ) : JSValueMakeNull(ctx);
 }
 
 EJ_BIND_GET(status, ctx) {
