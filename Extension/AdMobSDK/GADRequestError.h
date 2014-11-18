@@ -55,7 +55,10 @@ typedef NS_ENUM(NSInteger, GADErrorCode) {
   kGADErrorInternalError,
 
   /// Invalid argument error.
-  kGADErrorInvalidArgument
+  kGADErrorInvalidArgument,
+
+  /// Received invalid response.
+  kGADErrorReceivedInvalidResponse
 };
 
 /// Represents the error generated due to invalid request parameters.
