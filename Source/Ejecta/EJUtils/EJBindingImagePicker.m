@@ -90,7 +90,7 @@ EJ_BIND_FUNCTION(getPicture, ctx, argc, argv) {
 			animated:YES];
 	}
 	else {
-		[scriptView.window.rootViewController presentModalViewController:picker animated:YES];
+		[scriptView.window.rootViewController presentViewController:picker animated:YES completion:nil];
 	}
 	
     return NULL;
