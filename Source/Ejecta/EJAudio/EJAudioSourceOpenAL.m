@@ -56,6 +56,10 @@
 	alSourcef( sourceId, AL_GAIN, volume );
 }
 
+- (void)setPlaybackRate:(float)playbackRate {
+	alSourcef( sourceId, AL_PITCH, playbackRate);
+}
+
 - (float)currentTime {
 	float time;
 	alGetSourcef( sourceId, AL_SEC_OFFSET, &time );
