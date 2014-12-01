@@ -677,18 +677,59 @@ const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
 - (void)strokeRectX:(float)x y:(float)y w:(float)w h:(float)h {
 	// strokeRect should not affect the current path, so we create
 	// a new, tempPath instead.
-	EJPath *tempPath = [[EJPath alloc] init];
-	tempPath.transform = state->transform;
-	
-	[tempPath moveToX:x y:y];
-	[tempPath lineToX:x+w y:y];
-	[tempPath lineToX:x+w y:y+h];
-	[tempPath lineToX:x y:y+h];
-	[tempPath close];
-	
-	[self setProgram:sharedGLContext.glProgram2DFlat];
-	[tempPath drawLinesToContext:self];
-	[tempPath release];
+    
+    // We have a stroke object (ie. pattern of gradient); more complicated
+    if (_strokeObject) {
+        
+        // We swap out the fill object for our stroke object (temporarily)
+        NSObject<EJFillable> *oldFillObject = self.fillObject;
+        self.fillObject = _strokeObject;
+
+        float lw2 = state->lineWidth / 2.0f;
+        
+        // Create our "stroke" polygon...
+        EJPath *tempPath = [[EJPath alloc] init];
+        tempPath.transform = state->transform;
+        
+        // Create a rectangle half-line-width larger
+        [tempPath moveToX:x-lw2 y:y-lw2];
+        [tempPath lineToX:x+w+lw2 y:y-lw2];
+        [tempPath lineToX:x+w+lw2 y:y+h+lw2];
+        [tempPath lineToX:x-lw2 y:y+h+lw2];
+        [tempPath close];
+        
+        // Subtract (via EvenOdd) a rectangle half-line-width smaller
+        [tempPath moveToX:x+lw2 y:y+lw2];
+        [tempPath lineToX:x+w-lw2 y:y+lw2];
+        [tempPath lineToX:x+w-lw2 y:y+h-lw2];
+        [tempPath lineToX:x+lw2 y:y+h-lw2];
+        [tempPath close];
+
+        // Draw it
+        [self setProgram:sharedGLContext.glProgram2DFlat];
+        [tempPath drawPolygonsToContext:self fillRule:kEJPathFillRuleEvenOdd target:kEJPathPolygonTargetColor];
+        [tempPath release];
+        
+        // Reset the fill object
+        self.fillObject = oldFillObject;
+
+    } else {
+
+        // Do a normal stroke
+    
+        EJPath *tempPath = [[EJPath alloc] init];
+        tempPath.transform = state->transform;
+        
+        [tempPath moveToX:x y:y];
+        [tempPath lineToX:x+w y:y];
+        [tempPath lineToX:x+w y:y+h];
+        [tempPath lineToX:x y:y+h];
+        [tempPath close];
+        
+        [self setProgram:sharedGLContext.glProgram2DFlat];
+        [tempPath drawLinesToContext:self];
+        [tempPath release];
+    }
 }
 
 - (void)clearRectX:(float)x y:(float)y w:(float)w h:(float)h {
