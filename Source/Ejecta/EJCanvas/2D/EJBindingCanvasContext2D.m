@@ -142,7 +142,6 @@ EJ_BIND_SET(strokeStyle, ctx, value) {
         else if( (fillable = [EJBindingCanvasGradient gradientFromJSValue:value]) ) {
             renderingContext.strokeObject = fillable;
         }
-        NSLog(@"Gradient: %@", renderingContext.strokeObject);
     }
     else {
         // Should be a color string
