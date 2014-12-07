@@ -7,6 +7,7 @@
 #define EJ_PATH_MIN_STEPS_FOR_CIRCLE 20.0f
 #define EJ_PATH_MAX_STEPS_FOR_CIRCLE 64.0f
 
+
 typedef enum {
 	kEJPathPolygonTargetColor,
 	kEJPathPolygonTargetDepth
