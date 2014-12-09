@@ -315,6 +315,15 @@ EJ_BIND_SET(volume, ctx, value) {
 	[source setVolume:(muted ? 0.0 : volume)];
 }
 
+EJ_BIND_GET(playbackRate, ctx) {
+	return JSValueMakeNumber( ctx, playbackRate );
+}
+
+EJ_BIND_SET(playbackRate, ctx, value) {
+	playbackRate = MIN(2,MAX(JSValueToNumberFast(ctx, value),0.5));
+	[source setPlaybackRate:playbackRate];
+}
+
 EJ_BIND_GET(currentTime, ctx) {
 	return JSValueMakeNumber( ctx, source ? source.currentTime : 0 );
 }

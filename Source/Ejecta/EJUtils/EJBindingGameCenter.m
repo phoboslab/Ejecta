@@ -25,13 +25,8 @@
 	}];
 }
 
-- (void)leaderboardViewControllerDidFinish:(GKLeaderboardViewController *)viewController {
-	[viewController.presentingViewController dismissModalViewControllerAnimated:YES];
-	viewIsActive = false;
-}
-
-- (void)achievementViewControllerDidFinish:(GKAchievementViewController *)viewController {
-	[viewController.presentingViewController dismissModalViewControllerAnimated:YES];
+- (void)gameCenterViewControllerDidFinish:(GKGameCenterViewController *)viewController {
+	[viewController.presentingViewController dismissViewControllerAnimated:YES completion:nil];
 	viewIsActive = false;
 }
 
@@ -43,7 +38,7 @@ EJ_BIND_FUNCTION( authenticate, ctx, argc, argv ) {
 		JSValueProtect(ctx, callback);
 	}
 	
-	[[GKLocalPlayer localPlayer] authenticateWithCompletionHandler:^(NSError *error) {
+	GKLocalPlayer.localPlayer.authenticateHandler = ^(UIViewController *viewController, NSError *error) {
 		authed = !error;
 
 		if( authed ) {
@@ -69,7 +64,7 @@ EJ_BIND_FUNCTION( authenticate, ctx, argc, argv ) {
 			// Make sure this callback is only called once
 			callback = NULL;
 		}
-	}];
+	};
 	return NULL;
 }
 
@@ -108,19 +103,16 @@ EJ_BIND_FUNCTION( reportScore, ctx, argc, argv ) {
 		JSValueProtect(ctx, callback);
 	}
 	
-	GKScore *scoreReporter = [[[GKScore alloc] initWithCategory:category] autorelease];
-	if( scoreReporter ) {
-		scoreReporter.value = score;
-
-		[scoreReporter reportScoreWithCompletionHandler:^(NSError *error) {
-			if( callback ) {
-				JSContextRef gctx = scriptView.jsGlobalContext;
-				JSValueRef params[] = { JSValueMakeBoolean(gctx, error) };
-				[scriptView invokeCallback:callback thisObject:NULL argc:1 argv:params];
-				JSValueUnprotectSafe(gctx, callback);
-			}
-		}];
-	}
+	GKScore *s = [[[GKScore alloc] initWithLeaderboardIdentifier:category] autorelease];
+	s.value = score;
+	[GKScore reportScores:@[s] withCompletionHandler:^(NSError *error) {
+		if( callback ) {
+			JSContextRef gctx = scriptView.jsGlobalContext;
+			JSValueRef params[] = { JSValueMakeBoolean(gctx, error) };
+			[scriptView invokeCallback:callback thisObject:NULL argc:1 argv:params];
+			JSValueUnprotectSafe(gctx, callback);
+		}
+	}];
 	
 	return NULL;
 }
@@ -130,14 +122,12 @@ EJ_BIND_FUNCTION( showLeaderboard, ctx, argc, argv ) {
 	if( argc < 1 || viewIsActive ) { return NULL; }
 	if( !authed ) { NSLog(@"GameKit Error: Not authed. Can't show leaderboard."); return NULL; }
 	
-	GKLeaderboardViewController *leaderboard = [[[GKLeaderboardViewController alloc] init] autorelease];
-	if( leaderboard ) {
-		viewIsActive = true;
-		leaderboard.leaderboardDelegate = self;
-		leaderboard.category = JSValueToNSString(ctx, argv[0]);
-		
-		[scriptView.window.rootViewController presentModalViewController:leaderboard animated:YES];
-	}
+	GKGameCenterViewController* vc = [[GKGameCenterViewController alloc] init];
+    vc.viewState = GKGameCenterViewControllerStateLeaderboards;
+	vc.leaderboardIdentifier = JSValueToNSString(ctx, argv[0]);
+    vc.gameCenterDelegate = self;
+    [scriptView.window.rootViewController presentViewController:vc animated:YES completion:nil];
+	viewIsActive = true;
 	
 	return NULL;
 }
@@ -173,7 +163,7 @@ EJ_BIND_FUNCTION( showLeaderboard, ctx, argc, argv ) {
 		JSValueProtect(ctx, callback);
 	}
 	
-	[achievement reportAchievementWithCompletionHandler:^(NSError *error) {
+	[GKAchievement reportAchievements:@[achievement] withCompletionHandler:^(NSError *error) {
 		achievements[identifier] = achievement;
 		
 		if( callback ) {
@@ -222,12 +212,12 @@ EJ_BIND_FUNCTION( showAchievements, ctx, argc, argv ) {
 	if( viewIsActive ) { return NULL; }
 	if( !authed ) { NSLog(@"GameKit Error: Not authed. Can't show achievements."); return NULL; }
 	
-	GKAchievementViewController *achievementView = [[[GKAchievementViewController alloc] init] autorelease];
-	if( achievementView ) {
-		viewIsActive = true;
-		achievementView.achievementDelegate = self;
-		[scriptView.window.rootViewController presentModalViewController:achievementView animated:YES];
-	}
+	GKGameCenterViewController* vc = [[GKGameCenterViewController alloc] init];
+    vc.viewState = GKGameCenterViewControllerStateAchievements;
+    vc.gameCenterDelegate = self;
+    [scriptView.window.rootViewController presentViewController:vc animated:YES completion:nil];
+	viewIsActive = true;
+	
 	return NULL;
 }
 
@@ -256,7 +246,6 @@ EJ_BIND_GET(authed, ctx) {
 		@"alias": player.alias, \
 		@"displayName": player.displayName, \
 		@"playerID": player.playerID, \
-		@"isFriend": @(player.isFriend) \
 	}
 
 // loadFriends( callback(error, players[]){} )
@@ -268,7 +257,7 @@ EJ_BIND_FUNCTION( loadFriends, ctx, argc, argv ) {
 	JSValueProtect(ctx, callback);
 
 	GKLocalPlayer *player = [GKLocalPlayer localPlayer];
-	[player loadFriendsWithCompletionHandler:^(NSArray *friendIds, NSError *error) {
+	[player loadFriendPlayersWithCompletionHandler:^(NSArray *friendIds, NSError *error) {
 		ExitWithCallbackOnError(callback, error);
 		
 		[GKPlayer loadPlayersForIdentifiers:friendIds withCompletionHandler:^(NSArray *players, NSError *error) {
@@ -330,38 +319,27 @@ EJ_BIND_FUNCTION( loadScores, ctx, argc, argv ) {
 	GKLeaderboard *request = [[GKLeaderboard alloc] init];
 	request.playerScope = GKLeaderboardPlayerScopeGlobal;
 	request.timeScope = GKLeaderboardTimeScopeAllTime;
-	request.category = category;
+	request.identifier = category;
 	request.range = NSMakeRange(start, end);
 	
 	[request loadScoresWithCompletionHandler: ^(NSArray *scores, NSError *error) {
 		ExitWithCallbackOnError(callback, error);
 		
-		NSArray *playerIds = [scores valueForKey:@"playerID"];
-		[GKPlayer loadPlayersForIdentifiers:playerIds withCompletionHandler:^(NSArray *players, NSError *error) {
-			ExitWithCallbackOnError(callback, error);
-			
-			// Create a Dict to map playerID -> player
-			NSDictionary *playersDict = [NSDictionary dictionaryWithObjects:players
-				forKeys:[players valueForKey:@"playerID"]];
-			
-			// Build an Array of NSDictionaries for the scores and attach the loaded player
-			// info.
-			NSMutableArray *scoresArray = [NSMutableArray arrayWithCapacity:players.count];
-			
-			for( GKScore *score in scores ) {
-				GKPlayer *playerForScore = playersDict[score.playerID];
-				[scoresArray addObject: @{
-					@"category": score.category,
-					@"player": GKPlayerToNSDict(playerForScore),
-					@"date": score.date,
-					@"formattedValue": score.formattedValue,
-					@"value": @(score.value),
-					@"rank": @(score.rank)
-				}];
-			}
-			
-			InvokeAndUnprotectCallback(callback, error, scoresArray);
-		}];
+		// Build an Array of NSDictionaries for the scores and attach the loaded player
+		// info.
+		NSMutableArray *scoresArray = [NSMutableArray arrayWithCapacity:scores.count];
+		for( GKScore *score in scores ) {
+			[scoresArray addObject: @{
+				@"category": score.leaderboardIdentifier,
+				@"player": GKPlayerToNSDict(score.player),
+				@"date": score.date,
+				@"formattedValue": score.formattedValue,
+				@"value": @(score.value),
+				@"rank": @(score.rank)
+			}];
+		}
+		
+		InvokeAndUnprotectCallback(callback, error, scoresArray);
 	}];
 	return NULL;
 }
