@@ -51,16 +51,6 @@ EJ_BIND_GET(duration, ctx) {
 	return JSValueMakeNumber(ctx, player.duration);
 }
 
-EJ_BIND_GET(volume, ctx) {
-	return JSValueMakeNumber( ctx, [MPMusicPlayerController applicationMusicPlayer].volume );
-}
-
-EJ_BIND_SET(volume, ctx, value) {
-	// FIXME: doesn't work in newer iOS versions
-	float volume = MIN(1,MAX(JSValueToNumberFast(ctx, value),0));
-	[[MPMusicPlayerController applicationMusicPlayer] setVolume:volume];
-}
-
 EJ_BIND_GET(loop, ctx) {
 	return JSValueMakeBoolean( ctx, (player.repeatMode == MPMovieRepeatModeNone) );
 }

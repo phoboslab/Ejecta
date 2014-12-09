@@ -57,7 +57,7 @@
 	
 	CGRect frame = self.frame;
 	
-	float contentScale = (useRetinaResolution && [UIScreen mainScreen].scale == 2) ? 2 : 1;
+	float contentScale = useRetinaResolution ? UIScreen.mainScreen.scale : 1;
 	backingStoreRatio = (frame.size.width / (float)width) * contentScale;
 	
 	bufferWidth = frame.size.width * contentScale;
