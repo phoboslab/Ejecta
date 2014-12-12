@@ -3,6 +3,8 @@
 
 #include <vector>
 
+#include "clipper.hpp"
+
 // We're using the C++ std::vector here to store our points. Boxing and unboxing
 // so many EJVectors to NSValue types seemed wasteful.
 typedef std::vector<EJVector2> points_t;
@@ -519,6 +521,152 @@ typedef std::vector<subpath_t> path_t;
 
 - (void)drawLinesToContext:(EJCanvasContext2D *)context {
 	EJCanvasState *state = context.state;
+
+    if (context.strokeObject) {
+
+        // Store the current fill, as we will temporarily swap this for the stroke object (restored below)
+        NSObject<EJFillable> *oldFillObject = context.fillObject;
+        context.fillObject = context.strokeObject;
+
+        // The path that will represent the stroke we paint
+        EJPath *drawPath = [[EJPath alloc] init];
+
+        // How should lines join with one another?
+        ClipperLib::JoinType joinType = ClipperLib::jtSquare;
+        double miterLimit = state->miterLimit;
+        switch (state->lineJoin) {
+            case kEJLineJoinBevel:
+                joinType = ClipperLib::jtSquare;
+                break;
+            case kEJLineJoinMiter:
+                joinType = ClipperLib::jtMiter;
+                break;
+            case kEJLineJoinRound:
+                joinType = ClipperLib::jtRound;
+                break;
+            default:
+                NSLog(@"Warning: Unknown line join type: %d", state->lineJoin);
+        }
+        
+        // How should lines end?
+        ClipperLib::EndType endType = ClipperLib::etClosedPolygon;
+        switch (state->lineCap) {
+            case kEJLineCapButt:
+                endType = ClipperLib::etOpenButt;
+                break;
+            case kEJLineCapRound:
+                endType = ClipperLib::etOpenRound;
+                break;
+            case kEJLineCapSquare:
+                endType = ClipperLib::etOpenSquare;
+                break;
+            default:
+                NSLog(@"Warning: Unknown line cap type: %d", state->lineCap);
+        }
+        
+        path_t all_paths(paths);
+        all_paths.insert(all_paths.begin(), currentPath);
+
+        // For each subpath in this path...
+        for (path_t::iterator sp = all_paths.begin(); sp != all_paths.end(); sp++) {
+            subpath_t subpath = *sp;
+            
+            // Copy the subpath as the problem into ClipperLib to solve for
+            ClipperLib::Path probelm;
+            for (points_t::iterator pp = subpath.points.begin(); pp != subpath.points.end(); pp++) {
+                probelm.push_back(ClipperLib::IntPoint(pp->x * 100, pp->y * 100));
+            }
+
+            // The clipper offset solver
+            ClipperLib::ClipperOffset solver(miterLimit, 25.0f);
+
+            // For a closed path, we draw the path with an outer offset of (lineWidth/2) minus the path with an inner offset of (lineWidth/2)
+            if (subpath.isClosed) {
+                endType = ClipperLib::etClosedPolygon;
+                solver.AddPath(probelm, joinType, endType);
+
+                // The polygon that will represent the stroke
+                EJPath *drawPath = [[EJPath alloc] init];
+
+                // Add the enlarged outline polygon(s) into a path for rendering
+                ClipperLib::Paths outerPaths;
+                solver.Execute(outerPaths, 100 * state->lineWidth / 2);
+                for (ClipperLib::Paths::iterator op = outerPaths.begin(); op != outerPaths.end(); op++) {
+                    BOOL first = YES;
+                    ClipperLib::Path outerPath = *op;
+                    for (ClipperLib::Path::iterator p = outerPath.begin(); p != outerPath.end(); p++) {
+                        ClipperLib::IntPoint point = *p;
+                        if (first) {
+                            [drawPath moveToX:((float)point.X) / 100.0f y:((float)point.Y) / 100.0f];
+                            first = NO;
+                            continue;
+                        }
+                        [drawPath lineToX:((float)point.X) / 100.0f y:((float)point.Y) / 100.0f];
+                    }
+                }
+
+                // Subtract (evenOdd) the en-small-en-ed outline polygon(s) into the render path
+                ClipperLib::Paths innerPaths;
+                solver.Execute(innerPaths, -100 * (state->lineWidth) / 2);
+                for (ClipperLib::Paths::iterator ip = innerPaths.begin(); ip != innerPaths.end(); ip++) {
+                    BOOL first = YES;
+                    ClipperLib::Path innerPath = *ip;
+                    for (ClipperLib::Path::iterator p = innerPath.begin(); p != innerPath.end(); p++) {
+                        ClipperLib::IntPoint point = *p;
+                        if (first) {
+                            [drawPath moveToX:((float)point.X) / 100.0f y:((float)point.Y) / 100.0f];
+                            first = NO;
+                            continue;
+                        }
+                        [drawPath lineToX:((float)point.X) / 100.0f y:((float)point.Y) / 100.0f];
+                    }
+                }
+
+                [drawPath drawPolygonsToContext:context fillRule:kEJPathFillRuleEvenOdd target:kEJPathPolygonTargetColor];
+                [drawPath reset];
+
+            } else {
+                
+                // Add the open path
+                solver.AddPath(probelm, joinType, endType);
+
+                // Solve for the expanded polyline outline
+                ClipperLib::PolyTree outputs;
+                solver.Execute(outputs, 100 * state->lineWidth / 2);
+                
+                // Iterate over each polygon in the solution
+                ClipperLib::PolyNode *currentNode = outputs.GetFirst();
+                while (currentNode) {
+                    BOOL first = YES;
+
+                    for(ClipperLib::Path::iterator it = currentNode->Contour.begin(); it != currentNode->Contour.end(); it++) {
+                        ClipperLib::IntPoint point = *it;
+                        if (first) {
+                            [drawPath moveToX:((float)point.X) / 100.0f y:((float)point.Y) / 100.0f];
+                            first = NO;
+                            continue;
+                        }
+                        [drawPath lineToX:((float)point.X) / 100.0f y:((float)point.Y) / 100.0f];
+                    }
+                    
+                    [drawPath drawPolygonsToContext:context fillRule:kEJPathFillRuleEvenOdd target:kEJPathPolygonTargetColor];
+                    [drawPath reset];
+                    
+                    currentNode = currentNode->GetNext();
+                }
+            }
+        }
+
+        // Done with the drawing polygon object
+        [drawPath release];
+        
+        // Restore the fill original object
+        context.fillObject = oldFillObject;
+        
+        // Do not perform the default behaviour
+        return;
+    }
+    
 	GLubyte stencilMask;
 	
 	// Find the width of the line as it is projected onto the screen.

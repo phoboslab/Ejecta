@@ -114,6 +114,7 @@
 		B99F05C2188C4125002F194D /* Icon-60@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B99F05BE188C4125002F194D /* Icon-60@2x.png */; };
 		B99F05C3188C4125002F194D /* Icon-76.png in Resources */ = {isa = PBXBuildFile; fileRef = B99F05BF188C4125002F194D /* Icon-76.png */; };
 		B99F05C4188C4125002F194D /* Icon-76@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B99F05C0188C4125002F194D /* Icon-76@2x.png */; };
+		E23B28EC1A350F4A0052E87B /* clipper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E23B28EA1A350F4A0052E87B /* clipper.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -298,6 +299,8 @@
 		B99F05BE188C4125002F194D /* Icon-60@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-60@2x.png"; sourceTree = "<group>"; };
 		B99F05BF188C4125002F194D /* Icon-76.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-76.png"; sourceTree = "<group>"; };
 		B99F05C0188C4125002F194D /* Icon-76@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-76@2x.png"; sourceTree = "<group>"; };
+		E23B28EA1A350F4A0052E87B /* clipper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = clipper.cpp; path = ClipperLib/clipper.cpp; sourceTree = "<group>"; };
+		E23B28EB1A350F4A0052E87B /* clipper.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = clipper.hpp; path = ClipperLib/clipper.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -530,6 +533,7 @@
 		B64CE652166682700087CF94 /* lib */ = {
 			isa = PBXGroup;
 			children = (
+				E23B28DC1A3267870052E87B /* ClipperLib */,
 				B6468005188AB3260087F098 /* JavaScriptCore.framework */,
 				B63D255C16E8DE23007E6034 /* SocketRocket */,
 				B60EA4001910655C00FA45E7 /* base64.c */,
@@ -633,6 +637,15 @@
 			name = WebGL;
 			sourceTree = "<group>";
 		};
+		E23B28DC1A3267870052E87B /* ClipperLib */ = {
+			isa = PBXGroup;
+			children = (
+				E23B28EA1A350F4A0052E87B /* clipper.cpp */,
+				E23B28EB1A350F4A0052E87B /* clipper.hpp */,
+			);
+			name = ClipperLib;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -662,7 +675,7 @@
 				LastUpgradeCheck = 0610;
 				TargetAttributes = {
 					1D6058900D05DD3D006BFB54 = {
-						DevelopmentTeam = TYQN4X28QA;
+						DevelopmentTeam = 7GS2C8FTGM;
 					};
 				};
 			};
@@ -719,6 +732,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E23B28EC1A350F4A0052E87B /* clipper.cpp in Sources */,
 				B630048916C1A2390036D8D4 /* EJBindingTextMetrics.m in Sources */,
 				B64C87AC16B81BAA0097CD5B /* EJGLProgram2D.m in Sources */,
 				B64C87AE16B81BAA0097CD5B /* EJGLProgram2DRadialGradient.m in Sources */,
@@ -796,6 +810,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = armv7;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -823,6 +838,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = armv7;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",

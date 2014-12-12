@@ -675,20 +675,18 @@ const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
 }
 
 - (void)strokeRectX:(float)x y:(float)y w:(float)w h:(float)h {
-	// strokeRect should not affect the current path, so we create
-	// a new, tempPath instead.
-	EJPath *tempPath = [[EJPath alloc] init];
-	tempPath.transform = state->transform;
-	
-	[tempPath moveToX:x y:y];
-	[tempPath lineToX:x+w y:y];
-	[tempPath lineToX:x+w y:y+h];
-	[tempPath lineToX:x y:y+h];
-	[tempPath close];
-	
-	[self setProgram:sharedGLContext.glProgram2DFlat];
-	[tempPath drawLinesToContext:self];
-	[tempPath release];
+        EJPath *tempPath = [[EJPath alloc] init];
+        tempPath.transform = state->transform;
+        
+        [tempPath moveToX:x y:y];
+        [tempPath lineToX:x+w y:y];
+        [tempPath lineToX:x+w y:y+h];
+        [tempPath lineToX:x y:y+h];
+        [tempPath close];
+        
+        [self setProgram:sharedGLContext.glProgram2DFlat];
+        [tempPath drawLinesToContext:self];
+        [tempPath release];
 }
 
 - (void)clearRectX:(float)x y:(float)y w:(float)w h:(float)h {
@@ -794,7 +792,7 @@ const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
 
 - (void)stroke {
 	[self setProgram:sharedGLContext.glProgram2DFlat];
-	[path drawLinesToContext:self];
+    [path drawLinesToContext:self];
 }
 
 - (void)moveToX:(float)x y:(float)y {
