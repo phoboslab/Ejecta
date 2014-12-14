@@ -55,7 +55,7 @@
 	
 	NSStringEncoding encoding = NSASCIIStringEncoding;
 	if ( response.textEncodingName ) {
-		CFStringEncoding cfEncoding = CFStringConvertIANACharSetNameToEncoding((CFStringRef) [response textEncodingName]);
+		CFStringEncoding cfEncoding = CFStringConvertIANACharSetNameToEncoding((CFStringRef) response.textEncodingName);
 		if( cfEncoding != kCFStringEncodingInvalidId ) {
 			encoding = CFStringConvertEncodingToNSStringEncoding(cfEncoding);
 		}
