@@ -14,8 +14,6 @@
 @import AVFoundation;
 @import CoreGraphics;
 @import CoreTelephony;
-@import EventKit;
-@import EventKitUI;
 @import Foundation;
 @import MessageUI;
 @import StoreKit;

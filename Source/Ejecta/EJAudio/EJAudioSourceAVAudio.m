@@ -46,6 +46,11 @@
 	player.volume = volume;
 }
 
+- (void)setPlaybackRate:(float)playbackRate {
+	player.enableRate = YES;
+	player.rate = playbackRate;
+}
+
 - (float)currentTime {
 	return player.currentTime;
 }

@@ -29,7 +29,7 @@ typedef enum {
 	
 	BOOL loop, ended, paused, muted;
 	BOOL loading, playAfterLoad;
-	float volume;
+	float volume, playbackRate;
 	NSOperation *loadCallback;
 }
 

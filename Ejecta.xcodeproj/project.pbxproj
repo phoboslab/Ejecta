@@ -62,6 +62,8 @@
 		B62436681666851E0046B8C7 /* Ejecta.js in Resources */ = {isa = PBXBuildFile; fileRef = B64CE63F166682700087CF94 /* Ejecta.js */; };
 		B630048916C1A2390036D8D4 /* EJBindingTextMetrics.m in Sources */ = {isa = PBXBuildFile; fileRef = B630048816C1A1960036D8D4 /* EJBindingTextMetrics.m */; };
 		B630048C16CB098D0036D8D4 /* EJClassLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = B630048B16CB09850036D8D4 /* EJClassLoader.m */; };
+		B637065E1A27BD5600F42B90 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = B637065D1A27BD5600F42B90 /* LaunchScreen.xib */; };
+		B63706601A27C15200F42B90 /* ejecta-logo.png in Resources */ = {isa = PBXBuildFile; fileRef = B637065F1A27C15200F42B90 /* ejecta-logo.png */; };
 		B63D256616E8DE23007E6034 /* SRWebSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = B63D256316E8DE23007E6034 /* SRWebSocket.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		B63D256816E8DF23007E6034 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B63D256716E8DF23007E6034 /* CFNetwork.framework */; };
 		B63D256A16E8DF33007E6034 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B63D256916E8DF33007E6034 /* Security.framework */; };
@@ -245,6 +247,8 @@
 		B630048816C1A1960036D8D4 /* EJBindingTextMetrics.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EJBindingTextMetrics.m; sourceTree = "<group>"; };
 		B630048A16CB097F0036D8D4 /* EJClassLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJClassLoader.h; sourceTree = "<group>"; };
 		B630048B16CB09850036D8D4 /* EJClassLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJClassLoader.m; sourceTree = "<group>"; };
+		B637065D1A27BD5600F42B90 /* LaunchScreen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LaunchScreen.xib; sourceTree = "<group>"; };
+		B637065F1A27C15200F42B90 /* ejecta-logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ejecta-logo.png"; sourceTree = "<group>"; };
 		B63D256116E8DE23007E6034 /* SocketRocket-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SocketRocket-Prefix.pch"; sourceTree = "<group>"; };
 		B63D256216E8DE23007E6034 /* SRWebSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SRWebSocket.h; sourceTree = "<group>"; };
 		B63D256316E8DE23007E6034 /* SRWebSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SRWebSocket.m; sourceTree = "<group>"; };
@@ -759,6 +763,7 @@
 				5C8E33E018C4EF03007206AE /* Default-Portrait~ipad.png */,
 				B64CE687166682B10087CF94 /* Default.png */,
 				B64CE688166682B10087CF94 /* Default@2x.png */,
+				B637065F1A27C15200F42B90 /* ejecta-logo.png */,
 				B99F05BD188C4125002F194D /* Icon-60.png */,
 				B99F05BE188C4125002F194D /* Icon-60@2x.png */,
 				B64CE68A166682B10087CF94 /* Icon-72.png */,
@@ -776,6 +781,7 @@
 				B64CE689166682B10087CF94 /* Info.plist */,
 				5C8E33EA18C4EF03007206AE /* iTunesArtwork */,
 				5C8E33EB18C4EF03007206AE /* iTunesArtwork@2x */,
+				B637065D1A27BD5600F42B90 /* LaunchScreen.xib */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -929,9 +935,11 @@
 				B64CE68F166682B10087CF94 /* Default-568h@2x.png in Resources */,
 				B64CE692166682B10087CF94 /* Default.png in Resources */,
 				B64CE693166682B10087CF94 /* Default@2x.png in Resources */,
+				B637065E1A27BD5600F42B90 /* LaunchScreen.xib in Resources */,
 				B64CE695166682B10087CF94 /* Icon-72.png in Resources */,
 				B64CE696166682B10087CF94 /* Icon-72@2x.png in Resources */,
 				B64CE697166682B10087CF94 /* Icon.png in Resources */,
+				B63706601A27C15200F42B90 /* ejecta-logo.png in Resources */,
 				B64CE698166682B10087CF94 /* Icon@2x.png in Resources */,
 				5C8E33F418C4EF03007206AE /* Icon-Spotlight.png in Resources */,
 				B62436681666851E0046B8C7 /* Ejecta.js in Resources */,
@@ -1048,6 +1056,10 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/Source/lib\"",
+				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -1056,6 +1068,8 @@
 				INFOPLIST_FILE = Resources/Info.plist;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)\"",
+					"\"$(SRCROOT)/Source/lib\"",
 					"$(PROJECT_DIR)/Extension/AdMobSDK",
 					"$(PROJECT_DIR)/Extension/UMengSDK",
 				);
@@ -1069,11 +1083,17 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/Source/lib\"",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Source/Prefix.pch;
 				INFOPLIST_FILE = Resources/Info.plist;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)\"",
+					"\"$(SRCROOT)/Source/lib\"",
 					"$(PROJECT_DIR)/Extension/AdMobSDK",
 					"$(PROJECT_DIR)/Extension/UMengSDK",
 				);
@@ -1085,40 +1105,46 @@
 		C01FCF4F08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = arm7;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				FRAMEWORK_SEARCH_PATHS = "$(SOURCE_ROOT)/Source/lib";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_PREPROCESSOR_DEFINITIONS = NS_BLOCK_ASSERTIONS;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = "$(SOURCE_ROOT)";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
+				HEADER_SEARCH_PATHS = (
+					"${SOURCE_ROOT}",
+					"${SOURCE_ROOT}/Source/lib",
+				);
+				INFOPLIST_FILE = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = "-DDEBUG";
 				OTHER_LDFLAGS = "-ObjC";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = armv7;
+				VALID_ARCHS = "armv7 armv7s arm64";
 			};
 			name = Debug;
 		};
 		C01FCF5008A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = arm7;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				FRAMEWORK_SEARCH_PATHS = "$(SOURCE_ROOT)/Source/lib";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = "$(SOURCE_ROOT)";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
+				HEADER_SEARCH_PATHS = (
+					"${SOURCE_ROOT}",
+					"${SOURCE_ROOT}/Source/lib",
+				);
+				INFOPLIST_FILE = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				OTHER_LDFLAGS = "-ObjC";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = armv7;
+				VALID_ARCHS = "armv7 armv7s arm64";
 			};
 			name = Release;
 		};

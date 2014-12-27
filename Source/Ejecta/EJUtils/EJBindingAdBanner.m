@@ -47,7 +47,10 @@
 
 	banner.delegate = self;
 	banner.hidden = YES;
+	banner.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+	
 	[self doLayout];
+	
 	[scriptView addSubview:banner];
 }
 

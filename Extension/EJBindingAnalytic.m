@@ -108,7 +108,7 @@ EJ_BIND_FUNCTION(event, ctx, argc, argv)
 		[MobClick event:eventId durations:1];
 	}
 	else {
-		[MobClick event:eventId durations:durations];
+		[MobClick event:eventId durations:(int)durations];
 	}
 	return NULL;
 }
