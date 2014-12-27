@@ -5,8 +5,8 @@
 #import "EJBindingCanvasStyle.h"
 
 #define EJ_CANVAS_DEFAULT_JPEG_QUALITY 0.9
-#define EJ_CANVAS_DATA_URL_PREFIX_JPEG "data:image/jpeg;base64,"
-#define EJ_CANVAS_DATA_URL_PREFIX_PNG "data:image/png;base64,"
+#define EJ_CANVAS_DATA_URL_PREFIX_JPEG @"data:image/jpeg;base64,"
+#define EJ_CANVAS_DATA_URL_PREFIX_PNG @"data:image/png;base64,"
 
 @class EJJavaScriptView;
 
