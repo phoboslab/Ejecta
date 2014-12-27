@@ -165,17 +165,29 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 	
 	NSString *type = JSValueToNSString(ctx, argv[0]);
 	EJCanvasContextMode newContextMode = kEJCanvasContextModeInvalid;
+	id contextClass, bindingClass;
 	
 	if( [type isEqualToString:@"2d"] ) {
 		newContextMode = kEJCanvasContextMode2D;
+		bindingClass = EJBindingCanvasContext2D.class;
+		contextClass = isScreenCanvas
+			? EJCanvasContext2DScreen.class
+			: EJCanvasContext2DTexture.class;
 	}
 	else if( [type rangeOfString:@"webgl"].location != NSNotFound ) {
 		newContextMode = kEJCanvasContextModeWebGL;
+		bindingClass = EJBindingCanvasContextWebGL.class;
+		contextClass = isScreenCanvas
+			? EJCanvasContextWebGLScreen.class
+			: EJCanvasContextWebGLTexture.class;
+	}
+	else {
+		NSLog(@"Warning: Invalid argument %@ for getContext()", type);
+		return NULL;
 	}
 	
 	
 	if( contextMode != kEJCanvasContextModeInvalid ) {
-	
 		// Nothing changed? - just return the already created context
 		if( contextMode == newContextMode ) {
 			return jsCanvasContext;
@@ -188,73 +200,30 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 		}
 	}
 	
-	
-	
-	// Create the requested CanvasContext
+	contextMode = newContextMode;
 	scriptView.currentRenderingContext = nil;
 	
-	// 2D Screen or Texture
-	if( newContextMode == kEJCanvasContextMode2D ) {
-		if( isScreenCanvas ) {
-			EJCanvasContext2DScreen *sc = [[EJCanvasContext2DScreen alloc]
-				initWithScriptView:scriptView width:width height:height style:style];
-			sc.useRetinaResolution = useRetinaResolution;
-			
-			scriptView.screenRenderingContext = sc;
-			renderingContext = sc;
-		}
-		else {
-			EJCanvasContext2DTexture *tc = [[EJCanvasContext2DTexture alloc]
-				initWithScriptView:scriptView width:width height:height];
-			tc.useRetinaResolution = useRetinaResolution;
-			
-			renderingContext = tc;
-		}
-		
-		// Create the JS object
-		EJBindingCanvasContext2D *binding = [[EJBindingCanvasContext2D alloc]
-			initWithCanvas:jsObject renderingContext:(EJCanvasContext2D *)renderingContext];
-		jsCanvasContext = [EJBindingCanvasContext2D createJSObjectWithContext:ctx scriptView:scriptView instance:binding];
-		[binding release];
-		JSValueProtect(ctx, jsCanvasContext);
-	}
-	
-	// WebGL Screen or Texture
-	else if( newContextMode == kEJCanvasContextModeWebGL ) {
-		if( isScreenCanvas ) {
-			EJCanvasContextWebGLScreen *sc = [[EJCanvasContextWebGLScreen alloc]
-				initWithScriptView:scriptView width:width height:height style:style];
-			sc.useRetinaResolution = useRetinaResolution;
-			
-			scriptView.screenRenderingContext = sc;
-			renderingContext = sc;
-		}
-		else {
-			EJCanvasContextWebGLTexture *tc = [[EJCanvasContextWebGLTexture alloc]
-				initWithScriptView:scriptView width:width height:height];
-			tc.useRetinaResolution = useRetinaResolution;
-			
-			renderingContext = tc;
-		}
-		
-		// Create the JS object
-		EJBindingCanvasContextWebGL *binding = [[EJBindingCanvasContextWebGL alloc]
-			initWithCanvas:jsObject renderingContext:(EJCanvasContextWebGL *)renderingContext];
-		jsCanvasContext = [EJBindingCanvasContextWebGL createJSObjectWithContext:ctx scriptView:scriptView instance:binding];
-		[binding release];
-		JSValueProtect(ctx, jsCanvasContext);
-	}
-	
-	
-	contextMode = newContextMode;
-	
+	// Configure and create the Canvas Context
+	renderingContext = [[contextClass alloc] initWithScriptView:scriptView width:width height:height];
+	renderingContext.useRetinaResolution = useRetinaResolution;
 	renderingContext.msaaEnabled = msaaEnabled;
 	renderingContext.msaaSamples = msaaSamples;
+	
+	if( isScreenCanvas ) {
+		scriptView.screenRenderingContext = (EJCanvasContext<EJPresentable> *)renderingContext;
+		scriptView.screenRenderingContext.style = style;
+	}
 	
 	[EAGLContext setCurrentContext:renderingContext.glContext];
 	[renderingContext create];
 	scriptView.currentRenderingContext = renderingContext;
 	
+	
+	// Create the JS object
+	EJBindingBase *binding = [[bindingClass alloc] initWithCanvas:jsObject renderingContext:(id)renderingContext];
+	jsCanvasContext = [bindingClass createJSObjectWithContext:ctx scriptView:scriptView instance:binding];
+	[binding release];
+	JSValueProtect(ctx, jsCanvasContext);
 	
 	return jsCanvasContext;
 }

@@ -3,9 +3,6 @@
 
 @implementation EJCanvasContextWebGL
 
-@synthesize useRetinaResolution;
-@synthesize backingStoreRatio;
-
 @synthesize boundFramebuffer;
 @synthesize boundRenderbuffer;
 

@@ -10,9 +10,6 @@
 	
 	GLint bufferWidth, bufferHeight;
 	EJJavaScriptView *scriptView;
-	
-	float backingStoreRatio;
-	BOOL useRetinaResolution;
 }
 
 - (id)initWithScriptView:(EJJavaScriptView *)scriptView width:(short)width height:(short)height;
@@ -23,9 +20,6 @@
 - (void)clear;
 
 @property (nonatomic) BOOL needsPresenting;
-@property (nonatomic) BOOL useRetinaResolution;
-@property (nonatomic,readonly) float backingStoreRatio;
-
 @property (nonatomic) GLuint boundFramebuffer;
 @property (nonatomic) GLuint boundRenderbuffer;
 

@@ -3,13 +3,6 @@
 @implementation EJCanvasContextWebGLScreen
 @synthesize style;
 
-- (id)initWithScriptView:(EJJavaScriptView *)scriptViewp width:(short)widthp height:(short)heightp style:(CGRect)stylep {
-	if( self = [super initWithScriptView:scriptViewp width:widthp height:heightp] ) {
-		style = stylep;
-	}
-	return self;
-}
-
 - (void)dealloc {
 	[glview removeFromSuperview];
 	[glview release];
