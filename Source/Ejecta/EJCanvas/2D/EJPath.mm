@@ -535,9 +535,16 @@ typedef std::vector<subpath_t> path_t;
 	
 	EJColorRGBA color = EJCanvasBlendStrokeColor(state);
 	
-	// Enable stencil test when drawing transparent lines.
-	// Cycle through all bits, so that the stencil buffer only has to be cleared after eight stroke operations
-	BOOL useStencil = (color.rgba.a < 0xff || state->globalCompositeOperation != kEJCompositeOperationSourceOver);
+	// Enable stencil test when drawing transparent lines or if we have stroke pattern or gradient.
+	// Cycle through all bits, so that the stencil buffer only has to be cleared after eight
+	// stroke operations
+	BOOL useStencil = (
+		color.rgba.a < 0xff ||
+		state->globalCompositeOperation != kEJCompositeOperationSourceOver ||
+		state->strokeObject
+	);
+	BOOL fillStencil = (useStencil && state->strokeObject);
+	
 	if( useStencil ) {
 		[context flushBuffers];
 		[context createStencilBufferOnce];
@@ -549,7 +556,14 @@ typedef std::vector<subpath_t> path_t;
 		
 		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 		glStencilFunc(GL_NOTEQUAL, stencilMask, stencilMask);
+		
+		// If we have a stroke object, we also have to disable drawing to the color buffer,
+		// so we can later fill the stencil mask with the pattern or gradient
+		if( fillStencil ) {
+			glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+		}
 	}
+	
 	
 	// To draw the line correctly with transformations, we need to construct the line
 	// vertices from the untransformed points and only apply the transformation in
@@ -571,7 +585,9 @@ typedef std::vector<subpath_t> path_t;
 		currentEdge, currentExt,	// Current edge and its normal * width/2
 		nextEdge, nextExt;			// Next edge and its normal * width/2
 	
-	
+	// Keep track of min and max drawing points if we have fill object, so we can later
+	// draw a quad with the minimum required size
+	EJVector2 drawMin = minPos, drawMax = maxPos;
 	
 	for( path_t::iterator sp = paths.begin(); ; ++sp ) {
 		subpath_t &path = sp==paths.end()?currentPath:*sp;
@@ -614,11 +630,11 @@ typedef std::vector<subpath_t> path_t;
 				
 				// Start cap
 				if( addCaps && !subPathIsClosed ) {
+					EJVector2 capExt = { -nextExt.y, nextExt.x };
+					EJVector2 cap11 = EJVector2Add( miter21, capExt );
+					EJVector2 cap12 = EJVector2Add( miter22, capExt );
+					
 					if( state->lineCap == kEJLineCapSquare ) {
-						EJVector2 capExt = { -nextExt.y, nextExt.x };
-						EJVector2 cap11 = EJVector2Add( miter21, capExt );
-						EJVector2 cap12 = EJVector2Add( miter22, capExt );
-						
 						[context
 							 pushQuadV1:cap11 v2:cap12 v3:miter21 v4:miter22
 							 color:color withTransform:transform];
@@ -648,6 +664,15 @@ typedef std::vector<subpath_t> path_t;
 					
 					miterAdded = true;
 					miterLimitExceeded = NO;
+					
+					// If we have to fill the stroke later, we need to adjust the min and max
+					// points for our bounding box - the miter may be outside of it.
+					if( fillStencil ) {
+						drawMin.x = MIN( drawMin.x, MIN(miter21.x, miter22.x) );
+						drawMin.y = MIN( drawMin.y, MIN(miter21.y, miter22.y) );
+						drawMax.x = MAX( drawMax.x, MAX(miter21.x, miter22.x) );
+						drawMax.y = MAX( drawMax.y, MAX(miter21.y, miter22.y) );
+					}
 				}
 				else {
 					miterLimitExceeded = YES;
@@ -694,13 +719,15 @@ typedef std::vector<subpath_t> path_t;
 				d2 = EJDistanceToLineSegmentSquared(EJVector2Sub(current, nextExt), current, prev);
 				p2 = ( d1 > d2 ) ? EJVector2Add(current, nextExt) : EJVector2Sub(current, nextExt);
 				
-				if( state->lineJoin==kEJLineJoinRound ) {
+				
+				
+				if( state->lineJoin == kEJLineJoinRound ) {
 					[self drawArcToContext:context atPoint:current v1:p1 v2:p2 color:color];
 				}
 				else {
 					[context
-					 pushTriX1:p1.x	y1:p1.y x2:current.x y2:current.y x3:p2.x y3:p2.y
-					 color:color withTransform:transform];
+						pushTriX1:p1.x	y1:p1.y x2:current.x y2:current.y x3:p2.x y3:p2.y
+						color:color withTransform:transform];
 				}
 			}
 
@@ -731,8 +758,8 @@ typedef std::vector<subpath_t> path_t;
 		if( (!addMiter || firstMiterLimitExceeded) && subPathIsClosed ) {
 			float d1,d2;
 			EJVector2 p1,p2,
-			firstNormal = EJVector2Sub(firstMiter1,firstMiter2),							// unnormalized line normal for first edge
-			second		= EJVector2Add(next,EJVector2Make(firstNormal.y,-firstNormal.x));	// approximated second point
+				firstNormal = EJVector2Sub(firstMiter1,firstMiter2), // unnormalized line normal for first edge
+				second = EJVector2Add(next,EJVector2Make(firstNormal.y,-firstNormal.x)); // approximated second point
 			
 			// calculate points to use for bevel
 			// two points are possible for each edge - the one farthest away from the other line has to be used
@@ -752,8 +779,8 @@ typedef std::vector<subpath_t> path_t;
 			}
 			else {
 				[context
-				 pushTriX1:p1.x	y1:p1.y x2:next.x y2:next.y x3:p2.x y3:p2.y
-				 color:color withTransform:transform];
+					pushTriX1:p1.x	y1:p1.y x2:next.x y2:next.y x3:p2.x y3:p2.y
+					color:color withTransform:transform];
 			}
 		}
 
@@ -783,6 +810,23 @@ typedef std::vector<subpath_t> path_t;
 	// disable stencil test when drawing transparent lines
 	if( useStencil ) {
 		[context flushBuffers];
+	
+		if( fillStencil ) {
+			// Fill the stencil mask with the strokeObject
+			glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+			glStencilFunc(GL_EQUAL, stencilMask, stencilMask);
+			
+			// Add a bit of padding to the fill rect, so all line caps are included
+			float padding = width2 * M_SQRT2;
+			[context
+				pushFilledRectX:drawMin.x-padding y:drawMin.y-padding
+				w:drawMax.x-drawMin.x+padding*2 h:drawMax.y-drawMin.y+padding*2
+				fillable:state->strokeObject
+				color:EJCanvasBlendWhiteColor(state) withTransform:transform];
+
+			[context flushBuffers];
+		}
+		
 		glDisable(GL_STENCIL_TEST);
 		
 		if( stencilMask == (1<<7) ) {

@@ -9,7 +9,6 @@
 #import "EJBindingCanvasContextWebGL.h"
 
 #import "EJJavaScriptView.h"
-#import "base64.h"
 
 
 @implementation EJBindingCanvas
@@ -294,8 +293,7 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 	// Generate the UIImage
 	UIImage *image = [EJTexture imageWithPixels:imageData.pixels width:imageData.width height:imageData.height scale:scale];
 	
-	char *prefix;
-	int prefixLength;
+	NSString *prefix;
 	NSData *raw;
 	
 	// JPEG?
@@ -305,42 +303,16 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 			: EJ_CANVAS_DEFAULT_JPEG_QUALITY;
 		
 		prefix = EJ_CANVAS_DATA_URL_PREFIX_JPEG;
-		prefixLength = sizeof(EJ_CANVAS_DATA_URL_PREFIX_JPEG)-1;
 		raw = UIImageJPEGRepresentation(image, quality);
 	}
 	// Default to PNG
 	else {
 		prefix = EJ_CANVAS_DATA_URL_PREFIX_PNG;
-		prefixLength = sizeof(EJ_CANVAS_DATA_URL_PREFIX_PNG)-1;
 		raw = UIImagePNGRepresentation(image);
 	}
 	
-	
-	// There's a lot of heavy data lifting going on here: getting the pixel data from the canvas,
-	// converting to a UIImage, converting to JPG or PNG representation and converting to Base64.
-	
-	// autorelease bites our ass here, causing all the data to be only released at the end of the
-	// frame. So we try to be at least conservative with the final Base64 encoded string: it's
-	// created with the right prefix and the encoder writes directly into it.
-	
-	
-	// Allocate the buffer for the encoded data + prefix
-	NSMutableData *encoded = [NSMutableData dataWithLength:((raw.length * 3 + 2) / 2) + prefixLength];
-	
-	// Copy the prefix into the final url string
-	memcpy(encoded.mutableBytes, prefix, prefixLength);
-	
-	// Write base64 encoded data into the url string; start after the prefix
-	size_t len = b64_ntop(raw.bytes, raw.length, (encoded.mutableBytes + prefixLength), encoded.length - prefixLength);
-	
-	if( len <= 0 ) {
-		return nil;
-	}
-	
-	JSStringRef jsDataURL = JSStringCreateWithUTF8CString(encoded.bytes);
-	JSValueRef ret = JSValueMakeString(ctx, jsDataURL);
-	JSStringRelease(jsDataURL);
-	return ret;
+	NSString *encoded = [prefix stringByAppendingString:[raw base64EncodedStringWithOptions:0]];
+	return NSStringToJSValue(ctx, encoded);
 }
 
 EJ_BIND_FUNCTION(toDataURL, ctx, argc, argv) {

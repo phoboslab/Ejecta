@@ -243,7 +243,6 @@ int EJFontGlyphLayoutSortByTextureIndex(const void *a, const void *b) {
 	}
 	
 	// Render glyph and update the texture
-//	CGContextShowGlyphsAtPoint(context, -glyphInfo->x, -glyphInfo->y, &glyph, 1);
 	CGPoint p = CGPointMake(-glyphInfo->x, -glyphInfo->y);
 	CTFontDrawGlyphs(ctMainFont, &glyph, &p, 1, context);
 	[texture updateWithPixels:pixels atX:txLineX y:txLineY width:pxWidth height:pxHeight];

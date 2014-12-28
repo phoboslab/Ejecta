@@ -81,6 +81,7 @@ const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
 		[stateStack[i].font release];
 		[stateStack[i].clipPath release];
 		[stateStack[i].fillObject release];
+		[stateStack[i].strokeObject release];
 	}
 	
 	if( viewFrameBuffer ) { glDeleteFramebuffers( 1, &viewFrameBuffer); }
@@ -575,6 +576,15 @@ const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
 	return state->fillObject;
 }
 
+- (void)setStrokeObject:(NSObject<EJFillable> *)strokeObject {
+	[state->strokeObject release];
+	state->strokeObject = [strokeObject retain];
+}
+
+- (NSObject<EJFillable> *)strokeObject {
+	return state->strokeObject;
+}
+
 
 - (void)save {
 	if( stateIndex == EJ_CANVAS_STATE_STACK_SIZE-1 ) {
@@ -587,6 +597,7 @@ const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
 	state = &stateStack[stateIndex];
 	[state->font retain];
 	[state->fillObject retain];
+	[state->strokeObject retain];
 	[state->clipPath retain];
 }
 
@@ -599,6 +610,7 @@ const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
 	// Clean up current state
 	[state->font release];
 	[state->fillObject release];
+	[state->strokeObject release];
 
 	if( state->clipPath && state->clipPath != stateStack[stateIndex-1].clipPath ) {
 		[self resetClip];
