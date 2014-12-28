@@ -203,66 +203,6 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 		}
 	}
 	
-<<<<<<< HEAD
-	
-	
-	// Create the requested CanvasContext
-	scriptView.currentRenderingContext = nil;
-	
-	// 2D Screen or Texture
-	if( newContextMode == kEJCanvasContextMode2D ) {
-		if( isScreenCanvas ) {
-			EJCanvasContext2DScreen *sc = [[EJCanvasContext2DScreen alloc]
-				initWithScriptView:scriptView width:width height:height style:style];
-			sc.useRetinaResolution = useRetinaResolution;
-			
-			scriptView.screenRenderingContext = sc;
-			renderingContext = sc;
-		}
-		else {
-			EJCanvasContext2DTexture *tc = [[EJCanvasContext2DTexture alloc]
-				initWithScriptView:scriptView width:width height:height];
-			tc.useRetinaResolution = useRetinaResolution;
-			
-			renderingContext = tc;
-		}
-		
-		// Create the JS object
-		EJBindingCanvasContext2D *binding = [[EJBindingCanvasContext2D alloc]
-			initWithCanvas:jsObject renderingContext:(EJCanvasContext2D *)renderingContext];
-		jsCanvasContext = [EJBindingCanvasContext2D createJSObjectWithContext:ctx scriptView:scriptView instance:binding];
-		[binding release];
-	}
-	
-	// WebGL Screen or Texture
-	else if( newContextMode == kEJCanvasContextModeWebGL ) {
-		if( isScreenCanvas ) {
-			EJCanvasContextWebGLScreen *sc = [[EJCanvasContextWebGLScreen alloc]
-				initWithScriptView:scriptView width:width height:height style:style];
-			sc.useRetinaResolution = useRetinaResolution;
-			
-			scriptView.screenRenderingContext = sc;
-			renderingContext = sc;
-		}
-		else {
-			EJCanvasContextWebGLTexture *tc = [[EJCanvasContextWebGLTexture alloc]
-				initWithScriptView:scriptView width:width height:height];
-			tc.useRetinaResolution = useRetinaResolution;
-			
-			renderingContext = tc;
-		}
-		
-		// Create the JS object
-		EJBindingCanvasContextWebGL *binding = [[EJBindingCanvasContextWebGL alloc]
-			initWithCanvas:jsObject renderingContext:(EJCanvasContextWebGL *)renderingContext];
-		jsCanvasContext = [EJBindingCanvasContextWebGL createJSObjectWithContext:ctx scriptView:scriptView instance:binding];
-		[binding release];
-	}
-	
-	[self linkCanvasAndContext];
-
-=======
->>>>>>> 95787899d0cc08d3f9ced8dcadebbb4052794637
 	contextMode = newContextMode;
 	scriptView.currentRenderingContext = nil;
 	
@@ -286,8 +226,10 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 	EJBindingBase *binding = [[bindingClass alloc] initWithCanvas:jsObject renderingContext:(id)renderingContext];
 	jsCanvasContext = [bindingClass createJSObjectWithContext:ctx scriptView:scriptView instance:binding];
 	[binding release];
-	JSValueProtect(ctx, jsCanvasContext);
+	// JSValueProtect(ctx, jsCanvasContext);
 	
+	[self linkCanvasAndContext];
+
 	return jsCanvasContext;
 }
 
