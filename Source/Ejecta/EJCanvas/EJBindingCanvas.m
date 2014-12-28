@@ -168,17 +168,29 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 	
 	NSString *type = JSValueToNSString(ctx, argv[0]);
 	EJCanvasContextMode newContextMode = kEJCanvasContextModeInvalid;
+	id contextClass, bindingClass;
 	
 	if( [type isEqualToString:@"2d"] ) {
 		newContextMode = kEJCanvasContextMode2D;
+		bindingClass = EJBindingCanvasContext2D.class;
+		contextClass = isScreenCanvas
+			? EJCanvasContext2DScreen.class
+			: EJCanvasContext2DTexture.class;
 	}
 	else if( [type rangeOfString:@"webgl"].location != NSNotFound ) {
 		newContextMode = kEJCanvasContextModeWebGL;
+		bindingClass = EJBindingCanvasContextWebGL.class;
+		contextClass = isScreenCanvas
+			? EJCanvasContextWebGLScreen.class
+			: EJCanvasContextWebGLTexture.class;
+	}
+	else {
+		NSLog(@"Warning: Invalid argument %@ for getContext()", type);
+		return NULL;
 	}
 	
 	
 	if( contextMode != kEJCanvasContextModeInvalid ) {
-	
 		// Nothing changed? - just return the already created context
 		if( contextMode == newContextMode ) {
 			return jsCanvasContext;
@@ -191,6 +203,7 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 		}
 	}
 	
+<<<<<<< HEAD
 	
 	
 	// Create the requested CanvasContext
@@ -248,15 +261,32 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 	
 	[self linkCanvasAndContext];
 
+=======
+>>>>>>> 95787899d0cc08d3f9ced8dcadebbb4052794637
 	contextMode = newContextMode;
+	scriptView.currentRenderingContext = nil;
 	
+	// Configure and create the Canvas Context
+	renderingContext = [[contextClass alloc] initWithScriptView:scriptView width:width height:height];
+	renderingContext.useRetinaResolution = useRetinaResolution;
 	renderingContext.msaaEnabled = msaaEnabled;
 	renderingContext.msaaSamples = msaaSamples;
+	
+	if( isScreenCanvas ) {
+		scriptView.screenRenderingContext = (EJCanvasContext<EJPresentable> *)renderingContext;
+		scriptView.screenRenderingContext.style = style;
+	}
 	
 	[EAGLContext setCurrentContext:renderingContext.glContext];
 	[renderingContext create];
 	scriptView.currentRenderingContext = renderingContext;
 	
+	
+	// Create the JS object
+	EJBindingBase *binding = [[bindingClass alloc] initWithCanvas:jsObject renderingContext:(id)renderingContext];
+	jsCanvasContext = [bindingClass createJSObjectWithContext:ctx scriptView:scriptView instance:binding];
+	[binding release];
+	JSValueProtect(ctx, jsCanvasContext);
 	
 	return jsCanvasContext;
 }

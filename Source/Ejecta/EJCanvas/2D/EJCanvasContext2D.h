@@ -132,8 +132,6 @@ static inline EJColorRGBA EJCanvasBlendStrokeColor( EJCanvasState *state ) {
 	EJCanvasState *state;
 	
 	BOOL upsideDown;
-	BOOL useRetinaResolution;
-	float backingStoreRatio;
 	
 	EJFontCache *fontCache;
 	
@@ -220,8 +218,6 @@ static inline EJColorRGBA EJCanvasBlendStrokeColor( EJCanvasState *state ) {
 @property (nonatomic, retain) EJFontDescriptor *font;
 @property (nonatomic, retain) NSObject<EJFillable> *fillObject;
 @property (nonatomic, retain) NSObject<EJFillable> *strokeObject;
-@property (nonatomic, assign) float backingStoreRatio;
-@property (nonatomic) BOOL useRetinaResolution;
 @property (nonatomic) BOOL imageSmoothingEnabled;
 @property (nonatomic) GLubyte stencilMask;
 

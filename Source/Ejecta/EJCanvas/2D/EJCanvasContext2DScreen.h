@@ -7,11 +7,9 @@
 	CGRect style;
 }
 
-- (id)initWithScriptView:(EJJavaScriptView *)scriptViewp width:(short)widthp height:(short)heightp style:(CGRect)stylep;
 - (void)present;
 - (void)finish;
 
-@property (nonatomic) CGRect style;
 @property (readonly, nonatomic) EJTexture *texture;
 
 @end

@@ -24,8 +24,6 @@ const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
 
 
 @synthesize state;
-@synthesize backingStoreRatio;
-@synthesize useRetinaResolution;
 @synthesize imageSmoothingEnabled;
 @synthesize stencilMask;
 
