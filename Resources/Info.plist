@@ -9,13 +9,35 @@
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleIconFile</key>
-	<string></string>
+	<string>Icon.png</string>
 	<key>CFBundleIcons</key>
 	<dict>
 		<key>CFBundlePrimaryIcon</key>
 		<dict>
 			<key>CFBundleIconFiles</key>
 			<array>
+				<string>Icon-Spotlight-iOS7</string>
+				<string>Icon-Small</string>
+				<string>Icon.png</string>
+				<string>Icon@2x.png</string>
+				<string>Icon-60.png</string>
+				<string>Icon-60@2x.png</string>
+				<string>Icon-72.png</string>
+				<string>Icon-72@2x.png</string>
+				<string>Icon-76.png</string>
+				<string>Icon-76@2x.png</string>
+			</array>
+		</dict>
+	</dict>
+	<key>CFBundleIcons~ipad</key>
+	<dict>
+		<key>CFBundlePrimaryIcon</key>
+		<dict>
+			<key>CFBundleIconFiles</key>
+			<array>
+				<string>Icon-Spotlight</string>
+				<string>Icon-Small</string>
+				<string>Icon-Spotlight-iOS7</string>
 				<string>Icon.png</string>
 				<string>Icon@2x.png</string>
 				<string>Icon-60.png</string>
@@ -28,7 +50,7 @@
 		</dict>
 	</dict>
 	<key>CFBundleIdentifier</key>
-	<string>com.yourcompany.${PRODUCT_NAME:rfc1034identifier}</string>
+	<string>cn.fattyboy.${PRODUCT_NAME}</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -45,14 +67,25 @@
 	<string>MainWindow</string>
 	<key>NSMainNibFile~ipad</key>
 	<string>MainWindow</string>
+	<key>UIAppFonts</key>
+	<array/>
+	<key>UIFileSharingEnabled</key>
+	<true/>
 	<key>UIInterfaceOrientation</key>
-	<string>UIInterfaceOrientationPortrait</string>
+	<string>UIInterfaceOrientationLandscapeRight</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
+	<key>UIRequiredDeviceCapabilities</key>
+	<array>
+		<string>gamekit</string>
+	</array>
 	<key>UIStatusBarHidden</key>
 	<true/>
 	<key>UISupportedInterfaceOrientations</key>
-	<array/>
+	<array>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array/>
 	<key>UIViewControllerBasedStatusBarAppearance</key>

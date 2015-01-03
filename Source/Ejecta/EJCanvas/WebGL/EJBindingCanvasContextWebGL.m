@@ -33,6 +33,9 @@
 }
 
 - (void)dealloc {
+#if DEBUG
+	NSLog(@" -- context dealloc -- ");
+#endif
 	// Make sure this rendering context is the current one, so all
 	// OpenGL objects can be deleted properly.
 	EAGLContext *oldContext = [EAGLContext currentContext];
@@ -70,6 +73,7 @@
 	[EAGLContext setCurrentContext:oldContext];
 	
 	[renderingContext release];
+	jsCanvas = nil;
 	
 	[super dealloc];
 }
@@ -142,9 +146,6 @@
 }
 
 
-EJ_BIND_GET(canvas, ctx) {
-	return jsCanvas;
-}
 
 EJ_BIND_GET(drawingBufferWidth, ctx) {
 	return JSValueMakeNumber(ctx, renderingContext.width * renderingContext.backingStoreRatio);

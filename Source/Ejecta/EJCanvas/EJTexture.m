@@ -57,6 +57,8 @@ typedef struct {
 		contentScale = 1;
 		fullPath = [path retain];
 		
+		interceptorManager = [[EJInterceptorManager instance] retain];
+		
 		NSMutableData *pixels = [self loadPixelsFromPath:path];
 		if( pixels ) {
 			[self createWithPixels:pixels format:GL_RGBA];
@@ -106,6 +108,8 @@ typedef struct {
 	if( self = [super init] ) {
 		contentScale = 1;
 		fullPath = [path retain];
+		
+		interceptorManager = [[EJInterceptorManager instance] retain];
 		
 		BOOL isURL = [path hasPrefix:@"http:"] || [path hasPrefix:@"https:"];
 		BOOL isDataURI = !isURL && [path hasPrefix:@"data:"];
@@ -211,6 +215,7 @@ typedef struct {
 	
 	[fullPath release];
 	[textureStorage release];
+	[interceptorManager release];
 	[super dealloc];
 }
 
@@ -386,7 +391,7 @@ typedef struct {
 - (void)uploadCompressedPixels:(NSData *)pixels target:(GLenum)target {
 	PVRTextureHeader *header = (PVRTextureHeader *) pixels.bytes;
 	
-    uint32_t formatFlags = header->flags & PVR_TEXTURE_FLAG_TYPE_MASK;
+	uint32_t formatFlags = header->flags & PVR_TEXTURE_FLAG_TYPE_MASK;
 	
 	GLenum internalFormat;
 	uint32_t bpp;
@@ -497,10 +502,8 @@ typedef struct {
 	NSMutableData *pixels;
 	if( isDataURI || isURL ) {
 		// Load directly from a Data URI string or an URL
-		UIImage *tmpImage = [[UIImage alloc] initWithData:
-			[NSData dataWithContentsOfURL:[NSURL URLWithString:path]]];
-		
-		if( !tmpImage ) {
+		pixels = [NSMutableData dataWithContentsOfURL:[NSURL URLWithString:path]];
+		if (!pixels){
 			if( isDataURI ) {
 				NSLog(@"Error Loading image from Data URI.");
 			}
@@ -509,10 +512,13 @@ typedef struct {
 			}
 			return NULL;
 		}
+
+		[interceptorManager interceptData:AFTER_LOAD_IMAGE data:pixels];
+		
+		UIImage *tmpImage = [[UIImage alloc] initWithData:pixels];
 		pixels = [self loadPixelsFromUIImage:tmpImage];
 		[tmpImage release];
 	}
-	
 	else if( [path.pathExtension isEqualToString:@"pvr"] ) {
 		// Compressed PVRTC? Only load raw data bytes
 		pixels = [NSMutableData dataWithContentsOfFile:path];
@@ -520,22 +526,27 @@ typedef struct {
 			NSLog(@"Error Loading image %@ - not found.", path);
 			return NULL;
 		}
+
+		[interceptorManager interceptData:AFTER_LOAD_IMAGE data:pixels];
+
 		PVRTextureHeader *header = (PVRTextureHeader *)pixels.bytes;
 		width = header->width;
 		height = header->height;
 		dimensionsKnown = true;
 		isCompressed = true;
 	}
-	
 	else {
-		// Use UIImage for PNG, JPG and everything else
-		UIImage *tmpImage = [[UIImage alloc] initWithContentsOfFile:path];
-		
-		if( !tmpImage ) {
+		pixels = [NSMutableData dataWithContentsOfFile:path];
+		if( !pixels ) {
 			NSLog(@"Error Loading image %@ - not found.", path);
 			return NULL;
 		}
-		
+
+
+		[interceptorManager interceptData:AFTER_LOAD_IMAGE data:pixels];
+
+		// Use UIImage for PNG, JPG and everything else
+		UIImage *tmpImage = [[UIImage alloc] initWithData:pixels];
 		pixels = [self loadPixelsFromUIImage:tmpImage];
 		[tmpImage release];
 	}
