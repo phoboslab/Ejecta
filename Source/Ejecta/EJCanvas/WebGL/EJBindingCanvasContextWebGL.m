@@ -33,7 +33,9 @@
 }
 
 - (void)dealloc {
+#if DEBUG
 	NSLog(@" -- context dealloc -- ");
+#endif
 	// Make sure this rendering context is the current one, so all
 	// OpenGL objects can be deleted properly.
 	EAGLContext *oldContext = [EAGLContext currentContext];

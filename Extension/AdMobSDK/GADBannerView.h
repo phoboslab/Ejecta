@@ -113,14 +113,15 @@
 
 #pragma mark Mediation
 
-/// The underlying ad view of the mediated ad network. You may use this to find out the actual
-/// size of the ad and adjust GADBannerView to fit the underlying ad view.
-@property(nonatomic, readonly, weak) UIView *mediatedAdView;
-
 /// The ad network class name that fetched the current ad. Returns nil while the latest ad request
 /// is in progress or if the latest ad request failed. For both standard and mediated Google AdMob
 /// ads, this method returns @"GADMAdapterGoogleAdMobAds". For ads fetched via mediation custom
 /// events, this method returns @"GADMAdapterCustomEvents".
 @property(nonatomic, readonly, weak) NSString *adNetworkClassName;
+
+/// The underlying ad view of the mediated ad network. You may use this to find out the actual
+/// size of the ad and adjust GADBannerView to fit the underlying ad view.
+@property(nonatomic, readonly, weak) UIView *mediatedAdView
+    __attribute__((deprecated("Use adNetworkClassName.")));
 
 @end

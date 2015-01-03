@@ -49,15 +49,6 @@
 /// presentFromViewController.
 - (void)loadRequest:(GADRequest *)request;
 
-#pragma mark Request at Application Launch
-
-/// The |window| will be shown with the |image| displayed until either the |request| interstitial is
-/// shown or a timeout occurs. The delegate will receive an interstitialDidDismissScreen: callback
-/// to indicate that your app should continue when the interstitial has finished.
-- (void)loadAndDisplayRequest:(GADRequest *)request
-                  usingWindow:(UIWindow *)window
-                 initialImage:(UIImage *)image __attribute__((deprecated(" use loadRequest:.")));
-
 #pragma mark Post-Request
 
 /// Returns YES if the interstitial is ready to be displayed. The delegate's

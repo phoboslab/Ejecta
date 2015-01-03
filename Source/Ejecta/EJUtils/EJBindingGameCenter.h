@@ -9,7 +9,6 @@ enum {
 
 static NSString *kEJGameCenterAutoAuth = @"EJGameCenter.AutoAuth";
 
-
 @interface EJBindingGameCenter : EJBindingBase <GKGameCenterControllerDelegate> {
 	BOOL authed;
 	BOOL viewIsActive;

@@ -16,8 +16,6 @@
 		3EF00C5916C29360004599A4 /* EJJavaScriptView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EF00C5816C29360004599A4 /* EJJavaScriptView.m */; };
 		5B7B76761619DB9700691910 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B7B76751619DB9700691910 /* CoreText.framework */; };
 		5C2387D818CEFBFD00D0CC1A /* EJBindingTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C2387D718CEFBFD00D0CC1A /* EJBindingTimer.m */; };
-		5C2C1F7B18D21C1B0028F3B1 /* mongoose.c in Sources */ = {isa = PBXBuildFile; fileRef = 5C2C1F7918D21C1B0028F3B1 /* mongoose.c */; };
-		5C2C1F8218D21CE30028F3B1 /* EJBindingWebServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C2C1F8118D21CE30028F3B1 /* EJBindingWebServer.m */; };
 		5C631BFB19110679009AF7F0 /* EJBindingDecryptorXOR.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C631BFA19110679009AF7F0 /* EJBindingDecryptorXOR.m */; };
 		5C631C021911446F009AF7F0 /* EJBindingBaseInterceptor.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C631BFE1911446F009AF7F0 /* EJBindingBaseInterceptor.m */; };
 		5C631C031911446F009AF7F0 /* EJInterceptorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C631C011911446F009AF7F0 /* EJInterceptorManager.m */; };
@@ -50,6 +48,8 @@
 		5C9AA4DA1973046A00089207 /* libMobClickGameLibrary.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C9AA4D71973046A00089207 /* libMobClickGameLibrary.a */; };
 		5C9AA4DD19730B6200089207 /* EJBindingAnalytic.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C9AA4DC19730B6200089207 /* EJBindingAnalytic.m */; };
 		5C9AA4DF19739F4700089207 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C9AA4DE19739F4600089207 /* libz.dylib */; };
+		5C9CF4B11A58416A00AEE55E /* EventKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C9CF4B01A58416A00AEE55E /* EventKit.framework */; };
+		5C9CF4B31A58419100AEE55E /* EventKitUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C9CF4B21A58419100AEE55E /* EventKitUI.framework */; };
 		B6074FF315F8E41700D987F9 /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6074FF215F8E41600D987F9 /* GameKit.framework */; };
 		B607AB67132EA6C300D7C3EA /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B607AB66132EA6C300D7C3EA /* OpenAL.framework */; };
 		B607AC33132EA75F00D7C3EA /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B607AC32132EA75F00D7C3EA /* AudioToolbox.framework */; };
@@ -162,10 +162,6 @@
 		5B7B76751619DB9700691910 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
 		5C2387D618CEFBFD00D0CC1A /* EJBindingTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingTimer.h; sourceTree = "<group>"; };
 		5C2387D718CEFBFD00D0CC1A /* EJBindingTimer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingTimer.m; sourceTree = "<group>"; };
-		5C2C1F7918D21C1B0028F3B1 /* mongoose.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = mongoose.c; sourceTree = "<group>"; };
-		5C2C1F7A18D21C1B0028F3B1 /* mongoose.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mongoose.h; sourceTree = "<group>"; };
-		5C2C1F8018D21CBA0028F3B1 /* EJBindingWebServer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EJBindingWebServer.h; sourceTree = "<group>"; };
-		5C2C1F8118D21CE30028F3B1 /* EJBindingWebServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingWebServer.m; sourceTree = "<group>"; };
 		5C631BF919110679009AF7F0 /* EJBindingDecryptorXOR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingDecryptorXOR.h; sourceTree = "<group>"; };
 		5C631BFA19110679009AF7F0 /* EJBindingDecryptorXOR.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingDecryptorXOR.m; sourceTree = "<group>"; };
 		5C631BFD1911446F009AF7F0 /* EJBindingBaseInterceptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingBaseInterceptor.h; sourceTree = "<group>"; };
@@ -222,6 +218,8 @@
 		5C9AA4DB19730B6200089207 /* EJBindingAnalytic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingAnalytic.h; sourceTree = "<group>"; };
 		5C9AA4DC19730B6200089207 /* EJBindingAnalytic.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingAnalytic.m; sourceTree = "<group>"; };
 		5C9AA4DE19739F4600089207 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		5C9CF4B01A58416A00AEE55E /* EventKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKit.framework; path = System/Library/Frameworks/EventKit.framework; sourceTree = SDKROOT; };
+		5C9CF4B21A58419100AEE55E /* EventKitUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKitUI.framework; path = System/Library/Frameworks/EventKitUI.framework; sourceTree = SDKROOT; };
 		5CA090F019214AE500E16E8E /* GADModules.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GADModules.h; sourceTree = "<group>"; };
 		5CA090F119214B2900E16E8E /* GADInAppPurchase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GADInAppPurchase.h; sourceTree = "<group>"; };
 		5CA090F219214B2900E16E8E /* GADInAppPurchaseDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GADInAppPurchaseDelegate.h; sourceTree = "<group>"; };
@@ -397,6 +395,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5C9CF4B31A58419100AEE55E /* EventKitUI.framework in Frameworks */,
+				5C9CF4B11A58416A00AEE55E /* EventKit.framework in Frameworks */,
 				5C9AA4DF19739F4700089207 /* libz.dylib in Frameworks */,
 				5C91E5B118E1C4A800FCF013 /* CoreTelephony.framework in Frameworks */,
 				5C91E5B018E1C47F00FCF013 /* AdSupport.framework in Frameworks */,
@@ -457,6 +457,8 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				5C9CF4B21A58419100AEE55E /* EventKitUI.framework */,
+				5C9CF4B01A58416A00AEE55E /* EventKit.framework */,
 				5C8E33FA18C4EF23007206AE /* Accounts.framework */,
 				5C91E5AF18E1C47F00FCF013 /* AdSupport.framework */,
 				B607AC32132EA75F00D7C3EA /* AudioToolbox.framework */,
@@ -487,15 +489,6 @@
 				1DF5F4DF0D08C38300B7A737 /* UIKit.framework */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		5C2C1F7818D21C1B0028F3B1 /* mongoose */ = {
-			isa = PBXGroup;
-			children = (
-				5C2C1F7918D21C1B0028F3B1 /* mongoose.c */,
-				5C2C1F7A18D21C1B0028F3B1 /* mongoose.h */,
-			);
-			path = mongoose;
 			sourceTree = "<group>";
 		};
 		5C631BFC1911446F009AF7F0 /* EJInterceptor */ = {
@@ -531,13 +524,10 @@
 				5C8E340418C4EF40007206AE /* EJBindingSocial.m */,
 				5C2387D618CEFBFD00D0CC1A /* EJBindingTimer.h */,
 				5C2387D718CEFBFD00D0CC1A /* EJBindingTimer.m */,
-				5C2C1F8018D21CBA0028F3B1 /* EJBindingWebServer.h */,
-				5C2C1F8118D21CE30028F3B1 /* EJBindingWebServer.m */,
 				5C8E340518C4EF40007206AE /* EJBindingWebView.h */,
 				5C8E340618C4EF40007206AE /* EJBindingWebView.m */,
 				5C91E59D18E1AFF100FCF013 /* AdMobSDK */,
 				5C9AA4D61973046A00089207 /* UMengSDK */,
-				5C2C1F7818D21C1B0028F3B1 /* mongoose */,
 				5C8E340818C4EF40007206AE /* OpenUDID */,
 			);
 			path = Extension;
@@ -942,7 +932,6 @@
 				B64CE668166682700087CF94 /* EJBindingBase.m in Sources */,
 				B64CE669166682700087CF94 /* EJBindingEjectaCore.m in Sources */,
 				B64CE66A166682700087CF94 /* EJBindingEventedBase.m in Sources */,
-				5C2C1F8218D21CE30028F3B1 /* EJBindingWebServer.m in Sources */,
 				B64CE66B166682700087CF94 /* EAGLView.m in Sources */,
 				5C8E341118C4EF40007206AE /* OpenUDID.m in Sources */,
 				B64CE66D166682700087CF94 /* EJBindingImage.m in Sources */,
@@ -989,7 +978,6 @@
 				B6D4B281183CDFBB008251EB /* EJBindingGeolocation.m in Sources */,
 				5C631C031911446F009AF7F0 /* EJInterceptorManager.m in Sources */,
 				B6A0F4AF16A9D86100477789 /* EJCanvasGradient.m in Sources */,
-				5C2C1F7B18D21C1B0028F3B1 /* mongoose.c in Sources */,
 				B6A0F4B416AB0B4600477789 /* EJBindingCanvasGradient.m in Sources */,
 				3EBC19BE16CECE190036F9F3 /* EJBindingKeyInput.m in Sources */,
 				B668FCEE1821C08500D4F629 /* EJFontCache.m in Sources */,
@@ -1022,7 +1010,7 @@
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/Source/lib\"",
+					"${SOURCE_ROOT}/Source/lib",
 				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -1032,13 +1020,14 @@
 				INFOPLIST_FILE = Resources/Info.plist;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)\"",
-					"\"$(SRCROOT)/Source/lib\"",
+					"$(SRCROOT)",
+					"$(SRCROOT)/Source/lib",
 					"$(PROJECT_DIR)/Extension/AdMobSDK",
 					"$(PROJECT_DIR)/Extension/UMengSDK",
 				);
 				OTHER_CFLAGS = "-DDEBUG";
 				PRODUCT_NAME = Ejecta;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -1049,19 +1038,20 @@
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/Source/lib\"",
+					"${SOURCE_ROOT}/Source/lib",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Source/Prefix.pch;
 				INFOPLIST_FILE = Resources/Info.plist;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)\"",
-					"\"$(SRCROOT)/Source/lib\"",
+					"$(SRCROOT)",
+					"$(SRCROOT)/Source/lib",
 					"$(PROJECT_DIR)/Extension/AdMobSDK",
 					"$(PROJECT_DIR)/Extension/UMengSDK",
 				);
 				PRODUCT_NAME = Ejecta;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -1070,6 +1060,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_PREPROCESSOR_DEFINITIONS = NS_BLOCK_ASSERTIONS;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -1082,6 +1073,8 @@
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = "-DDEBUG";
 				OTHER_LDFLAGS = "-ObjC";
+				PROVISIONING_PROFILE = "";
+				SDKROOT = iphoneos;
 			};
 			name = Debug;
 		};
@@ -1100,6 +1093,8 @@
 				INFOPLIST_FILE = "";
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				OTHER_LDFLAGS = "-ObjC";
+				PROVISIONING_PROFILE = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
 			};
 			name = Release;

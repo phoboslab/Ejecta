@@ -4,7 +4,7 @@
 //
 //  Updated by Minghua on 2014-03-17.
 //  Copyright (C) 2010-2014 Umeng.com . All rights reserved.
-//  Version 2.3.3.0
+//  Version 2.3.2.0
 
 @interface MobClickGameAnalytics : NSObject
 

@@ -71,14 +71,7 @@
 	}
 
 	if (!isRectangle) {
-		banner.requiredContentSizeIdentifiers = [NSSet setWithObjects:
-		                                         (landscape
-		                                          ? ADBannerContentSizeIdentifierLandscape
-												  : ADBannerContentSizeIdentifierPortrait),
-		                                         nil];
-		banner.currentContentSizeIdentifier = (landscape
-		                                       ? ADBannerContentSizeIdentifierLandscape
-											   : ADBannerContentSizeIdentifierPortrait);
+		banner.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 	}
 
 	CGRect rect = CGRectMake(x, y, w, h);
