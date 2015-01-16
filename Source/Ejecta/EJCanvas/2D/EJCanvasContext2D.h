@@ -70,6 +70,7 @@ typedef struct {
 	EJColorRGBA fillColor;
 	NSObject<EJFillable> *fillObject;
 	EJColorRGBA strokeColor;
+	NSObject<EJFillable> *strokeObject;
 	float globalAlpha;
 	
 	float lineWidth;
@@ -131,8 +132,6 @@ static inline EJColorRGBA EJCanvasBlendStrokeColor( EJCanvasState *state ) {
 	EJCanvasState *state;
 	
 	BOOL upsideDown;
-	BOOL useRetinaResolution;
-	float backingStoreRatio;
 	
 	EJFontCache *fontCache;
 	
@@ -218,8 +217,7 @@ static inline EJColorRGBA EJCanvasBlendStrokeColor( EJCanvasState *state ) {
 @property (nonatomic) EJCompositeOperation globalCompositeOperation;
 @property (nonatomic, retain) EJFontDescriptor *font;
 @property (nonatomic, retain) NSObject<EJFillable> *fillObject;
-@property (nonatomic, assign) float backingStoreRatio;
-@property (nonatomic) BOOL useRetinaResolution;
+@property (nonatomic, retain) NSObject<EJFillable> *strokeObject;
 @property (nonatomic) BOOL imageSmoothingEnabled;
 @property (nonatomic) GLubyte stencilMask;
 

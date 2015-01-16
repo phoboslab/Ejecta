@@ -5,11 +5,11 @@
 @synthesize program;
 @synthesize screen;
 
-- (id)initWithVertexShader:(NSString *)vertexShaderFile fragmentShader:(NSString *)fragmentShaderFile {
+- (id)initWithVertexShader:(const char *)vertexShaderSource fragmentShader:(const char *)fragmentShaderSource {
 	if( self = [super init] ) {
 		program = glCreateProgram();
-		GLuint vertexShader = [EJGLProgram2D compileShaderFile:vertexShaderFile type:GL_VERTEX_SHADER];
-		GLuint fragmentShader = [EJGLProgram2D compileShaderFile:fragmentShaderFile type:GL_FRAGMENT_SHADER];
+		GLuint vertexShader = [EJGLProgram2D compileShaderSource:vertexShaderSource type:GL_VERTEX_SHADER];
+		GLuint fragmentShader = [EJGLProgram2D compileShaderSource:fragmentShaderSource type:GL_FRAGMENT_SHADER];
 
 		glAttachShader(program, vertexShader);
 		glAttachShader(program, fragmentShader);
@@ -44,22 +44,9 @@
 	screen = glGetUniformLocation(program, "screen");
 }
 
-+ (GLint)compileShaderFile:(NSString *)file type:(GLenum)type {
-	NSString *path = [NSString stringWithFormat:@"%@/%@", [[NSBundle mainBundle] resourcePath], file];
-	NSString *source = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil];
-	if( !source ) {
-		NSLog(@"Failed to load shader file %@", file);
-		return 0;
-	}
-
-	return [EJGLProgram2D compileShaderSource:source type:type];
-}
-
-+ (GLint)compileShaderSource:(NSString *)source type:(GLenum)type {
-	const GLchar *glsource = (GLchar *)[source UTF8String];
-	
++ (GLint)compileShaderSource:(const char *)source type:(GLenum)type {
 	GLint shader = glCreateShader(type);
-	glShaderSource(shader, 1, &glsource, NULL);
+	glShaderSource(shader, 1, &source, NULL);
 	glCompileShader(shader);
 
 	GLint status;

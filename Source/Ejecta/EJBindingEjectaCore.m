@@ -47,7 +47,7 @@
 EJ_BIND_FUNCTION(log, ctx, argc, argv ) {
 	if( argc < 1 ) return NULL;
     
-	NSLog( @"JS: %@", JSValueToNSString(ctx, argv[0]) );
+	NSLog( @"JS %@", JSValueToNSString(ctx, argv[0]) );
 	return NULL;
 }
 
@@ -264,13 +264,7 @@ EJ_BIND_SET(allowSleepMode, ctx, value) {
 }
 
 EJ_BIND_GET(otherAudioPlaying, ctx) {
-	// Make sure we have an AudioSession instance
-	[AVAudioSession sharedInstance];
-	
-	UInt32 otherAudioPlaying = 0;
-	UInt32 propertySize = sizeof(UInt32);
-	AudioSessionGetProperty(kAudioSessionProperty_OtherAudioIsPlaying, &propertySize, &otherAudioPlaying);
-	return JSValueMakeBoolean(ctx, otherAudioPlaying);
+	return JSValueMakeBoolean(ctx, AVAudioSession.sharedInstance.isOtherAudioPlaying);
 }
 
 EJ_BIND_ENUM(audioSession, self.audioSession,
@@ -285,7 +279,7 @@ EJ_BIND_ENUM(audioSession, self.audioSession,
 
 - (void)setAudioSession:(EJCoreAudioSession)session {
 	audioSession = session;
-	AVAudioSession *instance = [AVAudioSession sharedInstance];
+	AVAudioSession *instance = AVAudioSession.sharedInstance;
 	
 	switch(audioSession) {
 		case kEJCoreAudioSessionAmbient:

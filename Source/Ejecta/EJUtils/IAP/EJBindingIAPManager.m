@@ -21,12 +21,12 @@
 }
 
 - (void)dealloc {
-	for( NSValue *v in productRequestCallbacks ) {
+	for( NSValue *v in productRequestCallbacks.allValues ) {
 		JSValueUnprotectSafe(scriptView.jsGlobalContext, v.pointerValue);
 	}
 	[productRequestCallbacks release];
 	
-	for( NSValue *v in products ) {
+	for( NSValue *v in products.allValues ) {
 		JSValueUnprotectSafe(scriptView.jsGlobalContext, v.pointerValue);
 	}
 	[products release];

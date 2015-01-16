@@ -18,15 +18,15 @@
 	for( NSString *type	in eventListeners ) {
 		NSArray *listeners = eventListeners[type];
 		for( NSValue *callbackValue in listeners ) {
-			JSValueUnprotectSafe(ctx, [callbackValue pointerValue]);
+			JSValueUnprotectSafe(ctx, callbackValue.pointerValue);
 		}
 	}
 	[eventListeners release];
 	
 	// Unprotect all event callbacks
 	for( NSString *type in onCallbacks ) {
-		NSValue *listener = onCallbacks[type];
-		JSValueUnprotectSafe(ctx, [(NSValue *)listener pointerValue]);
+		NSValue *callbackValue = onCallbacks[type];
+		JSValueUnprotectSafe(ctx, callbackValue.pointerValue);
 	}
 	[onCallbacks release];
 	

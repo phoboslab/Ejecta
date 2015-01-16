@@ -8,6 +8,7 @@
 - (void)pause;
 - (void)setLooping:(BOOL)loop;
 - (void)setVolume:(float)volume;
+- (void)setPlaybackRate:(float)playbackRate;
 
 @property (nonatomic) float duration;
 @property (nonatomic) float currentTime;

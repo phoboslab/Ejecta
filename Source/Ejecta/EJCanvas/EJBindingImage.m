@@ -78,7 +78,7 @@
 }
 
 EJ_BIND_GET(src, ctx ) {
-	return NSStringToJSValue(ctx, path);
+	return NSStringToJSValue(ctx, path ? path : @"");
 }
 
 EJ_BIND_SET(src, ctx, value) {

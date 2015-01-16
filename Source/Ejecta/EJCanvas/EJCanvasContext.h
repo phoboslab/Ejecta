@@ -8,6 +8,9 @@
 	BOOL needsPresenting;
 	int msaaSamples;
 	EAGLContext *glContext;
+	
+	float backingStoreRatio;
+	BOOL useRetinaResolution;
 }
 
 - (void)create;
@@ -19,5 +22,7 @@
 @property (nonatomic) short width;
 @property (nonatomic) short height;
 @property (nonatomic, readonly) EAGLContext *glContext;
+@property (nonatomic) BOOL useRetinaResolution;
+@property (nonatomic, readonly) float backingStoreRatio;
 
 @end

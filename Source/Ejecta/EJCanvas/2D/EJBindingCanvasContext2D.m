@@ -77,11 +77,11 @@ EJ_BIND_ENUM(textBaseline, renderingContext.state->textBaseline,
 
 EJ_BIND_GET(fillStyle, ctx ) {
 	if( renderingContext.fillObject ) {
-		if( [renderingContext.fillObject isKindOfClass:[EJCanvasPattern class]] ) {
+		if( [renderingContext.fillObject isKindOfClass:EJCanvasPattern.class] ) {
 			EJCanvasPattern *pattern = (EJCanvasPattern *)renderingContext.fillObject;
 			return [EJBindingCanvasPattern createJSObjectWithContext:ctx scriptView:scriptView pattern:pattern];
 		}
-		else if( [renderingContext.fillObject isKindOfClass:[EJCanvasGradient class]] ) {
+		else if( [renderingContext.fillObject isKindOfClass:EJCanvasGradient.class] ) {
 			EJCanvasGradient *gradient = (EJCanvasGradient *)renderingContext.fillObject;
 			return [EJBindingCanvasGradient createJSObjectWithContext:ctx scriptView:scriptView gradient:gradient];
 		}
@@ -113,11 +113,40 @@ EJ_BIND_SET(fillStyle, ctx, value) {
 }
 
 EJ_BIND_GET(strokeStyle, ctx ) {
-	return ColorRGBAToJSValue(ctx, renderingContext.state->strokeColor);
+	if( renderingContext.strokeObject ) {
+		if( [renderingContext.strokeObject isKindOfClass:EJCanvasPattern.class] ) {
+			EJCanvasPattern *pattern = (EJCanvasPattern *)renderingContext.strokeObject;
+			return [EJBindingCanvasPattern createJSObjectWithContext:ctx scriptView:scriptView pattern:pattern];
+		}
+		else if( [renderingContext.strokeObject isKindOfClass:EJCanvasGradient.class] ) {
+			EJCanvasGradient *gradient = (EJCanvasGradient *)renderingContext.strokeObject;
+			return [EJBindingCanvasGradient createJSObjectWithContext:ctx scriptView:scriptView gradient:gradient];
+		}
+	}
+	else {
+		return ColorRGBAToJSValue(ctx, renderingContext.state->strokeColor);
+	}
+	
+	return NULL;
 }
 
 EJ_BIND_SET(strokeStyle, ctx, value) {
-	renderingContext.state->strokeColor = JSValueToColorRGBA(ctx, value);
+	if( JSValueIsObject(ctx, value) ) {
+		// Try CanvasPattern or CanvasGradient
+		
+		NSObject<EJFillable> *fillable;
+		if( (fillable = [EJBindingCanvasPattern patternFromJSValue:value]) ) {
+			renderingContext.strokeObject = fillable;
+		}
+		else if( (fillable = [EJBindingCanvasGradient gradientFromJSValue:value]) ) {
+			renderingContext.strokeObject = fillable;
+		}
+	}
+	else {
+		// Should be a color string
+		renderingContext.state->strokeColor = JSValueToColorRGBA(ctx, value);
+		renderingContext.strokeObject = NULL;
+	}
 }
 
 EJ_BIND_GET(globalAlpha, ctx ) {

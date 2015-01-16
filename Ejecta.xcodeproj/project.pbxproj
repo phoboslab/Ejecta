@@ -20,23 +20,18 @@
 		B607AC33132EA75F00D7C3EA /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B607AC32132EA75F00D7C3EA /* AudioToolbox.framework */; };
 		B607AD0A132EB51000D7C3EA /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B607AD09132EB51000D7C3EA /* OpenGLES.framework */; };
 		B607AD10132EB52400D7C3EA /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B607AD0F132EB52400D7C3EA /* QuartzCore.framework */; };
-		B609F2D416AD877E00A3B2B9 /* RadialGradient.fsh in Resources */ = {isa = PBXBuildFile; fileRef = B609F2CE16AD873A00A3B2B9 /* RadialGradient.fsh */; };
-		B60EA4021910655C00FA45E7 /* base64.c in Sources */ = {isa = PBXBuildFile; fileRef = B60EA4001910655C00FA45E7 /* base64.c */; };
 		B60FA92817021E0900078D20 /* EJBindingVideo.m in Sources */ = {isa = PBXBuildFile; fileRef = B60FA92717021E0900078D20 /* EJBindingVideo.m */; };
 		B60FA92A1702297C00078D20 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B60FA9291702297C00078D20 /* MediaPlayer.framework */; };
 		B62436681666851E0046B8C7 /* Ejecta.js in Resources */ = {isa = PBXBuildFile; fileRef = B64CE63F166682700087CF94 /* Ejecta.js */; };
 		B630048916C1A2390036D8D4 /* EJBindingTextMetrics.m in Sources */ = {isa = PBXBuildFile; fileRef = B630048816C1A1960036D8D4 /* EJBindingTextMetrics.m */; };
 		B630048C16CB098D0036D8D4 /* EJClassLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = B630048B16CB09850036D8D4 /* EJClassLoader.m */; };
+		B637065E1A27BD5600F42B90 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = B637065D1A27BD5600F42B90 /* LaunchScreen.xib */; };
+		B63706601A27C15200F42B90 /* ejecta-logo.png in Resources */ = {isa = PBXBuildFile; fileRef = B637065F1A27C15200F42B90 /* ejecta-logo.png */; };
 		B63D256616E8DE23007E6034 /* SRWebSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = B63D256316E8DE23007E6034 /* SRWebSocket.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		B63D256816E8DF23007E6034 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B63D256716E8DF23007E6034 /* CFNetwork.framework */; };
 		B63D256A16E8DF33007E6034 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B63D256916E8DF33007E6034 /* Security.framework */; };
 		B63D256D16E8E0EE007E6034 /* EJBindingWebSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = B63D256C16E8DFAB007E6034 /* EJBindingWebSocket.m */; };
 		B6468006188AB3260087F098 /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6468005188AB3260087F098 /* JavaScriptCore.framework */; };
-		B64C878A16B800DA0097CD5B /* AlphaTexture.fsh in Resources */ = {isa = PBXBuildFile; fileRef = B64C878016B800C10097CD5B /* AlphaTexture.fsh */; };
-		B64C878B16B800DA0097CD5B /* Flat.fsh in Resources */ = {isa = PBXBuildFile; fileRef = B64C878116B800C10097CD5B /* Flat.fsh */; };
-		B64C878C16B800DA0097CD5B /* Pattern.fsh in Resources */ = {isa = PBXBuildFile; fileRef = B64C878216B800C10097CD5B /* Pattern.fsh */; };
-		B64C878D16B800DA0097CD5B /* Texture.fsh in Resources */ = {isa = PBXBuildFile; fileRef = B64C878316B800C10097CD5B /* Texture.fsh */; };
-		B64C878E16B800DA0097CD5B /* Vertex.vsh in Resources */ = {isa = PBXBuildFile; fileRef = B64C878416B800C10097CD5B /* Vertex.vsh */; };
 		B64C87AC16B81BAA0097CD5B /* EJGLProgram2D.m in Sources */ = {isa = PBXBuildFile; fileRef = B64C87A816B80F410097CD5B /* EJGLProgram2D.m */; };
 		B64C87AE16B81BAA0097CD5B /* EJGLProgram2DRadialGradient.m in Sources */ = {isa = PBXBuildFile; fileRef = B64C87AA16B80F4C0097CD5B /* EJGLProgram2DRadialGradient.m */; };
 		B64CE662166682700087CF94 /* EJAppViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE611166682700087CF94 /* EJAppViewController.m */; };
@@ -60,16 +55,11 @@
 		B64CE67E166682700087CF94 /* EJBindingTouchInput.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE64E166682700087CF94 /* EJBindingTouchInput.m */; };
 		B64CE67F166682700087CF94 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE651166682700087CF94 /* AppDelegate.m */; };
 		B64CE682166682700087CF94 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE661166682700087CF94 /* main.m */; };
-		B64CE68F166682B10087CF94 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B64CE684166682B10087CF94 /* Default-568h@2x.png */; };
-		B64CE690166682B10087CF94 /* Default-Landscape.png in Resources */ = {isa = PBXBuildFile; fileRef = B64CE685166682B10087CF94 /* Default-Landscape.png */; };
-		B64CE691166682B10087CF94 /* Default-Portrait.png in Resources */ = {isa = PBXBuildFile; fileRef = B64CE686166682B10087CF94 /* Default-Portrait.png */; };
-		B64CE692166682B10087CF94 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = B64CE687166682B10087CF94 /* Default.png */; };
-		B64CE693166682B10087CF94 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B64CE688166682B10087CF94 /* Default@2x.png */; };
 		B64CE695166682B10087CF94 /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = B64CE68A166682B10087CF94 /* Icon-72.png */; };
 		B64CE696166682B10087CF94 /* Icon-72@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B64CE68B166682B10087CF94 /* Icon-72@2x.png */; };
 		B64CE697166682B10087CF94 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = B64CE68C166682B10087CF94 /* Icon.png */; };
 		B64CE698166682B10087CF94 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B64CE68D166682B10087CF94 /* Icon@2x.png */; };
-		B64CE699166682B10087CF94 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = B64CE68E166682B10087CF94 /* MainWindow.xib */; };
+		B65A25C119618E5C00CC1744 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = B65A25C019618E5C00CC1744 /* MainWindow.xib */; };
 		B664B98B1699F3380093E04E /* EJBindingCanvasPattern.m in Sources */ = {isa = PBXBuildFile; fileRef = B664B98A1699F3380093E04E /* EJBindingCanvasPattern.m */; };
 		B664B98E1699F49C0093E04E /* EJCanvasPattern.m in Sources */ = {isa = PBXBuildFile; fileRef = B664B98D1699F49B0093E04E /* EJCanvasPattern.m */; };
 		B66847591823FEDF00ABCDF9 /* EJCanvasContextWebGLTexture.m in Sources */ = {isa = PBXBuildFile; fileRef = B66847581823FEDF00ABCDF9 /* EJCanvasContextWebGLTexture.m */; };
@@ -137,9 +127,6 @@
 		B607AC32132EA75F00D7C3EA /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		B607AD09132EB51000D7C3EA /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		B607AD0F132EB52400D7C3EA /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		B609F2CE16AD873A00A3B2B9 /* RadialGradient.fsh */ = {isa = PBXFileReference; explicitFileType = sourcecode.glsl; fileEncoding = 4; path = RadialGradient.fsh; sourceTree = "<group>"; };
-		B60EA4001910655C00FA45E7 /* base64.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = base64.c; sourceTree = "<group>"; };
-		B60EA4011910655C00FA45E7 /* base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = base64.h; sourceTree = "<group>"; };
 		B60FA92617021E0900078D20 /* EJBindingVideo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingVideo.h; sourceTree = "<group>"; };
 		B60FA92717021E0900078D20 /* EJBindingVideo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingVideo.m; sourceTree = "<group>"; };
 		B60FA9291702297C00078D20 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
@@ -147,6 +134,8 @@
 		B630048816C1A1960036D8D4 /* EJBindingTextMetrics.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EJBindingTextMetrics.m; sourceTree = "<group>"; };
 		B630048A16CB097F0036D8D4 /* EJClassLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJClassLoader.h; sourceTree = "<group>"; };
 		B630048B16CB09850036D8D4 /* EJClassLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJClassLoader.m; sourceTree = "<group>"; };
+		B637065D1A27BD5600F42B90 /* LaunchScreen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LaunchScreen.xib; sourceTree = "<group>"; };
+		B637065F1A27C15200F42B90 /* ejecta-logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ejecta-logo.png"; sourceTree = "<group>"; };
 		B63D256116E8DE23007E6034 /* SocketRocket-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SocketRocket-Prefix.pch"; sourceTree = "<group>"; };
 		B63D256216E8DE23007E6034 /* SRWebSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SRWebSocket.h; sourceTree = "<group>"; };
 		B63D256316E8DE23007E6034 /* SRWebSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SRWebSocket.m; sourceTree = "<group>"; };
@@ -155,11 +144,6 @@
 		B63D256B16E8DFAB007E6034 /* EJBindingWebSocket.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EJBindingWebSocket.h; sourceTree = "<group>"; };
 		B63D256C16E8DFAB007E6034 /* EJBindingWebSocket.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EJBindingWebSocket.m; sourceTree = "<group>"; };
 		B6468005188AB3260087F098 /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = JavaScriptCore.framework; sourceTree = "<group>"; };
-		B64C878016B800C10097CD5B /* AlphaTexture.fsh */ = {isa = PBXFileReference; explicitFileType = sourcecode.glsl; fileEncoding = 4; path = AlphaTexture.fsh; sourceTree = "<group>"; };
-		B64C878116B800C10097CD5B /* Flat.fsh */ = {isa = PBXFileReference; explicitFileType = sourcecode.glsl; fileEncoding = 4; path = Flat.fsh; sourceTree = "<group>"; };
-		B64C878216B800C10097CD5B /* Pattern.fsh */ = {isa = PBXFileReference; explicitFileType = sourcecode.glsl; fileEncoding = 4; path = Pattern.fsh; sourceTree = "<group>"; };
-		B64C878316B800C10097CD5B /* Texture.fsh */ = {isa = PBXFileReference; explicitFileType = sourcecode.glsl; fileEncoding = 4; path = Texture.fsh; sourceTree = "<group>"; };
-		B64C878416B800C10097CD5B /* Vertex.vsh */ = {isa = PBXFileReference; explicitFileType = sourcecode.glsl; fileEncoding = 4; path = Vertex.vsh; sourceTree = "<group>"; };
 		B64C87A716B80F400097CD5B /* EJGLProgram2D.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EJGLProgram2D.h; sourceTree = "<group>"; };
 		B64C87A816B80F410097CD5B /* EJGLProgram2D.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EJGLProgram2D.m; sourceTree = "<group>"; };
 		B64C87A916B80F450097CD5B /* EJGLProgram2DRadialGradient.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EJGLProgram2DRadialGradient.h; sourceTree = "<group>"; };
@@ -209,17 +193,13 @@
 		B64CE650166682700087CF94 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		B64CE651166682700087CF94 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		B64CE661166682700087CF94 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		B64CE684166682B10087CF94 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
-		B64CE685166682B10087CF94 /* Default-Landscape.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape.png"; sourceTree = "<group>"; };
-		B64CE686166682B10087CF94 /* Default-Portrait.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Portrait.png"; sourceTree = "<group>"; };
-		B64CE687166682B10087CF94 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
-		B64CE688166682B10087CF94 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		B64CE689166682B10087CF94 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B64CE68A166682B10087CF94 /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-72.png"; sourceTree = "<group>"; };
 		B64CE68B166682B10087CF94 /* Icon-72@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-72@2x.png"; sourceTree = "<group>"; };
 		B64CE68C166682B10087CF94 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		B64CE68D166682B10087CF94 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
-		B64CE68E166682B10087CF94 /* MainWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
+		B659D3121A4F6FE300B9AEF9 /* EJCanvasShaders.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EJCanvasShaders.h; sourceTree = "<group>"; };
+		B65A25C019618E5C00CC1744 /* MainWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = MainWindow.xib; path = Resources/MainWindow.xib; sourceTree = SOURCE_ROOT; };
 		B664B9891699F3370093E04E /* EJBindingCanvasPattern.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingCanvasPattern.h; sourceTree = "<group>"; };
 		B664B98A1699F3380093E04E /* EJBindingCanvasPattern.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingCanvasPattern.m; sourceTree = "<group>"; };
 		B664B98C1699F49B0093E04E /* EJCanvasPattern.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJCanvasPattern.h; sourceTree = "<group>"; };
@@ -388,19 +368,6 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		B609F2CB16AD873900A3B2B9 /* Shaders */ = {
-			isa = PBXGroup;
-			children = (
-				B64C878016B800C10097CD5B /* AlphaTexture.fsh */,
-				B64C878116B800C10097CD5B /* Flat.fsh */,
-				B64C878216B800C10097CD5B /* Pattern.fsh */,
-				B64C878316B800C10097CD5B /* Texture.fsh */,
-				B64C878416B800C10097CD5B /* Vertex.vsh */,
-				B609F2CE16AD873A00A3B2B9 /* RadialGradient.fsh */,
-			);
-			path = Shaders;
-			sourceTree = "<group>";
-		};
 		B63D255C16E8DE23007E6034 /* SocketRocket */ = {
 			isa = PBXGroup;
 			children = (
@@ -420,6 +387,7 @@
 				B64CE650166682700087CF94 /* AppDelegate.h */,
 				B64CE651166682700087CF94 /* AppDelegate.m */,
 				B64CE661166682700087CF94 /* main.m */,
+				B65A25C019618E5C00CC1744 /* MainWindow.xib */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -537,8 +505,6 @@
 			children = (
 				B6468005188AB3260087F098 /* JavaScriptCore.framework */,
 				B63D255C16E8DE23007E6034 /* SocketRocket */,
-				B60EA4001910655C00FA45E7 /* base64.c */,
-				B60EA4011910655C00FA45E7 /* base64.h */,
 			);
 			path = lib;
 			sourceTree = "<group>";
@@ -546,21 +512,17 @@
 		B64CE683166682B10087CF94 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				B637065F1A27C15200F42B90 /* ejecta-logo.png */,
 				B99F05BD188C4125002F194D /* Icon-60.png */,
 				B99F05BE188C4125002F194D /* Icon-60@2x.png */,
 				B99F05BF188C4125002F194D /* Icon-76.png */,
 				B99F05C0188C4125002F194D /* Icon-76@2x.png */,
-				B64CE684166682B10087CF94 /* Default-568h@2x.png */,
-				B64CE685166682B10087CF94 /* Default-Landscape.png */,
-				B64CE686166682B10087CF94 /* Default-Portrait.png */,
-				B64CE687166682B10087CF94 /* Default.png */,
-				B64CE688166682B10087CF94 /* Default@2x.png */,
 				B64CE68A166682B10087CF94 /* Icon-72.png */,
 				B64CE68B166682B10087CF94 /* Icon-72@2x.png */,
 				B64CE68C166682B10087CF94 /* Icon.png */,
 				B64CE68D166682B10087CF94 /* Icon@2x.png */,
 				B64CE689166682B10087CF94 /* Info.plist */,
-				B64CE68E166682B10087CF94 /* MainWindow.xib */,
+				B637065D1A27BD5600F42B90 /* LaunchScreen.xib */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -581,7 +543,6 @@
 		B6F114E91676BD40001F1324 /* 2D */ = {
 			isa = PBXGroup;
 			children = (
-				B609F2CB16AD873900A3B2B9 /* Shaders */,
 				B6F114EA1676BD40001F1324 /* EJBindingCanvasContext2D.h */,
 				B6F114EB1676BD40001F1324 /* EJBindingCanvasContext2D.m */,
 				B6F114EE1676BD40001F1324 /* EJCanvasContext2D.h */,
@@ -590,6 +551,7 @@
 				B6F114F11676BD40001F1324 /* EJCanvasContext2DScreen.m */,
 				B6F114F21676BD40001F1324 /* EJCanvasContext2DTexture.h */,
 				B6F114F31676BD40001F1324 /* EJCanvasContext2DTexture.m */,
+				B659D3121A4F6FE300B9AEF9 /* EJCanvasShaders.h */,
 				B664B9891699F3370093E04E /* EJBindingCanvasPattern.h */,
 				B664B98A1699F3380093E04E /* EJBindingCanvasPattern.m */,
 				B664B98C1699F49B0093E04E /* EJCanvasPattern.h */,
@@ -668,7 +630,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0600;
+				LastUpgradeCheck = 0610;
 				TargetAttributes = {
 					1D6058900D05DD3D006BFB54 = {
 						DevelopmentTeam = TYQN4X28QA;
@@ -699,23 +661,14 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B64C878A16B800DA0097CD5B /* AlphaTexture.fsh in Resources */,
-				B64C878B16B800DA0097CD5B /* Flat.fsh in Resources */,
-				B64C878C16B800DA0097CD5B /* Pattern.fsh in Resources */,
-				B64C878D16B800DA0097CD5B /* Texture.fsh in Resources */,
-				B64C878E16B800DA0097CD5B /* Vertex.vsh in Resources */,
-				B609F2D416AD877E00A3B2B9 /* RadialGradient.fsh in Resources */,
+				B65A25C119618E5C00CC1744 /* MainWindow.xib in Resources */,
 				B68C5B95132E6CD60015092E /* App in Resources */,
-				B64CE68F166682B10087CF94 /* Default-568h@2x.png in Resources */,
-				B64CE690166682B10087CF94 /* Default-Landscape.png in Resources */,
-				B64CE691166682B10087CF94 /* Default-Portrait.png in Resources */,
-				B64CE692166682B10087CF94 /* Default.png in Resources */,
-				B64CE693166682B10087CF94 /* Default@2x.png in Resources */,
+				B637065E1A27BD5600F42B90 /* LaunchScreen.xib in Resources */,
 				B64CE695166682B10087CF94 /* Icon-72.png in Resources */,
 				B64CE696166682B10087CF94 /* Icon-72@2x.png in Resources */,
 				B64CE697166682B10087CF94 /* Icon.png in Resources */,
+				B63706601A27C15200F42B90 /* ejecta-logo.png in Resources */,
 				B64CE698166682B10087CF94 /* Icon@2x.png in Resources */,
-				B64CE699166682B10087CF94 /* MainWindow.xib in Resources */,
 				B62436681666851E0046B8C7 /* Ejecta.js in Resources */,
 				B99F05C1188C4125002F194D /* Icon-60.png in Resources */,
 				B99F05C2188C4125002F194D /* Icon-60@2x.png in Resources */,
@@ -791,7 +744,6 @@
 				B63D256616E8DE23007E6034 /* SRWebSocket.m in Sources */,
 				B63D256D16E8E0EE007E6034 /* EJBindingWebSocket.m in Sources */,
 				B6F629D116F353C800F16BAC /* EJBindingCanvasStyle.m in Sources */,
-				B60EA4021910655C00FA45E7 /* base64.c in Sources */,
 				B870BDE916F2E11A00827F01 /* EJBindingWebGLExtensions.m in Sources */,
 				B6D6E0A016F7E7B4009AB75F /* EJBindingIAPManager.m in Sources */,
 				B6D6E0A316F7E7D8009AB75F /* EJBindingIAPTransaction.m in Sources */,
@@ -818,7 +770,6 @@
 				GCC_PREFIX_HEADER = Source/Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = "";
 				INFOPLIST_FILE = Resources/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
@@ -842,7 +793,6 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Source/Prefix.pch;
 				INFOPLIST_FILE = Resources/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
@@ -857,7 +807,6 @@
 		C01FCF4F08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = armv7;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_C_LANGUAGE_STANDARD = c99;
@@ -869,19 +818,16 @@
 					"${SOURCE_ROOT}/Source/lib",
 				);
 				INFOPLIST_FILE = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = "-DDEBUG";
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
-				VALID_ARCHS = "armv7 armv7s arm64";
 			};
 			name = Debug;
 		};
 		C01FCF5008A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = armv7;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_C_LANGUAGE_STANDARD = c99;
@@ -892,12 +838,10 @@
 					"${SOURCE_ROOT}/Source/lib",
 				);
 				INFOPLIST_FILE = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
-				VALID_ARCHS = "armv7 armv7s arm64";
 			};
 			name = Release;
 		};
