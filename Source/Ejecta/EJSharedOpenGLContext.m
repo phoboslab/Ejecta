@@ -1,10 +1,5 @@
 #import "EJSharedOpenGLContext.h"
-#import "AlphaTexture.fsh.h"
-#import "Flat.fsh.h"
-#import "Pattern.fsh.h"
-#import "RadialGradient.fsh.h"
-#import "Texture.fsh.h"
-#import "Vertex.vsh.h"
+#import "EJCanvas/2D/EJCanvasShaders.h"
 
 @implementation EJSharedOpenGLContext
 
@@ -57,8 +52,7 @@ static EJSharedOpenGLContext *sharedOpenGLContext;
 #define EJ_GL_PROGRAM_GETTER(TYPE, NAME) \
 	- (TYPE *)glProgram2D##NAME { \
 		if( !glProgram2D##NAME ) { \
-            glProgram2D##NAME = [[TYPE alloc] initWithVertexShaderSource:[[NSString alloc] initWithBytesNoCopy:Vertex_vsh length:Vertex_vsh_len encoding:NSUTF8StringEncoding freeWhenDone:NO]\
-                                                    fragmentShaderSource:[[NSString alloc] initWithBytesNoCopy:NAME##_fsh length:NAME##_fsh_len encoding:NSUTF8StringEncoding freeWhenDone:NO]];\
+			glProgram2D##NAME = [[TYPE alloc] initWithVertexShader:EJShaderVertex fragmentShader:EJShader##NAME]; \
 		} \
 	return glProgram2D##NAME; \
 	}

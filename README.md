@@ -17,13 +17,6 @@ Ejecta is published under the [MIT Open Source License](http://opensource.org/li
  - 2013-03-15 - `canvas.scaleMode` was removed in favor of the `canvas.style` property. To scale and position your canvas independently from its internal resolution, use the style's `width`, `height`, `top` and `left` properties. I.e. to always scale to fullscreen: `canvas.style.width = window.innerWidth; canvas.style.height = window.innerHeight`. Appending `px` suffixes is ok.
 
 
-## ARMv7s and ARM64 Support
-
-By default, Ejecta is compiled for the ARMv7 instruction set only. It will still run on all ARMv7s and ARM64 devices as well, but is not optimized for these.
-
-If you want to compile Ejecta for ARMv7s and ARM64 as well, you can set _Archictectures_ in the Project Settings to _"Standard architectures (including 64-bit)"_. However, this results in a much larger binary (about 10.5mb instead of 3mb) and only minor performance improvements for ARMv7s and ARM64 devices. I would advice you to benchmark your App to see if compiling for these architectures is worth the larger file size.
-
-
 ## WebGL Support
 
 Recently WebGL support has been merged into the main branch. A huge thanks goes to @vikerman - he did most of the grunt work of the WebGL implementation. To have the WebGL alongside Canvas2D, I modified the old 2D implementation to use OpenGL ES2 instead of ES1, just like WebGL itself. 

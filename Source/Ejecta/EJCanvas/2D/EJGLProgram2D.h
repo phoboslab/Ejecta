@@ -15,13 +15,11 @@ enum {
 	GLuint screen;
 }
 
-- (id)initWithVertexShader:(NSString *)vertexShaderFile fragmentShader:(NSString *)fragmentShaderFile;
-- (id)initWithVertexShaderSource:(NSString *)vertexShaderSource fragmentShaderSource:(NSString *)fragmentShaderSource;
+- (id)initWithVertexShader:(const char *)vertexShaderSource fragmentShader:(const char *)fragmentShaderSource;
 - (void)bindAttributeLocations;
 - (void)getUniforms;
 
-+ (GLint)compileShaderFile:(NSString *)file type:(GLenum)type;
-+ (GLint)compileShaderSource:(NSString *)source type:(GLenum)type;
++ (GLint)compileShaderSource:(const char *)source type:(GLenum)type;
 + (void)linkProgram:(GLuint)program;
 
 @property (nonatomic, readonly) GLuint program;
