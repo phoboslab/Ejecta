@@ -1,7 +1,7 @@
 #import "EJFont.h"
 #import "EJCanvasContext2D.h"
 #include <malloc/malloc.h>
-#include <ext/hash_map>
+#include <unordered_map>
 
 
 @implementation EJFontDescriptor
@@ -74,7 +74,7 @@ int EJFontGlyphLayoutSortByTextureIndex(const void *a, const void *b) {
 
 @interface EJFont () {
 	// Glyph information
-	__gnu_cxx::hash_map<int, EJFontGlyphInfo> glyphInfoMap;
+	std::unordered_map<int, EJFontGlyphInfo> glyphInfoMap;
 }
 @end
 
@@ -243,7 +243,8 @@ int EJFontGlyphLayoutSortByTextureIndex(const void *a, const void *b) {
 	}
 	
 	// Render glyph and update the texture
-	CGContextShowGlyphsAtPoint(context, -glyphInfo->x, -glyphInfo->y, &glyph, 1);
+	CGPoint p = CGPointMake(-glyphInfo->x, -glyphInfo->y);
+	CTFontDrawGlyphs(ctMainFont, &glyph, &p, 1, context);
 	[texture updateWithPixels:pixels atX:txLineX y:txLineY width:pxWidth height:pxHeight];
 	
 	// Update texture coordinates

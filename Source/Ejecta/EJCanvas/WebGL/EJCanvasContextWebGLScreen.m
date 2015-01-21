@@ -3,13 +3,6 @@
 @implementation EJCanvasContextWebGLScreen
 @synthesize style;
 
-- (id)initWithScriptView:(EJJavaScriptView *)scriptViewp width:(short)widthp height:(short)heightp style:(CGRect)stylep {
-	if( self = [super initWithScriptView:scriptViewp width:widthp height:heightp] ) {
-		style = stylep;
-	}
-	return self;
-}
-
 - (void)dealloc {
 	[glview removeFromSuperview];
 	[glview release];
@@ -61,15 +54,6 @@
 		width, height, 
 		frame.size.width, frame.size.height
 	);
-	
-	if( contentScale != 1 && contentScale != 2 ) {
-		NSLog(
-			@"Warning: contentScale for the WebGL ScreenCanvas is %f. "
-			@"You'll likely get a blank screen. The canvas's style width and height "
-			@"must be 1x or 2x the internal width and height.",
-			contentScale
-		);
-	}
 	
 	if( !glview ) {
 		// Create the OpenGL UIView with final screen size and content scaling (retina)

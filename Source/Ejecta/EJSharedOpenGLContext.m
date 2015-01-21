@@ -1,4 +1,5 @@
 #import "EJSharedOpenGLContext.h"
+#import "EJCanvas/2D/EJCanvasShaders.h"
 
 @implementation EJSharedOpenGLContext
 
@@ -51,7 +52,7 @@ static EJSharedOpenGLContext *sharedOpenGLContext;
 #define EJ_GL_PROGRAM_GETTER(TYPE, NAME) \
 	- (TYPE *)glProgram2D##NAME { \
 		if( !glProgram2D##NAME ) { \
-			glProgram2D##NAME = [[TYPE alloc] initWithVertexShader:@"Vertex.vsh" fragmentShader: @ #NAME @".fsh"]; \
+			glProgram2D##NAME = [[TYPE alloc] initWithVertexShader:EJShaderVertex fragmentShader:EJShader##NAME]; \
 		} \
 	return glProgram2D##NAME; \
 	}

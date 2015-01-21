@@ -13,18 +13,7 @@
 	banner = [[ADBannerView alloc] initWithFrame:CGRectZero];
 	banner.delegate = self;
 	banner.hidden = YES;
-	
-	BOOL landscape = [[[NSBundle mainBundle] infoDictionary][@"UIInterfaceOrientation"]
-		hasPrefix:@"UIInterfaceOrientationLandscape"];
-	
-	banner.requiredContentSizeIdentifiers = [NSSet setWithObjects:
-		(landscape
-			? ADBannerContentSizeIdentifierLandscape
-			: ADBannerContentSizeIdentifierPortrait),
-		nil];
- 	if( landscape ) {
- 		banner.currentContentSizeIdentifier = ADBannerContentSizeIdentifierLandscape;
- 	}
+	banner.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 	
 	[scriptView addSubview:banner];
 	NSLog(@"AdBanner: init at y %f", banner.frame.origin.y);

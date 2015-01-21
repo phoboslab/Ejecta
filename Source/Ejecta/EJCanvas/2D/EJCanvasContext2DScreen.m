@@ -6,13 +6,6 @@
 @implementation EJCanvasContext2DScreen
 @synthesize style;
 
-- (id)initWithScriptView:(EJJavaScriptView *)scriptViewp width:(short)widthp height:(short)heightp style:(CGRect)stylep {
-	if( self = [super initWithScriptView:scriptViewp width:widthp height:heightp] ) {
-		style = stylep;
-	}
-	return self;
-}
-
 - (void)dealloc {
 	[glview removeFromSuperview];
 	[glview release];
@@ -57,7 +50,7 @@
 	
 	CGRect frame = self.frame;
 	
-	float contentScale = (useRetinaResolution && [UIScreen mainScreen].scale == 2) ? 2 : 1;
+	float contentScale = useRetinaResolution ? UIScreen.mainScreen.scale : 1;
 	backingStoreRatio = (frame.size.width / (float)width) * contentScale;
 	
 	bufferWidth = frame.size.width * contentScale;
