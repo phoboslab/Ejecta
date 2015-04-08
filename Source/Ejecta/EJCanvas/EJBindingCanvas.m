@@ -209,14 +209,14 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 	renderingContext.msaaEnabled = msaaEnabled;
 	renderingContext.msaaSamples = msaaSamples;
 	
+	[EAGLContext setCurrentContext:renderingContext.glContext];
+	[renderingContext create];
+	scriptView.currentRenderingContext = renderingContext;
+	
 	if( isScreenCanvas ) {
 		scriptView.screenRenderingContext = (EJCanvasContext<EJPresentable> *)renderingContext;
 		scriptView.screenRenderingContext.style = style;
 	}
-	
-	[EAGLContext setCurrentContext:renderingContext.glContext];
-	[renderingContext create];
-	scriptView.currentRenderingContext = renderingContext;
 	
 	
 	// Create the JS object
