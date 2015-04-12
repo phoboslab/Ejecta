@@ -19,6 +19,7 @@
 		5C25148F1ADAAF9300761DA8 /* OpenUDID.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C2514891ADAAF9300761DA8 /* OpenUDID.m */; };
 		5C2514921ADAB0A600761DA8 /* GoogleMobileAds.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C2514911ADAB0A600761DA8 /* GoogleMobileAds.framework */; };
 		5C3B72E41ADAB7D3002A3FB5 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C3B72E31ADAB7D3002A3FB5 /* CoreMedia.framework */; };
+		5C3B72E81ADAD976002A3FB5 /* Chartboost.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C3B72E71ADAD976002A3FB5 /* Chartboost.framework */; };
 		5C631BFB19110679009AF7F0 /* EJBindingDecryptorXOR.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C631BFA19110679009AF7F0 /* EJBindingDecryptorXOR.m */; };
 		5C631C021911446F009AF7F0 /* EJBindingBaseInterceptor.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C631BFE1911446F009AF7F0 /* EJBindingBaseInterceptor.m */; };
 		5C631C031911446F009AF7F0 /* EJInterceptorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C631C011911446F009AF7F0 /* EJInterceptorManager.m */; };
@@ -165,6 +166,7 @@
 		5C2514891ADAAF9300761DA8 /* OpenUDID.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OpenUDID.m; sourceTree = "<group>"; };
 		5C2514911ADAB0A600761DA8 /* GoogleMobileAds.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleMobileAds.framework; sourceTree = "<group>"; };
 		5C3B72E31ADAB7D3002A3FB5 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		5C3B72E71ADAD976002A3FB5 /* Chartboost.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Chartboost.framework; sourceTree = "<group>"; };
 		5C631BF919110679009AF7F0 /* EJBindingDecryptorXOR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingDecryptorXOR.h; sourceTree = "<group>"; };
 		5C631BFA19110679009AF7F0 /* EJBindingDecryptorXOR.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingDecryptorXOR.m; sourceTree = "<group>"; };
 		5C631BFD1911446F009AF7F0 /* EJBindingBaseInterceptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingBaseInterceptor.h; sourceTree = "<group>"; };
@@ -399,6 +401,7 @@
 				B6F463A41636C3FB00FC89C1 /* SystemConfiguration.framework in Frameworks */,
 				5B7B76761619DB9700691910 /* CoreText.framework in Frameworks */,
 				B6074FF315F8E41700D987F9 /* GameKit.framework in Frameworks */,
+				5C3B72E81ADAD976002A3FB5 /* Chartboost.framework in Frameworks */,
 				B66F1E811476B6B90090D208 /* libicucore.dylib in Frameworks */,
 				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
@@ -478,6 +481,7 @@
 		5C2514851ADAAF9300761DA8 /* lib */ = {
 			isa = PBXGroup;
 			children = (
+				5C3B72E71ADAD976002A3FB5 /* Chartboost.framework */,
 				5C2514911ADAB0A600761DA8 /* GoogleMobileAds.framework */,
 				5C2514871ADAAF9300761DA8 /* OpenUDID */,
 			);
@@ -972,6 +976,7 @@
 					"$(inherited)",
 					"${SOURCE_ROOT}/Source/lib",
 					"${SOURCE_ROOT}/Extension/lib",
+					"$(PROJECT_DIR)/Extension/lib",
 				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -1008,6 +1013,7 @@
 					"$(inherited)",
 					"${SOURCE_ROOT}/Source/lib",
 					"${SOURCE_ROOT}/Extension/lib",
+					"$(PROJECT_DIR)/Extension/lib",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Source/Prefix.pch;
