@@ -196,7 +196,7 @@ typedef void (^data_callback)(SRWebSocket *webSocket,  NSData *data);
 - (void)_SR_commonInit;
 
 - (void)_initializeStreams;
-- (void)_connect;
+- (void)_doConnect;
 
 @property (nonatomic) SRReadyState readyState;
 
@@ -392,7 +392,7 @@ static __strong NSData *CRLFCRLF;
 
     _selfRetain = self;
     
-    [self _connect];
+    [self _doConnect];
 }
 
 // Calls block on delegate queue
@@ -574,7 +574,7 @@ static __strong NSData *CRLFCRLF;
     _outputStream.delegate = self;
 }
 
-- (void)_connect;
+- (void)_doConnect;
 {
     if (!_scheduledRunloops.count) {
         [self scheduleInRunLoop:[NSRunLoop SR_networkRunLoop] forMode:NSDefaultRunLoopMode];
