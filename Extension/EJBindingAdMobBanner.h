@@ -1,5 +1,6 @@
+#import <GoogleMobileAds/GADBannerViewDelegate.h>
+
 #import "EJBindingEventedBase.h"
-#import "GADBannerViewDelegate.h"
 
 @class GADBannerView;
 @class GADRequest;

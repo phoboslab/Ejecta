@@ -8,10 +8,11 @@
    libz.dylib
 
  */
+#import <GoogleMobileAds/GADInterstitial.h>
+#import <GoogleMobileAds/GADInterstitialDelegate.h>
 
 #import "EJBindingEventedBase.h"
-#import "GADInterstitial.h"
-#import "GADInterstitialDelegate.h"
+
 
 @class GADInterstitial;
 @class GADRequest;
