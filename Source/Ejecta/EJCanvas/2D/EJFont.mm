@@ -100,6 +100,7 @@ int EJFontGlyphLayoutSortByTextureIndex(const void *a, const void *b) {
 			leading	= CTFontGetLeading(ctMainFont);
 			ascent = CTFontGetAscent(ctMainFont);
 			descent = CTFontGetDescent(ctMainFont);
+			xHeight = CTFontGetXHeight(ctMainFont);
 			
 			// If we can't fit at least two rows of glyphs into EJ_FONT_TEXTURE_SIZE, create
 			// a new texture for each glyph. Otherwise we're wasting a lot of space.
@@ -379,7 +380,7 @@ int EJFontGlyphLayoutSortByTextureIndex(const void *a, const void *b) {
 		case kEJTextBaselineHanging:
 			return ascent;
 		case kEJTextBaselineMiddle:
-			return (ascent - descent)/2;
+			return xHeight/2;
 		case kEJTextBaselineBottom:
 			return -descent;
 	}

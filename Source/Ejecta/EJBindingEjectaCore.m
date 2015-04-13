@@ -54,7 +54,7 @@ EJ_BIND_FUNCTION(log, ctx, argc, argv ) {
 EJ_BIND_FUNCTION(load, ctx, argc, argv ) {
 	if( argc < 1 ) return NULL;
 	
-	NSObject<UIApplicationDelegate> *app = [[UIApplication sharedApplication] delegate];
+	NSObject<UIApplicationDelegate> *app = UIApplication.sharedApplication.delegate;
 	if( [app respondsToSelector:@selector(loadViewControllerWithScriptAtPath:)] ) {
 		// Queue up the loading till the next frame; the script view may be in the
 		// midst of a timer update
@@ -105,7 +105,7 @@ EJ_BIND_FUNCTION(openURL, ctx, argc, argv ) {
 		[alert release];
 	}
 	else {
-		[[UIApplication sharedApplication] openURL:[NSURL URLWithString: url]];
+		[UIApplication.sharedApplication openURL:[NSURL URLWithString: url]];
 	}
 	return NULL;
 }
@@ -132,7 +132,7 @@ EJ_BIND_FUNCTION(getText, ctx, argc, argv) {
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)index {
 	if( alertView.tag == kEJCoreAlertViewOpenURL ) {
 		if( index == 1 ) {
-			[[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlToOpen]];
+			[UIApplication.sharedApplication openURL:[NSURL URLWithString:urlToOpen]];
 		}
 		[urlToOpen release];
 		urlToOpen = nil;
@@ -256,11 +256,11 @@ EJ_BIND_GET(onLine, ctx) {
 }
 
 EJ_BIND_GET(allowSleepMode, ctx) {
-	return JSValueMakeBoolean(ctx, ![UIApplication sharedApplication].idleTimerDisabled);
+	return JSValueMakeBoolean(ctx, !UIApplication.sharedApplication.idleTimerDisabled);
 }
 
 EJ_BIND_SET(allowSleepMode, ctx, value) {
-	[UIApplication sharedApplication].idleTimerDisabled = !JSValueToBoolean(ctx, value);
+	UIApplication.sharedApplication.idleTimerDisabled = !JSValueToBoolean(ctx, value);
 }
 
 EJ_BIND_GET(otherAudioPlaying, ctx) {
