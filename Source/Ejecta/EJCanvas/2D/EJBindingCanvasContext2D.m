@@ -262,6 +262,18 @@ EJ_BIND_FUNCTION(setTransform, ctx, argc, argv) {
 	return NULL;
 }
 
+EJ_BIND_GET(currentTransform, ctx) {
+    
+    NSDictionary *transform =  @{@"a": @(renderingContext.state->transform.a),
+                                 @"b": @(renderingContext.state->transform.b),
+                                 @"c": @(renderingContext.state->transform.c),
+                                 @"d": @(renderingContext.state->transform.d),
+                                 @"e": @(renderingContext.state->transform.tx),
+                                 @"f": @(renderingContext.state->transform.ty),
+                                 };
+    return NSObjectToJSValue(ctx, transform);
+}
+
 EJ_BIND_FUNCTION(drawImage, ctx, argc, argv) {
 	if( argc < 3 ) { return NULL; }
 	
