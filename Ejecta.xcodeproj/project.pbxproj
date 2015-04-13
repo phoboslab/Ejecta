@@ -20,6 +20,7 @@
 		5C2514921ADAB0A600761DA8 /* GoogleMobileAds.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C2514911ADAB0A600761DA8 /* GoogleMobileAds.framework */; };
 		5C3B72E41ADAB7D3002A3FB5 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C3B72E31ADAB7D3002A3FB5 /* CoreMedia.framework */; };
 		5C3B72E81ADAD976002A3FB5 /* Chartboost.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C3B72E71ADAD976002A3FB5 /* Chartboost.framework */; };
+		5C49BC891ADB6F2C0063D385 /* EJBindingChartboost.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C49BC881ADB6F2C0063D385 /* EJBindingChartboost.m */; };
 		5C631BFB19110679009AF7F0 /* EJBindingDecryptorXOR.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C631BFA19110679009AF7F0 /* EJBindingDecryptorXOR.m */; };
 		5C631C021911446F009AF7F0 /* EJBindingBaseInterceptor.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C631BFE1911446F009AF7F0 /* EJBindingBaseInterceptor.m */; };
 		5C631C031911446F009AF7F0 /* EJInterceptorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C631C011911446F009AF7F0 /* EJInterceptorManager.m */; };
@@ -167,6 +168,8 @@
 		5C2514911ADAB0A600761DA8 /* GoogleMobileAds.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleMobileAds.framework; sourceTree = "<group>"; };
 		5C3B72E31ADAB7D3002A3FB5 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		5C3B72E71ADAD976002A3FB5 /* Chartboost.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Chartboost.framework; sourceTree = "<group>"; };
+		5C49BC881ADB6F2C0063D385 /* EJBindingChartboost.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingChartboost.m; sourceTree = "<group>"; };
+		5C49BC8A1ADB6F690063D385 /* EJBindingChartboost.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EJBindingChartboost.h; sourceTree = "<group>"; };
 		5C631BF919110679009AF7F0 /* EJBindingDecryptorXOR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingDecryptorXOR.h; sourceTree = "<group>"; };
 		5C631BFA19110679009AF7F0 /* EJBindingDecryptorXOR.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingDecryptorXOR.m; sourceTree = "<group>"; };
 		5C631BFD1911446F009AF7F0 /* EJBindingBaseInterceptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingBaseInterceptor.h; sourceTree = "<group>"; };
@@ -521,6 +524,8 @@
 				5C8E33FE18C4EF40007206AE /* EJBindingAlertView.m */,
 				5C8E33FF18C4EF40007206AE /* EJBindingAppUtils.h */,
 				5C8E340018C4EF40007206AE /* EJBindingAppUtils.m */,
+				5C49BC8A1ADB6F690063D385 /* EJBindingChartboost.h */,
+				5C49BC881ADB6F2C0063D385 /* EJBindingChartboost.m */,
 				5C631BF919110679009AF7F0 /* EJBindingDecryptorXOR.h */,
 				5C631BFA19110679009AF7F0 /* EJBindingDecryptorXOR.m */,
 				5C8E340118C4EF40007206AE /* EJBindingLocalNotification.h */,
@@ -899,6 +904,7 @@
 				B64CE66D166682700087CF94 /* EJBindingImage.m in Sources */,
 				5C8E340B18C4EF40007206AE /* EJBindingAlertView.m in Sources */,
 				B64CE675166682700087CF94 /* EJTexture.m in Sources */,
+				5C49BC891ADB6F2C0063D385 /* EJBindingChartboost.m in Sources */,
 				5C631C021911446F009AF7F0 /* EJBindingBaseInterceptor.m in Sources */,
 				B64CE676166682700087CF94 /* EJConvert.m in Sources */,
 				5C8E340E18C4EF40007206AE /* EJBindingSocial.m in Sources */,
