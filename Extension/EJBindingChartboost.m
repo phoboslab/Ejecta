@@ -38,22 +38,13 @@
 }
 
 
-EJ_BIND_EVENT(interstitialCache);
-EJ_BIND_EVENT(interstitialClose);
-EJ_BIND_EVENT(interstitialClick);
-EJ_BIND_EVENT(interstitialDisplay);
-EJ_BIND_EVENT(interstitialError);
+EJ_BIND_EVENT(cache);
+EJ_BIND_EVENT(display);
+EJ_BIND_EVENT(click);
+EJ_BIND_EVENT(rewarded);
+EJ_BIND_EVENT(close);
+EJ_BIND_EVENT(error);
 
-EJ_BIND_EVENT(moreAppCache);
-EJ_BIND_EVENT(moreAppClose);
-EJ_BIND_EVENT(moreAppClick);
-EJ_BIND_EVENT(moreAppError);
-
-EJ_BIND_EVENT(videoCache);
-EJ_BIND_EVENT(videoClose);
-EJ_BIND_EVENT(videoClick);
-EJ_BIND_EVENT(videoRewarded);
-EJ_BIND_EVENT(videoError);
 
 EJ_BIND_GET(appId, ctx)
 {
@@ -69,6 +60,20 @@ EJ_BIND_GET(appSignature, ctx)
 /*
  * Chartboost API
  */
+
+
+
+
+EJ_BIND_GET(autoCache, ctx)
+{
+    return JSValueMakeBoolean(ctx, [Chartboost getAutoCacheAds]);
+}
+
+EJ_BIND_SET(autoCache, ctx, value)
+{
+    BOOL autoCache = JSValueToBoolean(ctx, value);
+    [Chartboost setAutoCacheAds:autoCache];
+}
 
 EJ_BIND_FUNCTION(cacheInterstitial, ctx, argc, argv)
 {
@@ -112,164 +117,198 @@ EJ_BIND_FUNCTION(showVideo, ctx, argc, argv)
  *
  */
 
+- (NSString *)getErrorMessage:(CBLoadError)error {
+    NSString *message = nil;
+    switch(error){
+        case CBLoadErrorInternetUnavailable: {
+            message = @"No Internet connection !";
+        } break;
+        case CBLoadErrorInternal: {
+            message = @"Internal error !";
+        } break;
+        case CBLoadErrorNetworkFailure: {
+            message = @"Network error !";
+        } break;
+        case CBLoadErrorWrongOrientation: {
+            message = @"Wrong orientation !";
+        } break;
+        case CBLoadErrorTooManyConnections: {
+            message = @"Too many connections !";
+        } break;
+        case CBLoadErrorFirstSessionInterstitialsDisabled: {
+            message = @"First session !";
+        } break;
+        case CBLoadErrorNoAdFound : {
+            message = @"No ad found !";
+        } break;
+        case CBLoadErrorSessionNotStarted : {
+            message = @"Session not started !";
+        } break;
+        case CBLoadErrorNoLocationFound : {
+            message = @"Missing location parameter !";
+        } break;
+        default: {
+            message = @"Unknown error !";
+        }
+    }
+    return message;
+}
+
 
 //////////////    Interstitial    ////////////////
 - (void)didCacheInterstitial:(NSString *)location {
-    NSLog(@"cache Interstitial at location %@", location);
-    [self triggerEvent:@"interstitialCache"];
+    #if DEBUG
+        NSLog(@"cache Interstitial at location %@", location);
+    #endif
+    [self triggerEvent:@"cache" properties:(JSEventProperty[]){
+        {"adType", NSStringToJSValue(scriptView.jsGlobalContext, @"Interstitial")},
+        {"location", NSStringToJSValue(scriptView.jsGlobalContext, location)},
+        {NULL, NULL}
+    }];
 }
 - (void)didCloseInterstitial:(NSString *)location {
-    NSLog(@"close Interstitial at location %@", location);
-    [self triggerEvent:@"interstitialClose"];
+    #if DEBUG
+        NSLog(@"close Interstitial at location %@", location);
+    #endif
+    [self triggerEvent:@"close" properties:(JSEventProperty[]){
+        {"adType", NSStringToJSValue(scriptView.jsGlobalContext, @"Interstitial")},
+        {"location", NSStringToJSValue(scriptView.jsGlobalContext, location)},
+        {NULL, NULL}
+    }];
 }
 - (void)didClickInterstitial:(NSString *)location {
-    NSLog(@"click Interstitial at location %@", location);
-    [self triggerEvent:@"interstitialClick"];
+    #if DEBUG
+        NSLog(@"click Interstitial at location %@", location);
+    #endif
+    [self triggerEvent:@"click" properties:(JSEventProperty[]){
+        {"adType", NSStringToJSValue(scriptView.jsGlobalContext, @"Interstitial")},
+        {"location", NSStringToJSValue(scriptView.jsGlobalContext, location)},
+        {NULL, NULL}
+    }];
 }
 - (void)didDisplayInterstitial:(CBLocation)location {
-    NSLog(@"Did display Interstitial");
+    #if DEBUG
+        NSLog(@"Did display Interstitial");
+    #endif
     if ([Chartboost isAnyViewVisible]) {
-        [self triggerEvent:@"interstitialDisplay"];
+        [self triggerEvent:@"display" properties:(JSEventProperty[]){
+            {"adType", NSStringToJSValue(scriptView.jsGlobalContext, @"Interstitial")},
+            {"location", NSStringToJSValue(scriptView.jsGlobalContext, location)},
+            {NULL, NULL}
+        }];
     }
 }
 - (void)didFailToLoadInterstitial:(NSString *)location withError:(CBLoadError)error {
-    switch(error){
-        case CBLoadErrorInternetUnavailable: {
-            NSLog(@"Failed to load Interstitial, no Internet connection !");
-        } break;
-        case CBLoadErrorInternal: {
-            NSLog(@"Failed to load Interstitial, internal error !");
-        } break;
-        case CBLoadErrorNetworkFailure: {
-            NSLog(@"Failed to load Interstitial, network error !");
-        } break;
-        case CBLoadErrorWrongOrientation: {
-            NSLog(@"Failed to load Interstitial, wrong orientation !");
-        } break;
-        case CBLoadErrorTooManyConnections: {
-            NSLog(@"Failed to load Interstitial, too many connections !");
-        } break;
-        case CBLoadErrorFirstSessionInterstitialsDisabled: {
-            NSLog(@"Failed to load Interstitial, first session !");
-        } break;
-        case CBLoadErrorNoAdFound : {
-            NSLog(@"Failed to load Interstitial, no ad found !");
-        } break;
-        case CBLoadErrorSessionNotStarted : {
-            NSLog(@"Failed to load Interstitial, session not started !");
-        } break;
-        case CBLoadErrorNoLocationFound : {
-            NSLog(@"Failed to load Interstitial, missing location parameter !");
-        } break;
-        default: {
-            NSLog(@"Failed to load Interstitial, unknown error !");
-        }
-    }
+    NSString *message = [self getErrorMessage:error];
+    #if DEBUG
+        NSLog(@"Faild to load Interstitial: %@",message);
+    #endif
+    [self triggerEvent:@"error" properties:(JSEventProperty[]){
+        {"adType", NSStringToJSValue(scriptView.jsGlobalContext, @"Interstitial")},
+        {"message",NSStringToJSValue(scriptView.jsGlobalContext, message)},
+        {NULL, NULL}
+    }];
 
-    [self triggerEvent:@"interstitialError"];
 }
 
 
 
 //////////////    MoreApps    ////////////////
 - (void)didCacheMoreApps:(NSString *)location {
-    NSLog(@"cache MoreApps at location %@", location);
-    [self triggerEvent:@"moreAppsCache"];
+    #if DEBUG
+        NSLog(@"cache MoreApps at location %@", location);
+    #endif
+    [self triggerEvent:@"cache" properties:(JSEventProperty[]){
+        {"adType", NSStringToJSValue(scriptView.jsGlobalContext, @"MoreApps")},
+        {"location", NSStringToJSValue(scriptView.jsGlobalContext, location)},
+        {NULL, NULL}
+    }];
 }
 - (void)didCloseMoreApps:(NSString *)location {
-    NSLog(@"close MoreApps at location %@", location);
-    [self triggerEvent:@"moreAppsClose"];
+    #if DEBUG
+        NSLog(@"close MoreApps at location %@", location);
+    #endif
+    [self triggerEvent:@"close" properties:(JSEventProperty[]){
+        {"adType", NSStringToJSValue(scriptView.jsGlobalContext, @"MoreApps")},
+        {"location", NSStringToJSValue(scriptView.jsGlobalContext, location)},
+        {NULL, NULL}
+    }];
 }
 - (void)didClickMoreApps:(NSString *)location {
-    NSLog(@"click MoreApps at location %@", location);
-    [self triggerEvent:@"moreAppsClick"];
+    #if DEBUG
+        NSLog(@"click MoreApps at location %@", location);
+    #endif
+    [self triggerEvent:@"click" properties:(JSEventProperty[]){
+        {"adType", NSStringToJSValue(scriptView.jsGlobalContext, @"MoreApps")},
+        {"location", NSStringToJSValue(scriptView.jsGlobalContext, location)},
+        {NULL, NULL}
+    }];
 }
 - (void)didFailToLoadMoreApps:(CBLoadError)error {
-    switch(error){
-        case CBLoadErrorInternetUnavailable: {
-            NSLog(@"Failed to load More Apps, no Internet connection !");
-        } break;
-        case CBLoadErrorInternal: {
-            NSLog(@"Failed to load More Apps, internal error !");
-        } break;
-        case CBLoadErrorNetworkFailure: {
-            NSLog(@"Failed to load More Apps, network error !");
-        } break;
-        case CBLoadErrorWrongOrientation: {
-            NSLog(@"Failed to load More Apps, wrong orientation !");
-        } break;
-        case CBLoadErrorTooManyConnections: {
-            NSLog(@"Failed to load More Apps, too many connections !");
-        } break;
-        case CBLoadErrorFirstSessionInterstitialsDisabled: {
-            NSLog(@"Failed to load More Apps, first session !");
-        } break;
-        case CBLoadErrorNoAdFound: {
-            NSLog(@"Failed to load More Apps, Apps not found !");
-        } break;
-        case CBLoadErrorSessionNotStarted : {
-            NSLog(@"Failed to load More Apps, session not started !");
-        } break;
-        default: {
-            NSLog(@"Failed to load More Apps, unknown error !");
-        }
-    }
-    [self triggerEvent:@"moreAppsError"];
+    NSString *message = [self getErrorMessage:error];
+    #if DEBUG
+        NSLog(@"Faild to load MoreApps: %@",message);
+    #endif
+    [self triggerEvent:@"error" properties:(JSEventProperty[]){
+        {"adType", NSStringToJSValue(scriptView.jsGlobalContext, @"MoreApps")},
+        {"message",NSStringToJSValue(scriptView.jsGlobalContext, message)},
+        {NULL, NULL}
+    }];
 }
 
 
 //////////////    RewardedVideo    ////////////////
 - (void)didCacheRewardedVideo:(NSString *)location {
-    NSLog(@"cache RewardedVideo at location %@", location);
-    [self triggerEvent:@"videoCache"];
+    #if DEBUG
+        NSLog(@"cache RewardedVideo at location %@", location);
+    #endif
+    [self triggerEvent:@"cache" properties:(JSEventProperty[]){
+        {"adType", NSStringToJSValue(scriptView.jsGlobalContext, @"RewardedVideo")},
+        {"location", NSStringToJSValue(scriptView.jsGlobalContext, location)},
+        {NULL, NULL}
+    }];
 }
 - (void)didCloseRewardedVideo:(NSString *)location {
-    NSLog(@"close RewardedVideo at location %@", location);
-    [self triggerEvent:@"videoClose"];
+    #if DEBUG
+        NSLog(@"close RewardedVideo at location %@", location);
+    #endif
+    [self triggerEvent:@"close" properties:(JSEventProperty[]){
+        {"adType", NSStringToJSValue(scriptView.jsGlobalContext, @"RewardedVideo")},
+        {"location", NSStringToJSValue(scriptView.jsGlobalContext, location)},
+        {NULL, NULL}
+    }];
 }
 - (void)didClickRewardedVideo:(NSString *)location {
-    NSLog(@"click RewardedVideo at location %@", location);
-    [self triggerEvent:@"videoClick"];
+    #if DEBUG
+        NSLog(@"click RewardedVideo at location %@", location);
+    #endif
+    [self triggerEvent:@"click" properties:(JSEventProperty[]){
+        {"adType", NSStringToJSValue(scriptView.jsGlobalContext, @"RewardedVideo")},
+        {"location", NSStringToJSValue(scriptView.jsGlobalContext, location)},
+        {NULL, NULL}
+    }];
 }
 - (void)didCompleteRewardedVideo:(CBLocation)location withReward:(int)reward {
-    NSLog(@"completed RewardedVideo view at location %@ with reward amount %d", location, reward);
-    [self triggerEvent:@"videoRewarded"];
+    #if DEBUG
+        NSLog(@"completed RewardedVideo view at location %@ with reward amount %d", location, reward);
+    #endif
+    [self triggerEvent:@"rewarded" properties:(JSEventProperty[]){
+        {"adType", NSStringToJSValue(scriptView.jsGlobalContext, @"RewardedVideo")},
+        {"location", NSStringToJSValue(scriptView.jsGlobalContext, location)},
+        {"reward", JSValueMakeNumber(scriptView.jsGlobalContext, reward)},
+        {NULL, NULL}
+    }];
 }
 - (void)didFailToLoadRewardedVideo:(NSString *)location withError:(CBLoadError)error {
-    switch(error){
-        case CBLoadErrorInternetUnavailable: {
-            NSLog(@"Failed to load Rewarded Video, no Internet connection !");
-        } break;
-        case CBLoadErrorInternal: {
-            NSLog(@"Failed to load Rewarded Video, internal error !");
-        } break;
-        case CBLoadErrorNetworkFailure: {
-            NSLog(@"Failed to load Rewarded Video, network error !");
-        } break;
-        case CBLoadErrorWrongOrientation: {
-            NSLog(@"Failed to load Rewarded Video, wrong orientation !");
-        } break;
-        case CBLoadErrorTooManyConnections: {
-            NSLog(@"Failed to load Rewarded Video, too many connections !");
-        } break;
-        case CBLoadErrorFirstSessionInterstitialsDisabled: {
-            NSLog(@"Failed to load Rewarded Video, first session !");
-        } break;
-        case CBLoadErrorNoAdFound : {
-            NSLog(@"Failed to load Rewarded Video, no ad found !");
-        } break;
-        case CBLoadErrorSessionNotStarted : {
-            NSLog(@"Failed to load Rewarded Video, session not started !");
-        } break;
-        case CBLoadErrorNoLocationFound : {
-            NSLog(@"Failed to load Rewarded Video, missing location parameter !");
-        } break;
-        default: {
-            NSLog(@"Failed to load Rewarded Video, unknown error !");
-        }
-    }
-
-    [self triggerEvent:@"videoError"];
+    NSString *message = [self getErrorMessage:error];
+    #if DEBUG
+        NSLog(@"Faild to load RewardedVideo: %@",message);
+    #endif
+    [self triggerEvent:@"error" properties:(JSEventProperty[]){
+        {"adType", NSStringToJSValue(scriptView.jsGlobalContext, @"RewardedVideo")},
+        {"message",NSStringToJSValue(scriptView.jsGlobalContext, message)},
+        {NULL, NULL}
+    }];
 }
 
 
