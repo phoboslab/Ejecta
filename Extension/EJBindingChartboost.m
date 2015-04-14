@@ -1,4 +1,5 @@
 #import <Chartboost/Chartboost.h>
+#import <Chartboost/CBInPlay.h>
 // TODO
 //#import <Chartboost/CBNewsfeed.h>
 //#import <Chartboost/CBAnalytics.h>
@@ -6,6 +7,10 @@
 //#import <AdSupport/AdSupport.h>
 
 #import "EJBindingChartboost.h"
+
+#define ICON_DEFAULT_JPEG_QUALITY 0.9
+#define ICON_DATA_URL_PREFIX_JPEG @"data:image/jpeg;base64,"
+#define ICON_DATA_URL_PREFIX_PNG @"data:image/png;base64,"
 
 @implementation EJBindingChartboost
 
@@ -27,9 +32,7 @@
     [super createWithJSObject:obj scriptView:view];
 
     [Chartboost startWithAppId:appId appSignature:appSignature delegate:self];
-//    [Chartboost cacheInterstitial:CBLocationHomeScreen];
-//    [Chartboost cacheRewardedVideo:CBLocationMainMenu];
-//    [Chartboost cacheMoreApps:CBLocationHomeScreen];
+
 
 }
 
@@ -38,7 +41,7 @@
 }
 
 
-EJ_BIND_EVENT(cache);
+EJ_BIND_EVENT(loaded);
 EJ_BIND_EVENT(display);
 EJ_BIND_EVENT(click);
 EJ_BIND_EVENT(rewarded);
@@ -63,7 +66,6 @@ EJ_BIND_GET(appSignature, ctx)
 
 
 
-
 EJ_BIND_GET(autoCache, ctx)
 {
     return JSValueMakeBoolean(ctx, [Chartboost getAutoCacheAds]);
@@ -75,39 +77,184 @@ EJ_BIND_SET(autoCache, ctx, value)
     [Chartboost setAutoCacheAds:autoCache];
 }
 
-EJ_BIND_FUNCTION(cacheInterstitial, ctx, argc, argv)
+
+
+EJ_BIND_FUNCTION(hasInterstitial, ctx, argc, argv)
 {
-    [Chartboost cacheInterstitial:CBLocationHomeScreen];
+    NSString *location = CBLocationDefault;
+    if (argc > 0) {
+        location = [JSValueToNSString(ctx, argv[0]) retain];
+    }
+    bool loaded = [Chartboost hasInterstitial:location];
+
+    return JSValueMakeBoolean(scriptView.jsGlobalContext, loaded);
+}
+
+EJ_BIND_FUNCTION(loadInterstitial, ctx, argc, argv)
+{
+    NSString *location = CBLocationDefault;
+    if (argc > 0) {
+        location = [JSValueToNSString(ctx, argv[0]) retain];
+    }
+    [Chartboost cacheInterstitial:location];
     return NULL;
 }
 EJ_BIND_FUNCTION(showInterstitial, ctx, argc, argv)
 {
-     NSLog(@"show Interstitial");
-    [Chartboost showInterstitial:CBLocationHomeScreen];
+    NSString *location = CBLocationDefault;
+    if (argc > 0) {
+        location = [JSValueToNSString(ctx, argv[0]) retain];
+    }
+    [Chartboost showInterstitial:location];
     return NULL;
 }
 
 
-EJ_BIND_FUNCTION(cacheMoreApps, ctx, argc, argv)
+
+EJ_BIND_FUNCTION(hasMoreApps, ctx, argc, argv)
 {
-    [Chartboost cacheMoreApps:CBLocationHomeScreen];
+    NSString *location = CBLocationDefault;
+    if (argc > 0) {
+        location = [JSValueToNSString(ctx, argv[0]) retain];
+    }
+    bool loaded = [Chartboost hasMoreApps:location];
+
+    return JSValueMakeBoolean(scriptView.jsGlobalContext, loaded);
+}
+
+EJ_BIND_FUNCTION(loadMoreApps, ctx, argc, argv)
+{
+    NSString *location = CBLocationDefault;
+    if (argc > 0) {
+        location = [JSValueToNSString(ctx, argv[0]) retain];
+    }
+    [Chartboost cacheMoreApps:location];
     return NULL;
 }
 EJ_BIND_FUNCTION(showMoreApps, ctx, argc, argv)
 {
-    [Chartboost showMoreApps:scriptView.window.rootViewController location:CBLocationHomeScreen];
+    NSString *location = CBLocationDefault;
+    if (argc > 0) {
+        location = [JSValueToNSString(ctx, argv[0]) retain];
+    }
+    [Chartboost showMoreApps:scriptView.window.rootViewController location:location];
     return NULL;
 }
 
 
-EJ_BIND_FUNCTION(cacheVideo, ctx, argc, argv)
+
+EJ_BIND_FUNCTION(hasRewardedVideo, ctx, argc, argv)
 {
-    [Chartboost cacheRewardedVideo:CBLocationHomeScreen];
+    NSString *location = CBLocationDefault;
+    if (argc > 0) {
+        location = [JSValueToNSString(ctx, argv[0]) retain];
+    }
+    bool loaded = [Chartboost hasRewardedVideo:location];
+
+    return JSValueMakeBoolean(scriptView.jsGlobalContext, loaded);
+}
+
+EJ_BIND_FUNCTION(loadVideo, ctx, argc, argv)
+{
+    NSString *location = CBLocationDefault;
+    if (argc > 0) {
+        location = [JSValueToNSString(ctx, argv[0]) retain];
+    }
+    [Chartboost cacheRewardedVideo:location];
     return NULL;
 }
+
 EJ_BIND_FUNCTION(showVideo, ctx, argc, argv)
 {
-    [Chartboost showRewardedVideo:CBLocationMainMenu];
+    NSString *location = CBLocationDefault;
+    if (argc > 0) {
+        location = [JSValueToNSString(ctx, argv[0]) retain];
+    }
+    [Chartboost showRewardedVideo:location];
+    return NULL;
+}
+
+
+
+
+EJ_BIND_FUNCTION(hasInPlay, ctx, argc, argv)
+{
+    NSString *location = CBLocationDefault;
+    if (argc > 0) {
+        location = [JSValueToNSString(ctx, argv[0]) retain];
+    }
+    bool loaded = [Chartboost hasInPlay:location];
+
+    return JSValueMakeBoolean(scriptView.jsGlobalContext, loaded);
+}
+
+EJ_BIND_FUNCTION(loadInPlay, ctx, argc, argv)
+{
+    NSString *location = CBLocationDefault;
+    if (argc > 0) {
+        location = [JSValueToNSString(ctx, argv[0]) retain];
+    }
+    [Chartboost cacheInPlay:location];
+    return NULL;
+}
+
+EJ_BIND_FUNCTION(getInPlay, ctx, argc, argv)
+{
+    NSString *location = CBLocationDefault;
+    if (argc > 0) {
+        location = [JSValueToNSString(ctx, argv[0]) retain];
+    }
+    if ([Chartboost hasInPlay:location]){
+        CBInPlay *inPlay = [Chartboost getInPlay:location];
+        if (inPlay) {
+            #if DEBUG
+                NSLog(@"Success, we have a valid inPlay item");
+            #endif
+            return [self inPlayToJSInPlay:inPlay];
+        }
+    }
+    return NULL;
+}
+
+EJ_BIND_FUNCTION(inPlayDisplayed, ctx, argc, argv){
+    NSString *location = CBLocationDefault;
+    if (argc > 0) {
+        location = [JSValueToNSString(ctx, argv[0]) retain];
+    }
+    if ([Chartboost hasInPlay:location]){
+        CBInPlay *inPlay = [Chartboost getInPlay:location];
+        if (inPlay) {
+            [inPlay show];
+        }
+    }
+    return NULL;
+}
+
+EJ_BIND_FUNCTION(inPlayClicked, ctx, argc, argv){
+    NSString *location = CBLocationDefault;
+    if (argc > 0) {
+        location = [JSValueToNSString(ctx, argv[0]) retain];
+    }
+    if ([Chartboost hasInPlay:location]){
+        CBInPlay *inPlay = [Chartboost getInPlay:location];
+        if (inPlay) {
+            [inPlay click];
+        }
+    }
+    return NULL;
+}
+
+EJ_BIND_FUNCTION(clearInPlay, ctx, argc, argv){
+    NSString *location = CBLocationDefault;
+    if (argc > 0) {
+        location = [JSValueToNSString(ctx, argv[0]) retain];
+    }
+    if ([Chartboost hasInPlay:location]){
+        CBInPlay *inPlay = [Chartboost getInPlay:location];
+        if (inPlay) {
+            [inPlay clearCache];
+        }
+    }
     return NULL;
 }
 
@@ -155,20 +302,32 @@ EJ_BIND_FUNCTION(showVideo, ctx, argc, argv)
 }
 
 
+-(JSValueRef)inPlayToJSInPlay:(CBInPlay *)inPlay{
+    UIImage *appIconImage = [UIImage imageWithData:inPlay.appIcon];
+    NSData *raw = UIImagePNGRepresentation(appIconImage);
+    NSString *encoded = [ICON_DATA_URL_PREFIX_PNG stringByAppendingString:[raw base64EncodedStringWithOptions:0]];
+    JSValueRef jsInPlay = NSObjectToJSValue(scriptView.jsGlobalContext, @{
+           @"appName": inPlay.appName,
+           @"appIconDataURL": encoded,
+           @"location": inPlay.location
+       });
+    return jsInPlay;
+}
+
 //////////////    Interstitial    ////////////////
-- (void)didCacheInterstitial:(NSString *)location {
+- (void)didCacheInterstitial:(CBLocation)location {
     #if DEBUG
-        NSLog(@"cache Interstitial at location %@", location);
+        NSLog(@"Cache Interstitial at location %@", location);
     #endif
-    [self triggerEvent:@"cache" properties:(JSEventProperty[]){
+    [self triggerEvent:@"loaded" properties:(JSEventProperty[]){
         {"adType", NSStringToJSValue(scriptView.jsGlobalContext, @"Interstitial")},
         {"location", NSStringToJSValue(scriptView.jsGlobalContext, location)},
         {NULL, NULL}
     }];
 }
-- (void)didCloseInterstitial:(NSString *)location {
+- (void)didCloseInterstitial:(CBLocation)location {
     #if DEBUG
-        NSLog(@"close Interstitial at location %@", location);
+        NSLog(@"Close Interstitial at location %@", location);
     #endif
     [self triggerEvent:@"close" properties:(JSEventProperty[]){
         {"adType", NSStringToJSValue(scriptView.jsGlobalContext, @"Interstitial")},
@@ -176,9 +335,9 @@ EJ_BIND_FUNCTION(showVideo, ctx, argc, argv)
         {NULL, NULL}
     }];
 }
-- (void)didClickInterstitial:(NSString *)location {
+- (void)didClickInterstitial:(CBLocation)location {
     #if DEBUG
-        NSLog(@"click Interstitial at location %@", location);
+        NSLog(@"Click Interstitial at location %@", location);
     #endif
     [self triggerEvent:@"click" properties:(JSEventProperty[]){
         {"adType", NSStringToJSValue(scriptView.jsGlobalContext, @"Interstitial")},
@@ -198,13 +357,14 @@ EJ_BIND_FUNCTION(showVideo, ctx, argc, argv)
         }];
     }
 }
-- (void)didFailToLoadInterstitial:(NSString *)location withError:(CBLoadError)error {
+- (void)didFailToLoadInterstitial:(CBLocation)location withError:(CBLoadError)error {
     NSString *message = [self getErrorMessage:error];
     #if DEBUG
-        NSLog(@"Faild to load Interstitial: %@",message);
+        NSLog(@"Faild to load Interstitial: %@", message);
     #endif
     [self triggerEvent:@"error" properties:(JSEventProperty[]){
         {"adType", NSStringToJSValue(scriptView.jsGlobalContext, @"Interstitial")},
+        {"location", NSStringToJSValue(scriptView.jsGlobalContext, location)},
         {"message",NSStringToJSValue(scriptView.jsGlobalContext, message)},
         {NULL, NULL}
     }];
@@ -214,19 +374,19 @@ EJ_BIND_FUNCTION(showVideo, ctx, argc, argv)
 
 
 //////////////    MoreApps    ////////////////
-- (void)didCacheMoreApps:(NSString *)location {
+- (void)didCacheMoreApps:(CBLocation)location {
     #if DEBUG
-        NSLog(@"cache MoreApps at location %@", location);
+        NSLog(@"Cache MoreApps at location %@", location);
     #endif
-    [self triggerEvent:@"cache" properties:(JSEventProperty[]){
+    [self triggerEvent:@"loaded" properties:(JSEventProperty[]){
         {"adType", NSStringToJSValue(scriptView.jsGlobalContext, @"MoreApps")},
         {"location", NSStringToJSValue(scriptView.jsGlobalContext, location)},
         {NULL, NULL}
     }];
 }
-- (void)didCloseMoreApps:(NSString *)location {
+- (void)didCloseMoreApps:(CBLocation)location {
     #if DEBUG
-        NSLog(@"close MoreApps at location %@", location);
+        NSLog(@"Close MoreApps at location %@", location);
     #endif
     [self triggerEvent:@"close" properties:(JSEventProperty[]){
         {"adType", NSStringToJSValue(scriptView.jsGlobalContext, @"MoreApps")},
@@ -234,9 +394,9 @@ EJ_BIND_FUNCTION(showVideo, ctx, argc, argv)
         {NULL, NULL}
     }];
 }
-- (void)didClickMoreApps:(NSString *)location {
+- (void)didClickMoreApps:(CBLocation)location {
     #if DEBUG
-        NSLog(@"click MoreApps at location %@", location);
+        NSLog(@"Click MoreApps at location %@", location);
     #endif
     [self triggerEvent:@"click" properties:(JSEventProperty[]){
         {"adType", NSStringToJSValue(scriptView.jsGlobalContext, @"MoreApps")},
@@ -244,13 +404,14 @@ EJ_BIND_FUNCTION(showVideo, ctx, argc, argv)
         {NULL, NULL}
     }];
 }
-- (void)didFailToLoadMoreApps:(CBLoadError)error {
+- (void)didFailToLoadMoreApps:(CBLoadError)error forLocation:(CBLocation)location {
     NSString *message = [self getErrorMessage:error];
     #if DEBUG
-        NSLog(@"Faild to load MoreApps: %@",message);
+        NSLog(@"Faild to load MoreApps: %@", message);
     #endif
     [self triggerEvent:@"error" properties:(JSEventProperty[]){
         {"adType", NSStringToJSValue(scriptView.jsGlobalContext, @"MoreApps")},
+        {"location", NSStringToJSValue(scriptView.jsGlobalContext, location)},
         {"message",NSStringToJSValue(scriptView.jsGlobalContext, message)},
         {NULL, NULL}
     }];
@@ -258,19 +419,19 @@ EJ_BIND_FUNCTION(showVideo, ctx, argc, argv)
 
 
 //////////////    RewardedVideo    ////////////////
-- (void)didCacheRewardedVideo:(NSString *)location {
+- (void)didCacheRewardedVideo:(CBLocation)location {
     #if DEBUG
-        NSLog(@"cache RewardedVideo at location %@", location);
+        NSLog(@"Cache RewardedVideo at location %@", location);
     #endif
-    [self triggerEvent:@"cache" properties:(JSEventProperty[]){
+    [self triggerEvent:@"loaded" properties:(JSEventProperty[]){
         {"adType", NSStringToJSValue(scriptView.jsGlobalContext, @"RewardedVideo")},
         {"location", NSStringToJSValue(scriptView.jsGlobalContext, location)},
         {NULL, NULL}
     }];
 }
-- (void)didCloseRewardedVideo:(NSString *)location {
+- (void)didCloseRewardedVideo:(CBLocation)location {
     #if DEBUG
-        NSLog(@"close RewardedVideo at location %@", location);
+        NSLog(@"Close RewardedVideo at location %@", location);
     #endif
     [self triggerEvent:@"close" properties:(JSEventProperty[]){
         {"adType", NSStringToJSValue(scriptView.jsGlobalContext, @"RewardedVideo")},
@@ -278,9 +439,9 @@ EJ_BIND_FUNCTION(showVideo, ctx, argc, argv)
         {NULL, NULL}
     }];
 }
-- (void)didClickRewardedVideo:(NSString *)location {
+- (void)didClickRewardedVideo:(CBLocation)location {
     #if DEBUG
-        NSLog(@"click RewardedVideo at location %@", location);
+        NSLog(@"Click RewardedVideo at location %@", location);
     #endif
     [self triggerEvent:@"click" properties:(JSEventProperty[]){
         {"adType", NSStringToJSValue(scriptView.jsGlobalContext, @"RewardedVideo")},
@@ -299,13 +460,47 @@ EJ_BIND_FUNCTION(showVideo, ctx, argc, argv)
         {NULL, NULL}
     }];
 }
-- (void)didFailToLoadRewardedVideo:(NSString *)location withError:(CBLoadError)error {
+- (void)didFailToLoadRewardedVideo:(CBLocation)location withError:(CBLoadError)error {
     NSString *message = [self getErrorMessage:error];
     #if DEBUG
-        NSLog(@"Faild to load RewardedVideo: %@",message);
+        NSLog(@"Faild to load RewardedVideo: %@", message);
     #endif
     [self triggerEvent:@"error" properties:(JSEventProperty[]){
         {"adType", NSStringToJSValue(scriptView.jsGlobalContext, @"RewardedVideo")},
+        {"location", NSStringToJSValue(scriptView.jsGlobalContext, location)},
+        {"message",NSStringToJSValue(scriptView.jsGlobalContext, message)},
+        {NULL, NULL}
+    }];
+}
+
+//////////////    InPlay    ////////////////
+- (void)didCacheInPlay:(CBLocation)location {
+    #if DEBUG
+        NSLog(@"Successfully cached InPlay");
+    #endif
+//    JSValueRef jsInPlay = NULL;
+//    CBInPlay *inPlay = [Chartboost getInPlay:location];
+//    if (inPlay) {
+//        NSLog(@"InPlay appName: %@", inPlay.appName);
+//        jsInPlay = [self inPlayToJSInPlay:inPlay];
+//    }
+
+    [self triggerEvent:@"loaded" properties:(JSEventProperty[]){
+        {"adType", NSStringToJSValue(scriptView.jsGlobalContext, @"InPlay")},
+        {"location", NSStringToJSValue(scriptView.jsGlobalContext, location)},
+//        {"data", jsInPlay},
+        {NULL, NULL}
+    }];
+}
+
+- (void)didFailToLoadInPlay:(CBLocation)location withError:(CBLoadError)error {
+    NSString *message = [self getErrorMessage:error];
+    #if DEBUG
+        NSLog(@"Faild to load InPlay: %@", message);
+    #endif
+    [self triggerEvent:@"error" properties:(JSEventProperty[]){
+        {"adType", NSStringToJSValue(scriptView.jsGlobalContext, @"InPlay")},
+        {"location", NSStringToJSValue(scriptView.jsGlobalContext, location)},
         {"message",NSStringToJSValue(scriptView.jsGlobalContext, message)},
         {NULL, NULL}
     }];
