@@ -43,7 +43,7 @@
 }
 
 - (BOOL)hasText{
-    return YES;
+    return [self.delegate hasText];
 }
 
 @end
@@ -93,7 +93,9 @@ EJ_BIND_SET(value, ctx, value){
 EJ_BIND_EVENT(focus);
 EJ_BIND_EVENT(blur);
 EJ_BIND_EVENT(delete);
+EJ_BIND_EVENT(keypress);
 EJ_BIND_EVENT(change);
+
 
 #pragma mark -
 #pragma mark EJKeyInput delegate
@@ -115,7 +117,12 @@ EJ_BIND_EVENT(change);
 }
 
 - (void)keyInputDidDeleteBackwards:(EJKeyInputResponder *)keyInput{
+    if (![self hasText]){
+        return;
+    }
+    [self.value deleteCharactersInRange:NSMakeRange(self.value.length-1,1)];
     [self triggerEvent:@"delete"];
+    [self triggerEvent:@"change"];
 }
 
 - (void)keyInputDidResignFirstResponderStatus:(EJKeyInputResponder *)keyInput{
@@ -124,6 +131,10 @@ EJ_BIND_EVENT(change);
 
 - (void)keyInputDidBecomeFirstResponder:(EJKeyInputResponder *)keyInput{
     [self triggerEvent:@"focus"];
+}
+
+- (BOOL)hasText{
+    return self.value.length > 0;
 }
 
 @end
