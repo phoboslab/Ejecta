@@ -982,18 +982,12 @@
 					"$(inherited)",
 					"${SOURCE_ROOT}/Source/lib",
 					"${SOURCE_ROOT}/Extension/lib",
-					"$(PROJECT_DIR)/Extension/lib",
 				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Source/Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = "";
-				HEADER_SEARCH_PATHS = (
-					"${SOURCE_ROOT}",
-					"${SOURCE_ROOT}/Source/lib",
-					"${SOURCE_ROOT}/Extension/lib",
-				);
 				INFOPLIST_FILE = Resources/Info.plist;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1019,15 +1013,9 @@
 					"$(inherited)",
 					"${SOURCE_ROOT}/Source/lib",
 					"${SOURCE_ROOT}/Extension/lib",
-					"$(PROJECT_DIR)/Extension/lib",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Source/Prefix.pch;
-				HEADER_SEARCH_PATHS = (
-					"${SOURCE_ROOT}",
-					"${SOURCE_ROOT}/Source/lib",
-					"${SOURCE_ROOT}/Extension/lib",
-				);
 				INFOPLIST_FILE = Resources/Info.plist;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1054,8 +1042,10 @@
 				HEADER_SEARCH_PATHS = (
 					"${SOURCE_ROOT}",
 					"${SOURCE_ROOT}/Source/lib",
+					"${SOURCE_ROOT}/Extension/lib",
 				);
 				INFOPLIST_FILE = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = "-DDEBUG";
 				OTHER_LDFLAGS = "-ObjC";
@@ -1075,8 +1065,10 @@
 				HEADER_SEARCH_PATHS = (
 					"${SOURCE_ROOT}",
 					"${SOURCE_ROOT}/Source/lib",
+					"${SOURCE_ROOT}/Extension/lib",
 				);
 				INFOPLIST_FILE = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				OTHER_LDFLAGS = "-ObjC";
 				PROVISIONING_PROFILE = "";
