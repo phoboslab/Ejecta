@@ -113,9 +113,9 @@ EJ_BIND_FUNCTION(showInterstitial, ctx, argc, argv)
 
 EJ_BIND_FUNCTION(hasMoreApps, ctx, argc, argv)
 {
-    NSString *location = CBLocationDefault;
+    NSString *location = CBLocationHomeScreen;
     if (argc > 0) {
-        location = [JSValueToNSString(ctx, argv[0]) retain];
+//        location = [JSValueToNSString(ctx, argv[0]) retain];
     }
     bool loaded = [Chartboost hasMoreApps:location];
 
@@ -124,18 +124,18 @@ EJ_BIND_FUNCTION(hasMoreApps, ctx, argc, argv)
 
 EJ_BIND_FUNCTION(loadMoreApps, ctx, argc, argv)
 {
-    NSString *location = CBLocationDefault;
+    NSString *location = CBLocationHomeScreen;
     if (argc > 0) {
-        location = [JSValueToNSString(ctx, argv[0]) retain];
+//        location = [JSValueToNSString(ctx, argv[0]) retain];
     }
     [Chartboost cacheMoreApps:location];
     return NULL;
 }
 EJ_BIND_FUNCTION(showMoreApps, ctx, argc, argv)
 {
-    NSString *location = CBLocationDefault;
+    NSString *location = CBLocationHomeScreen;
     if (argc > 0) {
-        location = [JSValueToNSString(ctx, argv[0]) retain];
+//        location = [JSValueToNSString(ctx, argv[0]) retain];
     }
     [Chartboost showMoreApps:scriptView.window.rootViewController location:location];
     return NULL;
