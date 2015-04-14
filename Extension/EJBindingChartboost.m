@@ -99,6 +99,7 @@ EJ_BIND_FUNCTION(loadInterstitial, ctx, argc, argv)
     [Chartboost cacheInterstitial:location];
     return NULL;
 }
+
 EJ_BIND_FUNCTION(showInterstitial, ctx, argc, argv)
 {
     NSString *location = CBLocationDefault;
@@ -134,6 +135,7 @@ EJ_BIND_FUNCTION(loadMoreApps, ctx, argc, argv)
     [Chartboost cacheMoreApps:location];
     return NULL;
 }
+
 EJ_BIND_FUNCTION(showMoreApps, ctx, argc, argv)
 {
     NSString *location = CBLocationHomeScreen;
@@ -234,6 +236,7 @@ EJ_BIND_FUNCTION(inPlayDisplayed, ctx, argc, argv){
         CBInPlay *inPlay = [Chartboost getInPlay:location];
         if (inPlay) {
             [inPlay show];
+            return JSValueMakeBoolean(scriptView.jsGlobalContext, YES);
         }
     }
     return NULL;
@@ -248,24 +251,12 @@ EJ_BIND_FUNCTION(inPlayClicked, ctx, argc, argv){
         CBInPlay *inPlay = [Chartboost getInPlay:location];
         if (inPlay) {
             [inPlay click];
+            return JSValueMakeBoolean(scriptView.jsGlobalContext, YES);
         }
     }
     return NULL;
 }
 
-EJ_BIND_FUNCTION(clearInPlay, ctx, argc, argv){
-    NSString *location = CBLocationDefault;
-    if (argc > 0) {
-        location = [JSValueToNSString(ctx, argv[0]) retain];
-    }
-    if ([Chartboost hasInPlay:location]){
-        CBInPlay *inPlay = [Chartboost getInPlay:location];
-        if (inPlay) {
-            [inPlay clearCache];
-        }
-    }
-    return NULL;
-}
 
 
 /*
