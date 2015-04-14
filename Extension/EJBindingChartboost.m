@@ -105,7 +105,10 @@ EJ_BIND_FUNCTION(showInterstitial, ctx, argc, argv)
     if (argc > 0) {
         location = [JSValueToNSString(ctx, argv[0]) retain];
     }
-    [Chartboost showInterstitial:location];
+    if ([Chartboost hasInterstitial:location]){
+        [Chartboost showInterstitial:location];
+        return JSValueMakeBoolean(scriptView.jsGlobalContext, YES);
+    }
     return NULL;
 }
 
@@ -137,7 +140,10 @@ EJ_BIND_FUNCTION(showMoreApps, ctx, argc, argv)
     if (argc > 0) {
 //        location = [JSValueToNSString(ctx, argv[0]) retain];
     }
-    [Chartboost showMoreApps:scriptView.window.rootViewController location:location];
+    if ([Chartboost hasMoreApps:location]){
+        [Chartboost showMoreApps:scriptView.window.rootViewController location:location];
+        return JSValueMakeBoolean(scriptView.jsGlobalContext, YES);
+    }
     return NULL;
 }
 
@@ -170,7 +176,10 @@ EJ_BIND_FUNCTION(showVideo, ctx, argc, argv)
     if (argc > 0) {
         location = [JSValueToNSString(ctx, argv[0]) retain];
     }
-    [Chartboost showRewardedVideo:location];
+    if ([Chartboost hasRewardedVideo:location]){
+        [Chartboost showRewardedVideo:location];
+        return JSValueMakeBoolean(scriptView.jsGlobalContext, YES);
+    }
     return NULL;
 }
 

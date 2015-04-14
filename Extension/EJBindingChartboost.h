@@ -10,6 +10,7 @@
 {
     NSString *appId;
     NSString *appSignature;
+    NSMutableDictionary *inPlays;
 }
 
 @end
