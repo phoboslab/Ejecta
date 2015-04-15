@@ -348,7 +348,7 @@ EJ_BIND_FUNCTION(openShare, ctx, argc, argv){
     NSString *message = JSValueToNSString(ctx, argv[0]);
     JSObjectRef callback = nil;
     if (argc > 1){
-        callback = JSValueToObject(ctx, argv[4], NULL);
+        callback = JSValueToObject(ctx, argv[1], NULL);
         if (callback) {
             JSValueProtect(ctx, callback);
         }
@@ -362,10 +362,10 @@ EJ_BIND_FUNCTION(openShare, ctx, argc, argv){
          presentViewController:activityViewController
          animated:YES
          completion:^{
-              NSLog(@"completed.");
-             [scriptView invokeCallback:callback thisObject:NULL argc:0 argv:nil];
-             JSValueUnprotect(scriptView.jsGlobalContext, callback);
-            
+             if (callback){
+                 [scriptView invokeCallback:callback thisObject:NULL argc:0 argv:nil];
+                 JSValueUnprotect(scriptView.jsGlobalContext, callback);
+             }
          }
      ];
     
