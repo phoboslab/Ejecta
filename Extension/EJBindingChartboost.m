@@ -108,7 +108,7 @@ EJ_BIND_FUNCTION(showInterstitial, ctx, argc, argv)
     }
     if ([Chartboost hasInterstitial:location]){
         [Chartboost showInterstitial:location];
-        return JSValueMakeBoolean(scriptView.jsGlobalContext, YES);
+        return JSValueMakeBoolean(scriptView.jsGlobalContext, true);
     }
     return NULL;
 }
@@ -139,7 +139,7 @@ EJ_BIND_FUNCTION(showMoreApps, ctx, argc, argv)
 
     if ([Chartboost hasMoreApps:location]){
         [Chartboost showMoreApps:scriptView.window.rootViewController location:location];
-        return JSValueMakeBoolean(scriptView.jsGlobalContext, YES);
+        return JSValueMakeBoolean(scriptView.jsGlobalContext, true);
     }
     return NULL;
 }
@@ -175,7 +175,7 @@ EJ_BIND_FUNCTION(showVideo, ctx, argc, argv)
     }
     if ([Chartboost hasRewardedVideo:location]){
         [Chartboost showRewardedVideo:location];
-        return JSValueMakeBoolean(scriptView.jsGlobalContext, YES);
+        return JSValueMakeBoolean(scriptView.jsGlobalContext, true);
     }
     return NULL;
 }
@@ -222,6 +222,20 @@ EJ_BIND_FUNCTION(getInPlay, ctx, argc, argv)
     return NULL;
 }
 
+EJ_BIND_FUNCTION(clearInPlay, ctx, argc, argv)
+{
+    NSString *location = CBLocationDefault;
+    if (argc > 0) {
+        location = [JSValueToNSString(ctx, argv[0]) retain];
+    }
+    if ([Chartboost hasInPlay:location]){
+        CBInPlay *inPlay = [Chartboost getInPlay:location];
+        [inPlay clearCache];
+        return JSValueMakeBoolean(scriptView.jsGlobalContext, true);
+    }
+    return NULL;
+}
+
 EJ_BIND_FUNCTION(inPlayDisplayed, ctx, argc, argv){
     NSString *location = CBLocationDefault;
     if (argc > 0) {
@@ -231,7 +245,7 @@ EJ_BIND_FUNCTION(inPlayDisplayed, ctx, argc, argv){
         CBInPlay *inPlay = [Chartboost getInPlay:location];
         if (inPlay) {
             [inPlay show];
-            return JSValueMakeBoolean(scriptView.jsGlobalContext, YES);
+            return JSValueMakeBoolean(scriptView.jsGlobalContext, true);
         }
     }
     return NULL;
@@ -246,7 +260,7 @@ EJ_BIND_FUNCTION(inPlayClicked, ctx, argc, argv){
         CBInPlay *inPlay = [Chartboost getInPlay:location];
         if (inPlay) {
             [inPlay click];
-            return JSValueMakeBoolean(scriptView.jsGlobalContext, YES);
+            return JSValueMakeBoolean(scriptView.jsGlobalContext, true);
         }
     }
     return NULL;
