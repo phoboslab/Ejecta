@@ -157,7 +157,7 @@ EJ_BIND_FUNCTION(hasRewardedVideo, ctx, argc, argv)
     return JSValueMakeBoolean(scriptView.jsGlobalContext, loaded);
 }
 
-EJ_BIND_FUNCTION(loadVideo, ctx, argc, argv)
+EJ_BIND_FUNCTION(loadRewardedVideo, ctx, argc, argv)
 {
     NSString *location = CBLocationDefault;
     if (argc > 0) {
@@ -167,7 +167,7 @@ EJ_BIND_FUNCTION(loadVideo, ctx, argc, argv)
     return NULL;
 }
 
-EJ_BIND_FUNCTION(showVideo, ctx, argc, argv)
+EJ_BIND_FUNCTION(showRewardedVideo, ctx, argc, argv)
 {
     NSString *location = CBLocationDefault;
     if (argc > 0) {
