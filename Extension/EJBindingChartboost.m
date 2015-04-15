@@ -114,13 +114,12 @@ EJ_BIND_FUNCTION(showInterstitial, ctx, argc, argv)
 }
 
 
+// MoreApps can't use custom location, location always be CBLocationHomeScreen.
 
 EJ_BIND_FUNCTION(hasMoreApps, ctx, argc, argv)
 {
     NSString *location = CBLocationHomeScreen;
-    if (argc > 0) {
-//        location = [JSValueToNSString(ctx, argv[0]) retain];
-    }
+
     bool loaded = [Chartboost hasMoreApps:location];
 
     return JSValueMakeBoolean(scriptView.jsGlobalContext, loaded);
@@ -129,9 +128,7 @@ EJ_BIND_FUNCTION(hasMoreApps, ctx, argc, argv)
 EJ_BIND_FUNCTION(loadMoreApps, ctx, argc, argv)
 {
     NSString *location = CBLocationHomeScreen;
-    if (argc > 0) {
-//        location = [JSValueToNSString(ctx, argv[0]) retain];
-    }
+
     [Chartboost cacheMoreApps:location];
     return NULL;
 }
@@ -139,9 +136,7 @@ EJ_BIND_FUNCTION(loadMoreApps, ctx, argc, argv)
 EJ_BIND_FUNCTION(showMoreApps, ctx, argc, argv)
 {
     NSString *location = CBLocationHomeScreen;
-    if (argc > 0) {
-//        location = [JSValueToNSString(ctx, argv[0]) retain];
-    }
+
     if ([Chartboost hasMoreApps:location]){
         [Chartboost showMoreApps:scriptView.window.rootViewController location:location];
         return JSValueMakeBoolean(scriptView.jsGlobalContext, YES);
