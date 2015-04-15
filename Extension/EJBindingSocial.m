@@ -270,7 +270,9 @@
 		[scriptView.window.rootViewController presentViewController:sns animated:YES completion: ^{
 		    // on displayed
 		}];
-	}
+    }else{
+        NSLog(@"%@ not found", snsName);
+    }
 }
 
 EJ_BIND_FUNCTION(post, ctx, argc, argv)
@@ -317,16 +319,58 @@ EJ_BIND_FUNCTION(showPostDialog, ctx, argc, argv)
 	}
 	NSString *snsName = JSValueToNSString(ctx, argv[0]);
 	NSString *message = JSValueToNSString(ctx, argv[1]);
-	NSString *url = JSValueToNSString(ctx, argv[2]);
-	NSString *imgSrc = JSValueToNSString(ctx, argv[3]);
-	JSObjectRef callback = JSValueToObject(ctx, argv[4], NULL);
-	if (callback) {
-		JSValueProtect(ctx, callback);
-	}
-
+    NSString *url = nil;
+    NSString *imgSrc = nil;
+    JSObjectRef callback = nil;
+    
+    if (argc > 2){
+        url = JSValueToNSString(ctx, argv[2]);
+        if (argc > 3){
+            imgSrc = JSValueToNSString(ctx, argv[3]);
+        }
+        if (argc > 4){
+            callback = JSValueToObject(ctx, argv[4], NULL);
+            if (callback) {
+                JSValueProtect(ctx, callback);
+            }
+        }
+    }
+   
 	snsName = [snsName lowercaseString];
 	[self showPostDialog:snsName message:message url:url imgSrc:imgSrc callback:callback];
 
 	return JSValueMakeBoolean(ctx, true);
 }
+
+
+EJ_BIND_FUNCTION(openShare, ctx, argc, argv){
+    
+    NSString *message = JSValueToNSString(ctx, argv[0]);
+    JSObjectRef callback = nil;
+    if (argc > 1){
+        callback = JSValueToObject(ctx, argv[4], NULL);
+        if (callback) {
+            JSValueProtect(ctx, callback);
+        }
+    }
+    
+    UIActivityViewController *activityViewController = [
+         [UIActivityViewController alloc] initWithActivityItems:@[message] applicationActivities:nil
+    ];
+    
+    [scriptView.window.rootViewController
+         presentViewController:activityViewController
+         animated:YES
+         completion:^{
+              NSLog(@"completed.");
+             [scriptView invokeCallback:callback thisObject:NULL argc:0 argv:nil];
+             JSValueUnprotect(scriptView.jsGlobalContext, callback);
+            
+         }
+     ];
+    
+    return NULL;
+    
+}
+
 @end
