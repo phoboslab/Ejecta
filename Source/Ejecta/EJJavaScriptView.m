@@ -361,6 +361,7 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 }
 
 - (void)unload {
+	[[NSNotificationCenter defaultCenter] removeObserver:proxy];
 	[windowEventsDelegate unload];
 }
 
