@@ -43,7 +43,7 @@
 }
 
 - (BOOL)hasText{
-    return [self.delegate hasText];
+    return self.delegate.hasText;
 }
 
 @end
