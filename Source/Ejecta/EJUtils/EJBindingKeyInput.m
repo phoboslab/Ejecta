@@ -117,12 +117,12 @@ EJ_BIND_EVENT(change);
 }
 
 - (void)keyInputDidDeleteBackwards:(EJKeyInputResponder *)keyInput{
-    if (![self hasText]){
-        return;
+	if( !self.hasText ) {
+		return;
     }
-    [self.value deleteCharactersInRange:NSMakeRange(self.value.length-1,1)];
-    [self triggerEvent:@"delete"];
-    [self triggerEvent:@"change"];
+	[self.value deleteCharactersInRange:NSMakeRange(self.value.length-1,1)];
+	[self triggerEvent:@"change"];
+	[self triggerEvent:@"delete"];
 }
 
 - (void)keyInputDidResignFirstResponderStatus:(EJKeyInputResponder *)keyInput{
@@ -133,8 +133,9 @@ EJ_BIND_EVENT(change);
     [self triggerEvent:@"focus"];
 }
 
-- (BOOL)hasText{
-    return self.value.length > 0;
+
+- (BOOL)hasText {
+	return self.value.length > 0;
 }
 
 @end
