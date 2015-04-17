@@ -79,6 +79,11 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 		jsGlobalContext = JSGlobalContextCreateInGroup(NULL, NULL);
 		jsUndefined = JSValueMakeUndefined(jsGlobalContext);
 		JSValueProtect(jsGlobalContext, jsUndefined);
+        
+        jsTrue = JSValueMakeBoolean(jsGlobalContext, true);
+        JSValueProtect(jsGlobalContext, jsTrue);
+        jsFalse = JSValueMakeBoolean(jsGlobalContext, false);
+        JSValueProtect(jsGlobalContext, jsFalse);
 		
 		// Attach all native class constructors to 'Ejecta'
 		classLoader = [[EJClassLoader alloc] initWithScriptView:self name:@"Ejecta"];
