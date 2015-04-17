@@ -460,6 +460,13 @@ var visibilityEvent = {
 	stopPropagation: function(){}
 };
 
+var unloadEvent = {
+	type: 'unload',
+	target: window.document,
+	preventDefault: function(){},
+	stopPropagation: function(){}
+};
+
 eventInit.visibilitychange = eventInit.pagehide = eventInit.pageshow = eventInit.resize = function() {
 	if( windowEvents ) { return; }
 	
@@ -487,6 +494,10 @@ eventInit.visibilitychange = eventInit.pagehide = eventInit.pageshow = eventInit
 		window.innerWidth = ej.screenWidth;
 		window.innerHeight = ej.screenHeight;
 		document.dispatchEvent(resizeEvent);
+	};
+
+	windowEvents.onunload = function() {
+		document.dispatchEvent(unloadEvent);
 	};
 };
 
