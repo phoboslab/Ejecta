@@ -110,6 +110,17 @@ EJ_BIND_FUNCTION(openURL, ctx, argc, argv ) {
 	return NULL;
 }
 
+EJ_BIND_FUNCTION(fileExists, ctx, argc, argv ) {
+    if(argc > 0) {
+        NSFileManager *fm = [NSFileManager defaultManager];
+        NSString *path = JSValueToNSString(ctx, argv[0]);
+        if ([fm fileExistsAtPath:[scriptView pathForResource:path]]){
+            return JSValueMakeBoolean(ctx, true);
+        }
+    }
+    return JSValueMakeBoolean(ctx, false);
+}
+
 EJ_BIND_FUNCTION(getText, ctx, argc, argv) {
 	if( argc < 3 ) { return NULL; }
 	
