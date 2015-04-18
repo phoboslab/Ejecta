@@ -18,7 +18,7 @@
 - (void)createWithJSObject:(JSObjectRef)obj scriptView:(EJJavaScriptView *)view {
 	[super createWithJSObject:obj scriptView:view];
 	
-	useRetinaResolution = true;
+	useRetinaResolution = false;
 	msaaEnabled = false;
 	msaaSamples = 2;
 	
