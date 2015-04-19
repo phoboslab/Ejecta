@@ -196,7 +196,45 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 #pragma mark Script loading and execution
 
 - (NSString *)pathForResource:(NSString *)path {
-	return [NSString stringWithFormat:@"%@/%@%@", [[NSBundle mainBundle] resourcePath], appFolder, path];
+    
+    NSString *newPath = nil;
+    if ([path hasPrefix:@"${"]){
+        newPath = [self getSpecialPath:path];
+    }
+    if (newPath == nil){
+        newPath = [NSString stringWithFormat:@"%@/%@%@", [[NSBundle mainBundle] resourcePath], appFolder, path];
+    }
+    return newPath;
+}
+
+- (NSString *)getSpecialPath:(NSString *)path {
+    
+    NSString *specialPath = nil;
+    if ([path hasPrefix:@"${Documents}"]){
+        path = [path substringFromIndex:@"${Documents}".length];
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        NSString *documentsDirectory = [paths objectAtIndex:0];
+        specialPath = [documentsDirectory stringByAppendingPathComponent:path];
+        
+    }else if ([path hasPrefix:@"${Library}"]){
+        path = [path substringFromIndex:@"${Library}".length];
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);
+        NSString *libraryDirectory = [paths objectAtIndex:0];
+        specialPath = [libraryDirectory stringByAppendingPathComponent:path];
+        
+    }else if ([path hasPrefix:@"${Caches}"]){
+        path = [path substringFromIndex:@"${Caches}".length];
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+        NSString* cachesDirectory = [paths objectAtIndex:0];
+        specialPath = [cachesDirectory stringByAppendingPathComponent:path];
+        
+    }else if ([path hasPrefix:@"${tmp}"]){
+        path = [path substringFromIndex:@"${tmp}".length];
+        NSString *tempPath = NSTemporaryDirectory();
+        specialPath = [tempPath stringByAppendingPathComponent:path];
+    }
+    
+    return specialPath;
 }
 
 - (void)loadScriptAtPath:(NSString *)path {
