@@ -217,11 +217,11 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
     if (newPath == nil){
         newPath = [NSString stringWithFormat:@"%@/%@%@", [[NSBundle mainBundle] resourcePath], appFolder, path];
     }
-    NSLog(@"pathForResource: %@",newPath);
-	return newPath;
+    return newPath;
 }
 
 - (NSString *)getSpecialPath:(NSString *)path {
+    
     NSString *specialPath = nil;
     if ([path hasPrefix:@"${Documents}"]){
         path = [path substringFromIndex:@"${Documents}".length];
@@ -245,7 +245,6 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
         path = [path substringFromIndex:@"${tmp}".length];
         NSString *tempPath = NSTemporaryDirectory();
         specialPath = [tempPath stringByAppendingPathComponent:path];
-        
     }
     
     return specialPath;
