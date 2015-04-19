@@ -204,7 +204,6 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
     if (newPath == nil){
         newPath = [NSString stringWithFormat:@"%@/%@%@", [[NSBundle mainBundle] resourcePath], appFolder, path];
     }
-    NSLog(@"pathForResource: %@",newPath);
     return newPath;
 }
 
