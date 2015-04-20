@@ -276,8 +276,7 @@ EJ_BIND_GET(authed, ctx)
 #define GKPlayerToNSDict(player) @{ \
 		@"alias": player.alias, \
 		@"displayName": player.displayName, \
-		@"playerID": player.playerID, \
-		@"isFriend": @(player.isFriend) \
+		@"playerID": player.playerID \
 }
 
 // loadFriends( callback(error, players[]){} )
@@ -384,7 +383,7 @@ EJ_BIND_FUNCTION(loadScores, ctx, argc, argv)
 	            // info.
 	            NSMutableArray *scoresArray = [NSMutableArray arrayWithCapacity:players.count];
 	            for (GKScore * score in scores) {
-	                GKPlayer *playerForScore = playersDict[score.playerID];
+	                GKPlayer *playerForScore = playersDict[score.player.playerID];
 	                [scoresArray addObject:@{
 //	                     @"category": score.category,
 						 @"leaderboardIdentifier": score.leaderboardIdentifier,
@@ -448,7 +447,7 @@ EJ_BIND_FUNCTION(retrieveFriends, ctx, argc, argv)
 
 	if (authed) {
 		GKLocalPlayer *player = [GKLocalPlayer localPlayer];
-		[player loadFriendsWithCompletionHandler: ^(NSArray *friends, NSError *error) {
+		[player loadFriendPlayersWithCompletionHandler: ^(NSArray *friends, NSError *error) {
 		    [self loadPlayers:friends callback:callback];
 		}];
 	}
@@ -546,7 +545,7 @@ EJ_BIND_FUNCTION(retrieveScores, ctx, argc, argv)
 		    NSMutableArray *scoreList = [[NSMutableArray alloc] init];
 		    if (scores != NULL && !localPlayerOnly) {
 		        for (GKScore * obj in leaderboardRequest.scores) {
-		            [identifiers addObject:obj.playerID];
+		            [identifiers addObject:obj.player.playerID];
 		            [scoreList addObject:obj];
 				}
 			}
@@ -555,7 +554,7 @@ EJ_BIND_FUNCTION(retrieveScores, ctx, argc, argv)
 		        //         So the array.length == (end-start+1)+1
 		        GKScore *localPlayer = leaderboardRequest.localPlayerScore;
 		        if (localPlayer) {
-		            [identifiers addObject:localPlayer.playerID];
+		            [identifiers addObject:localPlayer.player.playerID];
 		            [scoreList addObject:localPlayer];
 				}
 			}
@@ -582,7 +581,6 @@ EJ_BIND_FUNCTION(retrieveScores, ctx, argc, argv)
 	                                                          @"alias": player.alias,
 	                                                          @"displayName": player.displayName,
 	                                                          @"playerID": player.playerID,
-	                                                          @"isFriend": @(player.isFriend),
 //	                                                          @"category": score.category,
 															  @"leaderboardIdentifier": score.leaderboardIdentifier,
 	                                                          @"date": score.date,
