@@ -22,6 +22,7 @@
 	jsPageYName = JSStringCreateWithUTF8CString("pageY");
 	jsClientXName = JSStringCreateWithUTF8CString("clientX");
 	jsClientYName = JSStringCreateWithUTF8CString("clientY");
+    jsTargetName = JSStringCreateWithUTF8CString("target");
 	
 	scriptView.touchDelegate = self;
 }
@@ -38,6 +39,7 @@
 	JSStringRelease( jsPageYName );
 	JSStringRelease( jsClientXName );
 	JSStringRelease( jsClientYName );
+    JSStringRelease( jsTargetName );
 	
 	for( int i = 0; i < touchesInPool; i++ ) {
 		JSValueUnprotectSafe( ctx, jsTouchesPool[i] );
@@ -70,6 +72,8 @@
 		remainingIndex = 0,
 		changedIndex = 0;
 		
+    JSValueRef screenCanvas = [scriptView jsValueForPath:@"window.canvas"];
+    
 	for( UITouch *touch in all ) {
 		CGPoint pos = [touch locationInView:touch.view];
 		
@@ -83,7 +87,8 @@
 		JSObjectSetProperty( ctx, jsTouch, jsPageYName, y, kJSPropertyAttributeNone, NULL );
 		JSObjectSetProperty( ctx, jsTouch, jsClientXName, x, kJSPropertyAttributeNone, NULL );
 		JSObjectSetProperty( ctx, jsTouch, jsClientYName, y, kJSPropertyAttributeNone, NULL );
-		
+		JSObjectSetProperty( ctx, jsTouch, jsTargetName, screenCanvas, kJSPropertyAttributeNone, NULL );
+
 		if( [remaining member:touch] ) {
 			JSObjectSetPropertyAtIndex(ctx, jsRemainingTouches, remainingIndex++, jsTouch, NULL);
 		}
