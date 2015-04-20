@@ -93,9 +93,7 @@ EJ_BIND_SET(value, ctx, value){
 EJ_BIND_EVENT(focus);
 EJ_BIND_EVENT(blur);
 EJ_BIND_EVENT(delete);
-EJ_BIND_EVENT(keypress);
 EJ_BIND_EVENT(change);
-
 
 #pragma mark -
 #pragma mark EJKeyInput delegate
@@ -132,7 +130,6 @@ EJ_BIND_EVENT(change);
 - (void)keyInputDidBecomeFirstResponder:(EJKeyInputResponder *)keyInput{
     [self triggerEvent:@"focus"];
 }
-
 
 - (BOOL)hasText {
 	return self.value.length > 0;
