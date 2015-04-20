@@ -16,6 +16,7 @@
 		<dict>
 			<key>CFBundleIconFiles</key>
 			<array>
+				<string>Icon-60@3x.png</string>
 				<string>Icon-Spotlight-iOS7</string>
 				<string>Icon-Small</string>
 				<string>Icon.png</string>
