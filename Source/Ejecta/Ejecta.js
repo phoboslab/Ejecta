@@ -462,7 +462,7 @@ var visibilityEvent = {
 
 var unloadEvent = {
 	type: 'unload',
-	target: window.document,
+	target: window,
 	preventDefault: function(){},
 	stopPropagation: function(){}
 };
