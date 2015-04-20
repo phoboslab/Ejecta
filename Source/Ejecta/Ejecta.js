@@ -467,7 +467,7 @@ var unloadEvent = {
 	stopPropagation: function(){}
 };
 
-eventInit.visibilitychange = eventInit.pagehide = eventInit.pageshow = eventInit.resize = function() {
+eventInit.visibilitychange = eventInit.pagehide = eventInit.pageshow = eventInit.resize = eventInit.unload = function() {
 	if( windowEvents ) { return; }
 	
 	windowEvents = new Ejecta.WindowEvents();
