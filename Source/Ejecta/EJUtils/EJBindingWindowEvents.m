@@ -28,5 +28,6 @@ EJ_BIND_EVENT(pagehide);
 EJ_BIND_EVENT(pageshow);
 EJ_BIND_EVENT(resize);
 EJ_BIND_EVENT(unload);
+EJ_BIND_EVENT(load);
 
 @end
