@@ -1,8 +1,12 @@
 #import "EJFont.h"
 #import "EJCanvasContext2D.h"
 #include <malloc/malloc.h>
-#include <unordered_map>
 
+#if __IPHONE_OS_VERSION_MIN_REQUIRED >= 70000
+    #include <unordered_map>
+#else
+    #include <tr1/unordered_map>
+#endif
 
 @implementation EJFontDescriptor
 @synthesize name, size;
@@ -74,7 +78,11 @@ int EJFontGlyphLayoutSortByTextureIndex(const void *a, const void *b) {
 
 @interface EJFont () {
 	// Glyph information
-	std::unordered_map<int, EJFontGlyphInfo> glyphInfoMap;
+    #if __IPHONE_OS_VERSION_MIN_REQUIRED >= 70000
+        std::unordered_map<int, EJFontGlyphInfo> glyphInfoMap;
+    #else
+        std::tr1::unordered_map<int, EJFontGlyphInfo> glyphInfoMap;
+    #endif
 }
 @end
 
