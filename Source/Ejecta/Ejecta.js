@@ -467,7 +467,14 @@ var unloadEvent = {
 	stopPropagation: function(){}
 };
 
-eventInit.visibilitychange = eventInit.pagehide = eventInit.pageshow = eventInit.resize = eventInit.unload = function() {
+var loadEvent = {
+	type: 'load',
+	target: window,
+	preventDefault: function(){},
+	stopPropagation: function(){}
+};
+
+eventInit.visibilitychange = eventInit.pagehide = eventInit.pageshow = eventInit.resize = eventInit.unload = eventInit.load = function() {
 	if( windowEvents ) { return; }
 	
 	windowEvents = new Ejecta.WindowEvents();
@@ -498,6 +505,10 @@ eventInit.visibilitychange = eventInit.pagehide = eventInit.pageshow = eventInit
 
 	windowEvents.onunload = function() {
 		document.dispatchEvent(unloadEvent);
+	};
+
+	windowEvents.onload = function() {
+		document.dispatchEvent(loadEvent);
 	};
 };
 
