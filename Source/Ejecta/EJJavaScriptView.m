@@ -93,6 +93,11 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 		[EAGLContext setCurrentContext:glCurrentContext];
 		
 		[self loadScriptAtPath:EJECTA_BOOT_JS];
+
+		NSArray *loadN = @[
+			UIApplicationDidFinishLaunchingNotification
+		];
+		[self observeKeyPaths:loadN selector:@selector(load)];
 	}
 	return self;
 }
