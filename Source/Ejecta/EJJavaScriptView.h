@@ -34,6 +34,7 @@
 - (void)pause;
 - (void)resize;
 - (void)unload;
+- (void)load;
 @end
 
 @class EJTimerCollection;

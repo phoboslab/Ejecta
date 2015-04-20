@@ -100,6 +100,11 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 		[EAGLContext setCurrentContext:glCurrentContext];
 		
 		[self loadScriptAtPath:EJECTA_BOOT_JS];
+
+		NSArray *loadN = @[
+			UIApplicationDidFinishLaunchingNotification
+		];
+		[self observeKeyPaths:loadN selector:@selector(load)];
 	}
 	return self;
 }
@@ -418,6 +423,10 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 - (void)unload {
     [[NSNotificationCenter defaultCenter] removeObserver:proxy];
 	[windowEventsDelegate unload];
+}
+
+- (void)load {
+	[windowEventsDelegate load];
 }
 
 - (void)clearCaches {
