@@ -365,6 +365,10 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 	[windowEventsDelegate unload];
 }
 
+- (void)load {
+	[windowEventsDelegate load];
+}
+
 - (void)clearCaches {
 	JSGarbageCollect(jsGlobalContext);
 	
