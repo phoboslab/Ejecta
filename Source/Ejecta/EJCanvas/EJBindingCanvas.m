@@ -55,7 +55,7 @@
 
 - (EJTexture *)texture {
 	if( [renderingContext respondsToSelector:@selector(texture)] ) {
-		return [(id)renderingContext texture];
+		return (EJTexture *)[(id)renderingContext texture];
 	}
 	else {
 		return nil;
