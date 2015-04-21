@@ -35,6 +35,6 @@ The REAMDME of original Ejecta : <https://github.com/phoboslab/Ejecta/blob/maste
   - get system version
   - get app version (CFBundleVersion)
   - add "eval" function
-- Minor improvements
-- Minor bugs fix
+ - Minor improvements
+ - Minor bugs fix
 
