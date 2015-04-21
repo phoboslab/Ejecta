@@ -5,7 +5,10 @@
 
 - (id)initWithContext:(JSContextRef)ctx argc:(size_t)argc argv:(const JSValueRef [])argv {
 	if (self = [super initWithContext:ctx argc:argc argv:argv]) {
-		//
+        // 1
+        UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound categories:nil];
+        // 2
+        [UIApplication.sharedApplication registerUserNotificationSettings:settings];
 	}
 	return self;
 }
@@ -19,29 +22,26 @@
 	}
 }
 
-
--(void)scheduleAlarm: (NSInteger) id title: (NSString*) title message: (NSString*) message delay:(NSInteger) delay showInGame:(BOOL) showInGame {
+-(void)scheduleAlarm: (NSInteger) id title: (NSString*) title message: (NSString*) message delay:(NSInteger) delay userInfo:(NSDictionary *)userInfo {
 	[self cancelAlarm: id]; //clear any previous alarms
-
-	NSInteger show = showInGame ? 1 : 0;
 
 	UILocalNotification *localNotif = [[[UILocalNotification alloc] init]autorelease];
 
 	localNotif.alertAction = title;
+    localNotif.alertTitle = title;
 	localNotif.alertBody = message;
 	localNotif.fireDate = [NSDate dateWithTimeIntervalSinceNow: delay];
+    localNotif.timeZone = [NSTimeZone defaultTimeZone];
 	localNotif.soundName = UILocalNotificationDefaultSoundName;
 	localNotif.timeZone = [NSTimeZone defaultTimeZone];
-
-	NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-	                          [NSNumber numberWithInteger:id],    @"id",
-	                          title,                              @"title",
-	                          message,                            @"message",
-	                          [NSNumber numberWithInteger:show],  @"showInGame",
-	                          nil];
 	localNotif.userInfo = userInfo;
+    
+    if (delay==0){
+        [[UIApplication sharedApplication] presentLocalNotificationNow:localNotif];
+    }else{
+        [[UIApplication sharedApplication] scheduleLocalNotification:localNotif];
+    }
 
-	[[UIApplication sharedApplication] scheduleLocalNotification:localNotif];
 }
 
 -(void)dealloc {
@@ -49,23 +49,22 @@
 }
 
 EJ_BIND_FUNCTION (schedule, ctx, argc, argv) {
-	if (argc == 4 || argc == 5) {
+	if (argc >= 4) {
 		NSInteger id = JSValueToNumberFast(ctx, argv[0]);
 		NSString* title = JSValueToNSString(ctx, argv[1]);
 		NSString* message = JSValueToNSString(ctx, argv[2]);
 		NSInteger delay = JSValueToNumberFast(ctx, argv[3]);
-
-		if (argc == 4) {
-			[self scheduleAlarm: id title: title message: message delay: delay showInGame: FALSE ];
-		} else {
-			BOOL showInGame = JSValueToBoolean(ctx, argv[4]);
-			[self scheduleAlarm: id title: title message: message delay: delay showInGame: showInGame ];
+        NSDictionary *userInfo = nil;
+		if (argc > 4) {
+            JSObjectRef jsUserInfo = JSValueToObject(ctx, argv[4], NULL);
+            userInfo = (NSDictionary *)JSValueToNSObject(ctx, jsUserInfo);
 		}
-
+        [self scheduleAlarm: id title: title message: message delay: delay userInfo:userInfo ];
+        
 		NSLog(@"Notification: #%ld %@. Show in %ld seconds.", (long)id, title, (long)delay);
 	}
 
-	return 0;
+	return NULL;
 }
 
 EJ_BIND_FUNCTION (cancel, ctx, argc, argv) {
@@ -76,20 +75,11 @@ EJ_BIND_FUNCTION (cancel, ctx, argc, argv) {
 		NSLog(@"Notification cancelled: #%ld.", (long)id);
 	}
 
-	return 0;
-}
-
-EJ_BIND_FUNCTION (showNotifications, ctx, argc, argv) {
-	for (UILocalNotification *notification in [[[[UIApplication sharedApplication] scheduledLocalNotifications] copy] autorelease]) {
-		NSDictionary *userInfo = notification.userInfo;
-		NSLog(@"Notification: #%d %@", [[userInfo objectForKey:@"id"] intValue], [userInfo objectForKey:@"title"]);
-	}
-
-	return 0;
+	return NULL;
 }
 
 
-EJ_BIND_FUNCTION(clearNotifications, ctx, argc, argv) {
+EJ_BIND_FUNCTION(clearAll, ctx, argc, argv) {
 	[[UIApplication sharedApplication] cancelAllLocalNotifications];
 	return NULL;
 }
@@ -97,6 +87,16 @@ EJ_BIND_FUNCTION(clearNotifications, ctx, argc, argv) {
 EJ_BIND_SET(applicationIconBadgeNumber, ctx, value) {
 	[UIApplication sharedApplication].applicationIconBadgeNumber = JSValueToNumberFast(ctx, value);
 }
+
+EJ_BIND_FUNCTION (logNotifications, ctx, argc, argv) {
+    for (UILocalNotification *notification in [[[[UIApplication sharedApplication] scheduledLocalNotifications] copy] autorelease]) {
+        NSDictionary *userInfo = notification.userInfo;
+        NSLog(@"Notification: #%d %@", [[userInfo objectForKey:@"id"] intValue], [userInfo objectForKey:@"title"]);
+    }
+    
+    return NULL;
+}
+
 
 
 @end
