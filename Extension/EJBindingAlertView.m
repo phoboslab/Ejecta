@@ -3,7 +3,6 @@
 
 @implementation EJBindingAlertView
 
-EJ_BIND_EVENT(didDismiss);
 
 - (id)initWithContext:(JSContextRef)ctx argc:(size_t)argc argv:(const JSValueRef [])argv {
 	if( self = [super initWithContext:ctx argc:argc argv:argv] ) {
@@ -14,14 +13,27 @@ EJ_BIND_EVENT(didDismiss);
 		for (int i = 3; i < argc; i++) {
 			[alertView addButtonWithTitle:JSValueToNSString(ctx, argv[i])];
 		}
-		[alertView show];
 	}
 	return self;
 }
 
 - (void) alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
 	JSValueRef params[] = {JSValueMakeNumber(scriptView.jsGlobalContext, buttonIndex)};
-	[self triggerEvent:@"didDismiss" argc:1 argv:params];
+	[self triggerEvent:@"dismiss" argc:1 argv:params];
 }
+
+- (void)dealloc {
+    [alertView release];
+    [super dealloc];
+}
+
+EJ_BIND_EVENT(dismiss);
+
+EJ_BIND_FUNCTION(show, ctx, argc, argv)
+{
+    [alertView show];
+    return NULL;
+}
+
 
 @end
