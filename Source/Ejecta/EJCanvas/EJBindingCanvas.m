@@ -99,8 +99,8 @@ EJ_BIND_SET(width, ctx, value) {
 		width = newWidth;
 	}
     if (!style.size.width){
-        style.size.width = newWidth;
-        [self setStyleWidth:newWidth];
+        style.size.width = width;
+        [self setStyleWidth:width];
     }
 }
 
