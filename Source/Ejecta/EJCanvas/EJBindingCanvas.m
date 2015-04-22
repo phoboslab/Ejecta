@@ -98,9 +98,9 @@ EJ_BIND_SET(width, ctx, value) {
 	else {
 		width = newWidth;
 	}
-    if (!style.size.width){
-        style.size.width = width;
-        [self setStyleWidth:width];
+	if (!style.size.width){
+		style.size.width = width;
+		[self setStyleWidth:width];
     }
 }
 
@@ -118,9 +118,9 @@ EJ_BIND_SET(height, ctx, value) {
 	else {
 		height = newHeight;
 	}
-    if (!style.size.height){
-        style.size.height = height;
-        [self setStyleHeight:height];
+	if (!style.size.height){
+		style.size.height = height;
+		[self setStyleHeight:height];
     }
 }
 
