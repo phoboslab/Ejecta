@@ -22,8 +22,6 @@ The REAMDME of original Ejecta : <https://github.com/phoboslab/Ejecta/blob/maste
  - Encryption of Resource
  - Chartboost Integration
  - Google AdMob Integration
- - Support access resources in sandbox folder
-  - `${Documents}` , `${Library}` , `${Caches}` , `${tmp}`
  - Some new API/Event/Attribute:
   - `ejecta.fileExists`
   - `load` event of window

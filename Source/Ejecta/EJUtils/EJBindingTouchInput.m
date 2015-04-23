@@ -2,6 +2,16 @@
 
 @implementation EJBindingTouchInput
 
+- (id)initWithContext:(JSContextRef)ctxp argc:(size_t)argc argv:(const JSValueRef [])argv {
+	if( self = [super initWithContext:ctxp argc:argc argv:argv] ) {
+		if( argc > 0 ) {
+			jsTouchTarget = argv[0];
+			JSValueProtect(ctxp, jsTouchTarget);
+		}
+	}
+	return self;
+}
+
 - (void)createWithJSObject:(JSObjectRef)obj scriptView:(EJJavaScriptView *)view {
 	[super createWithJSObject:obj scriptView:view];
 	
@@ -17,12 +27,12 @@
 	// Create some JSStrings for property access
 	jsLengthName = JSStringCreateWithUTF8CString("length");
 	
+	jsTargetName = JSStringCreateWithUTF8CString("target");
 	jsIdentifierName = JSStringCreateWithUTF8CString("identifier");
 	jsPageXName = JSStringCreateWithUTF8CString("pageX");
 	jsPageYName = JSStringCreateWithUTF8CString("pageY");
 	jsClientXName = JSStringCreateWithUTF8CString("clientX");
 	jsClientYName = JSStringCreateWithUTF8CString("clientY");
-	jsTargetName = JSStringCreateWithUTF8CString("target");
 	
 	scriptView.touchDelegate = self;
 }
@@ -30,16 +40,17 @@
 - (void)dealloc {
 	JSContextRef ctx = scriptView.jsGlobalContext;
 	
+	JSValueUnprotectSafe( ctx, jsTouchTarget );
 	JSValueUnprotectSafe( ctx, jsRemainingTouches );
 	JSValueUnprotectSafe( ctx, jsChangedTouches );
 	JSStringRelease( jsLengthName );
 	
+	JSStringRelease( jsTargetName );
 	JSStringRelease( jsIdentifierName );
 	JSStringRelease( jsPageXName );
 	JSStringRelease( jsPageYName );
 	JSStringRelease( jsClientXName );
 	JSStringRelease( jsClientYName );
-	JSStringRelease( jsTargetName );
 	
 	for( int i = 0; i < touchesInPool; i++ ) {
 		JSValueUnprotectSafe( ctx, jsTouchesPool[i] );
@@ -63,6 +74,9 @@
 		for( NSUInteger i = touchesInPool; i < totalCount; i++ ) {
 			jsTouchesPool[i] = JSObjectMake( ctx, NULL, NULL );
 			JSValueProtect( ctx, jsTouchesPool[i] );
+			
+			// Attach the target (always the screen canvas) for each new touch. This never changes, so we can do it here
+			JSObjectSetProperty( ctx, jsTouchesPool[i], jsTargetName, jsTouchTarget, kJSPropertyAttributeNone, NULL );
 		}
 		touchesInPool = totalCount;
 	}
@@ -72,8 +86,6 @@
 		remainingIndex = 0,
 		changedIndex = 0;
 		
-	JSValueRef screenCanvas = [scriptView jsValueForPath:@"window.canvas"];
-    
 	for( UITouch *touch in all ) {
 		CGPoint pos = [touch locationInView:touch.view];
 		
@@ -87,8 +99,7 @@
 		JSObjectSetProperty( ctx, jsTouch, jsPageYName, y, kJSPropertyAttributeNone, NULL );
 		JSObjectSetProperty( ctx, jsTouch, jsClientXName, x, kJSPropertyAttributeNone, NULL );
 		JSObjectSetProperty( ctx, jsTouch, jsClientYName, y, kJSPropertyAttributeNone, NULL );
-		JSObjectSetProperty( ctx, jsTouch, jsTargetName, screenCanvas, kJSPropertyAttributeNone, NULL );
-
+		
 		if( [remaining member:touch] ) {
 			JSObjectSetPropertyAtIndex(ctx, jsRemainingTouches, remainingIndex++, jsTouch, NULL);
 		}

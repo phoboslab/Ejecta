@@ -361,7 +361,7 @@ var dispatchTouchEvent = function( type, all, changed ) {
 eventInit.touchstart = eventInit.touchend = eventInit.touchmove = function() {
 	if( touchInput ) { return; }
 
-	touchInput = new Ejecta.TouchInput();
+	touchInput = new Ejecta.TouchInput(window.canvas);
 	touchInput.ontouchstart = function( all, changed ){ dispatchTouchEvent( 'touchstart', all, changed ); };
 	touchInput.ontouchend = function( all, changed ){ dispatchTouchEvent( 'touchend', all, changed ); };
 	touchInput.ontouchmove = function( all, changed ){ dispatchTouchEvent( 'touchmove', all, changed ); };
