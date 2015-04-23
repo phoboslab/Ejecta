@@ -7,6 +7,6 @@
 	EJCanvasContext2D *renderingContext;
 }
 
-- (id)initWithCanvas:(JSObjectRef)canvas renderingContext:(EJCanvasContext2D *)renderingContextp;
+- (id)initWithRenderingContext:(EJCanvasContext2D *)renderingContextp;
 
 @end

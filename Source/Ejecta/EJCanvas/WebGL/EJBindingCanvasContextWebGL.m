@@ -12,10 +12,9 @@
 @implementation EJBindingCanvasContextWebGL
 @synthesize renderingContext;
 
-- (id)initWithCanvas:(JSObjectRef)canvas renderingContext:(EJCanvasContextWebGL *)renderingContextp {
+- (id)initWithRenderingContext:(EJCanvasContextWebGL *)renderingContextp {
 	if( self = [super initWithContext:NULL argc:0 argv:NULL] ) {
 		renderingContext = [renderingContextp retain];
-		jsCanvas = canvas;
 		
 		buffers = [NSMutableDictionary new];
 		textures = [NSMutableDictionary new];
@@ -141,10 +140,6 @@
 	}
 }
 
-
-EJ_BIND_GET(canvas, ctx) {
-	return jsCanvas;
-}
 
 EJ_BIND_GET(drawingBufferWidth, ctx) {
 	return JSValueMakeNumber(ctx, renderingContext.width * renderingContext.backingStoreRatio);
