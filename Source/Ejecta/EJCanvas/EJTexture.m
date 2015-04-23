@@ -113,7 +113,9 @@ typedef struct {
 		// Neither a URL nor a data URI? We can lazy load the texture. Just add the callback
 		// to the load queue and return
 		if( !isURL && !isDataURI ) {
-			lazyLoaded = true;
+			// Only set the lazy loading flag if the file exists, so we know it can, at least potentially,
+			// be loaded
+			lazyLoaded = [NSFileManager.defaultManager fileExistsAtPath:fullPath];
 			format = GL_RGBA;
 			[NSOperationQueue.mainQueue addOperation:callback];
 			return self;
