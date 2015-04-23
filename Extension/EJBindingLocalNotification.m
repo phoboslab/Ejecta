@@ -5,10 +5,11 @@
 
 - (id)initWithContext:(JSContextRef)ctx argc:(size_t)argc argv:(const JSValueRef [])argv {
 	if (self = [super initWithContext:ctx argc:argc argv:argv]) {
-        // 1
-        UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound categories:nil];
-        // 2
-        [UIApplication.sharedApplication registerUserNotificationSettings:settings];
+		// for iOS 8
+        if ( [UIUserNotificationSettings class] ){
+            UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound categories:nil];
+            [UIApplication.sharedApplication registerUserNotificationSettings:settings];
+        }
 	}
 	return self;
 }
@@ -27,9 +28,12 @@
 
 	UILocalNotification *localNotif = [[[UILocalNotification alloc] init]autorelease];
 
+    // for iOS 8
+    if ( [localNotif respondsToSelector:@selector(alertTitle)] ){
+        localNotif.alertTitle = title;
+    }
 	localNotif.alertAction = title;
-    localNotif.alertTitle = title;
-	localNotif.alertBody = message;
+    localNotif.alertBody = message;
 	localNotif.fireDate = [NSDate dateWithTimeIntervalSinceNow: delay];
     localNotif.timeZone = [NSTimeZone defaultTimeZone];
 	localNotif.soundName = UILocalNotificationDefaultSoundName;
