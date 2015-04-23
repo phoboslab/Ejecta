@@ -12,10 +12,9 @@
 @implementation EJBindingCanvasContextWebGL
 @synthesize renderingContext;
 
-- (id)initWithCanvas:(JSObjectRef)canvas renderingContext:(EJCanvasContextWebGL *)renderingContextp {
+- (id)initWithRenderingContext:(EJCanvasContextWebGL *)renderingContextp {
 	if( self = [super initWithContext:NULL argc:0 argv:NULL] ) {
 		renderingContext = [renderingContextp retain];
-		jsCanvas = canvas;
 		
 		buffers = [NSMutableDictionary new];
 		textures = [NSMutableDictionary new];
@@ -33,9 +32,6 @@
 }
 
 - (void)dealloc {
-#if DEBUG
-	NSLog(@" -- context dealloc -- ");
-#endif
 	// Make sure this rendering context is the current one, so all
 	// OpenGL objects can be deleted properly.
 	EAGLContext *oldContext = [EAGLContext currentContext];
@@ -73,7 +69,6 @@
 	[EAGLContext setCurrentContext:oldContext];
 	
 	[renderingContext release];
-	jsCanvas = nil;
 	
 	[super dealloc];
 }
@@ -144,7 +139,6 @@
 		[vertexArrays removeObjectForKey:key];
 	}
 }
-
 
 
 EJ_BIND_GET(drawingBufferWidth, ctx) {

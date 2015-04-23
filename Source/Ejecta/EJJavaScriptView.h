@@ -77,8 +77,8 @@
 	
 	// Public for fast access in bound functions
 	@public JSValueRef jsUndefined;
-    @public JSValueRef jsTrue;
-    @public JSValueRef jsFalse;
+	@public JSValueRef jsTrue;
+	@public JSValueRef jsFalse;
 }
 
 @property (nonatomic, copy) NSString *appFolder;

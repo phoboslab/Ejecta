@@ -47,7 +47,7 @@ typedef struct {
 	EJCanvasContextTextureUnit *activeTexture;
 }
 
-- (id)initWithCanvas:(JSObjectRef)canvas renderingContext:(EJCanvasContextWebGL *)renderingContextp;
+- (id)initWithRenderingContext:(EJCanvasContextWebGL *)renderingContextp;
 
 - (void)deleteRenderbuffer:(GLuint)renderbuffer;
 - (void)deleteFramebuffer:(GLuint)framebuffer;

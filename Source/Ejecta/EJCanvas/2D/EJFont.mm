@@ -82,7 +82,7 @@ int EJFontGlyphLayoutSortByTextureIndex(const void *a, const void *b) {
 
 @interface EJFont () {
 	// Glyph information
-    std::unordered_map<int, EJFontGlyphInfo> glyphInfoMap;
+	std::unordered_map<int, EJFontGlyphInfo> glyphInfoMap;
 }
 @end
 

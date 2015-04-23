@@ -19,7 +19,12 @@
 	) {
 		// Must resize
 		style = newStyle;
-		[self resizeToWidth:width height:height];
+		
+		// Only resize if we already have a viewFrameBuffer. Otherwise the style
+		// will be honored in the 'create' call.
+		if( viewFrameBuffer ) {
+			[self resizeToWidth:width height:height];
+		}
 	}
 	else {
 		// Just reposition

@@ -40,10 +40,6 @@
 }
 
 - (void)dealloc {
-
-#if DEBUG
-	NSLog(@" -- canvas dealloc: %d, %d -- ",width,height);
-#endif
 	if( isScreenCanvas ) {
 		scriptView.hasScreenCanvas = NO;
 	}
@@ -98,10 +94,6 @@ EJ_BIND_SET(width, ctx, value) {
 	else {
 		width = newWidth;
 	}
-	if (!style.size.width){
-		style.size.width = width;
-		[self setStyleWidth:width];
-    }
 }
 
 EJ_BIND_GET(height, ctx) {
@@ -118,10 +110,6 @@ EJ_BIND_SET(height, ctx, value) {
 	else {
 		height = newHeight;
 	}
-	if (!style.size.height){
-		style.size.height = height;
-		[self setStyleHeight:height];
-    }
 }
 
 EJ_BIND_GET(style, ctx) {
@@ -220,35 +208,32 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 	renderingContext.msaaEnabled = msaaEnabled;
 	renderingContext.msaaSamples = msaaSamples;
 	
-	[EAGLContext setCurrentContext:renderingContext.glContext];
-	[renderingContext create];
-	scriptView.currentRenderingContext = renderingContext;
-	
 	if( isScreenCanvas ) {
 		scriptView.screenRenderingContext = (EJCanvasContext<EJPresentable> *)renderingContext;
 		scriptView.screenRenderingContext.style = style;
 	}
 	
+	[EAGLContext setCurrentContext:renderingContext.glContext];
+	[renderingContext create];
+	scriptView.currentRenderingContext = renderingContext;
+	
 	
 	// Create the JS object
-	EJBindingBase *binding = [[bindingClass alloc] initWithCanvas:jsObject renderingContext:(id)renderingContext];
+	EJBindingBase *binding = [[bindingClass alloc] initWithRenderingContext:(id)renderingContext];
 	jsCanvasContext = [bindingClass createJSObjectWithContext:ctx scriptView:scriptView instance:binding];
 	[binding release];
-	// JSValueProtect(ctx, jsCanvasContext);
 	
-	[self linkCanvasAndContext];
-
-	return jsCanvasContext;
-}
-
-- (void)linkCanvasAndContext {
+	// Attach the canvas to the context and the context to the canvas. We do this directly with the js object's
+	// properties instead of using a JS_GET function, because we can't resolve the cyclic reference.
 	JSStringRef canvasName = JSStringCreateWithUTF8CString("canvas");
-	JSObjectSetProperty(scriptView.jsGlobalContext, jsCanvasContext, canvasName, jsObject, kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete, NULL);
-	JSStringRelease(canvasName);
+ 	JSObjectSetProperty(ctx, jsCanvasContext, canvasName, jsObject, kJSPropertyAttributeReadOnly, NULL);
+ 	JSStringRelease(canvasName);
 	
-	JSStringRef contextName = JSStringCreateWithUTF8CString("__context__");
-	JSObjectSetProperty(scriptView.jsGlobalContext, jsObject, contextName, jsCanvasContext, kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontEnum|kJSPropertyAttributeDontDelete, NULL);
+	JSStringRef contextName = JSStringCreateWithUTF8CString("__currentContext");
+	JSObjectSetProperty(ctx, jsObject, contextName, jsCanvasContext, kJSPropertyAttributeDontEnum, NULL);
 	JSStringRelease(contextName);
+	
+	return jsCanvasContext;
 }
 
 - (JSValueRef)toDataURLWithCtx:(JSContextRef)ctx argc:(size_t)argc argv:(const JSValueRef [])argv hd:(BOOL)hd {

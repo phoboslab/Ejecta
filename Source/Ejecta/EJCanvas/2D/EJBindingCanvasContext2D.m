@@ -14,23 +14,17 @@
 
 @implementation EJBindingCanvasContext2D
 
-- (id)initWithCanvas:(JSObjectRef)canvas renderingContext:(EJCanvasContext2D *)renderingContextp {
+- (id)initWithRenderingContext:(EJCanvasContext2D *)renderingContextp {
 	if( self = [super initWithContext:NULL argc:0 argv:NULL] ) {
 		renderingContext = [renderingContextp retain];
-		jsCanvas = canvas;
 	}
 	return self;
 }
 
 - (void)dealloc {
-#if DEBUG
-	NSLog(@" -- context dealloc -- ");
-#endif
 	[renderingContext release];
-	jsCanvas = nil;
 	[super dealloc];
 }
-
 
 EJ_BIND_ENUM(globalCompositeOperation, renderingContext.globalCompositeOperation,
 	"source-over",		// kEJCompositeOperationSourceOver

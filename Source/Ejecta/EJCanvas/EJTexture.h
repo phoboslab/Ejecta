@@ -18,7 +18,7 @@
 	GLenum format;
 	GLuint fbo;
 	float contentScale;
-
+	
 	EJTextureParams params;
 	NSBlockOperation *loadCallback;
 
