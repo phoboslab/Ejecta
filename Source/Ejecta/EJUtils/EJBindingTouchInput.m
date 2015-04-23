@@ -2,6 +2,16 @@
 
 @implementation EJBindingTouchInput
 
+- (id)initWithContext:(JSContextRef)ctxp argc:(size_t)argc argv:(const JSValueRef [])argv {
+	if( self = [super initWithContext:ctxp argc:argc argv:argv] ) {
+		if( argc > 0 ) {
+			jsTouchTarget = argv[0];
+			JSValueProtect(ctxp, jsTouchTarget);
+		}
+	}
+	return self;
+}
+
 - (void)createWithJSObject:(JSObjectRef)obj scriptView:(EJJavaScriptView *)view {
 	[super createWithJSObject:obj scriptView:view];
 	
@@ -17,6 +27,7 @@
 	// Create some JSStrings for property access
 	jsLengthName = JSStringCreateWithUTF8CString("length");
 	
+	jsTargetName = JSStringCreateWithUTF8CString("target");
 	jsIdentifierName = JSStringCreateWithUTF8CString("identifier");
 	jsPageXName = JSStringCreateWithUTF8CString("pageX");
 	jsPageYName = JSStringCreateWithUTF8CString("pageY");
@@ -29,10 +40,12 @@
 - (void)dealloc {
 	JSContextRef ctx = scriptView.jsGlobalContext;
 	
+	JSValueUnprotectSafe( ctx, jsTouchTarget );
 	JSValueUnprotectSafe( ctx, jsRemainingTouches );
 	JSValueUnprotectSafe( ctx, jsChangedTouches );
 	JSStringRelease( jsLengthName );
 	
+	JSStringRelease( jsTargetName );
 	JSStringRelease( jsIdentifierName );
 	JSStringRelease( jsPageXName );
 	JSStringRelease( jsPageYName );
@@ -61,6 +74,9 @@
 		for( NSUInteger i = touchesInPool; i < totalCount; i++ ) {
 			jsTouchesPool[i] = JSObjectMake( ctx, NULL, NULL );
 			JSValueProtect( ctx, jsTouchesPool[i] );
+			
+			// Attach the target (always the screen canvas) for each new touch. This never changes, so we can do it here
+			JSObjectSetProperty( ctx, jsTouchesPool[i], jsTargetName, jsTouchTarget, kJSPropertyAttributeNone, NULL );
 		}
 		touchesInPool = totalCount;
 	}

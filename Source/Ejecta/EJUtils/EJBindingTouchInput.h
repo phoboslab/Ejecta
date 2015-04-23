@@ -6,9 +6,10 @@
 
 @interface EJBindingTouchInput : EJBindingEventedBase <EJTouchDelegate> {
 	JSStringRef jsLengthName;
-	JSStringRef jsIdentifierName, jsPageXName, jsPageYName, jsClientXName, jsClientYName;
+	JSStringRef jsTargetName, jsIdentifierName, jsPageXName, jsPageYName, jsClientXName, jsClientYName;
 	JSObjectRef jsRemainingTouches, jsChangedTouches;
 	JSObjectRef jsTouchesPool[EJ_TOUCH_INPUT_MAX_TOUCHES];
+	JSValueRef jsTouchTarget;
 	NSUInteger touchesInPool;
 }
 
