@@ -93,6 +93,11 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 		[EAGLContext setCurrentContext:glCurrentContext];
 		
 		[self loadScriptAtPath:EJECTA_BOOT_JS];
+
+		NSArray *loadN = @[
+			UIApplicationDidFinishLaunchingNotification
+		];
+		[self observeKeyPaths:loadN selector:@selector(load)];
 	}
 	return self;
 }
@@ -154,14 +159,18 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 		UIApplicationWillEnterForegroundNotification,
 		UIApplicationDidBecomeActiveNotification
 	];
-	
+	NSArray *unloadN = @[
+		UIApplicationWillTerminateNotification
+	];
 	if (pauses) {
 		[self observeKeyPaths:pauseN selector:@selector(pause)];
 		[self observeKeyPaths:resumeN selector:@selector(resume)];
-	} 
+		[self observeKeyPaths:unloadN selector:@selector(unload)];
+	}
 	else {
 		[self removeObserverForKeyPaths:pauseN];
 		[self removeObserverForKeyPaths:resumeN];
+		[self removeObserverForKeyPaths:unloadN];
 	}
 	pauseOnEnterBackground = pauses;
 }
@@ -375,6 +384,15 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 	[EAGLContext setCurrentContext:glCurrentContext];
 	[displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 	isPaused = false;
+}
+
+- (void)unload {
+	[[NSNotificationCenter defaultCenter] removeObserver:proxy];
+	[windowEventsDelegate unload];
+}
+
+- (void)load {
+	[windowEventsDelegate load];
 }
 
 - (void)clearCaches {

@@ -6,5 +6,7 @@
 - (void)pause;
 - (void)resume;
 - (void)resize;
+- (void)unload;
+- (void)load;
 
 @end
