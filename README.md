@@ -18,7 +18,7 @@ The REAMDME of original Ejecta : <https://github.com/phoboslab/Ejecta/blob/maste
  - Support iOS `Social API`
  - Support LocalNotification
  - Support `AlertView` (non-block)
- - Support WebView
+ - Support `WebView`
  - Encryption of Resource
  - Chartboost Integration
  - Google AdMob Integration
@@ -26,7 +26,6 @@ The REAMDME of original Ejecta : <https://github.com/phoboslab/Ejecta/blob/maste
   - `ejecta.fileExists`
   - `load` event of window
   - `unload` event of window
-  - add `target` attribute to Touch Object
  - Some Utils ( see `EJBindingAppUtils.m`):
   - get udid & uuid
   - get system local (preferredLanguages)
