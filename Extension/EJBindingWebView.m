@@ -259,12 +259,7 @@ EJ_BIND_SET(backgroundColor, ctx, value) {
     if ([backgroundColor isEqualToString:@"transparent"] ){
         webView.backgroundColor = [UIColor clearColor];
     }else{
-        EJColorRGBA color = JSValueToColorRGBA(ctx, value);
-        NSLog(@"%d %d %d %d", color.rgba.r,color.rgba.g,color.rgba.b,color.rgba.a);
-        webView.backgroundColor = [UIColor colorWithRed:(CGFloat)color.rgba.r/255
-                                      green:(CGFloat)color.rgba.g/255
-                                       blue:(CGFloat)color.rgba.b/255
-                                        alpha:(CGFloat)color.rgba.a/255 ];
+        webView.backgroundColor = JSValueToUIColor(ctx, value);
     }
 
 }
