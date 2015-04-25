@@ -8,6 +8,7 @@ extern "C" {
 
 EJColorRGBA JSValueToColorRGBA( JSContextRef ctx, JSValueRef value );
 JSValueRef ColorRGBAToJSValue( JSContextRef ctx, EJColorRGBA c );
+UIColor* JSValueToUIColor(JSContextRef ctx, JSValueRef value);
 
 #ifdef __cplusplus
 }
