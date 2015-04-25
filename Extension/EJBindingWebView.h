@@ -10,6 +10,7 @@
 	short left, top;
 	BOOL loading;
 	NSString *src;
+    NSString *backgroundColor;
 	NSString *evalProtocol;
 	UIWebView *webView;
 

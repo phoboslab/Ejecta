@@ -1,6 +1,7 @@
 
 #import "EJBindingWebView.h"
 #import "AppDelegate.h"
+#import "EJConvertColorRGBA.h"
 
 @implementation EJBindingWebView
 
@@ -8,10 +9,11 @@
 
 - (id)initWithContext:(JSContextRef)ctx argc:(size_t)argc argv:(const JSValueRef [])argv {
 	if (self = [super initWithContext:ctx argc:argc argv:argv]) {
-		evalProtocol=@"eval";
+		evalProtocol = @"eval";
+        backgroundColor = @"transparent";
 		/*
 		   {
-		   transparent: true,
+		   backgroundColor: "transparent",
 		   left:
 		   top:
 		   width:
@@ -38,6 +40,7 @@
 	webView.mediaPlaybackRequiresUserAction=NO;
 
 	webView.opaque=NO;
+
 	webView.backgroundColor=[UIColor clearColor];
 
 	[scriptView addSubview: webView];
@@ -245,6 +248,25 @@ EJ_BIND_GET(left, ctx) {
 
 EJ_BIND_SET(left, ctx, value) {
 	left = JSValueToNumberFast(ctx, value);
+}
+
+EJ_BIND_GET(backgroundColor, ctx) {
+    return NSStringToJSValue(ctx, backgroundColor);
+}
+
+EJ_BIND_SET(backgroundColor, ctx, value) {
+    backgroundColor = JSValueToNSString(ctx, value);
+    if ([backgroundColor isEqualToString:@"transparent"] ){
+        webView.backgroundColor = [UIColor clearColor];
+    }else{
+        EJColorRGBA color = JSValueToColorRGBA(ctx, value);
+        NSLog(@"%d %d %d %d", color.rgba.r,color.rgba.g,color.rgba.b,color.rgba.a);
+        webView.backgroundColor = [UIColor colorWithRed:(CGFloat)color.rgba.r/255
+                                      green:(CGFloat)color.rgba.g/255
+                                       blue:(CGFloat)color.rgba.b/255
+                                        alpha:(CGFloat)color.rgba.a/255 ];
+    }
+
 }
 
 
