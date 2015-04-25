@@ -33,15 +33,17 @@
 	width = screen.width;
 	height = screen.height;
 	left = 0;
-	top =0;
+	top = 0;
+    
 	CGRect webViewBounds=CGRectMake(left,top,width,height);
 	webView=[[UIWebView alloc] initWithFrame:webViewBounds];
-	webView.delegate=self;
-	webView.mediaPlaybackRequiresUserAction=NO;
+    
+	webView.delegate = self;
+	webView.mediaPlaybackRequiresUserAction = NO;
 
-	webView.opaque=NO;
-
-	webView.backgroundColor=[UIColor clearColor];
+	webView.opaque = NO;
+	webView.backgroundColor = [UIColor clearColor];
+    [webView setHidden:YES];
 
 	[scriptView addSubview: webView];
 
