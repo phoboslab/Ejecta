@@ -25,7 +25,7 @@
 	
 	// Construct the error value and transaction binding for the callback
 	JSValueRef jsError = (transaction.transactionState == SKPaymentTransactionStateFailed)
-		? NSStringToJSValue(ctx, transaction.error.localizedDescription)
+		? NSStringToJSValue(ctx, transaction.error ? transaction.error.localizedDescription : @"Unknown Error")
 		: JSValueMakeNull(ctx);
 	
 	JSValueRef jsTransaction = [EJBindingIAPTransaction
