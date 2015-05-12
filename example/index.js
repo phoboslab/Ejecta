@@ -5,20 +5,20 @@ var canvas = document.getElementById('canvas');
 canvas.width = width;
 canvas.height = height;
 var context = canvas.getContext('2d');
-context.font="16px Arial";
-context.fillStyle="#ffffff";
-context.strokeStyle="blue";
+context.font = "16px Arial";
+context.fillStyle = "#ffffff";
+context.strokeStyle = "blue";
 context.beginPath();
-context.arc(100,100,100,0,Math.PI*2,false);
+context.arc(100, 100, 100, 0, Math.PI * 2, false);
 context.stroke()
 context.closePath();
 
 
-if (Ejecta.AppUtils){
+if (Ejecta.AppUtils) {
 
     window.appUtils = new Ejecta.AppUtils();
 
-    window.systemLocal=appUtils.systemLocal;
+    window.systemLocal = appUtils.systemLocal;
 
     console.log("ver", appUtils.ver);
     console.log("udid", appUtils.udid);
@@ -36,7 +36,7 @@ if (Ejecta.WebView) {
     webview.addEventListener("load", function() {
 
         ejecta.include("lib/WebviewBridge.js");
-        if (typeof WebviewBridge!="undefined"){
+        if (typeof WebviewBridge != "undefined") {
             WebviewBridge.initInNative(webview);
         }
         webview.show();
@@ -45,12 +45,12 @@ if (Ejecta.WebView) {
 
 }
 
-function funcInNative(){
-    var text="This is a function defined in native.";
+function funcInNative() {
+    var text = "This is a function defined in native.";
     console.log(text);
-    context.fillText(text,10,200);
+    context.fillText(text, 10, 200);
 
-    setTimeout(function(){
+    setTimeout(function() {
         WebviewBridge.evalRemote("funcInWebview()");
-    },500);
+    }, 500);
 }
