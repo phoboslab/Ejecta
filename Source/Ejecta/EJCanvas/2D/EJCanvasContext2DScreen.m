@@ -88,6 +88,7 @@
 	}
 	
 	// Set up the renderbuffer
+	glBindRenderbuffer(GL_RENDERBUFFER, viewRenderBuffer);
 	[glContext renderbufferStorage:GL_RENDERBUFFER fromDrawable:(CAEAGLLayer *)glview.layer];
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, viewRenderBuffer);
 	
