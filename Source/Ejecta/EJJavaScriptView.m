@@ -196,7 +196,28 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 #pragma mark Script loading and execution
 
 - (NSString *)pathForResource:(NSString *)path {
-	return [NSString stringWithFormat:@"%@/%@%@", [[NSBundle mainBundle] resourcePath], appFolder, path];
+	char specialPathName[16];
+	if( sscanf(path.UTF8String, "${%15[^}]", specialPathName) ) {
+		NSString *searchPath;
+		if( strcmp(specialPathName, "Documents") == 0 ) {
+			searchPath = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
+		}
+		else if( strcmp(specialPathName, "Library") == 0 ) {
+			searchPath = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES)[0];
+		}
+		else if( strcmp(specialPathName, "Caches") == 0 ) {
+			searchPath = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES)[0];
+		}
+		else if( strcmp(specialPathName, "tmp") == 0 ) {
+			searchPath = NSTemporaryDirectory();
+		}
+		
+		if( searchPath ) {
+			return [searchPath stringByAppendingPathComponent:[path substringFromIndex:strlen(specialPathName)+3]];
+		}
+	}
+	
+	return [NSString stringWithFormat:@"%@/%@%@", NSBundle.mainBundle.resourcePath, appFolder, path];
 }
 
 - (void)loadScriptAtPath:(NSString *)path {

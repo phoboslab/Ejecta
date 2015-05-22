@@ -44,7 +44,6 @@
 		scriptView.hasScreenCanvas = NO;
 	}
 	[renderingContext release];
-	JSValueUnprotectSafe(scriptView.jsGlobalContext, jsCanvasContext);
 	
 	JSValueUnprotectSafe(scriptView.jsGlobalContext, styleObject.jsObject);
 	styleObject.binding = nil;
@@ -55,7 +54,7 @@
 
 - (EJTexture *)texture {
 	if( [renderingContext respondsToSelector:@selector(texture)] ) {
-		return [(id)renderingContext texture];
+		return (EJTexture *)[(id)renderingContext texture];
 	}
 	else {
 		return nil;
@@ -220,10 +219,19 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 	
 	
 	// Create the JS object
-	EJBindingBase *binding = [[bindingClass alloc] initWithCanvas:jsObject renderingContext:(id)renderingContext];
+	EJBindingBase *binding = [[bindingClass alloc] initWithRenderingContext:(id)renderingContext];
 	jsCanvasContext = [bindingClass createJSObjectWithContext:ctx scriptView:scriptView instance:binding];
 	[binding release];
-	JSValueProtect(ctx, jsCanvasContext);
+	
+	// Attach the canvas to the context and the context to the canvas. We do this directly with the js object's
+	// properties instead of using a JS_GET function, because we can't resolve the cyclic reference.
+	JSStringRef canvasName = JSStringCreateWithUTF8CString("canvas");
+ 	JSObjectSetProperty(ctx, jsCanvasContext, canvasName, jsObject, kJSPropertyAttributeReadOnly, NULL);
+ 	JSStringRelease(canvasName);
+	
+	JSStringRef contextName = JSStringCreateWithUTF8CString("__currentContext");
+	JSObjectSetProperty(ctx, jsObject, contextName, jsCanvasContext, kJSPropertyAttributeDontEnum, NULL);
+	JSStringRelease(contextName);
 	
 	return jsCanvasContext;
 }

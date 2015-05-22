@@ -19,7 +19,12 @@
 	) {
 		// Must resize
 		style = newStyle;
-		[self resizeToWidth:width height:height];
+		
+		// Only resize if we already have a viewFrameBuffer. Otherwise the style
+		// will be honored in the 'create' call.
+		if( viewFrameBuffer ) {
+			[self resizeToWidth:width height:height];
+		}
 	}
 	else {
 		// Just reposition
@@ -83,6 +88,7 @@
 	}
 	
 	// Set up the renderbuffer
+	glBindRenderbuffer(GL_RENDERBUFFER, viewRenderBuffer);
 	[glContext renderbufferStorage:GL_RENDERBUFFER fromDrawable:(CAEAGLLayer *)glview.layer];
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, viewRenderBuffer);
 	
