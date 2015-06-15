@@ -7,6 +7,7 @@
 - (id)initWithContext:(JSContextRef)ctxp argc:(size_t)argc argv:(const JSValueRef [])argv {
 	if( self = [super initWithContext:ctxp argc:argc argv:argv] ) {
 		requestHeaders = [[NSMutableDictionary alloc] init];
+		defaultEncoding = NSASCIIStringEncoding;
 	}
 	return self;
 }
@@ -53,7 +54,7 @@
 - (NSString *)getResponseText {
 	if( !response || !responseBody ) { return NULL; }
 	
-	NSStringEncoding encoding = NSASCIIStringEncoding;
+	NSStringEncoding encoding = defaultEncoding;
 	if ( response.textEncodingName ) {
 		CFStringEncoding cfEncoding = CFStringConvertIANACharSetNameToEncoding((CFStringRef) response.textEncodingName);
 		if( cfEncoding != kCFStringEncodingInvalidId ) {
@@ -220,8 +221,9 @@ EJ_BIND_FUNCTION(send, ctx, argc, argv) {
 
 	NSURL *requestUrl = [NSURL URLWithString:url];
 	if( !requestUrl.host ) {
-		// No host? Assume we have a local file
+		// No host? Assume it's a local file in utf8 encoding
 		requestUrl = [NSURL fileURLWithPath:[scriptView pathForResource:requestUrl.path]];
+		defaultEncoding = NSUTF8StringEncoding;
 	}
 	NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:requestUrl];
 	[request setHTTPMethod:method];

@@ -26,6 +26,7 @@ typedef enum {
 	NSString *password;
 	int timeout;
 	NSMutableDictionary *requestHeaders;
+	NSStringEncoding defaultEncoding;
 	
 	EJHttpRequestState state;	
 	NSURLConnection *connection;
