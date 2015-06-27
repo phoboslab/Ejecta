@@ -17,9 +17,22 @@
 	return self;
 }
 
+- (void) alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    JSValueRef params[] = {JSValueMakeNumber(scriptView.jsGlobalContext, buttonIndex)};
+    [self triggerEvent:@"click" argc:1 argv:params];
+}
+
+-(void) alertView:(UIAlertView *)alertView willDismissWithButtonIndex:(NSInteger)buttonIndex{
+
+}
+
 - (void) alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
 	JSValueRef params[] = {JSValueMakeNumber(scriptView.jsGlobalContext, buttonIndex)};
 	[self triggerEvent:@"dismiss" argc:1 argv:params];
+}
+
+- (void) alertViewCancel:(UIAlertView *)alertView {
+    [self triggerEvent:@"cancel" argc:0 argv:NULL];
 }
 
 - (void)dealloc {
@@ -27,7 +40,9 @@
     [super dealloc];
 }
 
+EJ_BIND_EVENT(click);
 EJ_BIND_EVENT(dismiss);
+EJ_BIND_EVENT(cancel);
 
 EJ_BIND_FUNCTION(show, ctx, argc, argv)
 {
