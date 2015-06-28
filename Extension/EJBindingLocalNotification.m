@@ -19,7 +19,7 @@
     for (UILocalNotification *notify in notificaitons) {
         if (id == [[notify.userInfo objectForKey:@"_id"] intValue]) {
             [[UIApplication sharedApplication] cancelLocalNotification:notify];
-            NSLog(@"Notification cancel: %ld.", id);
+            NSLog(@"Notification cancel: %ld.", (long)id);
             break;
         }
     }
@@ -62,7 +62,7 @@
 EJ_BIND_FUNCTION (schedule, ctx, argc, argv) {
 	if (argc >= 4) {
 		NSInteger id = JSValueToNumberFast(ctx, argv[0]);
-        NSString* idStr= [NSString stringWithFormat:@"%ld", id ];
+        NSString* idStr= [NSString stringWithFormat:@"%ld", (long)id ];
 		NSString* title = JSValueToNSString(ctx, argv[1]);
 		NSString* message = JSValueToNSString(ctx, argv[2]);
 		NSInteger delay = JSValueToNumberFast(ctx, argv[3]);
