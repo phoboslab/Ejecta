@@ -1,7 +1,5 @@
 #import "EJBindingSocial.h"
 
-#define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
-
 @implementation EJBindingSocial
 
 
@@ -360,10 +358,8 @@ EJ_BIND_FUNCTION(openShare, ctx, argc, argv){
          [UIActivityViewController alloc] initWithActivityItems:@[message] applicationActivities:nil
     ];
     
-    if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(8)){
+    if([[[UIDevice currentDevice]systemVersion]integerValue] >= 8)
         activityViewController.popoverPresentationController.sourceView = scriptView.window.rootViewController.view;
-    }
-
     
     [scriptView.window.rootViewController
          presentViewController:activityViewController
