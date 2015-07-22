@@ -8,6 +8,9 @@
 #import <CoreGraphics/CoreGraphics.h>
 #import <Foundation/Foundation.h>
 
+/// Add this constant to the testDevices property's array to receive test ads on the simulator.
+extern const id kGADSimulatorID;
+
 @protocol GADAdNetworkExtras;
 
 /// Genders to help deliver more relevant ads.

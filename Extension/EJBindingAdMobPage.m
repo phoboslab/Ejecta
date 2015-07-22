@@ -75,9 +75,8 @@ EJ_BIND_FUNCTION(load, ctx, argc, argv)
 
 	// Create a new GADInterstitial each time.  A GADInterstitial will only show one request in its
 	// lifetime. The property will release the old one and set the new one.
-	interstitial = [[GADInterstitial alloc] init];
+	interstitial = [[GADInterstitial alloc] initWithAdUnitID:adUnitID];
 	interstitial.delegate = self;
-	interstitial.adUnitID = adUnitID;
 	[interstitial loadRequest:[self request]];
 	return NULL;
 }

@@ -14,18 +14,19 @@
 
 /// An interstitial ad. This is a full-screen advertisement shown at natural transition points in
 /// your application such as between game levels or news stories.
-///
-/// Interstitials are shown sparingly. Expect low to no fill.
 @interface GADInterstitial : NSObject
+
+/// Initializes an interstitial with an ad unit created on the AdMob website. Create a new ad unit
+/// for every unique placement of an ad in your application. Set this to the ID assigned for this
+/// placement. Ad units are important for targeting and statistics.
+///
+/// Example AdMob ad unit ID: @"ca-app-pub-0123456789012345/0123456789"
+- (instancetype)initWithAdUnitID:(NSString *)adUnitID NS_DESIGNATED_INITIALIZER;
 
 #pragma mark Pre-Request
 
-/// Required value created on the AdMob website. Create a new ad unit for every unique placement of
-/// an ad in your application. Set this to the ID assigned for this placement. Ad units are
-/// important for targeting and statistics.
-///
-/// Example AdMob ad unit ID: @"ca-app-pub-0123456789012345/0123456789"
-@property(nonatomic, copy) NSString *adUnitID;
+/// Required value passed in with initWithAdUnitID:.
+@property(nonatomic, readonly, copy) NSString *adUnitID;
 
 /// Optional delegate object that receives state change notifications from this GADInterstitalAd.
 /// Remember to nil this property before deallocating the delegate.
@@ -71,5 +72,14 @@
 /// window to show the interstitial and restored when done. After the interstitial has been removed,
 /// the delegate's interstitialDidDismissScreen: will be called.
 - (void)presentFromRootViewController:(UIViewController *)rootViewController;
+
+#pragma mark Deprecated
+
+/// Deprecated intializer. Use initWithAdUnitID: instead.
+- (instancetype)init DEPRECATED_MSG_ATTRIBUTE("Use initWithAdUnitID:.");
+
+/// Deprecated setter, use initWithAdUnitID: instead.
+- (void)setAdUnitID:(NSString *)adUnitID
+    DEPRECATED_MSG_ATTRIBUTE("Use initWithAdUnitID: instead of setting the ad unit ID.");
 
 @end
