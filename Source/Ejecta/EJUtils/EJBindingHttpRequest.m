@@ -232,10 +232,17 @@ EJ_BIND_FUNCTION(send, ctx, argc, argv) {
 		[request setValue:requestHeaders[header] forHTTPHeaderField:header];
 	}
 	
+	// Set body data (Typed Array or String)
 	if( argc > 0 ) {
-		NSString *requestBody = JSValueToNSString( ctx, argv[0] );
-		NSData *requestData = [NSData dataWithBytes:[requestBody UTF8String] length:[requestBody length]];
-		[request setHTTPBody:requestData];
+		if( JSTypedArrayGetType(ctx, argv[0]) != kJSTypedArrayTypeNone ) {
+			size_t length = 0;
+			void *data = JSTypedArrayGetDataPtr(ctx, argv[0], &length);
+			request.HTTPBody = [NSData dataWithBytes:data length:length];
+		}
+		else {
+			NSString *requestBody = JSValueToNSString( ctx, argv[0] );
+			request.HTTPBody = [requestBody dataUsingEncoding:NSUTF8StringEncoding];
+		}
 	}
 	
 	if( timeout ) {
