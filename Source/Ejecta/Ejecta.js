@@ -53,7 +53,7 @@ window.console = {
 		}
 		ej.log( txt );
 	},
-	
+
 	assert: function() {
 		var args = Array.prototype.slice.call(arguments);
 		var assertion = args.shift();
@@ -62,11 +62,13 @@ window.console = {
 		}
 	}
 };
+
 window.console.debug = function () { window.console._log('DEBUG', arguments); };
 window.console.info =  function () { window.console._log('INFO', arguments); };
 window.console.warn =  function () { window.console._log('WARN', arguments); };
 window.console.error = function () { window.console._log('ERROR', arguments); };
 window.console.log =   function () { window.console._log('LOG', arguments); };
+
 
 var consoleTimers = {};
 console.time = function(name) {
@@ -96,7 +98,7 @@ window.require = function( name ) {
 		// Some modules override module.exports, so use the module.exports reference only after loading the module
 		loadedModules[id] = module.exports;
 	}
-	
+
 	return loadedModules[id];
 };
 
@@ -128,7 +130,7 @@ window.Event = function (type) {
 	this.cancelBubble = false;
 	this.cancelable = false;
 	this.target = null;
-	
+
 	this.initEvent = function (type, bubbles, cancelable) {
 		this.type = type;
 		this.cancelBubble = bubbles;
@@ -150,7 +152,7 @@ HTMLElement = function( tagName ){
 
 HTMLElement.prototype.appendChild = function( element ) {
 	this.children.push( element );
-	
+
 	// If the child is a script element, begin to load it
 	if( element.tagName && element.tagName.toLowerCase() == 'script' ) {
 		ej.setTimeout( function(){
@@ -210,12 +212,12 @@ window.document = {
 	visibilityState: 'visible',
 	hidden: false,
 	style: {},
-	
+
 	head: new HTMLElement( 'head' ),
 	body: new HTMLElement( 'body' ),
-	
+
 	events: {},
-	
+
 	createElement: function( name ) {
 		if( name === 'canvas' ) {
 			var canvas = new Ejecta.Canvas();
@@ -233,17 +235,17 @@ window.document = {
 		}
 		else if (name === 'input' || name === 'textarea') {
 			return new Ejecta.KeyInput();
- 		}
+		}
 		return new HTMLElement( name );
 	},
-	
+
 	getElementById: function( id ){
 		if( id === 'canvas' ) {
 			return window.canvas;
 		}
 		return null;
 	},
-	
+
 	getElementsByTagName: function( tagName ) {
 		var elements = [], children, i;
 
@@ -270,7 +272,7 @@ window.document = {
 	createEvent: function (type) { 
 		return new window.Event(type); 
 	},
-	
+
 	addEventListener: function( type, callback, useCapture ){
 		if( type == 'DOMContentLoaded' ) {
 			ej.setTimeout( callback, 1 );
@@ -278,7 +280,7 @@ window.document = {
 		}
 		if( !this.events[type] ) {
 			this.events[type] = [];
-			
+
 			// call the event initializer, if this is the first time we
 			// bind to this event.
 			if( typeof(this._eventInitializers[type]) == 'function' ) {
@@ -287,23 +289,23 @@ window.document = {
 		}
 		this.events[type].push( callback );
 	},
-	
+
 	removeEventListener: function( type, callback ) {
 		var listeners = this.events[ type ];
 		if( !listeners ) { return; }
-		
+
 		for( var i = listeners.length; i--; ) {
 			if( listeners[i] === callback ) {
 				listeners.splice(i, 1);
 			}
 		}
 	},
-	
+
 	_eventInitializers: {},
 	dispatchEvent: function( event ) {
 		var listeners = this.events[ event.type ];
 		if( !listeners ) { return; }
-		
+
 		for( var i = 0; i < listeners.length; i++ ) {
 			listeners[i]( event );
 		}
@@ -316,6 +318,7 @@ window.canvas.addEventListener = window.addEventListener = function( type, callb
 window.canvas.removeEventListener = window.removeEventListener = function( type, callback ) {
 	window.document.removeEventListener(type,callback);
 };
+
 window.canvas.getBoundingClientRect = function() {
 	return {
 		top: this.offsetTop, left: this.offsetLeft,
@@ -351,7 +354,7 @@ var dispatchTouchEvent = function( type, all, changed ) {
 	touchEvent.targetTouches = all;
 	touchEvent.changedTouches = changed;
 	touchEvent.type = type;
-	
+
 	document.dispatchEvent( touchEvent );
 };
 eventInit.touchstart = eventInit.touchend = eventInit.touchmove = function() {
@@ -392,16 +395,16 @@ var deviceOrientationEvent = {
 
 eventInit.deviceorientation = eventInit.devicemotion = function() {
 	if( deviceMotion ) { return; }
-	
+
 	deviceMotion = new Ejecta.DeviceMotion();
 	deviceMotionEvent.interval = deviceMotion.interval;
-	
+
 	// Callback for Devices that have a Gyro
 	deviceMotion.ondevicemotion = function( agx, agy, agz, ax, ay, az, rx, ry, rz, ox, oy, oz ) {
 		deviceMotionEvent.accelerationIncludingGravity.x = agx;
 		deviceMotionEvent.accelerationIncludingGravity.y = agy;
 		deviceMotionEvent.accelerationIncludingGravity.z = agz;
-	
+
 		deviceMotionEvent.acceleration.x = ax;
 		deviceMotionEvent.acceleration.y = ay;
 		deviceMotionEvent.acceleration.z = az;
@@ -419,16 +422,16 @@ eventInit.deviceorientation = eventInit.devicemotion = function() {
 
 		document.dispatchEvent( deviceOrientationEvent );
 	};
-	
+
 	// Callback for Devices that only have an accelerometer
 	deviceMotion.onacceleration = function( agx, agy, agz ) {
 		deviceMotionEvent.accelerationIncludingGravity.x = agx;
 		deviceMotionEvent.accelerationIncludingGravity.y = agy;
 		deviceMotionEvent.accelerationIncludingGravity.z = agz;
-	
+
 		deviceMotionEvent.acceleration = null;
 		deviceMotionEvent.rotationRate = null;
-	
+
 		document.dispatchEvent( deviceMotionEvent );
 	};
 };
@@ -460,25 +463,25 @@ var visibilityEvent = {
 	stopPropagation: function(){}
 };
 
-eventInit.visibilitychange = eventInit.pagehide = eventInit.pageshow = eventInit.resize = function() {
+eventInit.visibilitychange = eventInit.pagehide = eventInit.pageshow = eventInit.resize = eventInit.unload = eventInit.load = function() {
 	if( windowEvents ) { return; }
-	
+
 	windowEvents = new Ejecta.WindowEvents();
-	
+
 	windowEvents.onpagehide = function() {
 		document.hidden = true;
 		document.visibilityState = 'hidden';
 		document.dispatchEvent( visibilityEvent );
-	
+
 		lifecycleEvent.type = 'pagehide';
 		document.dispatchEvent( lifecycleEvent );
 	};
-	
+
 	windowEvents.onpageshow = function() {
 		document.hidden = false;
 		document.visibilityState = 'visible';
 		document.dispatchEvent( visibilityEvent );
-	
+
 		lifecycleEvent.type = 'pageshow';
 		document.dispatchEvent( lifecycleEvent );
 	};
@@ -488,6 +491,7 @@ eventInit.visibilitychange = eventInit.pagehide = eventInit.pageshow = eventInit
 		window.innerHeight = ej.screenHeight;
 		document.dispatchEvent(resizeEvent);
 	};
+
 };
 
 })(this);
