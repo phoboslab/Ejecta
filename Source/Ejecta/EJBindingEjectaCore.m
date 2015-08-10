@@ -75,6 +75,21 @@ EJ_BIND_FUNCTION(include, ctx, argc, argv ) {
 	return NULL;
 }
 
+EJ_BIND_FUNCTION(import, ctx, argc, argv ) {
+    static dispatch_once_t onceToken;
+    static NSMutableSet *_ejImports;
+    dispatch_once(&onceToken, ^{
+        _ejImports = [NSMutableSet new];
+    });
+    if( argc < 1 ) { return NULL; }
+    NSString *importName = JSValueToNSString(ctx, argv[0]);
+    if (![_ejImports containsObject:importName]){
+        [_ejImports addObject:importName];
+        [scriptView loadScriptAtPath:importName];
+    }
+    return NULL;
+}
+
 EJ_BIND_FUNCTION(loadFont, ctx, argc, argv ) {
 	if( argc < 1 ) { return NULL; }
 
