@@ -233,6 +233,7 @@
 	else if ([snsName isEqualToString:@"sinaweibo"] && [SLComposeViewController isAvailableForServiceType:SLServiceTypeSinaWeibo]) {
 		sns = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeSinaWeibo];
 	}
+    
 	if (sns) {
 		[sns setInitialText:message];
 		if (imgSrc) {
@@ -271,6 +272,8 @@
 
 		[scriptView.window.rootViewController presentViewController:sns animated:YES completion: ^{
 		    // on displayed
+            NSLog(@"On Displayed");
+
 		}];
     }else{
         NSLog(@"%@ not found", snsName);
@@ -313,6 +316,7 @@ EJ_BIND_FUNCTION(post, ctx, argc, argv)
 }
 
 
+// snsName ,message, url, imgSrc, callback
 EJ_BIND_FUNCTION(showPostDialog, ctx, argc, argv)
 {
 	if (![SLComposeViewController class]) {
@@ -360,7 +364,8 @@ EJ_BIND_FUNCTION(openShare, ctx, argc, argv){
          [UIActivityViewController alloc] initWithActivityItems:@[message] applicationActivities:nil
     ];
     
-    if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(8)){
+    if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")){
+        NSLog(@"iOS >= 8.0");
         activityViewController.popoverPresentationController.sourceView = scriptView.window.rootViewController.view;
     }
 
