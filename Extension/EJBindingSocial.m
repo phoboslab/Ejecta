@@ -33,23 +33,24 @@
 }
 
 - (BOOL)addMultipartData:(NSString *)imgSrc request:(SLRequest *)request dataName:(NSString *)dataName {
-	NSString *_imgSrc = [NSString stringWithFormat:@"%@%@", [scriptView appFolder], imgSrc];
-	UIImage *img = [UIImage imageNamed:_imgSrc];
-	if ([_imgSrc hasSuffix:@".png"]) {
+//	imgSrc = [NSString stringWithFormat:@"%@%@", [scriptView appFolder], imgSrc];
+    imgSrc = [scriptView pathForResource:imgSrc];
+	UIImage *img = [UIImage imageNamed:imgSrc];
+	if ([imgSrc hasSuffix:@".png"]) {
 		NSData *imageData = UIImagePNGRepresentation(img);
 		[request addMultipartData:imageData
 		                 withName:dataName
 		                     type:@"image/png"
 		                 filename:@"image.png"];
 	}
-	else if ([_imgSrc hasSuffix:@".gif"]) {
+	else if ([imgSrc hasSuffix:@".gif"]) {
 		NSData *imageData = UIImagePNGRepresentation(img);
 		[request addMultipartData:imageData
 		                 withName:dataName
 		                     type:@"image/gif"
 		                 filename:@"image.gif"];
 	}
-	else if ([_imgSrc hasSuffix:@".jpg"] || [_imgSrc hasSuffix:@".jpeg"]) {
+	else if ([imgSrc hasSuffix:@".jpg"] || [imgSrc hasSuffix:@".jpeg"]) {
 		NSData *imageData = UIImageJPEGRepresentation(img, 0.9f);
 		[request addMultipartData:imageData
 		                 withName:dataName
@@ -237,7 +238,8 @@
 	if (sns) {
 		[sns setInitialText:message];
 		if (imgSrc) {
-			imgSrc = [NSString stringWithFormat:@"%@%@", [scriptView appFolder], imgSrc];
+//			imgSrc = [NSString stringWithFormat:@"%@%@", [scriptView appFolder], imgSrc];
+            imgSrc = [scriptView pathForResource:imgSrc];
 			UIImage *img = [UIImage imageNamed:imgSrc];
 			if (img) {
 				bool ok = [sns addImage:img];
