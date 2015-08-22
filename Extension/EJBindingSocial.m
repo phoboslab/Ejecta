@@ -33,7 +33,6 @@
 }
 
 - (BOOL)addMultipartData:(NSString *)imgSrc request:(SLRequest *)request dataName:(NSString *)dataName {
-//	imgSrc = [NSString stringWithFormat:@"%@%@", [scriptView appFolder], imgSrc];
     imgSrc = [scriptView pathForResource:imgSrc];
 	UIImage *img = [UIImage imageNamed:imgSrc];
 	if ([imgSrc hasSuffix:@".png"]) {
@@ -238,7 +237,6 @@
 	if (sns) {
 		[sns setInitialText:message];
 		if (imgSrc) {
-//			imgSrc = [NSString stringWithFormat:@"%@%@", [scriptView appFolder], imgSrc];
             imgSrc = [scriptView pathForResource:imgSrc];
 			UIImage *img = [UIImage imageNamed:imgSrc];
 			if (img) {
