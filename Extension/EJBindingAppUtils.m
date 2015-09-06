@@ -1,5 +1,6 @@
 #import "EJBindingAppUtils.h"
 #import "OpenUDID.h"
+#import "EJDrawable.h"
 
 
 @implementation EJBindingAppUtils
@@ -39,6 +40,28 @@
 }
 
 
+- (void) saveImage:(EJTexture *)texture destination:(NSString *)destination callback:(JSObjectRef)callback {
+    
+
+    UIImage *image = [EJTexture imageWithPixels:texture.pixels width:texture.width height:texture.height scale:1.0];
+
+    NSString *filePath = [scriptView pathForResource:destination];
+    
+    [UIImagePNGRepresentation(image) writeToFile:filePath atomically:YES];
+    
+    if( callback ) {
+        JSContextRef gctx = scriptView.jsGlobalContext;
+        JSStringRef jsFilePath = JSStringCreateWithUTF8CString([filePath UTF8String]);
+
+        JSValueRef params[] = {
+            JSValueMakeString(gctx, jsFilePath)
+        };
+        [scriptView invokeCallback:callback thisObject:NULL argc:1 argv:params];
+        JSValueUnprotectSafe(gctx, callback);
+    }
+    
+}
+
 EJ_BIND_FUNCTION(download, ctx, argc, argv)
 {
 
@@ -55,6 +78,27 @@ EJ_BIND_FUNCTION(download, ctx, argc, argv)
 
     [self download:url destination:destination callback:callback];
                                                          
+    return JSValueMakeBoolean(ctx, true);
+}
+
+EJ_BIND_FUNCTION(saveImage, ctx, argc, argv)
+{
+    
+    NSObject<EJDrawable> *drawable = (NSObject<EJDrawable> *)JSValueGetPrivate(argv[0]);
+    EJTexture *texture = drawable.texture;
+    
+    NSString *destination = JSValueToNSString(ctx, argv[1]);
+    JSObjectRef callback = nil;
+    
+    if (argc == 3){
+        callback = JSValueToObject(ctx, argv[2], NULL);
+        if (callback) {
+            JSValueProtect(ctx, callback);
+        }
+    }
+    
+    [self saveImage:texture destination:destination callback:callback];
+                                                      
     return JSValueMakeBoolean(ctx, true);
 }
 
