@@ -32,6 +32,8 @@ The REAMDME of original Ejecta : <https://github.com/phoboslab/Ejecta/blob/maste
   - get system version
   - get app version (CFBundleVersion)
   - add "eval" function
+  - download file to local folder
+  - save image/canvas to local folder
  - Minor improvements
  - Minor bugs fix
 
