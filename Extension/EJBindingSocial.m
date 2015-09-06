@@ -6,9 +6,13 @@
 
 
 - (void)invokeAndUnprotectPostCallback:(JSObjectRef)callback statusCode:(NSInteger)statusCode responseObject:(NSObject *)responseObject {
+    if(!callback){
+        return;
+    }
 	JSGlobalContextRef ctx = scriptView.jsGlobalContext;
 	JSValueRef arg = JSValueMakeNull(ctx);
 	if (responseObject == NULL) {
+        // TODO
 	}
 	else if ([responseObject isKindOfClass:[NSString class]]) {
 		JSStringRef jsStr = JSStringCreateWithUTF8CString([(NSString *)responseObject UTF8String]);
