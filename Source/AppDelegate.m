@@ -4,6 +4,11 @@
 @implementation AppDelegate
 @synthesize window;
 
+
+#define EJECTA_SYSTEM_VERSION_LESS_THAN(v) \
+([UIDevice.currentDevice.systemVersion compare:v options:NSNumericSearch] == NSOrderedAscending)
+
+
 #pragma mark -
 #pragma mark Application lifecycle
 
@@ -40,9 +45,35 @@
 }
 
 
+
 - (void)applicationDidBecomeActive:(UIApplication *)application {
-    application.applicationIconBadgeNumber = 0;
+    [self setApplicationIconBadgeNumber:0];
 }
 
+
+- (BOOL)checkNotificationType:(UIUserNotificationType)type {
+    UIUserNotificationSettings *currentSettings = [[UIApplication sharedApplication] currentUserNotificationSettings];
+    
+    return (currentSettings.types & type);
+}
+
+
+- (void)setApplicationIconBadgeNumber:(NSInteger)badgeNumber {
+    UIApplication *application = [UIApplication sharedApplication];
+    
+
+    if(EJECTA_SYSTEM_VERSION_LESS_THAN(@"8.0")) {
+        application.applicationIconBadgeNumber = badgeNumber;
+    } else {
+        if ([self checkNotificationType:UIUserNotificationTypeBadge]) {
+//            NSLog(@"badge number changed to %d", badgeNumber);
+            application.applicationIconBadgeNumber = badgeNumber;
+        } else {
+//            NSLog(@"access denied for UIUserNotificationTypeBadge");
+        }
+
+    }
+
+}
 
 @end
