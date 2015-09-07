@@ -6,6 +6,8 @@
 @implementation EJBindingAppUtils
 
 
+dispatch_queue_t saveFileQueue;
+
 - (void) download:(NSString *)urlStr destination:(NSString *)destination callback:(JSObjectRef)callback {
     
     NSString *filePath = [scriptView pathForResource:destination];
@@ -42,25 +44,39 @@
 
 - (void) saveImage:(EJTexture *)texture destination:(NSString *)destination callback:(JSObjectRef)callback {
     
-
     UIImage *image = [EJTexture imageWithPixels:texture.pixels width:texture.width height:texture.height scale:1.0];
-
+    
     NSString *filePath = [scriptView pathForResource:destination];
     
-    [UIImagePNGRepresentation(image) writeToFile:filePath atomically:YES];
-    
-    if( callback ) {
-        JSContextRef gctx = scriptView.jsGlobalContext;
-        JSStringRef jsFilePath = JSStringCreateWithUTF8CString([filePath UTF8String]);
-
-        JSValueRef params[] = {
-            JSValueMakeString(gctx, jsFilePath)
-        };
-        [scriptView invokeCallback:callback thisObject:NULL argc:1 argv:params];
-        JSValueUnprotectSafe(gctx, callback);
+    if (!saveFileQueue){
+        saveFileQueue = dispatch_queue_create("EJECTA_SAVE_FILE_QUEUE", NULL);
     }
+
+    dispatch_async(saveFileQueue, ^{
+
+        [UIImagePNGRepresentation(image) writeToFile:filePath atomically:YES];
+        
+        if( callback ) {
+            JSContextRef gctx = scriptView.jsGlobalContext;
+            JSStringRef jsFilePath = JSStringCreateWithUTF8CString([filePath UTF8String]);
+
+            JSValueRef params[] = {
+                JSValueMakeString(gctx, jsFilePath)
+            };
+            [scriptView invokeCallback:callback thisObject:NULL argc:1 argv:params];
+            JSValueUnprotectSafe(gctx, callback);
+        }
+    });
     
 }
+
+- (void)dealloc {
+    if (!saveFileQueue){
+        dispatch_release(saveFileQueue);
+    }
+    [super dealloc];
+}
+
 
 EJ_BIND_FUNCTION(download, ctx, argc, argv)
 {
