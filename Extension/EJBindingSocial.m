@@ -1,6 +1,5 @@
 #import "EJBindingSocial.h"
 
-#define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
 
 @implementation EJBindingSocial
 
@@ -368,7 +367,7 @@ EJ_BIND_FUNCTION(openShare, ctx, argc, argv){
          [UIActivityViewController alloc] initWithActivityItems:@[message] applicationActivities:nil
     ];
     
-    if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")){
+    if(!EJECTA_SYSTEM_VERSION_LESS_THAN(@"8.0")){
         NSLog(@"iOS >= 8.0");
         activityViewController.popoverPresentationController.sourceView = scriptView.window.rootViewController.view;
     }
