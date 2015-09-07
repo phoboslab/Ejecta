@@ -242,7 +242,8 @@
 		[sns setInitialText:message];
 		if (imgSrc) {
             imgSrc = [scriptView pathForResource:imgSrc];
-			UIImage *img = [UIImage imageNamed:imgSrc];
+            NSData *pixels = [NSData dataWithContentsOfFile:imgSrc];
+            UIImage *img = [[UIImage alloc] initWithData:pixels];
 			if (img) {
 				bool ok = [sns addImage:img];
 				NSLog(@"addImage %d", ok);

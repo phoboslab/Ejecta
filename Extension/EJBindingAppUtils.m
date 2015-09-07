@@ -6,8 +6,6 @@
 @implementation EJBindingAppUtils
 
 
-dispatch_queue_t saveFileQueue;
-
 - (void) download:(NSString *)urlStr destination:(NSString *)destination callback:(JSObjectRef)callback {
     
     NSString *filePath = [scriptView pathForResource:destination];
@@ -49,14 +47,13 @@ dispatch_queue_t saveFileQueue;
     
     NSString *filePath = [scriptView pathForResource:destination];
     
-    if (!saveFileQueue){
-        saveFileQueue = dispatch_queue_create("EJECTA_SAVE_FILE_QUEUE", NULL);
-        dispatch_retain(saveFileQueue);
-    }
+    
+    dispatch_queue_t saveFileQueue = dispatch_get_main_queue();
+    dispatch_retain(saveFileQueue);
 
     dispatch_async(saveFileQueue, ^{
 
-        [UIImagePNGRepresentation(image) writeToFile:filePath atomically:YES];        
+        [UIImagePNGRepresentation(image) writeToFile:filePath atomically:YES];
         [image release];
 
         if( callback ) {
@@ -69,15 +66,13 @@ dispatch_queue_t saveFileQueue;
             [scriptView invokeCallback:callback thisObject:NULL argc:1 argv:params];
             JSValueUnprotectSafe(gctx, callback);
         }
+
+        dispatch_release(saveFileQueue);
     });
     
 }
 
 - (void)dealloc {
-    if (!saveFileQueue){
-        dispatch_release(saveFileQueue);
-        saveFileQueue = NULL;
-    }
     [super dealloc];
 }
 
