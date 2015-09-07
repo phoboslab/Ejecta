@@ -77,6 +77,8 @@
 }
 
 
+
+
 EJ_BIND_FUNCTION(download, ctx, argc, argv)
 {
 
@@ -95,6 +97,7 @@ EJ_BIND_FUNCTION(download, ctx, argc, argv)
                                                          
     return JSValueMakeBoolean(ctx, true);
 }
+
 
 EJ_BIND_FUNCTION(saveImage, ctx, argc, argv)
 {
@@ -115,6 +118,27 @@ EJ_BIND_FUNCTION(saveImage, ctx, argc, argv)
     [self saveImage:texture destination:destination callback:callback];
                                                       
     return JSValueMakeBoolean(ctx, true);
+}
+
+
+EJ_BIND_FUNCTION(eval, ctx, argc, argv)
+{
+    NSString *script = JSValueToNSString(ctx, argv[0]);
+    
+    JSValueRef result = [scriptView evaluateScript:script];
+    
+    //  JSGlobalContextRef jsGlobalContext=[scriptView jsGlobalContext];
+    //  JSType type=JSValueGetType(jsGlobalContext,result);
+    
+    
+    return result;
+}
+
+
+EJ_BIND_GET(ver, ctx)
+{
+    NSString *ver = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
+    return NSStringToJSValue(ctx, ver);
 }
 
 
@@ -146,34 +170,17 @@ EJ_BIND_GET(uuid, ctx)
 	return NSStringToJSValue(ctx, app_uuid);
 }
 
-EJ_BIND_GET(ver, ctx)
+
+EJ_BIND_GET(systemVersion, ctx)
 {
-	NSString *ver = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
-	return NSStringToJSValue(ctx, ver);
+    return NSStringToJSValue(ctx, [[UIDevice currentDevice] systemVersion]);
 }
+
 
 EJ_BIND_GET(systemLocal, ctx)
 {
 	NSString *preferredLang = [[NSLocale preferredLanguages] objectAtIndex:0];
 	return NSStringToJSValue(ctx, preferredLang);
-}
-
-EJ_BIND_FUNCTION(eval, ctx, argc, argv)
-{
-	NSString *script = JSValueToNSString(ctx, argv[0]);
-
-	JSValueRef result = [scriptView evaluateScript:script];
-
-	//  JSGlobalContextRef jsGlobalContext=[scriptView jsGlobalContext];
-	//  JSType type=JSValueGetType(jsGlobalContext,result);
-
-
-	return result;
-}
-
-EJ_BIND_GET(systemVersion, ctx)
-{
-	return NSStringToJSValue(ctx, [[UIDevice currentDevice] systemVersion]);
 }
 
 
