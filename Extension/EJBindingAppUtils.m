@@ -74,6 +74,7 @@ dispatch_queue_t saveFileQueue;
 - (void)dealloc {
     if (!saveFileQueue){
         dispatch_release(saveFileQueue);
+        saveFileQueue = NULL;
     }
     [super dealloc];
 }
