@@ -3,6 +3,8 @@
 #import "AppDelegate.h"
 #import "EJConvertColorRGBA.h"
 
+#define WEBVIEW_BRIDGE_JS @"../WebviewBridge.js"
+
 @implementation EJBindingWebView
 
 @synthesize loaded;
@@ -159,6 +161,11 @@
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)_webView {
+    
+    NSData *fileData = [NSData dataWithContentsOfFile:[scriptView pathForResource:WEBVIEW_BRIDGE_JS]];
+    NSString* script = [[[NSString alloc] initWithData:fileData encoding:NSUTF8StringEncoding] autorelease];
+    [self evalScriptInWeb:script];
+    
 	self.loaded = YES;
 	[self triggerEvent:@"load"];
 }
@@ -195,6 +202,7 @@
 	[super dealloc];
 
 }
+
 
 EJ_BIND_EVENT(load);
 
