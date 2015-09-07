@@ -167,7 +167,8 @@
 	}
 	if (!accountType) {
 		NSLog(@"No SNS named %@", snsName);
-		return;
+        [self invokeAndUnprotectPostCallback:callback statusCode:-1 responseObject:NULL];
+        return;
 	}
 
 	SLRequestHandler requestHandler = ^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) {
@@ -280,6 +281,7 @@
 		}];
     }else{
         NSLog(@"%@ not found", snsName);
+        [self invokeAndUnprotectPostCallback:callback statusCode:-1 responseObject:NULL];
     }
 }
 
