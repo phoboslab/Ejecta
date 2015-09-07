@@ -166,7 +166,7 @@
 		accountType = [self.accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierSinaWeibo];
 	}
 	if (!accountType) {
-		NSLog(@"No SNS named %@", snsName);
+		NSLog(@"%@ NOT found.", snsName);
         [self invokeAndUnprotectPostCallback:callback statusCode:-1 responseObject:NULL];
         return;
 	}
@@ -280,8 +280,9 @@
 
 		}];
     }else{
-        NSLog(@"%@ not found", snsName);
+        NSLog(@"%@ NOT found.", snsName);
         [self invokeAndUnprotectPostCallback:callback statusCode:-1 responseObject:NULL];
+        return;
     }
 }
 
