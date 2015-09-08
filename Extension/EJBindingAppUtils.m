@@ -53,10 +53,14 @@
 
     dispatch_async(saveFileQueue, ^{
 
-        [UIImagePNGRepresentation(image) writeToFile:filePath atomically:YES];
+        if ([destination hasSuffix:@".jpg"] || [destination hasSuffix:@".jpeg"]){
+           [UIImageJPEGRepresentation(image,0.9) writeToFile:filePath atomically:YES];
+        }else{
+           [UIImagePNGRepresentation(image) writeToFile:filePath atomically:YES];
+        }
         [image release];
 
-        if( callback ) {
+        if(callback) {
             JSContextRef gctx = scriptView.jsGlobalContext;
             JSStringRef jsFilePath = JSStringCreateWithUTF8CString([filePath UTF8String]);
 
