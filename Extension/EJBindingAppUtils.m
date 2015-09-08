@@ -54,7 +54,7 @@
     dispatch_async(saveFileQueue, ^{
 
         if ([destination hasSuffix:@".jpg"] || [destination hasSuffix:@".jpeg"]){
-           [UIImageJPEGRepresentation(image,0.9) writeToFile:filePath atomically:YES];
+           [UIImageJPEGRepresentation(image, 0.80) writeToFile:filePath atomically:YES];
         }else{
            [UIImagePNGRepresentation(image) writeToFile:filePath atomically:YES];
         }
