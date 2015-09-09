@@ -12,30 +12,26 @@
 <title>webview</title>
 
 
-
-<script src="lib/WebviewBridge.js"></script>
-
-
 <style type="text/css">
 
 #container {
-    width : 300px;
+    width : 280px;
     height : 150px;
-    background-color: rgba(200,100,0,0.5);
+    background-color: rgba(180,90,0,0.65);
     color : #fff;
+    font: bolder 20px Arial;
+    padding: 10px;
 }
 </style>
 <script type="text/javascript">
-    
-    WebviewBridge.initInWeb();
 
     function callNative(){
+        alert("About to call funcInNative()");
         WebviewBridge.evalRemote("funcInNative()");
     }
 
     function funcInWebview(){
-        var text="This is a function defined in webview.";
-        console.log(text);
+        var text = "This is a function defined in Webview.\nCalled By Native";
         alert(text);
     }
 

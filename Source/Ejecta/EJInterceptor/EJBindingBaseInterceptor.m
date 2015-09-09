@@ -10,13 +10,13 @@
 
 		if (argc > 0) {
 			name = [JSValueToNSString(ctx, argv[0]) retain];
-            if ([interceptorManager hasInterceptor:name]){
-                NSLog(@"Error: Duplicate interceptor name: %@",name);
-            }
 		}
 		else {
-			NSLog(@"Error: Must set interceptor name.");
+            name = [AFTER_LOAD_FILE retain];
 		}
+        if ([interceptorManager hasInterceptor:name]){
+            NSLog(@"Warning: Duplicate interceptor name: %@",name);
+        }
 	}
 
 	return self;
@@ -25,6 +25,7 @@
 
 - (void)dealloc {
     [self disable];
+    [name release];
 	[interceptorManager release];
 	[super dealloc];
 }

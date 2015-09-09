@@ -72,9 +72,7 @@
 
 	NSOperationQueue *backgroundQueue;
 	JSClassRef jsBlockFunctionClass;
-	
-	EJInterceptorManager *interceptorManager;
-	
+		
 	// Public for fast access in bound functions
 	@public JSValueRef jsUndefined;
 	@public JSValueRef jsTrue;
@@ -116,5 +114,10 @@
 - (JSValueRef)loadModuleWithId:(NSString *)moduleId module:(JSValueRef)module exports:(JSValueRef)exports;
 - (JSValueRef)createTimer:(JSContextRef)ctxp argc:(size_t)argc argv:(const JSValueRef [])argv repeat:(BOOL)repeat;
 - (JSObjectRef)createFunctionWithBlock:(JSValueRef (^)(JSContextRef ctx, size_t argc, const JSValueRef argv[]))block;
+
++ (NSMutableData *)loadMutableDataFromURL:(NSString *)url;
++ (NSMutableData *)loadMutableDataFromPath:(NSString *)path;
++ (NSMutableData *)loadMutableDataFromFullPath:(NSString *)path;
++ (NSString *)pathForResource:(NSString *)path rootPath:(NSString *)rootPath;
 
 @end

@@ -17,7 +17,7 @@
 
 - (void)createWithJSObject:(JSObjectRef)obj scriptView:(EJJavaScriptView *)view {
 	[super createWithJSObject:obj scriptView:view];
-
+	
 	isAtBottom = NO;
 	isAtRight = NO;
 	wantsToShow = NO;
@@ -86,6 +86,16 @@
 	banner.frame = frame;
 }
 
+
+- (BOOL)bannerViewActionShouldBegin:(ADBannerView *)banner willLeaveApplication:(BOOL)willLeave {
+	[self triggerEvent:@"click"];
+    return YES;
+}
+
+- (void)bannerViewActionDidFinish:(ADBannerView *)banner {
+	[self triggerEvent:@"finish"];
+}
+
 - (void)dealloc {
 	[banner removeFromSuperview];
 	[banner release];
@@ -95,7 +105,7 @@
 - (void)bannerViewDidLoadAd:(ADBannerView *)theBanner {
 	NSLog(@"AdBanner: Ad loaded");
 	isReady = YES;
-	if (wantsToShow) {
+	if( wantsToShow ) {
 		[scriptView bringSubviewToFront:banner];
 		banner.hidden = NO;
 	}
@@ -108,27 +118,15 @@
 	banner.hidden = YES;
 }
 
-- (BOOL)bannerViewActionShouldBegin:(ADBannerView *)banner willLeaveApplication:(BOOL)willLeave {
-	[self triggerEvent:@"click"];
-    return YES;
-}
-
-- (void)bannerViewActionDidFinish:(ADBannerView *)banner {
-	[self triggerEvent:@"finish"];
-}
-
-EJ_BIND_GET(isReady, ctx)
-{
+EJ_BIND_GET( isReady, ctx ) {
 	return JSValueMakeBoolean(ctx, isReady);
 }
 
-EJ_BIND_GET(isAtBottom, ctx)
-{
+EJ_BIND_GET( isAtBottom, ctx ) {
 	return JSValueMakeBoolean(ctx, isAtBottom);
 }
 
-EJ_BIND_SET(isAtBottom, ctx, value)
-{
+EJ_BIND_SET( isAtBottom, ctx, value ) {
 	isAtBottom = JSValueToBoolean(ctx, value);
 	y = isAtBottom
 	    ? scriptView.bounds.size.height - banner.frame.size.height
@@ -155,23 +153,6 @@ EJ_BIND_SET(isAtRight, ctx, value)
 EJ_BIND_GET(isRectangle, ctx)
 {
 	return JSValueMakeBoolean(ctx, isRectangle);
-}
-
-EJ_BIND_FUNCTION(hide, ctx, argc, argv)
-{
-	banner.hidden = YES;
-	wantsToShow = NO;
-	return NULL;
-}
-
-EJ_BIND_FUNCTION(show, ctx, argc, argv)
-{
-	wantsToShow = YES;
-	if (isReady) {
-		[scriptView bringSubviewToFront:banner];
-		banner.hidden = NO;
-	}
-	return NULL;
 }
 
 EJ_BIND_GET(alwaysPortrait, ctx)
@@ -231,6 +212,21 @@ EJ_BIND_GET(height, ctx)
 EJ_BIND_GET(type, ctx)
 {
 	return NSStringToJSValue(ctx, type);
+}
+
+EJ_BIND_FUNCTION(hide, ctx, argc, argv ) {
+	banner.hidden = YES;
+	wantsToShow = NO;
+	return NULL;
+}
+
+EJ_BIND_FUNCTION(show, ctx, argc, argv ) {
+	wantsToShow = YES;
+	if( isReady ) {
+		[scriptView bringSubviewToFront:banner];
+		banner.hidden = NO;
+	}
+	return NULL;
 }
 
 EJ_BIND_EVENT(load);

@@ -3,8 +3,8 @@
 
 @implementation EJBindingGameCenter
 
-- (id)initWithContext:(JSContextRef)ctx argc:(size_t)argc argv:(const JSValueRef[])argv {
-	if (self = [super initWithContext:ctx argc:argc argv:argv]) {
+- (id)initWithContext:(JSContextRef)ctx argc:(size_t)argc argv:(const JSValueRef [])argv {
+	if( self = [super initWithContext:ctx argc:argc argv:argv] ) {
 		achievements = [[NSMutableDictionary alloc] init];
 	}
 	return self;
@@ -16,10 +16,10 @@
 }
 
 - (void)loadAchievements {
-	[GKAchievement loadAchievementsWithCompletionHandler: ^(NSArray *loadedAchievements, NSError *error) {
-	    if (!error) {
-	        for (GKAchievement * achievement in loadedAchievements) {
-	            achievements[achievement.identifier] = achievement;
+	[GKAchievement loadAchievementsWithCompletionHandler:^(NSArray *loadedAchievements, NSError *error) {
+		if( !error ) {
+			for( GKAchievement *achievement in loadedAchievements ) {
+				achievements[achievement.identifier] = achievement;
 			}
 		}
 	}];
@@ -29,7 +29,6 @@
 	[viewController.presentingViewController dismissViewControllerAnimated:YES completion:nil];
 	viewIsActive = false;
 }
-
 
 // authenticate( callback(error){} )
 EJ_BIND_FUNCTION( authenticate, ctx, argc, argv ) {
@@ -41,7 +40,7 @@ EJ_BIND_FUNCTION( authenticate, ctx, argc, argv ) {
 	
 	GKLocalPlayer.localPlayer.authenticateHandler = ^(UIViewController *viewController, NSError *error) {
 		authed = !error;
-		
+
 		if( authed ) {
 			NSLog(@"GameKit: Authed.");
 			[self loadAchievements];
@@ -51,8 +50,8 @@ EJ_BIND_FUNCTION( authenticate, ctx, argc, argv ) {
 		}
 		
 		int autoAuth = authed
-		? kEJGameCenterAutoAuthSucceeded
-		: kEJGameCenterAutoAuthFailed;
+			? kEJGameCenterAutoAuthSucceeded
+			: kEJGameCenterAutoAuthFailed;
 		[[NSUserDefaults standardUserDefaults] setObject:@(autoAuth) forKey:kEJGameCenterAutoAuth];
 		[[NSUserDefaults standardUserDefaults] synchronize];
 		
@@ -70,19 +69,18 @@ EJ_BIND_FUNCTION( authenticate, ctx, argc, argv ) {
 }
 
 // softAuthenticate( callback(error){} )
-EJ_BIND_FUNCTION(softAuthenticate, ctx, argc, argv)
-{
+EJ_BIND_FUNCTION( softAuthenticate, ctx, argc, argv ) {
 	// Check if the last auth was successful or never tried and if so, auto auth this time
 	int autoAuth = [[[NSUserDefaults standardUserDefaults] objectForKey:kEJGameCenterAutoAuth] intValue];
-	if (
-	    autoAuth == kEJGameCenterAutoAuthNeverTried ||
-	    autoAuth == kEJGameCenterAutoAuthSucceeded
-	    ) {
+	if(
+		autoAuth == kEJGameCenterAutoAuthNeverTried ||
+		autoAuth == kEJGameCenterAutoAuthSucceeded
+	) {
 		[self _func_authenticate:ctx argc:argc argv:argv];
 	}
-	else if (argc > 0 && JSValueIsObject(ctx, argv[0])) {
+	else if( argc > 0 && JSValueIsObject(ctx, argv[0]) ) {
 		NSLog(@"GameKit: Skipping soft auth.");
-
+		
 		JSObjectRef callback = JSValueToObject(ctx, argv[0], NULL);
 		JSValueRef params[] = { JSValueMakeBoolean(ctx, true) };
 		[scriptView invokeCallback:callback thisObject:NULL argc:1 argv:params];
@@ -92,20 +90,17 @@ EJ_BIND_FUNCTION(softAuthenticate, ctx, argc, argv)
 
 
 // reportScore( category, score, [contextNum], cb )
-EJ_BIND_FUNCTION(reportScore, ctx, argc, argv)
-{
+EJ_BIND_FUNCTION( reportScore, ctx, argc, argv ) {
 	if (argc < 2) {
 		return NULL;
 	}
 	if (!authed) {
 		NSLog(@"GameKit Error: Not authed. Can't report score."); return NULL;
 	}
-
 	NSString *category = JSValueToNSString(ctx, argv[0]);
 	int64_t score = JSValueToNumberFast(ctx, argv[1]);
 	uint64_t contextNum = 0;
 	JSObjectRef callback = NULL;
-
 	if (argc > 3) {
 		contextNum = JSValueToNumberFast(ctx, argv[2]);
 		if (JSValueIsObject(ctx, argv[3])) {
@@ -136,7 +131,6 @@ EJ_BIND_FUNCTION(reportScore, ctx, argc, argv)
 		}
 	}];
 	
-
 	return NULL;
 }
 
@@ -208,12 +202,12 @@ EJ_BIND_FUNCTION(reportAchievement, ctx, argc, argv)
 
 	NSString *identifier = JSValueToNSString(ctx, argv[0]);
 	float percent = JSValueToNumberFast(ctx, argv[1]);
-
+	
 	JSObjectRef callback = NULL;
-	if (argc > 2 && JSValueIsObject(ctx, argv[2])) {
+	if( argc > 2 && JSValueIsObject(ctx, argv[2]) ) {
 		callback = JSValueToObject(ctx, argv[2], NULL);
 	}
-
+	
 	[self reportAchievementWithIdentifier:identifier percentage:percent isIncrement:NO ctx:ctx callback:callback];
 	return NULL;
 }
@@ -227,12 +221,12 @@ EJ_BIND_FUNCTION(reportAchievementAdd, ctx, argc, argv)
 
 	NSString *identifier = JSValueToNSString(ctx, argv[0]);
 	float percent = JSValueToNumberFast(ctx, argv[1]);
-
+	
 	JSObjectRef callback = NULL;
-	if (argc > 2 && JSValueIsObject(ctx, argv[2])) {
+	if( argc > 2 && JSValueIsObject(ctx, argv[2]) ) {
 		callback = JSValueToObject(ctx, argv[2], NULL);
 	}
-
+	
 	[self reportAchievementWithIdentifier:identifier percentage:percent isIncrement:YES ctx:ctx callback:callback];
 	return NULL;
 }
@@ -260,15 +254,15 @@ EJ_BIND_GET(authed, ctx)
 
 #define InvokeAndUnprotectCallback(callback, error, object) \
 	[scriptView invokeCallback:callback thisObject:NULL argc:2 argv: \
-	 (JSValueRef[]) { \
-	     JSValueMakeBoolean(scriptView.jsGlobalContext, error), \
-	     (object ? NSObjectToJSValue(scriptView.jsGlobalContext, object) : scriptView->jsUndefined) \
-	 } \
+		(JSValueRef[]){ \
+			JSValueMakeBoolean(scriptView.jsGlobalContext, error), \
+			(object ? NSObjectToJSValue(scriptView.jsGlobalContext, object) : scriptView->jsUndefined) \
+		} \
 	]; \
 	JSValueUnprotect(scriptView.jsGlobalContext, callback);
 
 #define ExitWithCallbackOnError(callback, error) \
-	if (error) { \
+	if( error ) { \
 		InvokeAndUnprotectCallback(callback, error, NULL); \
 		return; \
 	}
@@ -277,17 +271,12 @@ EJ_BIND_GET(authed, ctx)
 		@"alias": player.alias, \
 		@"displayName": player.displayName, \
 		@"playerID": player.playerID \
-}
+	}
 
 // loadFriends( callback(error, players[]){} )
-EJ_BIND_FUNCTION(loadFriends, ctx, argc, argv)
-{
-	if (argc < 1 || !JSValueIsObject(ctx, argv[0])) {
-		return NULL;
-	}
-	if (!authed) {
-		NSLog(@"GameKit Error: Not authed. Can't load Friends."); return NULL;
-	}
+EJ_BIND_FUNCTION( loadFriends, ctx, argc, argv ) {
+	if( argc < 1 || !JSValueIsObject(ctx, argv[0]) ) { return NULL; }
+	if( !authed ) { NSLog(@"GameKit Error: Not authed. Can't load Friends."); return NULL; }
 
 	JSObjectRef callback = (JSObjectRef)argv[0];
 	JSValueProtect(ctx, callback);
@@ -314,63 +303,53 @@ EJ_BIND_FUNCTION(loadFriends, ctx, argc, argv)
 
 
 // loadPlayers( playerIds[], callback(error, players[]){} )
-EJ_BIND_FUNCTION(loadPlayers, ctx, argc, argv)
-{
-	if (argc < 2 || !JSValueIsObject(ctx, argv[1])) {
-		return NULL;
-	}
-	if (!authed) {
-		NSLog(@"GameKit Error: Not authed. Can't load Players."); return NULL;
-	}
+EJ_BIND_FUNCTION( loadPlayers, ctx, argc, argv ) {
+	if( argc < 2 || !JSValueIsObject(ctx, argv[1]) ) { return NULL; }
+	if( !authed ) { NSLog(@"GameKit Error: Not authed. Can't load Players."); return NULL; }
 
 	NSArray *players = (NSArray *)JSValueToNSObject(ctx, argv[0]);
-	if (!players || ![players isKindOfClass:NSArray.class]) {
+	if( !players || ![players isKindOfClass:NSArray.class] ) {
 		return NULL;
 	}
-
+	
 	JSObjectRef callback = (JSObjectRef)argv[0];
 	JSValueProtect(ctx, callback);
 
-	[GKPlayer loadPlayersForIdentifiers:players withCompletionHandler: ^(NSArray *players, NSError *error) {
-	    ExitWithCallbackOnError(callback, error);
-
-	    // Transform GKPlayers Array to Array of NSDictionary so InvokeAndUnprotectCallback
-	    // is happy to convert it to JSON
-	    NSMutableArray *playersArray = [NSMutableArray arrayWithCapacity:players.count];
-	    for (GKPlayer * player in players) {
-	        [playersArray addObject:GKPlayerToNSDict(player)];
+	[GKPlayer loadPlayersForIdentifiers:players withCompletionHandler:^(NSArray *players, NSError *error) {
+		ExitWithCallbackOnError(callback, error);
+		
+		// Transform GKPlayers Array to Array of NSDictionary so InvokeAndUnprotectCallback
+		// is happy to convert it to JSON
+		NSMutableArray *playersArray = [NSMutableArray arrayWithCapacity:players.count];
+		for( GKPlayer *player in players ) {
+			[playersArray addObject: GKPlayerToNSDict(player)];
 		}
-	    InvokeAndUnprotectCallback(callback, error, playersArray);
+		InvokeAndUnprotectCallback(callback, error, playersArray);
 	}];
 	return NULL;
 }
 
 
 // loadScores( category, rangeStart, rangeEnd, callback(error, scores[]){} )
-EJ_BIND_FUNCTION(loadScores, ctx, argc, argv)
-{
-	if (argc < 4 || !JSValueIsObject(ctx, argv[3])) {
-		return NULL;
-	}
-	if (!authed) {
-		NSLog(@"GameKit Error: Not authed. Can't load Scores."); return NULL;
-	}
-
+EJ_BIND_FUNCTION( loadScores, ctx, argc, argv ) {
+	if( argc < 4 || !JSValueIsObject(ctx, argv[3]) ) { return NULL; }
+	if( !authed ) { NSLog(@"GameKit Error: Not authed. Can't load Scores."); return NULL; }
+	
 	NSString *category = JSValueToNSString(ctx, argv[0]);
 	int start = JSValueToNumberFast(ctx, argv[1]);
 	int end = JSValueToNumberFast(ctx, argv[2]);
 	JSObjectRef callback = (JSObjectRef)argv[3];
 	JSValueProtect(ctx, callback);
-
+		
 	GKLeaderboard *request = [[GKLeaderboard alloc] init];
 	request.playerScope = GKLeaderboardPlayerScopeGlobal;
 	request.timeScope = GKLeaderboardTimeScopeAllTime;
 	request.identifier = category;
 	request.range = NSMakeRange(start, end);
-
+	
 	[request loadScoresWithCompletionHandler: ^(NSArray *scores, NSError *error) {
-	    ExitWithCallbackOnError(callback, error);
-
+		ExitWithCallbackOnError(callback, error);
+		
 	    NSArray *playerIds = [scores valueForKey:@"playerID"];
 	    [GKPlayer loadPlayersForIdentifiers:playerIds withCompletionHandler: ^(NSArray *players, NSError *error) {
 	            ExitWithCallbackOnError(callback, error);
@@ -402,17 +381,12 @@ EJ_BIND_FUNCTION(loadScores, ctx, argc, argv)
 }
 
 // getLocalPlayerInfo()
-EJ_BIND_FUNCTION(getLocalPlayerInfo, ctx, argc, argv)
-{
-	if (!authed) {
-		NSLog(@"GameKit Error: Not authed. Can't get Player info."); return NULL;
-	}
-
-	GKLocalPlayer *player = [GKLocalPlayer localPlayer];
+EJ_BIND_FUNCTION( getLocalPlayerInfo, ctx, argc, argv ) {
+	if( !authed ) { NSLog(@"GameKit Error: Not authed. Can't get Player info."); return NULL; }
+	
+	GKLocalPlayer * player = [GKLocalPlayer localPlayer];
 	return NSObjectToJSValue(ctx, GKPlayerToNSDict(player));
 }
-
-
 
 
 // showGameCenter()

@@ -1,3 +1,8 @@
+//
+// Install NodeJS  and run :
+// node Encryptor.js  input-original-file-path  output-encryted-file-path
+//
+
 "use strict";
 
 var fs = require('fs');

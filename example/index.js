@@ -1,56 +1,24 @@
-var width = window.innerWidth;
-var height = window.innerHeight;
-
-var canvas = document.getElementById('canvas');
-canvas.width = width;
-canvas.height = height;
-var context = canvas.getContext('2d');
-context.font = "16px Arial";
-context.fillStyle = "#ffffff";
-context.strokeStyle = "blue";
-context.beginPath();
-context.arc(100, 100, 100, 0, Math.PI * 2, false);
-context.stroke()
-context.closePath();
+//==================================================
+// Initialize the screen canvas.
+//==================================================
+ejecta.include("example/e-init.js");
 
 
-if (Ejecta.AppUtils) {
 
-    window.appUtils = new Ejecta.AppUtils();
+//==================================================
+// Examples
+//==================================================
 
-    window.systemLocal = appUtils.systemLocal;
+ejecta.include("example/e-appUtils.js");
 
-    console.log("ver", appUtils.ver);
-    console.log("udid", appUtils.udid);
-    console.log("uuid", appUtils.uuid);
-    console.log("systemLocal", appUtils.systemLocal);
+ejecta.include("example/e-encrypt.js");
 
-}
+//ejecta.include("example/e-alertView.js");
 
-if (Ejecta.WebView) {
+//ejecta.include("example/e-webView.js");
 
-    window.webview = new Ejecta.WebView();
-    webview.hide();
-    webview.src = "webview.html";
+//ejecta.include("example/e-localNotification.js");
 
-    webview.addEventListener("load", function() {
+ // ejecta.include("example/e-download-snapshot-share.js");
 
-        ejecta.include("lib/WebviewBridge.js");
-        if (typeof WebviewBridge != "undefined") {
-            WebviewBridge.initInNative(webview);
-        }
-        webview.show();
 
-    });
-
-}
-
-function funcInNative() {
-    var text = "This is a function defined in native.";
-    console.log(text);
-    context.fillText(text, 10, 200);
-
-    setTimeout(function() {
-        WebviewBridge.evalRemote("funcInWebview()");
-    }, 500);
-}

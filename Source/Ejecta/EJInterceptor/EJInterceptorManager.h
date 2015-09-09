@@ -1,8 +1,9 @@
 #import <Foundation/Foundation.h>
 
-#define AFTER_LOAD_JS @"afterLoadJS"
-#define AFTER_LOAD_IMAGE @"afterLoadImage"
-#define AFTER_LOAD_AUDIO @"afterLoadAudio"
+#define AFTER_LOAD_FILE @"file"
+#define AFTER_LOAD_JS @"js"
+#define AFTER_LOAD_IMAGE @"image"
+#define AFTER_LOAD_AUDIO @"audio"
 
 @interface EJInterceptorManager : NSObject {
 	NSMutableDictionary *interceptors;

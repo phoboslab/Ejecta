@@ -28,7 +28,7 @@
 		scriptView.hasScreenCanvas = YES;
     }else{
         useRetinaResolution = false;
-    }
+	}
 	
 	CGSize screen = scriptView.bounds.size;
 	width = screen.width;
