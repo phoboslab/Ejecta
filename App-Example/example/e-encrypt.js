@@ -1,7 +1,7 @@
 var decryptor = new Ejecta.DecryptorXOR();
 decryptor.enable();
 
-ejecta.include("./example/encryption/encrypted-test-log.js");
+ejecta.include("example/encryption/encrypted-test-log.js");
 
 (function() {
 

@@ -1,6 +1,6 @@
 //
-// Install NodeJS  and run :
-// node Encryptor.js  input-original-file-path  output-encryted-file-path
+// Install NodeJS  and run (  SECRET_KEY is :
+// node Encryptor.js  input-original-file-path  output-encryted-file-path  [ SECRET_KEY ]
 //
 
 "use strict";
@@ -16,8 +16,8 @@ var HEADER_VAR_NAME = "EJ_SECRET_HEADER";
 var SECRET_HEADER = "=S=";
 var DEFAULT_SECRET_KEY = "SecretKey (Don't include Breakline)";
 
-var NATIVE_ENCRYPTOR = "Extension/EJBindingEncryptorXOR.h";
-var PROJECT_PATH = "../";
+var NATIVE_ENCRYPTOR = "Extension/EJBindingDecryptorXOR.h";
+var PROJECT_PATH = Path.normalize(__dirname + "/../");
 
 var check = true;
 
@@ -34,7 +34,10 @@ if (!module.parent) {
     })();
 }
 
+
 function encrypt(fileName, outputFileName, secretKey, projectPath) {
+
+    console.log("File : " + fileName, "  Key : " + secretKey);
 
     var orignalBuffer = fs.readFileSync(fileName);
     var newBuffer = encode(orignalBuffer, secretKey);
