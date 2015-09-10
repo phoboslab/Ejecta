@@ -21,7 +21,7 @@ My english is very poor , so if there are some wrong words please tell me and I 
 -------------------
 Command-line
 -------------------
-	$ cd Ejecta/Tools
+	$ cd Tools
 	$ node Encryptor.js  input-file  output-file  HARD-TO-GUESS-KEY
 
 > Encryptor.js must be runned in Ejecta/Tools folder
