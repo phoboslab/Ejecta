@@ -50,6 +50,10 @@ Goto App/example/encryption/ Folder, then
 
 Then in Ejecta :
 
+	// init Decryptor.
+	var decryptor = new Ejecta.DecryptorXOR();
+	decryptor.enable();
+
     ejecta.include("example/encryption/encrypted-test-log.js");
 
 
@@ -63,6 +67,8 @@ NOTE
 
 This tool will CHANGE the "```Extension/EJBindingDecryptorXOR.h```" file.
 Because the secret-key must be written into the "EJBindingDecryptorXOR.h".
+
+Encryptor.js  & EJBindingDecryptorXOR.m are just  default  encode/decode tools, you can implement your own ones.
 
 And 
 

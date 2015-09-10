@@ -17,6 +17,7 @@
         if ([interceptorManager hasInterceptor:name]){
             NSLog(@"Warning: Duplicate interceptor name: %@",name);
         }
+//      [self enable];
 	}
 
 	return self;
