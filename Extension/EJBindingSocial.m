@@ -225,7 +225,7 @@
 	                                        completion:accountStoreHandler];
 }
 
-- (void)showPostDialog:(NSString *)snsName message:(NSString *)message url:(NSString *)url imgSrc:(NSString *)imgSrc callback:(JSObjectRef)callback {
+- (void)showPostDialog:(NSString *)snsName message:(NSString *)message imgSrc:(NSString *)imgSrc shareUrl:(NSString *)shareUrl callback:(JSObjectRef)callback {
 	SLComposeViewController *sns = NULL;
 	snsName = [snsName lowercaseString];
 	if ([snsName isEqualToString:@"twitter"] && [SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter]) {
@@ -249,8 +249,8 @@
 				NSLog(@"addImage %d", ok);
 			}
 		}
-		if (url) {
-			[sns addURL:[NSURL URLWithString:url]];
+		if (shareUrl) {
+			[sns addURL:[NSURL URLWithString:shareUrl]];
 		}
 		[sns setCompletionHandler: ^(SLComposeViewControllerResult result) {
 		    NSInteger statusCode = 0;
@@ -278,8 +278,8 @@
 		[scriptView.window.rootViewController presentViewController:sns animated:YES completion: ^{
 		    // on displayed
             NSLog(@"On Displayed");
-
 		}];
+
     }else{
         NSLog(@"%@ NOT found.", snsName);
         [self invokeAndUnprotectPostCallback:callback statusCode:-1 responseObject:NULL];
@@ -323,7 +323,7 @@ EJ_BIND_FUNCTION(post, ctx, argc, argv)
 }
 
 
-// snsName ,message, url, imgSrc, callback
+// snsName ,message, imgSrc, shareUrl, callback
 EJ_BIND_FUNCTION(showPostDialog, ctx, argc, argv)
 {
 	if (![SLComposeViewController class]) {
@@ -332,14 +332,14 @@ EJ_BIND_FUNCTION(showPostDialog, ctx, argc, argv)
 	}
 	NSString *snsName = JSValueToNSString(ctx, argv[0]);
 	NSString *message = JSValueToNSString(ctx, argv[1]);
-    NSString *url = nil;
     NSString *imgSrc = nil;
+    NSString *shareUrl = nil;
     JSObjectRef callback = nil;
     
     if (argc > 2){
-        url = JSValueToNSString(ctx, argv[2]);
+        imgSrc = JSValueToNSString(ctx, argv[2]);
         if (argc > 3){
-            imgSrc = JSValueToNSString(ctx, argv[3]);
+            shareUrl = JSValueToNSString(ctx, argv[3]);
         }
         if (argc > 4){
             callback = JSValueToObject(ctx, argv[4], NULL);
@@ -350,25 +350,42 @@ EJ_BIND_FUNCTION(showPostDialog, ctx, argc, argv)
     }
    
 	snsName = [snsName lowercaseString];
-	[self showPostDialog:snsName message:message url:url imgSrc:imgSrc callback:callback];
+	[self showPostDialog:snsName message:message imgSrc:imgSrc shareUrl:shareUrl callback:callback];
 
 	return JSValueMakeBoolean(ctx, true);
 }
 
 
+// message, imgSrc, callback
 EJ_BIND_FUNCTION(openShare, ctx, argc, argv){
     
     NSString *message = JSValueToNSString(ctx, argv[0]);
+    NSString *imgSrc = nil;
     JSObjectRef callback = nil;
+    
     if (argc > 1){
-        callback = JSValueToObject(ctx, argv[1], NULL);
-        if (callback) {
-            JSValueProtect(ctx, callback);
+        imgSrc = JSValueToNSString(ctx, argv[1]);
+        if (argc > 2){
+            callback = JSValueToObject(ctx, argv[2], NULL);
+            if (callback) {
+                JSValueProtect(ctx, callback);
+            }
+        }
+    }
+
+    UIImage *shareImg;
+    if (imgSrc) {
+        imgSrc = [scriptView pathForResource:imgSrc];
+        NSData *pixels = [NSData dataWithContentsOfFile:imgSrc];
+        shareImg = [[UIImage alloc] initWithData:pixels];
+        if (shareImg) {
+            NSLog(@"addImage %d", true);
         }
     }
     
+    
     UIActivityViewController *activityViewController = [
-         [UIActivityViewController alloc] initWithActivityItems:@[message] applicationActivities:nil
+         [UIActivityViewController alloc] initWithActivityItems:@[message, shareImg] applicationActivities:nil
     ];
     
     if(!EJECTA_SYSTEM_VERSION_LESS_THAN(@"8.0")){
@@ -376,7 +393,6 @@ EJ_BIND_FUNCTION(openShare, ctx, argc, argv){
         activityViewController.popoverPresentationController.sourceView = scriptView.window.rootViewController.view;
     }
 
-    
     [scriptView.window.rootViewController
          presentViewController:activityViewController
          animated:YES

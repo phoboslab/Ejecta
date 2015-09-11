@@ -67,12 +67,17 @@ function shareImage(imgPath) {
     // You must wait a moment for initialization of SocialSDK.
     var snsName = "twitter"; // twitter , facebook , sinaweibo (Chinese twitter)
     var message = "test message";
-    var shareUrl = null; //  "http://impactjs.com";
-    social.showPostDialog(snsName, message,
-        shareUrl,
-        imgPath,
+    var shareUrl = "http://impactjs.com";
+
+    // // Test openShare()
+    // social.openShare(message, imgPath);
+    // return;
+
+    // Test showPostDialog()
+    social.showPostDialog(snsName, message, imgPath, shareUrl,
         function(statusCode) {
             console.log(" >> Share: " + statusCode + ", " + imgPath);
         }
     );
+
 }
