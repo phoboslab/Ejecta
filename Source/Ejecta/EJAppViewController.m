@@ -47,7 +47,28 @@
 	[view release];
 }
 
-//- (NSUInteger)supportedInterfaceOrientations {
+
+#if __IPHONE_OS_VERSION_MAX_ALLOWED < 90000
+// for iOS 7,8
+- (NSUInteger)supportedInterfaceOrientations {
+    if( landscapeMode ) {
+        // Allow Landscape Left and Right
+        return UIInterfaceOrientationMaskLandscape;
+    }
+    else {
+        if( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ) {
+            // Allow Portrait UpsideDown on iPad
+            return UIInterfaceOrientationMaskPortrait | UIInterfaceOrientationMaskPortraitUpsideDown;
+        }
+        else {
+            // Only Allow Portrait
+            return UIInterfaceOrientationMaskPortrait;
+        }
+    }
+}
+
+#else
+// for iOS 9
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations {
 	if( landscapeMode ) {
 		// Allow Landscape Left and Right
@@ -64,6 +85,10 @@
 		}
 	}
 }
+
+#endif
+
+
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)orientation {
 	// Deprecated in iOS6 - supportedInterfaceOrientations is the new way to do this
