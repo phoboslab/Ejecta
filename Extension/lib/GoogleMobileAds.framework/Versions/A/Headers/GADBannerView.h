@@ -12,6 +12,7 @@
 #import <GoogleMobileAds/GADInAppPurchaseDelegate.h>
 #import <GoogleMobileAds/GADRequest.h>
 #import <GoogleMobileAds/GADRequestError.h>
+#import <GoogleMobileAds/GoogleMobileAdsDefines.h>
 
 #ifndef IBInspectable
 #define IBInspectable
@@ -97,12 +98,12 @@
 
 /// Indicates if the currently displayed ad (or most recent failure) was a result of auto refreshing
 /// as specified on server. This property is set to NO after each loadRequest: method.
-@property(nonatomic, readonly, assign) BOOL hasAutoRefreshed __attribute__((deprecated));
+@property(nonatomic, readonly, assign) BOOL hasAutoRefreshed GAD_DEPRECATED_ATTRIBUTE;
 
 /// The mediated ad network's underlying ad view. You may use this property to read the ad's actual
 /// size and adjust this banner view's frame origin. However, modifying the banner view's frame size
 /// triggers the Mobile Ads SDK to request a new ad. Only update the banner view's frame origin.
-@property(nonatomic, readonly, weak) UIView *mediatedAdView
-    __attribute__((deprecated("Use adNetworkClassName.")));
+@property(nonatomic, readonly, weak)
+    UIView *mediatedAdView GAD_DEPRECATED_MSG_ATTRIBUTE("Use adNetworkClassName.");
 
 @end

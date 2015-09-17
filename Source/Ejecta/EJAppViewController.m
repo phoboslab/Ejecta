@@ -47,7 +47,8 @@
 	[view release];
 }
 
-- (NSUInteger)supportedInterfaceOrientations {
+//- (NSUInteger)supportedInterfaceOrientations {
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
 	if( landscapeMode ) {
 		// Allow Landscape Left and Right
 		return UIInterfaceOrientationMaskLandscape;

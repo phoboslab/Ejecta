@@ -8,9 +8,10 @@
 #import <Foundation/Foundation.h>
 
 #import <GoogleMobileAds/GADRequest.h>
+#import <GoogleMobileAds/GoogleMobileAdsDefines.h>
 
 /// Add this constant to the testDevices property's array to receive test ads on the simulator.
-extern const id kDFPSimulatorID;
+GAD_EXTERN const id kDFPSimulatorID;
 
 /// Specifies optional parameters for ad requests.
 @interface DFPRequest : GADRequest

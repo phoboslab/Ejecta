@@ -21,8 +21,7 @@
 
 /// Enables the default consumable product in-app purchase flow handled by the Google Mobile Ads
 /// SDK. The GADDefaultInAppPurchaseDelegate object is retained while the default purchase flow is
-/// enabled. This method adds a SKPaymentTransactionObserver to the default SKPaymentQueue. Remove
-/// any existing transaction observers before calling this method.
+/// enabled. This method adds a SKPaymentTransactionObserver to the default SKPaymentQueue.
 ///
 /// Call this method early in your application to handle unfinished transactions from previous
 /// application sessions. For example, call this method in your application delegate's

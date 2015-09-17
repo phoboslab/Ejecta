@@ -1,7 +1,7 @@
 /*
  * CBNewsfeedUI.h
  * Chartboost
- * 5.1.5
+ * 5.5.3
  *
  * Copyright 2011 Chartboost. All rights reserved.
  */

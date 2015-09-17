@@ -10,48 +10,38 @@
 @class GADBannerView;
 @class GADRequestError;
 
-/// Delegate for receiving state change messages from a GADBannerView such as ad requests
-/// succeeding/failing or when an ad has been clicked.
+/// Delegate methods for receiving GADBannerView state change messages such as ad request status
+/// and ad click lifecycle.
 @protocol GADBannerViewDelegate<NSObject>
 
 @optional
 
 #pragma mark Ad Request Lifecycle Notifications
 
-/// Called when an ad request loaded an ad. This is a good opportunity to add this view to the
-/// hierarchy if it has not been added yet. If the ad was received as a part of the server-side auto
-/// refreshing, you can examine the hasAutoRefreshed property of the view.
-- (void)adViewDidReceiveAd:(GADBannerView *)view;
+/// Tells the delegate that an ad request successfully received an ad. The delegate may want to add
+/// the banner view to the view hierarchy if it hasn't been added yet.
+- (void)adViewDidReceiveAd:(GADBannerView *)bannerView;
 
-/// Called when an ad request failed. Normally this is because no network connection was available
-/// or no ads were available (i.e. no fill). If the error was received as a part of the server-side
-/// auto refreshing, you can examine the hasAutoRefreshed property of the view.
-- (void)adView:(GADBannerView *)view didFailToReceiveAdWithError:(GADRequestError *)error;
+/// Tells the delegate that an ad request failed. The failure is normally due to network
+/// connectivity or ad availablility (i.e., no fill).
+- (void)adView:(GADBannerView *)bannerView didFailToReceiveAdWithError:(GADRequestError *)error;
 
 #pragma mark Click-Time Lifecycle Notifications
 
-/// Called just before presenting the user a full screen view, such as a browser, in response to
-/// clicking on an ad. Use this opportunity to stop animations, time sensitive interactions, etc.
-///
-/// Normally the user looks at the ad, dismisses it, and control returns to your application by
-/// calling adViewDidDismissScreen:. However if the user hits the Home button or clicks on an App
-/// Store link your application will end. On iOS 4.0+ the next method called will be
-/// applicationWillResignActive: of your UIViewController
-/// (UIApplicationWillResignActiveNotification). Immediately after that adViewWillLeaveApplication:
-/// is called.
-- (void)adViewWillPresentScreen:(GADBannerView *)adView;
+/// Tells the delegate that a full screen view will be presented in response to the user clicking on
+/// an ad. The delegate may want to pause animations and time sensitive interactions.
+- (void)adViewWillPresentScreen:(GADBannerView *)bannerView;
 
-/// Called just before dismissing a full screen view.
-- (void)adViewWillDismissScreen:(GADBannerView *)adView;
+/// Tells the delegate that the full screen view will be dismissed.
+- (void)adViewWillDismissScreen:(GADBannerView *)bannerView;
 
-/// Called just after dismissing a full screen view. Use this opportunity to restart anything you
-/// may have stopped as part of adViewWillPresentScreen:.
-- (void)adViewDidDismissScreen:(GADBannerView *)adView;
+/// Tells the delegate that the full screen view has been dismissed. The delegate should restart
+/// anything paused while handling adViewWillPresentScreen:.
+- (void)adViewDidDismissScreen:(GADBannerView *)bannerView;
 
-/// Called just before the application will background or terminate because the user clicked on an
-/// ad that will launch another application (such as the App Store). The normal
-/// UIApplicationDelegate methods, like applicationDidEnterBackground:, will be called immediately
-/// before this.
-- (void)adViewWillLeaveApplication:(GADBannerView *)adView;
+/// Tells the delegate that the user click will open another app, backgrounding the current
+/// application. The standard UIApplicationDelegate methods, like applicationDidEnterBackground:,
+/// are called immediately before this method is called.
+- (void)adViewWillLeaveApplication:(GADBannerView *)bannerView;
 
 @end

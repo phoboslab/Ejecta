@@ -1,7 +1,7 @@
 /*
  * Chartboost.h
  * Chartboost
- * 5.1.5
+ * 5.5.3
  *
  * Copyright 2011 Chartboost. All rights reserved.
  */
@@ -33,7 +33,9 @@ typedef NS_ENUM(NSUInteger, CBFramework) {
     /*! Fyber. */
     CBFrameworkFyber,
     /*! Prime31Unreal. */
-    CBFrameworkPrime31Unreal
+    CBFrameworkPrime31Unreal,
+    /*! Weeby. */
+    CBFrameworkWeeby
 };
 
 /*!
@@ -63,6 +65,8 @@ typedef NS_ENUM(NSUInteger, CBLoadError) {
     CBLoadErrorUserCancellation,
     /*! No location detected. */
     CBLoadErrorNoLocationFound,
+    /*! Video Prefetching is not finished */
+    CBLoadErrorPrefetchingIncomplete,
 };
 
 /*!
@@ -372,6 +376,18 @@ extern CBLocation const CBLocationDefault;
 
 /*!
  @abstract
+ Set a custom version to append to the POST body of every request. This is useful for analytics and provides chartboost with important information.
+ example setFramework:Unity withVersion:4.6, setFrameworkVersion:5.2.1
+ 
+ @param frameworkVersion The version sent as a string.
+ 
+ @discussion This is an internal method used via Chartboost's Unity and Corona SDKs
+ to track their usage.
+ */
++ (void)setFrameworkVersion:(NSString*)frameworkVersion;
+    
+/*!
+ @abstract
  Set a custom framework suffix to append to the POST headers field.
  
  @param framework The suffx to send with all Chartboost API server requests.
@@ -380,6 +396,31 @@ extern CBLocation const CBLocationDefault;
  to track their usage.
  */
 + (void)setFramework:(CBFramework)framework;
+
+/*!
+ @abstract
+ Set a custom framework suffix to append to the POST headers field.
+example setFramework:Unity withVersion:4.6, setFrameworkVersion:5.2.1
+ 
+ @param framework The suffix to send with all Chartbooost API server requets.
+ @param version The platform version used for analytics. Example Unity should set Application.unityVersion
+ 
+ @discussion This is an internal method used via Chartboost's Unity and Corona SDKs
+ to track their usage.
+ */
++ (void)setFramework:(CBFramework)framework withVersion:(NSString *)version;
+
+/*!
+ @abstract
+ Set a custom mediation library to append to the POST body of every request.
+ example setMediation:@"MoPub" withVersion:@"3.8.0"
+ 
+ @param libraryName The name of the mediation library.
+ @param libraryVersion The version sent as a string.
+ 
+ @discussion This is an internal method used by mediation partners to track their usage.
+ */
++ (void)setMediation:(NSString *)libraryName withVersion:(NSString*)libraryVersion;
 
 /*!
  @abstract
@@ -494,6 +535,14 @@ extern CBLocation const CBLocationDefault;
  developer to manage the caching behavior of Chartboost impressions.
  */
 + (BOOL)getAutoCacheAds;
+
+/*!
+ @abstract
+ Close any visible chartboost impressions (interstitials, more apps, rewarded video, etc..) and the loading view (if visible)
+ 
+ @discussion There are some use cases when this functionality is useful.
+ */
++ (void)closeImpression;
 
 /*!
  @abstract

@@ -43,22 +43,21 @@
 - (void) saveImage:(EJTexture *)texture destination:(NSString *)destination callback:(JSObjectRef)callback {
     
     UIImage *image = [EJTexture imageWithPixels:texture.pixels width:texture.width height:texture.height scale:1.0];
-    [image retain];
-    
     NSString *filePath = [scriptView pathForResource:destination];
+    NSData *raw;
     
+    if ([destination hasSuffix:@".jpg"] || [destination hasSuffix:@".jpeg"]){
+        raw = UIImageJPEGRepresentation(image, 0.80);
+    }else{
+        raw = UIImagePNGRepresentation(image);
+    }
     
     dispatch_queue_t saveFileQueue = dispatch_get_main_queue();
     dispatch_retain(saveFileQueue);
 
     dispatch_async(saveFileQueue, ^{
 
-        if ([destination hasSuffix:@".jpg"] || [destination hasSuffix:@".jpeg"]){
-           [UIImageJPEGRepresentation(image, 0.80) writeToFile:filePath atomically:YES];
-        }else{
-           [UIImagePNGRepresentation(image) writeToFile:filePath atomically:YES];
-        }
-        [image release];
+        [raw writeToFile:filePath atomically:YES];
 
         if(callback) {
             JSContextRef gctx = scriptView.jsGlobalContext;

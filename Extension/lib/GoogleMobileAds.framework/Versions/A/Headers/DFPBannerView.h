@@ -6,6 +6,7 @@
 //
 
 #import <GoogleMobileAds/GADBannerView.h>
+#import <GoogleMobileAds/GoogleMobileAdsDefines.h>
 
 @protocol DFPCustomRenderedBannerViewDelegate;
 @protocol GADAdSizeDelegate;
@@ -73,6 +74,6 @@
 ///   [bannerView setValidAdSizesWithSizes:&size1, &size2, NULL];
 ///   \endcode
 - (void)setValidAdSizesWithSizes:(GADAdSize *)firstSize, ... NS_REQUIRES_NIL_TERMINATION
-                                 DEPRECATED_MSG_ATTRIBUTE("Use validAdSizes property.");
+                                 GAD_DEPRECATED_MSG_ATTRIBUTE("Use validAdSizes property.");
 
 @end
