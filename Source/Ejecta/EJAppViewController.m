@@ -48,9 +48,15 @@
 }
 
 
+
 #if __IPHONE_OS_VERSION_MAX_ALLOWED < 90000
 // for iOS 7,8
 - (NSUInteger)supportedInterfaceOrientations {
+#else
+// for iOS 9
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
+#endif
+    
     if( landscapeMode ) {
         // Allow Landscape Left and Right
         return UIInterfaceOrientationMaskLandscape;
@@ -67,29 +73,8 @@
     }
 }
 
-#else
-// for iOS 9
-- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
-	if( landscapeMode ) {
-		// Allow Landscape Left and Right
-		return UIInterfaceOrientationMaskLandscape;
-	}
-	else {
-		if( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ) {
-			// Allow Portrait UpsideDown on iPad
-			return UIInterfaceOrientationMaskPortrait | UIInterfaceOrientationMaskPortraitUpsideDown;
-		}
-		else {
-			// Only Allow Portrait
-			return UIInterfaceOrientationMaskPortrait;
-		}
-	}
-}
 
-#endif
-
-
-
+    
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)orientation {
 	// Deprecated in iOS6 - supportedInterfaceOrientations is the new way to do this
 	// We just use the mask returned by supportedInterfaceOrientations here to check if
