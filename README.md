@@ -23,14 +23,14 @@ The REAMDME of original Ejecta : <https://github.com/phoboslab/Ejecta/blob/maste
  - Chartboost Integration
  - Google AdMob Integration
  - Some new API/Event/Attribute:
-  - `ejecta.fileExists`
   - `load` event of window
   - `unload` event of window
  - Some Utils ( see `EJBindingAppUtils.m`):
   - get udid & uuid
-  - get system local (preferredLanguages)
+  - get system local (= preferredLanguages)
   - get system version
-  - get app version (CFBundleVersion)
+  - get app version ( = CFBundleVersion)
+  - check file exists (use `fileExists`)
   - add "eval" function
   - download file to local folder
   - save image/canvas to local folder
