@@ -186,6 +186,16 @@ EJ_BIND_GET(systemLocal, ctx)
 	return NSStringToJSValue(ctx, preferredLang);
 }
 
+EJ_BIND_FUNCTION(fileExists, ctx, argc, argv ) {
+    if(argc > 0) {
+        NSString *path = JSValueToNSString(ctx, argv[0]);
+        if ([[NSFileManager defaultManager] fileExistsAtPath:[scriptView pathForResource:path]]){
+            return JSValueMakeBoolean(ctx, true);
+        }
+    }
+    return JSValueMakeBoolean(ctx, false);
+}
+
 
 
 @end
