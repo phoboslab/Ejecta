@@ -1,5 +1,5 @@
-var url = "ws://localhost:8081";
-var ws = new Ejecta.WebSocket(url);
+var url = "ws://localhost:8080";
+var ws = new WebSocket(url);
 
 ws.onmessage = function(event) {
     var data = event.data;
@@ -19,3 +19,10 @@ ws.onerror = function(event) {
     var data = event.data;
     console.log(data);
 };
+
+var no = 1;
+setInterval(function(){
+    if (ws.readyState === ws.OPEN){
+        ws.send("message "+ (no++) );
+    }
+},1000);
