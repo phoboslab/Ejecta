@@ -21,7 +21,8 @@
 {
 	GADInterstitial *interstitial;
 	NSString *adUnitID;
-	BOOL isReady;
+    BOOL loading;
+    JSObjectRef loadCallback;
 }
 
 @end

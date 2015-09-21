@@ -21,10 +21,11 @@ typedef enum {
 	NSDictionary *sizeType;
 	GADBannerView *banner;
 	NSString *adUnitID;
-	BOOL wantsToShow, isReady;
 	short x, y;
     CGFloat width;
     CGFloat height;
+	BOOL wantToShow, isReady, loading;
+    JSObjectRef loadCallback;
 }
 
 @property (readwrite, nonatomic) BannerType bannerType;

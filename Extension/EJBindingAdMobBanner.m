@@ -17,31 +17,44 @@
 		else {
 			NSLog(@"Error: Must set adUnitID");
 		}
+        
+        loading = false;
+        loadCallback = nil;
 	}
+    
 	return self;
 }
 
 - (void)createWithJSObject:(JSObjectRef)obj scriptView:(EJJavaScriptView *)view {
 	[super createWithJSObject:obj scriptView:view];
-
-	wantsToShow = NO;
+    
+	wantToShow = NO;
 	isReady = NO;
 	x = 0;
 	y = 0;
+    banner = nil;
 
-	banner = [[GADBannerView alloc] initWithFrame:CGRectZero];
-	banner.adUnitID = adUnitID;
-	banner.delegate = self;
-	banner.hidden = YES;
-	banner.rootViewController = scriptView.window.rootViewController;
-//	[self doLayout];
-	[scriptView addSubview:banner];
 }
+
+- (void)initBannerWithView:(EJJavaScriptView *)view {
+
+    banner = [[GADBannerView alloc] initWithFrame:CGRectZero];
+    banner.adUnitID = adUnitID;
+    banner.delegate = self;
+    banner.hidden = YES;
+    banner.rootViewController = scriptView.window.rootViewController;
+    
+    //	[self doLayout];
+    [scriptView addSubview:banner];
+}
+
 
 - (void)dealloc {
 	isReady = NO;
-	banner.delegate = nil;
-	[banner release];
+	banner.rootViewController = nil;
+    banner.delegate = nil;
+    [banner release];
+    loadCallback = nil;
 	[super dealloc];
 }
 
@@ -85,40 +98,65 @@
 }
 
 - (void)doLayout {
+
+    if (!banner){
+        [self initBannerWithView:scriptView];
+    }
+
 	CGSize size = [self getSize];
 	width = size.width;
 	height = size.height;
 	[banner setFrame:CGRectMake(x, y, width, height)];
 }
 
-- (GADRequest *)request {
+- (void)requestBanner {
+
+    loading = true;
+    isReady = NO;
+
 	GADRequest *request = [GADRequest request];
 
 	// Make the request for a test ad. Put in an identifier for the simulator as well as any devices
 	// you want to receive test ads.
 	request.testDevices = @[
-	        // TODO: Add your device/simulator test identifiers here. Your device identifier is printed to
-	        // the console when the app is launched.
-	        @"2077ef9a63d2b398840261c8221a0c9a"
+	        kGADSimulatorID,
+            @"7ab1b64b7d167bd4b5ef38c58f925092"
 	    ];
-	return request;
+
+    [banner loadRequest:request];
 }
 
 // We've received an ad successfully.
 - (void)adViewDidReceiveAd:(GADBannerView *)adView {
-	NSLog(@"Received ad successfully");
-	isReady = YES;
+    loading = false;
+    isReady = YES;
+	NSLog(@"Received banner AD successfully");
 	[self triggerEvent:@"load"];
+    
+    if (loadCallback){
+        JSValueRef params[] = {scriptView->jsTrue};
+        [scriptView invokeCallback:loadCallback thisObject:NULL argc:1 argv:params];
+        JSValueUnprotect(scriptView.jsGlobalContext, loadCallback);
+        loadCallback = nil;
+    }
 }
 
 - (void)adView:(GADBannerView *)view didFailToReceiveAdWithError:(GADRequestError *)error {
-	NSLog(@"Failed to receive ad with error: %@", [error localizedFailureReason]);
+    loading = false;
 	isReady = NO;
+	NSLog(@"Failed to receive banner AD with error: %@", [error localizedFailureReason]);
 	[self triggerEvent:@"error"];
+    
+    if (loadCallback){
+        JSValueRef params[] = {scriptView->jsFalse};
+        [scriptView invokeCallback:loadCallback thisObject:NULL argc:1 argv:params];
+        JSValueUnprotect(scriptView.jsGlobalContext, loadCallback);
+        loadCallback = nil;
+    }
 }
 
 - (void)adViewDidDismissScreen:(GADBannerView *)adView {
-	isReady = NO;
+//	isReady = NO;
 	[self triggerEvent:@"close"];
 }
 
@@ -133,47 +171,65 @@ EJ_BIND_GET(isReady, ctx)
 
 EJ_BIND_FUNCTION(load, ctx, argc, argv)
 {
+    if (loading){
+        return scriptView->jsFalse;
+    }
+    if (loadCallback){
+        JSValueUnprotect(ctx, loadCallback);
+    }
+    loadCallback = nil;
+    if (argc > 0){
+        loadCallback = JSValueToObject(ctx, argv[0], NULL);
+        if (loadCallback) {
+            JSValueProtect(ctx, loadCallback);
+        }
+    }
+
 	isReady = NO;
 	[self doLayout];
-	[banner loadRequest:[self request]];
-	return NULL;
-}
-
-EJ_BIND_FUNCTION(hide, ctx, argc, argv)
-{
-	wantsToShow = NO;
-	banner.hidden = YES;
-	
-//	[UIView animateWithDuration:1.0 animations: ^{
-//	    banner.frame = CGRectMake(x,
-//	                              -height,
-//	                              width,
-//	                              height);
-//	} completion: ^(BOOL finished) {
-//	    banner.hidden = YES;
-//	}];
-	return NULL;
+    [self requestBanner];
+	return scriptView->jsTrue;
 }
 
 EJ_BIND_FUNCTION(show, ctx, argc, argv)
 {
-	wantsToShow = YES;
-	if (isReady) {
-		[scriptView bringSubviewToFront:banner];
-		banner.hidden = NO;
-//		[UIView animateWithDuration:1.0 animations: ^{
-//		    // Final frame of ad should be docked to bottom of screen
-//		    banner.frame = CGRectMake(x,
-//		                              y,
-//		                              width,
-//		                              height);
-//		} completion: ^(BOOL finished) {
-//			
-//		}];
-	}
-	return NULL;
+	wantToShow = YES;
+	if (!isReady) {
+        return scriptView->jsFalse;
+    }
+    [scriptView bringSubviewToFront:banner];
+    banner.hidden = NO;
+
+    //	[UIView animateWithDuration:1.0 animations: ^{
+    //	    // Final frame of ad should be docked to bottom of screen
+    //	    banner.frame = CGRectMake(x,
+    //	                              y,
+    //	                              width,
+    //	                              height);
+    //	} completion: ^(BOOL finished) {
+    //			
+    //	}];
+
+    return scriptView->jsTrue;
+
 }
 
+EJ_BIND_FUNCTION(hide, ctx, argc, argv)
+{
+    wantToShow = NO;
+    banner.hidden = YES;
+    
+    //	[UIView animateWithDuration:1.0 animations: ^{
+    //	    banner.frame = CGRectMake(x,
+    //	                              -height,
+    //	                              width,
+    //	                              height);
+    //	} completion: ^(BOOL finished) {
+    //	    banner.hidden = YES;
+    //	}];
+    
+    return NULL;
+}
 
 EJ_BIND_GET(x, ctx)
 {
