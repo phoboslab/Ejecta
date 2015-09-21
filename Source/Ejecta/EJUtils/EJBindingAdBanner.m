@@ -56,18 +56,19 @@
 
 - (void)doLayout {
 	short w = 0, h = 0;
-	BOOL landscape = NO;
 	CGRect screenRect = [[UIScreen mainScreen] bounds];
+    
+//	BOOL landscape = NO;
 	if (alwaysPortrait) {
-		landscape = NO;
 		w = screenRect.size.width;
 		h = screenRect.size.height;
+//		landscape = NO;
 	}
 	else {
-		landscape = [[[NSBundle mainBundle] infoDictionary][@"UIInterfaceOrientation"]
-		             hasPrefix:@"UIInterfaceOrientationLandscape"];
 		w = scriptView.bounds.size.width;
 		h = scriptView.bounds.size.height;
+//		landscape = [[[NSBundle mainBundle] infoDictionary][@"UIInterfaceOrientation"]
+//		             hasPrefix:@"UIInterfaceOrientationLandscape"];
 	}
 
 	if (!isRectangle) {

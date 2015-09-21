@@ -246,6 +246,7 @@
             UIImage *img = [[UIImage alloc] initWithData:pixels];
 			if (img) {
 				bool ok = [sns addImage:img];
+                [img release];
 				NSLog(@"addImage %d", ok);
 			}
 		}
@@ -373,20 +374,26 @@ EJ_BIND_FUNCTION(openShare, ctx, argc, argv){
         }
     }
 
-    UIImage *shareImg;
+    UIActivityViewController *activityViewController = nil;
     if (imgSrc) {
         imgSrc = [scriptView pathForResource:imgSrc];
         NSData *pixels = [NSData dataWithContentsOfFile:imgSrc];
-        shareImg = [[UIImage alloc] initWithData:pixels];
+        UIImage *shareImg = [[UIImage alloc] initWithData:pixels];
         if (shareImg) {
             NSLog(@"addImage %d", true);
+            activityViewController = [[UIActivityViewController alloc] initWithActivityItems:@[message, shareImg] applicationActivities:nil];
+            [shareImg release];
         }
     }
     
+    if (!activityViewController){
+        activityViewController = [[UIActivityViewController alloc] initWithActivityItems:@[message] applicationActivities:nil];
+    }
     
-    UIActivityViewController *activityViewController = [
-         [UIActivityViewController alloc] initWithActivityItems:@[message, shareImg] applicationActivities:nil
-    ];
+    
+
+    
+
     
     if(!EJECTA_SYSTEM_VERSION_LESS_THAN(@"8.0")){
         NSLog(@"iOS >= 8.0");

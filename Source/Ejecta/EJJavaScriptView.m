@@ -519,7 +519,7 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 + (NSString *)pathForResource:(NSString *)path rootPath:(NSString *)rootPath {
     char specialPathName[16];
     if( sscanf(path.UTF8String, "${%15[^}]", specialPathName) ) {
-        NSString *searchPath;
+        NSString *searchPath = nil;
         if( strcmp(specialPathName, "Documents") == 0 ) {
             searchPath = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
         }
