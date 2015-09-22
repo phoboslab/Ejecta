@@ -81,7 +81,8 @@
 	        // TODO: Add your device/simulator test identifiers here. Your device identifier is printed to
 	        // the console when the app is launched.
 	        kGADSimulatorID,
-            @"7ab1b64b7d167bd4b5ef38c58f925092"
+            @"7ab1b64b7d167bd4b5ef38c58f925092",
+            @"270a3ec13074818800317013ce006923"
 	    ];
     [interstitial loadRequest:request];
 }
@@ -113,7 +114,7 @@ EJ_BIND_FUNCTION(load, ctx, argc, argv)
         return NULL;
     }
 
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC * 0.3),
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC * 0.25),
         dispatch_get_main_queue(), ^{
             [self createAndLoadInterstitial];
         });

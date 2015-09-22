@@ -119,7 +119,8 @@
 	// you want to receive test ads.
 	request.testDevices = @[
 	        kGADSimulatorID,
-            @"7ab1b64b7d167bd4b5ef38c58f925092"
+            @"7ab1b64b7d167bd4b5ef38c58f925092",
+            @"270a3ec13074818800317013ce006923"
 	    ];
 
     [banner loadRequest:request];
@@ -186,7 +187,7 @@ EJ_BIND_FUNCTION(load, ctx, argc, argv)
 
 	isReady = NO;
 
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC * 0.3),
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC * 0.21),
        dispatch_get_main_queue(), ^{
            [self doLayout];
            [self requestBanner];
