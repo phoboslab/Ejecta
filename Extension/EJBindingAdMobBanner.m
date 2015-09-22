@@ -186,7 +186,7 @@ EJ_BIND_FUNCTION(load, ctx, argc, argv)
 
 	isReady = NO;
 
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC * 0.2),
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC * 0.3),
        dispatch_get_main_queue(), ^{
            [self doLayout];
            [self requestBanner];
