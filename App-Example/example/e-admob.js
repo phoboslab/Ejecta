@@ -27,8 +27,11 @@
     adBanner.onclick = function() {
         console.log("click adBanner")
     }
-    adBanner.load();
 
+//    setTimeout(function() {
+        adBanner.load();
+//    }, 500);
+ 
 ///////////////////////////////
 
     var adPage = new Ejecta.AdMobPage("a15318cc08698ce");
@@ -49,8 +52,8 @@
     }
 
     console.log("start");
-    setTimeout(function() {
+//    setTimeout(function() {
        adPage.load();
-    }, 500);
+//    }, 500);
 
 }());

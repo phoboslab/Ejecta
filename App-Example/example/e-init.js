@@ -7,7 +7,7 @@ canvas.style.width = width + "px";
 canvas.style.height = height + "px";
 
 var context = canvas.getContext("2d");
-context.fillStyle = "#000000";
+context.fillStyle = "#ffffff";
 context.fillRect(0, 0, canvas.width, canvas.height);
 
 context.fillStyle = "#fff9f0";

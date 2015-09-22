@@ -43,11 +43,9 @@
 	EJJavaScriptView *view = [[EJJavaScriptView alloc] initWithFrame:frame];
 	self.view = view;
 	
-    // Insure scriptView.window.rootViewController could be accessed in index.js(some extensions in it) as soon as be loaded.
-    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-        [view loadScriptAtPath:path];
-        [view release];
-    }];
+    [view loadScriptAtPath:path];
+    [view release];
+
 }
 
 

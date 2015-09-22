@@ -68,6 +68,12 @@
 - (void)createAndLoadInterstitial {
     loading = true;
     
+    // Create a new GADInterstitial each time.  A GADInterstitial will only show one request in its
+    // lifetime. The property will release the old one and set the new one.
+    interstitial = [[GADInterstitial alloc] initWithAdUnitID:adUnitID];
+    interstitial.delegate = self;
+    
+
 	GADRequest *request = [GADRequest request];
 	// Make the request for a test ad. Put in an identifier for the simulator as well as any devices
 	// you want to receive test ads.
@@ -91,9 +97,7 @@ EJ_BIND_GET(adUnitID, ctx)
 
 EJ_BIND_FUNCTION(load, ctx, argc, argv)
 {
-    if (loading){
-        return NULL;
-    }
+
     if (loadCallback){
         JSValueUnprotect(ctx, loadCallback);
     }
@@ -104,12 +108,16 @@ EJ_BIND_FUNCTION(load, ctx, argc, argv)
             JSValueProtect(ctx, loadCallback);
         }
     }
-    
-	// Create a new GADInterstitial each time.  A GADInterstitial will only show one request in its
-	// lifetime. The property will release the old one and set the new one.
-	interstitial = [[GADInterstitial alloc] initWithAdUnitID:adUnitID];
-	interstitial.delegate = self;
-    [self createAndLoadInterstitial];
+
+    if (loading){
+        return NULL;
+    }
+
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC * 0.2),
+        dispatch_get_main_queue(), ^{
+            [self createAndLoadInterstitial];
+        });
+
 	return NULL;
 }
 
