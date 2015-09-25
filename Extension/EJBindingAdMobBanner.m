@@ -120,7 +120,8 @@
 	request.testDevices = @[
 	        kGADSimulatorID,
             @"7ab1b64b7d167bd4b5ef38c58f925092",
-            @"270a3ec13074818800317013ce006923"
+            @"270a3ec13074818800317013ce006923",
+            @"7eafba728afe41b98d10310ffa9e6e66"
 	    ];
 
     [banner loadRequest:request];
