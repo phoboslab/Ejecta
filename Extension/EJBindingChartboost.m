@@ -340,7 +340,7 @@ EJ_BIND_FUNCTION(inPlayClicked, ctx, argc, argv){
     #endif
     [self triggerEvent:@"close" properties:(JSEventProperty[]){
         {"adType", NSStringToJSValue(scriptView.jsGlobalContext, @"Interstitial")},
-        {"location", NSStringToJSValue(scriptView.jsGlobalContext, location)},
+//        {"location", NSStringToJSValue(scriptView.jsGlobalContext, location)},
         {NULL, NULL}
     }];
 }
@@ -373,7 +373,7 @@ EJ_BIND_FUNCTION(inPlayClicked, ctx, argc, argv){
     #endif
     [self triggerEvent:@"error" properties:(JSEventProperty[]){
         {"adType", NSStringToJSValue(scriptView.jsGlobalContext, @"Interstitial")},
-        {"location", NSStringToJSValue(scriptView.jsGlobalContext, location)},
+//        {"location", NSStringToJSValue(scriptView.jsGlobalContext, location)},
         {"message",NSStringToJSValue(scriptView.jsGlobalContext, message)},
         {NULL, NULL}
     }];
@@ -420,7 +420,7 @@ EJ_BIND_FUNCTION(inPlayClicked, ctx, argc, argv){
     #endif
     [self triggerEvent:@"error" properties:(JSEventProperty[]){
         {"adType", NSStringToJSValue(scriptView.jsGlobalContext, @"MoreApps")},
-        {"location", NSStringToJSValue(scriptView.jsGlobalContext, location)},
+//        {"location", NSStringToJSValue(scriptView.jsGlobalContext, location)},
         {"message",NSStringToJSValue(scriptView.jsGlobalContext, message)},
         {NULL, NULL}
     }];
@@ -444,7 +444,7 @@ EJ_BIND_FUNCTION(inPlayClicked, ctx, argc, argv){
     #endif
     [self triggerEvent:@"close" properties:(JSEventProperty[]){
         {"adType", NSStringToJSValue(scriptView.jsGlobalContext, @"RewardedVideo")},
-        {"location", NSStringToJSValue(scriptView.jsGlobalContext, location)},
+//        {"location", NSStringToJSValue(scriptView.jsGlobalContext, location)},
         {NULL, NULL}
     }];
 }
@@ -476,7 +476,7 @@ EJ_BIND_FUNCTION(inPlayClicked, ctx, argc, argv){
     #endif
     [self triggerEvent:@"error" properties:(JSEventProperty[]){
         {"adType", NSStringToJSValue(scriptView.jsGlobalContext, @"RewardedVideo")},
-        {"location", NSStringToJSValue(scriptView.jsGlobalContext, location)},
+//        {"location", NSStringToJSValue(scriptView.jsGlobalContext, location)},
         {"message",NSStringToJSValue(scriptView.jsGlobalContext, message)},
         {NULL, NULL}
     }];
@@ -509,7 +509,7 @@ EJ_BIND_FUNCTION(inPlayClicked, ctx, argc, argv){
     #endif
     [self triggerEvent:@"error" properties:(JSEventProperty[]){
         {"adType", NSStringToJSValue(scriptView.jsGlobalContext, @"InPlay")},
-        {"location", NSStringToJSValue(scriptView.jsGlobalContext, location)},
+//        {"location", NSStringToJSValue(scriptView.jsGlobalContext, location)},
         {"message",NSStringToJSValue(scriptView.jsGlobalContext, message)},
         {NULL, NULL}
     }];
