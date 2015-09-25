@@ -1,0 +1,20 @@
+framework module GoogleMobileAds {
+  umbrella header "GoogleMobileAds.h"
+
+  export *
+  module * { export * }
+
+  link framework "AdSupport"
+  link framework "AudioToolbox"
+  link framework "AVFoundation"
+  link framework "CoreGraphics"
+  link framework "CoreMedia"
+  link framework "CoreTelephony"
+  link framework "EventKit"
+  link framework "EventKitUI"
+  link framework "Foundation"
+  link framework "MessageUI"
+  link framework "StoreKit"
+  link framework "SystemConfiguration"
+  link framework "UIKit"
+}

@@ -10,6 +10,8 @@
 #import "EJSharedOpenGLContext.h"
 #import "EJNonRetainingProxy.h"
 
+#import "EJInterceptorManager.h"
+
 #define EJECTA_VERSION @"1.5"
 #define EJECTA_DEFAULT_APP_FOLDER @"App/"
 
@@ -31,6 +33,8 @@
 - (void)resume;
 - (void)pause;
 - (void)resize;
+- (void)unload;
+- (void)load;
 @end
 
 @class EJTimerCollection;
@@ -68,9 +72,11 @@
 
 	NSOperationQueue *backgroundQueue;
 	JSClassRef jsBlockFunctionClass;
-	
+		
 	// Public for fast access in bound functions
 	@public JSValueRef jsUndefined;
+	@public JSValueRef jsTrue;
+	@public JSValueRef jsFalse;
 }
 
 @property (nonatomic, copy) NSString *appFolder;
@@ -108,5 +114,10 @@
 - (JSValueRef)loadModuleWithId:(NSString *)moduleId module:(JSValueRef)module exports:(JSValueRef)exports;
 - (JSValueRef)createTimer:(JSContextRef)ctxp argc:(size_t)argc argv:(const JSValueRef [])argv repeat:(BOOL)repeat;
 - (JSObjectRef)createFunctionWithBlock:(JSValueRef (^)(JSContextRef ctx, size_t argc, const JSValueRef argv[]))block;
+
++ (NSMutableData *)loadMutableDataFromURL:(NSString *)url;
++ (NSMutableData *)loadMutableDataFromPath:(NSString *)path;
++ (NSMutableData *)loadMutableDataFromFullPath:(NSString *)path;
++ (NSString *)pathForResource:(NSString *)path rootPath:(NSString *)rootPath;
 
 @end

@@ -499,10 +499,9 @@ typedef struct {
 	NSMutableData *pixels;
 	if( isDataURI || isURL ) {
 		// Load directly from a Data URI string or an URL
-		UIImage *tmpImage = [[UIImage alloc] initWithData:
-			[NSData dataWithContentsOfURL:[NSURL URLWithString:path]]];
+        pixels = [EJJavaScriptView loadMutableDataFromURL:path];
 		
-		if( !tmpImage ) {
+		if (!pixels){
 			if( isDataURI ) {
 				NSLog(@"Error Loading image from Data URI.");
 			}
@@ -511,13 +510,15 @@ typedef struct {
 			}
 			return NULL;
 		}
+
+		UIImage *tmpImage = [[UIImage alloc] initWithData:pixels];
 		pixels = [self loadPixelsFromUIImage:tmpImage];
 		[tmpImage release];
 	}
 	
 	else if( [path.pathExtension isEqualToString:@"pvr"] ) {
 		// Compressed PVRTC? Only load raw data bytes
-		pixels = [NSMutableData dataWithContentsOfFile:path];
+		pixels = [EJJavaScriptView loadMutableDataFromFullPath:path];
 		if( !pixels ) {
 			NSLog(@"Error Loading image %@ - not found.", path);
 			return NULL;
@@ -530,13 +531,14 @@ typedef struct {
 	}
 	
 	else {
-		// Use UIImage for PNG, JPG and everything else
-		UIImage *tmpImage = [[UIImage alloc] initWithContentsOfFile:path];
-		
-		if( !tmpImage ) {
+        pixels = [EJJavaScriptView loadMutableDataFromFullPath:path];
+		if( !pixels ) {
 			NSLog(@"Error Loading image %@ - not found.", path);
 			return NULL;
 		}
+
+		// Use UIImage for PNG, JPG and everything else
+		UIImage *tmpImage = [[UIImage alloc] initWithData:pixels];
 		
 		pixels = [self loadPixelsFromUIImage:tmpImage];
 		[tmpImage release];

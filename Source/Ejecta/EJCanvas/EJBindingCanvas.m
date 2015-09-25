@@ -18,7 +18,7 @@
 - (void)createWithJSObject:(JSObjectRef)obj scriptView:(EJJavaScriptView *)view {
 	[super createWithJSObject:obj scriptView:view];
 	
-	useRetinaResolution = true;
+	useRetinaResolution = false;
 	msaaEnabled = false;
 	msaaSamples = 2;
 	
@@ -26,6 +26,8 @@
 	if( !scriptView.hasScreenCanvas ) {
 		isScreenCanvas = YES;
 		scriptView.hasScreenCanvas = YES;
+    }else{
+        useRetinaResolution = false;
 	}
 	
 	CGSize screen = scriptView.bounds.size;
@@ -289,5 +291,6 @@ EJ_BIND_FUNCTION(toDataURLHD, ctx, argc, argv) {
 }
 
 EJ_BIND_CONST(nodeName, "CANVAS");
+EJ_BIND_CONST(tagName, "CANVAS");
 
 @end

@@ -191,5 +191,6 @@ EJ_BIND_EVENT(ended);
 EJ_BIND_EVENT(click);
 
 EJ_BIND_CONST(nodeName, "VIDEO");
+EJ_BIND_CONST(tagName, "VIDEO");
 
 @end

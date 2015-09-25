@@ -49,7 +49,14 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 
 - (id)initWithFrame:(CGRect)frame appFolder:(NSString *)folder {
 	if( self = [super initWithFrame:frame] ) {
+
         [self setupWithAppFolder:folder];
+
+		NSArray *loadN = @[
+			UIApplicationDidFinishLaunchingNotification
+		];
+		[self observeKeyPaths:loadN selector:@selector(load)];
+
 	}
 	return self;
 }
@@ -88,6 +95,11 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
     jsUndefined = JSValueMakeUndefined(jsGlobalContext);
     JSValueProtect(jsGlobalContext, jsUndefined);
     
+    jsTrue = JSValueMakeBoolean(jsGlobalContext, true);
+    JSValueProtect(jsGlobalContext, jsTrue);
+    jsFalse = JSValueMakeBoolean(jsGlobalContext, false);
+    JSValueProtect(jsGlobalContext, jsFalse);
+
     // Attach all native class constructors to 'Ejecta'
     classLoader = [[EJClassLoader alloc] initWithScriptView:self name:@"Ejecta"];
     
@@ -155,21 +167,24 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 - (void)setPauseOnEnterBackground:(BOOL)pauses {
 	NSArray *pauseN = @[
 		UIApplicationWillResignActiveNotification,
-		UIApplicationDidEnterBackgroundNotification,
-		UIApplicationWillTerminateNotification
+		UIApplicationDidEnterBackgroundNotification
 	];
 	NSArray *resumeN = @[
 		UIApplicationWillEnterForegroundNotification,
 		UIApplicationDidBecomeActiveNotification
 	];
-	
+	NSArray *unloadN = @[
+		UIApplicationWillTerminateNotification
+	];
 	if (pauses) {
 		[self observeKeyPaths:pauseN selector:@selector(pause)];
 		[self observeKeyPaths:resumeN selector:@selector(resume)];
-	} 
+		[self observeKeyPaths:unloadN selector:@selector(unload)];
+	}
 	else {
 		[self removeObserverForKeyPaths:pauseN];
 		[self removeObserverForKeyPaths:resumeN];
+		[self removeObserverForKeyPaths:unloadN];
 	}
 	pauseOnEnterBackground = pauses;
 }
@@ -204,34 +219,15 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 #pragma mark Script loading and execution
 
 - (NSString *)pathForResource:(NSString *)path {
-	char specialPathName[16];
-	if( sscanf(path.UTF8String, "${%15[^}]", specialPathName) ) {
-		NSString *searchPath;
-		if( strcmp(specialPathName, "Documents") == 0 ) {
-			searchPath = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
-		}
-		else if( strcmp(specialPathName, "Library") == 0 ) {
-			searchPath = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES)[0];
-		}
-		else if( strcmp(specialPathName, "Caches") == 0 ) {
-			searchPath = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES)[0];
-		}
-		else if( strcmp(specialPathName, "tmp") == 0 ) {
-			searchPath = NSTemporaryDirectory();
-		}
-		
-		if( searchPath ) {
-			return [searchPath stringByAppendingPathComponent:[path substringFromIndex:strlen(specialPathName)+3]];
-		}
-	}
-	
-	return [NSString stringWithFormat:@"%@/%@%@", NSBundle.mainBundle.resourcePath, appFolder, path];
+    return [EJJavaScriptView pathForResource:path rootPath:appFolder];
 }
 
 - (void)loadScriptAtPath:(NSString *)path {
-	NSString *script = [NSString stringWithContentsOfFile:[self pathForResource:path]
-		encoding:NSUTF8StringEncoding error:NULL];
 	
+    NSData *fileData = [EJJavaScriptView loadMutableDataFromPath:path];
+
+	NSString* script = [[[NSString alloc] initWithData:fileData encoding:NSUTF8StringEncoding] autorelease];
+	   
 	[self evaluateScript:script sourceURL:path];
 }
 
@@ -269,8 +265,12 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 
 - (JSValueRef)loadModuleWithId:(NSString *)moduleId module:(JSValueRef)module exports:(JSValueRef)exports {
 	NSString *path = [moduleId stringByAppendingString:@".js"];
-	NSString *script = [NSString stringWithContentsOfFile:[self pathForResource:path]
-		encoding:NSUTF8StringEncoding error:NULL];
+
+//	NSMutableData *fileData = [NSMutableData dataWithContentsOfFile:[self pathForResource:path]];
+//	[interceptorManager interceptData:AFTER_LOAD_JS data:fileData];
+
+    NSData *fileData = [EJJavaScriptView loadMutableDataFromPath:path];
+	NSString* script = [[[NSString alloc] initWithData:fileData encoding:NSUTF8StringEncoding] autorelease];
 	
 	if( !script ) {
 		NSLog(@"Error: Can't Find Module %@", moduleId );
@@ -472,6 +472,73 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 	}
 	
 	return JSObjectMake( jsGlobalContext, jsBlockFunctionClass, (void *)Block_copy(block) );
+}
+
+
+
+- (void)unload {
+    [[NSNotificationCenter defaultCenter] removeObserver:proxy];
+	[windowEventsDelegate unload];
+}
+
+- (void)load {
+	[windowEventsDelegate load];
+}
+
+
++ (NSMutableData *)loadMutableDataFromURL:(NSString *)url {
+    EJInterceptorManager *interceptorManager = [EJInterceptorManager instance];
+    NSMutableData *data = [NSMutableData dataWithContentsOfURL:[NSURL fileURLWithPath:url]];
+    if( !data ) {
+        NSLog(@"Error Loading resource %@ - not found.", url);
+        return NULL;
+    }
+    [interceptorManager interceptData:AFTER_LOAD_FILE data:data];
+    return data;
+};
+
+
+
++ (NSMutableData *)loadMutableDataFromPath:(NSString *)path {
+    NSString *fullPath = [EJJavaScriptView pathForResource:path rootPath:EJECTA_DEFAULT_APP_FOLDER];
+    return [EJJavaScriptView loadMutableDataFromFullPath:fullPath];
+}
+
++ (NSMutableData *)loadMutableDataFromFullPath:(NSString *)fullPath {
+    
+    EJInterceptorManager *interceptorManager = [EJInterceptorManager instance];
+    NSMutableData *data = [NSMutableData dataWithContentsOfFile:fullPath];
+    if( !data ) {
+        NSLog(@"Error Loading resource %@ - not found.", fullPath);
+        return NULL;
+    }
+    [interceptorManager interceptData:AFTER_LOAD_FILE data:data];
+    return data;
+};
+
++ (NSString *)pathForResource:(NSString *)path rootPath:(NSString *)rootPath {
+    char specialPathName[16];
+    if( sscanf(path.UTF8String, "${%15[^}]", specialPathName) ) {
+        NSString *searchPath = nil;
+        if( strcmp(specialPathName, "Documents") == 0 ) {
+            searchPath = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
+        }
+        else if( strcmp(specialPathName, "Library") == 0 ) {
+            searchPath = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES)[0];
+        }
+        else if( strcmp(specialPathName, "Caches") == 0 ) {
+            searchPath = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES)[0];
+        }
+        else if( strcmp(specialPathName, "tmp") == 0 ) {
+            searchPath = NSTemporaryDirectory();
+        }
+        
+        if( searchPath ) {
+            return [searchPath stringByAppendingPathComponent:[path substringFromIndex:strlen(specialPathName)+3]];
+        }
+    }
+    
+    return [NSString stringWithFormat:@"%@/%@%@", NSBundle.mainBundle.resourcePath, rootPath, path];
 }
 
 @end

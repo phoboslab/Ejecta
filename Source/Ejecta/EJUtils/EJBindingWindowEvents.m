@@ -20,8 +20,18 @@
 	[self triggerEvent:@"resize"];
 }
 
+- (void)unload {
+	[self triggerEvent:@"unload"];
+}
+
+- (void)load {
+	[self triggerEvent:@"load"];
+}
+
 EJ_BIND_EVENT(pagehide);
 EJ_BIND_EVENT(pageshow);
 EJ_BIND_EVENT(resize);
+EJ_BIND_EVENT(unload);
+EJ_BIND_EVENT(load);
 
 @end

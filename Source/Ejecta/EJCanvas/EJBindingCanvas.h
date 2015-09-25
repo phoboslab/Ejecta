@@ -1,4 +1,4 @@
-#import "EJBindingBase.h"
+#import "EJBindingEventedBase.h"
 #import "EJTexture.h"
 #import "EJDrawable.h"
 #import "EJCanvasContext.h"
@@ -16,7 +16,7 @@ typedef enum {
 	kEJCanvasContextModeWebGL
 } EJCanvasContextMode;
 
-@interface EJBindingCanvas : EJBindingBase <EJDrawable> {
+@interface EJBindingCanvas : EJBindingEventedBase <EJDrawable> {
 	JSObjectRef jsCanvasContext;
 	EJCanvasContext *renderingContext;
 	EJCanvasContextMode contextMode;
