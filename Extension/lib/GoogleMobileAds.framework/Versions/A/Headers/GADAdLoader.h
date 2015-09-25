@@ -8,9 +8,9 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-@class GADRequest;
-@class GADRequestError;
-@protocol GADAdLoaderDelegate;
+#import "GADAdLoaderDelegate.h"
+#import "GADRequest.h"
+#import "GADRequestError.h"
 
 /// Loads ads. See GADAdLoaderAdTypes.h for available ad types.
 @interface GADAdLoader : NSObject

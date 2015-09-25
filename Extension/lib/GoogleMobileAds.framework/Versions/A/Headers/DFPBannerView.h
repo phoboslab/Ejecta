@@ -6,6 +6,7 @@
 //
 
 #import <GoogleMobileAds/GADBannerView.h>
+#import <GoogleMobileAds/GADCorrelator.h>
 #import <GoogleMobileAds/GoogleMobileAdsDefines.h>
 
 @protocol DFPCustomRenderedBannerViewDelegate;
@@ -47,6 +48,9 @@
 ///   bannerView.validAdSizes = validSizes;
 ///   \endcode
 @property(nonatomic, copy) NSArray *validAdSizes;
+
+/// Correlator object for correlating this object to other ad objects.
+@property(nonatomic, strong) GADCorrelator *correlator;
 
 /// Indicates that the publisher will record impressions manually when the ad becomes visible to the
 /// user.

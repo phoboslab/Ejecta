@@ -56,8 +56,7 @@
 @property(nonatomic, copy) IBInspectable NSString *adUnitID;
 
 /// Required reference to the current root view controller. For example the root view controller in
-/// tab-based application would be the UITabViewController. Remember to nil or update this property
-/// before deallocating the view controller.
+/// tab-based application would be the UITabViewController.
 @property(nonatomic, weak) IBOutlet UIViewController *rootViewController;
 
 /// Required to set this banner view to a proper size. Never create your own GADAdSize directly. Use
@@ -68,13 +67,11 @@
 @property(nonatomic, assign) GADAdSize adSize;
 
 /// Optional delegate object that receives state change notifications from this GADBannerView.
-/// Typically this is a UIViewController. Remember to nil this property before deallocating the
-/// delegate.
+/// Typically this is a UIViewController.
 @property(nonatomic, weak) IBOutlet id<GADBannerViewDelegate> delegate;
 
 /// Optional delegate object that receives in-app purchase notifications from this ad. Required for
 /// the custom in-app purchase flow, but ignored when using the default in-app purchase flow.
-/// Remember to nil this property before deallocating the delegate.
 @property(nonatomic, weak) IBOutlet id<GADInAppPurchaseDelegate> inAppPurchaseDelegate;
 
 #pragma mark Making an Ad Request
@@ -92,7 +89,7 @@
 /// is in progress or if the latest ad request failed. For both standard and mediated Google AdMob
 /// ads, this method returns @"GADMAdapterGoogleAdMobAds". For ads fetched via mediation custom
 /// events, this method returns @"GADMAdapterCustomEvents".
-@property(nonatomic, readonly, weak) NSString *adNetworkClassName;
+@property(nonatomic, readonly, copy) NSString *adNetworkClassName;
 
 #pragma mark Deprecated
 

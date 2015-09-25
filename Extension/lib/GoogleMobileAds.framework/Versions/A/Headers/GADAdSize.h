@@ -52,6 +52,10 @@ GAD_EXTERN GADAdSize const kGADAdSizeSmartBannerPortrait;
 /// typically 32 pixels on an iPhone/iPod UI, and 90 pixels tall on an iPad UI.
 GAD_EXTERN GADAdSize const kGADAdSizeSmartBannerLandscape;
 
+/// An ad size that spans the full width of its container, with a height dynamically determined by
+/// the ad.
+GAD_EXTERN GADAdSize const kGADAdSizeFluid;
+
 /// Invalid ad size marker.
 GAD_EXTERN GADAdSize const kGADAdSizeInvalid;
 

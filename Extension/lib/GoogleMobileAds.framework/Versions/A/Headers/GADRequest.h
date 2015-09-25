@@ -99,7 +99,7 @@ typedef NS_ENUM(NSInteger, GADGender) {
 /// targeting purposes.
 @property(nonatomic, copy) NSString *contentURL;
 
-#pragma mark - Request Agent Information
+#pragma mark Request Agent Information
 
 /// String that identifies the ad request's origin. Third party libraries that reference the Mobile
 /// Ads SDK should set this property to denote the platform from which the ad request originated.
@@ -107,7 +107,7 @@ typedef NS_ENUM(NSInteger, GADGender) {
 /// Mobile Ads SDK should set this property as "CoolAds".
 @property(nonatomic, copy) NSString *requestAgent;
 
-#pragma mark - Deprecated Methods
+#pragma mark Deprecated Methods
 
 /// Provide the user's birthday to increase ad relevancy.
 - (void)setBirthdayWithMonth:(NSInteger)month

@@ -11,7 +11,7 @@ context.fillStyle = "#999999";
 context.fillRect(0, 0, canvas.width, canvas.height);
 
 context.fillStyle = "#fff9f0";
-context.font = "40px Arial";
+context.font = "40px";
 context.textAlign = "right";
 context.fillText("Example", canvas.width - 20, 60);
 

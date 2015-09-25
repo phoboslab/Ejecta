@@ -7,9 +7,12 @@
 
 #import <Foundation/Foundation.h>
 
-@class GADAdLoader;
-@class GADRequestError;
+#import "GADRequestError.h"
 
+@class GADAdLoader;
+
+/// Base ad loader delegate protocol. Ad types provide extended protocols that declare methods to
+/// handle successful ad loads.
 @protocol GADAdLoaderDelegate<NSObject>
 
 /// Called when adLoader fails to load an ad.
