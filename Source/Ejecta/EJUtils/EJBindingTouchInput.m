@@ -88,6 +88,8 @@
 		
 	for( UITouch *touch in all ) {
 		CGPoint pos = [touch locationInView:touch.view];
+        
+        NSLog(@"Position in view x:%f y:%f", pos.x, pos.y);
 		
 		JSValueRef identifier = JSValueMakeNumber(ctx, touch.hash );
 		JSValueRef x = JSValueMakeNumber(ctx, pos.x);

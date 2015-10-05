@@ -35,7 +35,7 @@
 
 
 @implementation EJBindingGeolocation
-
+#if !TARGET_OS_TV
 - (id)initWithContext:(JSContextRef)ctx argc:(size_t)argc argv:(const JSValueRef [])argv {
 	if (self = [super initWithContext:ctx argc:argc argv:argv]) {
 		locationManager = [[CLLocationManager alloc] init];
@@ -215,5 +215,5 @@ EJ_BIND_FUNCTION(getCurrentPosition, ctx, argc, argv) {
 EJ_BIND_CONST(PERMISSION_DENIED, kEJGeolocationErrorDenied);
 EJ_BIND_CONST(POSITION_UNAVAILABLE, kEJGeolocationErrorUnavailable);
 EJ_BIND_CONST(TIMEOUT, kEJGeolocationErrorTimeout);
-
+#endif
 @end

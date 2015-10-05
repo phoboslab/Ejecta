@@ -111,7 +111,8 @@ EJ_BIND_FUNCTION(openURL, ctx, argc, argv ) {
 	if( argc < 1 ) { return NULL; }
 	
 	NSString *url = JSValueToNSString( ctx, argv[0] );
-	if( argc == 2 ) {
+#if !TARGET_OS_TV
+    if( argc == 2 ) {
 		[urlToOpen release];
 		urlToOpen = [url retain];
 		
@@ -121,7 +122,9 @@ EJ_BIND_FUNCTION(openURL, ctx, argc, argv ) {
 		[alert show];
 		[alert release];
 	}
-	else {
+	else
+#endif
+    {
 		[UIApplication.sharedApplication openURL:[NSURL URLWithString: url]];
 	}
 	return NULL;
@@ -136,16 +139,18 @@ EJ_BIND_FUNCTION(getText, ctx, argc, argv) {
 	JSValueUnprotectSafe(ctx, getTextCallback);
 	getTextCallback = JSValueToObject(ctx, argv[2], NULL);
 	JSValueProtect(ctx, getTextCallback);
-	
+#if !TARGET_OS_TV
 	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title message:message delegate:self
 		cancelButtonTitle:@"Cancel" otherButtonTitles:@"Ok", nil];
 	alert.alertViewStyle = UIAlertViewStylePlainTextInput;
 	alert.tag = kEJCoreAlertViewGetText;
 	[alert show];
 	[alert release];
+#endif
 	return NULL;
 }
 
+#if !TARGET_OS_TV
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)index {
 	if( alertView.tag == kEJCoreAlertViewOpenURL ) {
 		if( index == 1 ) {
@@ -167,6 +172,7 @@ EJ_BIND_FUNCTION(getText, ctx, argc, argv) {
 		getTextCallback = NULL;
 	}
 }
+#endif
 
 EJ_BIND_FUNCTION(requestAnimationFrame, ctx, argc, argv) {
     if (!displayLink)
@@ -281,6 +287,7 @@ EJ_BIND_GET(appVersion, ctx ) {
 
 EJ_BIND_GET(orientation, ctx ) {
 	int angle = 0;
+#if !TARGET_OS_TV
 	switch( UIApplication.sharedApplication.statusBarOrientation ) {
 		case UIDeviceOrientationPortrait: angle = 0; break;
 		case UIInterfaceOrientationLandscapeLeft: angle = -90; break;
@@ -288,6 +295,7 @@ EJ_BIND_GET(orientation, ctx ) {
 		case UIInterfaceOrientationPortraitUpsideDown: angle = 180; break;
 		default: angle = 0; break;
 	}
+#endif
 	return JSValueMakeNumber(ctx, angle);
 }
 

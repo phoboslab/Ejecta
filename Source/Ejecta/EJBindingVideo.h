@@ -1,3 +1,4 @@
+#if !TARGET_OS_TV
 #import "EJBindingEventedBase.h"
 #import <MediaPlayer/MediaPlayer.h>
 
@@ -17,3 +18,5 @@ typedef enum {
 }
 
 @end
+#endif
+
