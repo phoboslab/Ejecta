@@ -438,6 +438,33 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 	[touchDelegate triggerEvent:@"touchmove" all:event.allTouches changed:touches remaining:event.allTouches];
 }
 
+#pragma mark -
+#pragma mark Press events
+#if TARGET_OS_TV
+- (void)pressesBegan:(NSSet<UIPress *> *)presses withEvent:(UIPressesEvent *)event
+{
+    [touchDelegate triggerEvent:@"pressstart" all:event.allPresses changed:presses remaining:event.allPresses];
+}
+
+- (void)pressesEnded:(NSSet<UIPress *> *)presses withEvent:(UIPressesEvent *)event
+{
+    NSMutableSet *remaining = [event.allPresses mutableCopy];
+    [remaining minusSet:presses];
+    
+    [touchDelegate triggerEvent:@"pressend" all:event.allPresses changed:presses remaining:remaining];
+    [remaining release];
+}
+
+- (void)pressesCancelled:(NSSet<UIPress *> *)presses withEvent:(UIPressesEvent *)event
+{
+    [self pressesEnded:presses withEvent:event];
+}
+
+- (void)pressesChanged:(NSSet<UIPress *> *)presses withEvent:(UIPressesEvent *)event
+{
+    [touchDelegate triggerEvent:@"presschange" all:event.allPresses changed:presses remaining:event.allPresses];
+}
+#endif
 
 //TODO: Does this belong in this class?
 #pragma mark
