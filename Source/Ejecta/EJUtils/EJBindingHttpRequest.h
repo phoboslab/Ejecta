@@ -17,7 +17,7 @@ typedef enum {
 	kEJHttpRequestStateDone = 4,
 } EJHttpRequestState;
 
-@interface EJBindingHttpRequest : EJBindingEventedBase <NSURLConnectionDelegate> {
+@interface EJBindingHttpRequest : EJBindingEventedBase <NSURLSessionDelegate> {
 	EJHttpRequestType type;
 	NSString *method;
 	NSString *url;
@@ -29,7 +29,7 @@ typedef enum {
 	NSStringEncoding defaultEncoding;
 	
 	EJHttpRequestState state;	
-	NSURLConnection *connection;
+	NSURLSession *session;
 	NSURLResponse *response;
 	NSMutableData *responseBody;
 }

@@ -26,8 +26,8 @@
 }
 
 - (void)clearConnection {
-	[connection cancel];
-	[connection release]; connection = NULL;
+	[session invalidateAndCancel];
+	[session release]; session = NULL;
 	[responseBody release]; responseBody = NULL;
 	[response release]; response = NULL;
 }
@@ -65,39 +65,52 @@
 	return [[[NSString alloc] initWithData:responseBody encoding:encoding] autorelease];
 }
 
-- (void)connection:(NSURLConnection *)connection willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {
+- (void)URLSession:(NSURLSession * _Nonnull)session
+	didReceiveChallenge:(NSURLAuthenticationChallenge * _Nonnull)challenge
+	completionHandler:(void (^ _Nonnull)(NSURLSessionAuthChallengeDisposition disposition,
+	NSURLCredential * _Nullable credential))completionHandler
+{
 	if( user && password && [challenge previousFailureCount] == 0 ) {
 		NSURLCredential *credentials = [NSURLCredential
 			credentialWithUser:user
 			password:password
 			persistence:NSURLCredentialPersistenceNone];
-		[[challenge sender] useCredential:credentials forAuthenticationChallenge:challenge];
+		completionHandler(NSURLSessionAuthChallengeUseCredential, credentials);
 	}
 	else if( [challenge previousFailureCount] == 0 ) {
-		[[challenge sender] continueWithoutCredentialForAuthenticationChallenge:challenge];
+		completionHandler(NSURLSessionAuthChallengeUseCredential, nil);
 	}
 	else {
-		[[challenge sender] cancelAuthenticationChallenge:challenge];
+		completionHandler(NSURLSessionAuthChallengeCancelAuthenticationChallenge, nil);
 		state = kEJHttpRequestStateDone;
 		[self triggerEvent:@"abort"];
 		NSLog(@"XHR: Aborting Request %@ - wrong credentials", url);
 	}
 }
 
-- (void)connectionDidFinishLoading:(NSURLConnection *)connectionp {
+- (void)URLSession:(NSURLSession *)sessionp task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error {
+	if( error ) {
+		[self didFailWithError:error];
+		return;
+	}
+	
+	if( task.response ) {
+		[self didReceiveResponse:task.response];
+	}
+	
 	state = kEJHttpRequestStateDone;
 	
-	[connection release]; connection = NULL;
+	[session release]; session = NULL;
 	[self triggerEvent:@"load"];
 	[self triggerEvent:@"loadend"];
 	[self triggerEvent:@"readystatechange"];
 	JSValueUnprotectSafe(scriptView.jsGlobalContext, jsObject);
 }
 
-- (void)connection:(NSURLConnection *)connectionp didFailWithError:(NSError *)error {
+- (void)didFailWithError:(NSError *)error {
 	state = kEJHttpRequestStateDone;
 	
-	[connection release]; connection = NULL;
+	[session release]; session = NULL;
 	if( error.code == kCFURLErrorTimedOut ) {
 		[self triggerEvent:@"timeout"];
 	}
@@ -109,7 +122,7 @@
 	JSValueUnprotectSafe(scriptView.jsGlobalContext, jsObject);
 }
 
-- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)responsep {
+- (void)didReceiveResponse:(NSURLResponse *)responsep {
 	state = kEJHttpRequestStateHeadersReceived;
 	
 	[response release];
@@ -125,7 +138,10 @@
 	[self triggerEvent:@"readystatechange"];
 }
 
-- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
+- (void)URLSession:(NSURLSession * _Nonnull)session
+	dataTask:(NSURLSessionDataTask * _Nonnull)dataTask
+	didReceiveData:(NSData * _Nonnull)data
+{
 	state = kEJHttpRequestStateLoading;
 	
 	if( !responseBody ) {
@@ -176,7 +192,7 @@ EJ_BIND_FUNCTION(setRequestHeader, ctx, argc, argv) {
 }
 
 EJ_BIND_FUNCTION(abort, ctx, argc, argv) {
-	if( connection ) {
+	if( session ) {
 		[self clearConnection];
 		[self triggerEvent:@"abort"];
 	}
@@ -254,30 +270,17 @@ EJ_BIND_FUNCTION(send, ctx, argc, argv) {
 	}	
 	
 	NSLog(@"XHR: %@ %@", method, url);
+	
+	if( !async ) {
+		NSLog(@"XHR: Warning, synchronous requests are not supported. The request will run asynchronously.");
+	}
+	
 	[self triggerEvent:@"loadstart"];
 	
-	if( async ) {
-		state = kEJHttpRequestStateLoading;
-		connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
-	}
-	else {	
-		NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:nil];
-		responseBody = [[NSMutableData alloc] initWithData:data];
-		[response retain];
-		
-		state = kEJHttpRequestStateDone;
-		if( [response isKindOfClass:[NSHTTPURLResponse class]] ) {
-			NSHTTPURLResponse *urlResponse = (NSHTTPURLResponse *)response;
-			if( urlResponse.statusCode == 200 ) {
-				[self triggerEvent:@"load"];
-			}
-		}
-		else {
-			[self triggerEvent:@"load"];
-		}
-		[self triggerEvent:@"loadend"];
-		[self triggerEvent:@"readystatechange"];
-	}
+	state = kEJHttpRequestStateLoading;
+	NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+	session = [[NSURLSession sessionWithConfiguration:configuration delegate:self delegateQueue:nil] retain];
+	[[session dataTaskWithRequest:request] resume];
 	[request release];
 	
 	// Protect this request object from garbage collection, as its callback functions
