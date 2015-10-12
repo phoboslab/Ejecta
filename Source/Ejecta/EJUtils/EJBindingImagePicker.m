@@ -32,8 +32,8 @@ EJ_BIND_FUNCTION(getPicture, ctx, argc, argv) {
 	maxJsHeight          = options[@"maxHeight"]      ? [options[@"maxHeight"] floatValue]      : maxTexSize / [UIScreen mainScreen].scale;
 	float popupX         = options[@"popupX"]         ? [options[@"popupX"] floatValue]         : 0.0f;
 	float popupY         = options[@"popupY"]         ? [options[@"popupY"] floatValue]         : 0.0f;
-	float popupWidth     = options[@"popupWidth"]     ? [options[@"popupWidth"] floatValue]     : 1.0f;
-	float popupHeight    = options[@"popupHeight"]    ? [options[@"popupHeight"] floatValue]    : 1.0f;
+//	float popupWidth     = options[@"popupWidth"]     ? [options[@"popupWidth"] floatValue]     : 1.0f;
+//	float popupHeight    = options[@"popupHeight"]    ? [options[@"popupHeight"] floatValue]    : 1.0f;
 	
 	// Source type validation
 	if( ![EJBindingImagePicker isSourceTypeAvailable:sourceType] ) {
@@ -64,8 +64,11 @@ EJ_BIND_FUNCTION(getPicture, ctx, argc, argv) {
 	picker = [[UIImagePickerController alloc] init];
 	picker.delegate = self;
 	if( pickerType == kEJImagePickerTypePopup ) {
-		popover = [[UIPopoverController alloc] initWithContentViewController:picker];
-		popover.delegate = self;
+		picker.modalPresentationStyle = UIModalPresentationPopover;
+		UIPopoverPresentationController *popover = picker.popoverPresentationController;
+		// FIXME!? No way to resize the popover!?
+//		popover.preferredContentSize = CGSizeMake(popupWidth, popupHeight);
+		popover.sourceRect = CGRectMake(popupX,popupY,0,0);
 	}
 	
 	// limit to pictures only
@@ -82,16 +85,7 @@ EJ_BIND_FUNCTION(getPicture, ctx, argc, argv) {
 	JSValueProtect(scriptView.jsGlobalContext, jsObject);
 	
 	// open it
-	if ( pickerType == kEJImagePickerTypePopup ) {
-		[popover
-			presentPopoverFromRect:CGRectMake(popupX, popupY, popupWidth, popupHeight)
-			inView:scriptView.window.rootViewController.view
-			permittedArrowDirections:UIPopoverArrowDirectionAny
-			animated:YES];
-	}
-	else {
-		[scriptView.window.rootViewController presentViewController:picker animated:YES completion:nil];
-	}
+	[scriptView.window.rootViewController presentViewController:picker animated:YES completion:nil];
 	
     return NULL;
 }
@@ -157,14 +151,6 @@ EJ_BIND_FUNCTION(isSourceTypeAvailable, ctx, argc, argv) {
 }
 
 
-// popup was dismissed (relevant only when the picker was opened as a popup)
-- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popup {
-	JSContextRef ctx = scriptView.jsGlobalContext;
-	// close and release
-	[self closePicker:ctx];
-}
-
-
 // success callback
 - (void)successCallback:(JSValueRef[])params {
 	[scriptView invokeCallback:callback thisObject:jsObject argc:2 argv:params];
@@ -184,19 +170,10 @@ EJ_BIND_FUNCTION(isSourceTypeAvailable, ctx, argc, argv) {
 	// close the picker
 	[picker dismissViewControllerAnimated:YES completion:NULL];
 	
-	// close the popup
-	if( pickerType == kEJImagePickerTypePopup ) {
-		[popover dismissPopoverAnimated:TRUE];
-	}
-	
 	// release all the retained stuff
 	JSValueUnprotectSafe(ctx, callback);
 	[picker release];
 	NSLog(@"picker released");
-	if ( pickerType == kEJImagePickerTypePopup ) {
-		[popover release];
-		NSLog(@"popup released");
-	}
 	JSValueUnprotect(scriptView.jsGlobalContext, jsObject);
 }
 
