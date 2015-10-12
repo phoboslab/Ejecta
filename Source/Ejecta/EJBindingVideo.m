@@ -1,19 +1,13 @@
 #import "EJBindingVideo.h"
 
-// Better be safe than sorry
-static const EJVideoScalingMode EJVideoToMPMovieScalingMode[] = {
-	[kEJVideoScalingModeNone] = MPMovieScalingModeNone,
-	[kEJVideoScalingModeAspectFit] = MPMovieScalingModeAspectFit,
-	[kEJVideoScalingModeAspectFill] = MPMovieScalingModeAspectFill,
-	[kEJVideoScalingModeFill] = MPMovieScalingModeFill
-};
-
 
 @implementation EJBindingVideo
 
 - (id)initWithContext:(JSContextRef)ctx argc:(size_t)argc argv:(const JSValueRef [])argv {
 	if( self = [super initWithContext:ctx argc:argc argv:argv] ) {
-		scalingMode = kEJVideoScalingModeAspectFill;
+		controller = [AVPlayerViewController new];
+		controller.player = [AVPlayer new];
+		controller.showsPlaybackControls = NO;
 	}
 	return self;
 }
@@ -23,9 +17,8 @@ static const EJVideoScalingMode EJVideoToMPMovieScalingMode[] = {
 }
 
 - (void)dealloc {
-	[player stop];
-	[player.view removeFromSuperview];
-	[player release];
+	[controller.view removeFromSuperview];
+	[controller release];
 	[path release];
 	[super dealloc];
 }
@@ -40,40 +33,32 @@ static const EJVideoScalingMode EJVideoToMPMovieScalingMode[] = {
 	return YES;
 }
 
-EJ_BIND_ENUM(scalingMode, scalingMode,
-	"none",			// kEJVideoScalingModeNone,
-	"aspect-fit",	// kEJVideoScalingModeAspectFit,
-	"aspect-fill",	// kEJVideoScalingModeAspectFill,
-	"fill"			// kEJVideoScalingModeFill
-);
-
 EJ_BIND_GET(duration, ctx) {
-	return JSValueMakeNumber(ctx, player.duration);
+	return JSValueMakeNumber(ctx, controller.player.currentItem.asset.duration.value);
 }
 
 EJ_BIND_GET(loop, ctx) {
-	return JSValueMakeBoolean( ctx, (player.repeatMode == MPMovieRepeatModeNone) );
+	return JSValueMakeBoolean( ctx, loop );
 }
 
 EJ_BIND_SET(loop, ctx, value) {
-	player.repeatMode = MPMovieRepeatModeOne;
+	loop = JSValueToBoolean(ctx, value);
 }
 
 EJ_BIND_GET(controls, ctx) {
-	return JSValueMakeBoolean( ctx, showControls );
+	return JSValueMakeBoolean( ctx, controller.showsPlaybackControls);
 }
 
 EJ_BIND_SET(controls, ctx, value) {
-	showControls = JSValueToNumberFast(ctx, value);
-	player.controlStyle = showControls ? MPMovieControlStyleEmbedded : MPMovieControlStyleNone;
+	controller.showsPlaybackControls = JSValueToNumberFast(ctx, value);
 }
 
 EJ_BIND_GET(currentTime, ctx) {
-	return JSValueMakeNumber( ctx, player.currentPlaybackTime );
+	return JSValueMakeNumber( ctx, controller.player.currentItem.currentTime.value );
 }
 
 EJ_BIND_SET(currentTime, ctx, value) {
-	player.currentPlaybackTime = JSValueToNumberFast(ctx, value);
+	[controller.player seekToTime:CMTimeMakeWithSeconds(JSValueToNumberFast(ctx, value), 1)];
 }
 
 EJ_BIND_GET(src, ctx) {
@@ -82,14 +67,9 @@ EJ_BIND_GET(src, ctx) {
 
 EJ_BIND_SET(src, ctx, value) {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
-	[player stop];
-	[player.view removeFromSuperview];
-	[player release];
-	player = nil;
-	
+
 	[path release];
 	path = nil;
-	
 	path = [JSValueToNSString(ctx, value) retain];
 	
 	NSURL *url = [NSURL URLWithString:path];
@@ -98,80 +78,71 @@ EJ_BIND_SET(src, ctx, value) {
 		url = [NSURL fileURLWithPath:[scriptView pathForResource:path]];
 	}
 	
-	player = [[MPMoviePlayerController alloc] initWithContentURL:url];
-	player.controlStyle = MPMovieControlStyleNone;
-    player.movieSourceType = MPMovieSourceTypeFile;
-	player.shouldAutoplay = NO;
+	[controller.player replaceCurrentItemWithPlayerItem:[AVPlayerItem playerItemWithURL:url]];
+	controller.showsPlaybackControls = NO;
 	
 	UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc]
 		initWithTarget:self action:@selector(didTap:)];
 	tapGesture.delegate = self;
 	tapGesture.numberOfTapsRequired = 1;
-	[player.view addGestureRecognizer:tapGesture];
+	[controller.view addGestureRecognizer:tapGesture];
 	[tapGesture release];
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self
-		selector:@selector(preparedToPlayChange:)
-		name:MPMediaPlaybackIsPreparedToPlayDidChangeNotification object:player];
-		
-	[[NSNotificationCenter defaultCenter] addObserver:self
 		selector:@selector(didFinish:)
-		name:MPMoviePlayerPlaybackDidFinishNotification
-		object:player];
+		name:AVPlayerItemDidPlayToEndTimeNotification
+		object:controller.player.currentItem];
 	
-	[player prepareToPlay];
-}
-
-- (void)preparedToPlayChange:(MPMoviePlayerController *)moviePlayer {
-	if( player.isPreparedToPlay && !loaded ) {
-		loaded = YES;
+	[NSOperationQueue.mainQueue addOperationWithBlock:^{
 		[self triggerEvent:@"canplaythrough"];
 		[self triggerEvent:@"loadedmetadata"];
-	}
+	}];
 }
 
 - (void)didTap:(UIGestureRecognizer *)gestureRecognizer {
 	[self triggerEvent:@"click"];
 }
 
-- (void)didFinish:(MPMoviePlayerController *)moviePlayer {
-	player.fullscreen = NO;
-	[player.view removeFromSuperview];
-	[self triggerEvent:@"ended"];
+- (void)didFinish:(AVPlayerItem *)moviePlayer {
+	if( loop ) {
+		[controller.player seekToTime:kCMTimeZero];
+	}
+	else {
+		[controller.player pause];
+		[controller.view removeFromSuperview];
+		ended = true;
+		[self triggerEvent:@"ended"];
+	}
 }
 
 EJ_BIND_GET(ended, ctx) {
-	return JSValueMakeBoolean(ctx, player.playbackState == MPMoviePlaybackStateStopped);
+	return JSValueMakeBoolean(ctx, ended);
 }
 
 EJ_BIND_GET(paused, ctx) {
-	return JSValueMakeBoolean(ctx, (player.playbackState != MPMoviePlaybackStatePlaying));
+	return JSValueMakeBoolean(ctx, (controller.player.rate == 0));
 }
 
 EJ_BIND_FUNCTION(play, ctx, argc, argv) {
-	if( player.playbackState == MPMoviePlaybackStatePlaying ) {
+	if( controller.player.rate != 0 ) {
 		// Already playing. Nothing to do here.
 		return NULL;
 	}
 	
-	player.view.frame = scriptView.bounds;
-	[scriptView addSubview:player.view];
-	player.scalingMode = EJVideoToMPMovieScalingMode[scalingMode];
-	player.controlStyle = showControls ? MPMovieControlStyleEmbedded : MPMovieControlStyleNone;
-	[player play];
+	controller.view.frame = scriptView.bounds;
+	[scriptView addSubview:controller.view];
+	[controller.player play];
 	
 	return NULL;
 }
 
 EJ_BIND_FUNCTION(pause, ctx, argc, argv) {
-	[player pause];
-	player.fullscreen = NO;
-	[player.view removeFromSuperview];
+	[controller.player pause];
+	[controller.view removeFromSuperview];
 	return NULL;
 }
 
 EJ_BIND_FUNCTION(load, ctx, argc, argv) {
-	[player prepareToPlay];
 	return NULL;
 }
 
