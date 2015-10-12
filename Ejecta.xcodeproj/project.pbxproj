@@ -81,7 +81,7 @@
 		B6D6E0A316F7E7D8009AB75F /* EJBindingIAPTransaction.m in Sources */ = {isa = PBXBuildFile; fileRef = B6D6E0A216F7E7D8009AB75F /* EJBindingIAPTransaction.m */; };
 		B6D6E0A616F7E81B009AB75F /* EJBindingIAPProduct.m in Sources */ = {isa = PBXBuildFile; fileRef = B6D6E0A516F7E81B009AB75F /* EJBindingIAPProduct.m */; };
 		B6E02BC016D4110D00616925 /* EJNonRetainingProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E02BBF16D4110900616925 /* EJNonRetainingProxy.m */; };
-		B6E314E51BC7D1BF00D024C3 /* EJBindingVideo.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E314E41BC7D1BF00D024C3 /* EJBindingVideo.m */; settings = {ASSET_TAGS = (); }; };
+		B6E314E51BC7D1BF00D024C3 /* EJBindingVideo.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E314E41BC7D1BF00D024C3 /* EJBindingVideo.m */; };
 		B6E314E61BC7D1D000D024C3 /* AVKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6E314E11BC7D08A00D024C3 /* AVKit.framework */; };
 		B6E314E81BC7E51200D024C3 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6E314E71BC7E51200D024C3 /* CoreMedia.framework */; };
 		B6F114DF1676B4FE001F1324 /* EJBindingCanvas.m in Sources */ = {isa = PBXBuildFile; fileRef = B6F114DE1676B4FE001F1324 /* EJBindingCanvas.m */; };
@@ -763,7 +763,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Source/lib\"",
@@ -782,6 +786,8 @@
 				OTHER_CFLAGS = "-DDEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.yourcompany.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = Ejecta;
+				PROVISIONING_PROFILE = "";
+				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -790,7 +796,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Source/lib\"",
@@ -805,6 +815,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.yourcompany.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = Ejecta;
+				PROVISIONING_PROFILE = "";
+				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
