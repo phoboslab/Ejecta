@@ -2,11 +2,6 @@
 #import "EJBindingEventedBase.h"
 #import "EJFont.h"
 
-enum {
-	kEJCoreAlertViewOpenURL = 1,
-	kEJCoreAlertViewGetText
-};
-
 typedef enum {
 	kEJCoreAudioSessionAmbient,
 	kEJCoreAudioSessionSoloAmbient,
@@ -14,8 +9,6 @@ typedef enum {
 } EJCoreAudioSession;
 
 @interface EJBindingEjectaCore : EJBindingBase {
-	NSString *urlToOpen;
-	JSObjectRef getTextCallback;
 	NSString *deviceName;
 	EJCoreAudioSession audioSession;
 	NSTimeInterval baseTime;
