@@ -5,27 +5,29 @@
 // FIXME: use C++ with a template?
 #define CREATE_JS_VALUE_TO_ARRAY_FUNC(NAME, TYPE, ARRAY_TYPE) \
 TYPE *NAME(JSContextRef ctx, JSValueRef value, GLsizei elementSize, GLsizei *numElements) { \
-	if( JSTypedArrayGetType(ctx, value) == ARRAY_TYPE ) { \
+	if( !JSValueIsObject(ctx, value) ) { \
+		return NULL; \
+	} \
+	JSObjectRef jsObject = (JSObjectRef)value; \
+	if( JSObjectGetTypedArrayType(ctx, jsObject) == ARRAY_TYPE ) { \
 		size_t byteLength; \
-		TYPE *arrayValue = JSTypedArrayGetDataPtr(ctx, value, &byteLength); \
+		TYPE *arrayValue = JSObjectGetTypedArrayDataPtr(ctx, jsObject, &byteLength); \
 		GLsizei count = (GLsizei)(byteLength/sizeof(TYPE)); \
 		if( arrayValue && count && (count % elementSize) == 0 ) { \
 			*numElements = count / elementSize; \
 			return arrayValue; \
 		} \
 	} \
-	else if( JSValueIsObject(ctx, value) ) { \
-		JSObjectRef jsArray = (JSObjectRef)value; \
-		\
+	else { \
 		JSStringRef jsLengthName = JSStringCreateWithUTF8CString("length"); \
-		GLsizei count = JSValueToNumberFast(ctx, JSObjectGetProperty(ctx, jsArray, jsLengthName, NULL)); \
+		GLsizei count = JSValueToNumberFast(ctx, JSObjectGetProperty(ctx, jsObject, jsLengthName, NULL)); \
 		JSStringRelease(jsLengthName); \
 		\
 		if( count && (count % elementSize) == 0 ) { \
 			NSMutableData *buffer = [NSMutableData dataWithCapacity:count * sizeof(TYPE)]; \
 			TYPE *values = buffer.mutableBytes; \
 			for( int i = 0; i < count; i++ ) { \
-				values[i] = JSValueToNumberFast(ctx, JSObjectGetPropertyAtIndex(ctx, jsArray, i, NULL)); \
+				values[i] = JSValueToNumberFast(ctx, JSObjectGetPropertyAtIndex(ctx, jsObject, i, NULL)); \
 			} \
 			*numElements = count / elementSize; \
 			return values; \
