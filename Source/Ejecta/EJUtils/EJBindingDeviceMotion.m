@@ -1,3 +1,5 @@
+#if !TARGET_OS_TV
+
 #import "EJBindingDeviceMotion.h"
 #import "EJJavaScriptView.h"
 
@@ -91,3 +93,5 @@ EJ_BIND_EVENT(devicemotion);
 EJ_BIND_EVENT(acceleration);
 
 @end
+
+#endif

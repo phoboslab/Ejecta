@@ -123,8 +123,10 @@ EJ_BIND_FUNCTION( showLeaderboard, ctx, argc, argv ) {
 	if( !authed ) { NSLog(@"GameKit Error: Not authed. Can't show leaderboard."); return NULL; }
 	
 	GKGameCenterViewController* vc = [[GKGameCenterViewController alloc] init];
-    vc.viewState = GKGameCenterViewControllerStateLeaderboards;
-	vc.leaderboardIdentifier = JSValueToNSString(ctx, argv[0]);
+	#if !TARGET_OS_TV
+		vc.viewState = GKGameCenterViewControllerStateLeaderboards;
+		vc.leaderboardIdentifier = JSValueToNSString(ctx, argv[0]);
+	#endif
     vc.gameCenterDelegate = self;
     [scriptView.window.rootViewController presentViewController:vc animated:YES completion:nil];
 	viewIsActive = true;
@@ -213,7 +215,9 @@ EJ_BIND_FUNCTION( showAchievements, ctx, argc, argv ) {
 	if( !authed ) { NSLog(@"GameKit Error: Not authed. Can't show achievements."); return NULL; }
 	
 	GKGameCenterViewController* vc = [[GKGameCenterViewController alloc] init];
-    vc.viewState = GKGameCenterViewControllerStateAchievements;
+	#if !TARGET_OS_TV
+		vc.viewState = GKGameCenterViewControllerStateAchievements;
+	#endif
     vc.gameCenterDelegate = self;
     [scriptView.window.rootViewController presentViewController:vc animated:YES completion:nil];
 	viewIsActive = true;

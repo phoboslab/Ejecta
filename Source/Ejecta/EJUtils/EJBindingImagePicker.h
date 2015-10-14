@@ -1,3 +1,5 @@
+#if !TARGET_OS_TV
+
 #import "EJBindingBase.h"
 
 #define EJ_PICKER_TYPE_FULLSCREEN 1
@@ -28,3 +30,5 @@ typedef enum {
 + (BOOL)isSourceTypeAvailable:(NSString *) sourceType;
 
 @end
+
+#endif

@@ -1,3 +1,5 @@
+#if !TARGET_OS_TV
+
 #import "EJBindingGeolocation.h"
 
 @implementation EJGeolocationCallback
@@ -217,3 +219,5 @@ EJ_BIND_CONST(POSITION_UNAVAILABLE, kEJGeolocationErrorUnavailable);
 EJ_BIND_CONST(TIMEOUT, kEJGeolocationErrorTimeout);
 
 @end
+
+#endif

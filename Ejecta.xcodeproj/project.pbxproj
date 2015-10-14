@@ -29,7 +29,6 @@
 		B63D256816E8DF23007E6034 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B63D256716E8DF23007E6034 /* CFNetwork.framework */; };
 		B63D256A16E8DF33007E6034 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B63D256916E8DF33007E6034 /* Security.framework */; };
 		B63D256D16E8E0EE007E6034 /* EJBindingWebSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = B63D256C16E8DFAB007E6034 /* EJBindingWebSocket.m */; };
-		B6468006188AB3260087F098 /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6468005188AB3260087F098 /* JavaScriptCore.framework */; };
 		B64C87AC16B81BAA0097CD5B /* EJGLProgram2D.m in Sources */ = {isa = PBXBuildFile; fileRef = B64C87A816B80F410097CD5B /* EJGLProgram2D.m */; };
 		B64C87AE16B81BAA0097CD5B /* EJGLProgram2DRadialGradient.m in Sources */ = {isa = PBXBuildFile; fileRef = B64C87AA16B80F4C0097CD5B /* EJGLProgram2DRadialGradient.m */; };
 		B64CE662166682700087CF94 /* EJAppViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE611166682700087CF94 /* EJAppViewController.m */; };
@@ -102,6 +101,106 @@
 		B6F11556167BD59D001F1324 /* EJBindingWebGLObjects.m in Sources */ = {isa = PBXBuildFile; fileRef = B6F11555167BD59B001F1324 /* EJBindingWebGLObjects.m */; };
 		B6F463A41636C3FB00FC89C1 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6F463A31636C3FA00FC89C1 /* SystemConfiguration.framework */; };
 		B6F629D116F353C800F16BAC /* EJBindingCanvasStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = B6F629D016F353C700F16BAC /* EJBindingCanvasStyle.m */; };
+		B6F714801BCF116E0082A90F /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6F7147F1BCF116E0082A90F /* JavaScriptCore.framework */; };
+		B6F714831BCF126A0082A90F /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = B65A25C019618E5C00CC1744 /* MainWindow.xib */; };
+		B6F714841BCF126A0082A90F /* App in Resources */ = {isa = PBXBuildFile; fileRef = B68C5AEF132E6CD60015092E /* App */; };
+		B6F714851BCF126A0082A90F /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = B637065D1A27BD5600F42B90 /* LaunchScreen.xib */; };
+		B6F714861BCF126A0082A90F /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = B64CE68A166682B10087CF94 /* Icon-72.png */; };
+		B6F714871BCF126A0082A90F /* Icon-72@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B64CE68B166682B10087CF94 /* Icon-72@2x.png */; };
+		B6F714881BCF126A0082A90F /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = B64CE68C166682B10087CF94 /* Icon.png */; };
+		B6F714891BCF126A0082A90F /* ejecta-logo.png in Resources */ = {isa = PBXBuildFile; fileRef = B637065F1A27C15200F42B90 /* ejecta-logo.png */; };
+		B6F7148A1BCF126A0082A90F /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B64CE68D166682B10087CF94 /* Icon@2x.png */; };
+		B6F7148B1BCF126A0082A90F /* Ejecta.js in Resources */ = {isa = PBXBuildFile; fileRef = B64CE63F166682700087CF94 /* Ejecta.js */; };
+		B6F7148C1BCF126A0082A90F /* Icon-60.png in Resources */ = {isa = PBXBuildFile; fileRef = B99F05BD188C4125002F194D /* Icon-60.png */; };
+		B6F7148D1BCF126A0082A90F /* Icon-60@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B99F05BE188C4125002F194D /* Icon-60@2x.png */; };
+		B6F7148E1BCF126A0082A90F /* Icon-76.png in Resources */ = {isa = PBXBuildFile; fileRef = B99F05BF188C4125002F194D /* Icon-76.png */; };
+		B6F7148F1BCF126A0082A90F /* Icon-76@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B99F05C0188C4125002F194D /* Icon-76@2x.png */; };
+		B6F714911BCF126A0082A90F /* EJBindingTextMetrics.m in Sources */ = {isa = PBXBuildFile; fileRef = B630048816C1A1960036D8D4 /* EJBindingTextMetrics.m */; };
+		B6F714921BCF126A0082A90F /* EJGLProgram2D.m in Sources */ = {isa = PBXBuildFile; fileRef = B64C87A816B80F410097CD5B /* EJGLProgram2D.m */; };
+		B6F714931BCF126A0082A90F /* EJGLProgram2DRadialGradient.m in Sources */ = {isa = PBXBuildFile; fileRef = B64C87AA16B80F4C0097CD5B /* EJGLProgram2DRadialGradient.m */; };
+		B6F714941BCF126A0082A90F /* EJAppViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE611166682700087CF94 /* EJAppViewController.m */; };
+		B6F714951BCF126A0082A90F /* EJAudioSourceAVAudio.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE615166682700087CF94 /* EJAudioSourceAVAudio.m */; };
+		B6F714961BCF126A0082A90F /* EJAudioSourceOpenAL.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE617166682700087CF94 /* EJAudioSourceOpenAL.m */; };
+		B6F714971BCF126A0082A90F /* EJBindingAudio.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE619166682700087CF94 /* EJBindingAudio.m */; };
+		B6F714981BCF126A0082A90F /* EJOpenALBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE61B166682700087CF94 /* EJOpenALBuffer.m */; };
+		B6F714991BCF126A0082A90F /* EJSharedOpenALManager.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE61D166682700087CF94 /* EJSharedOpenALManager.m */; };
+		B6F7149A1BCF126A0082A90F /* EJBindingBase.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE61F166682700087CF94 /* EJBindingBase.m */; };
+		B6F7149B1BCF126A0082A90F /* EJBindingEjectaCore.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE621166682700087CF94 /* EJBindingEjectaCore.m */; };
+		B6F7149C1BCF126A0082A90F /* EJBindingEventedBase.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE623166682700087CF94 /* EJBindingEventedBase.m */; };
+		B6F7149D1BCF126A0082A90F /* EAGLView.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE626166682700087CF94 /* EAGLView.m */; };
+		B6F7149E1BCF126A0082A90F /* EJBindingImage.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE62A166682700087CF94 /* EJBindingImage.m */; };
+		B6F7149F1BCF126A0082A90F /* EJTexture.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE63C166682700087CF94 /* EJTexture.m */; };
+		B6F714A01BCF126A0082A90F /* EJConvert.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE63E166682700087CF94 /* EJConvert.m */; };
+		B6F714A11BCF126A0082A90F /* EJTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE641166682700087CF94 /* EJTimer.m */; };
+		B6F714A21BCF126A0082A90F /* EJBindingAdBanner.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE646166682700087CF94 /* EJBindingAdBanner.m */; };
+		B6F714A31BCF126A0082A90F /* EJBindingGameCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE648166682700087CF94 /* EJBindingGameCenter.m */; };
+		B6F714A41BCF126A0082A90F /* EJBindingHttpRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE64A166682700087CF94 /* EJBindingHttpRequest.m */; };
+		B6F714A51BCF126A0082A90F /* EJBindingImagePicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 33BE9DE1186817D900E0D16E /* EJBindingImagePicker.m */; };
+		B6F714A61BCF126A0082A90F /* EJBindingLocalStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE64C166682700087CF94 /* EJBindingLocalStorage.m */; };
+		B6F714A71BCF126A0082A90F /* EJBindingTouchInput.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE64E166682700087CF94 /* EJBindingTouchInput.m */; };
+		B6F714A81BCF126A0082A90F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE651166682700087CF94 /* AppDelegate.m */; };
+		B6F714A91BCF126A0082A90F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE661166682700087CF94 /* main.m */; };
+		B6F714AA1BCF126A0082A90F /* EJBindingWindowEvents.m in Sources */ = {isa = PBXBuildFile; fileRef = B6F9AFBF169F81D400ABD91A /* EJBindingWindowEvents.m */; };
+		B6F714AB1BCF126A0082A90F /* EJBindingCanvas.m in Sources */ = {isa = PBXBuildFile; fileRef = B6F114DE1676B4FE001F1324 /* EJBindingCanvas.m */; };
+		B6F714AC1BCF126A0082A90F /* EJCanvasContext.m in Sources */ = {isa = PBXBuildFile; fileRef = B6F114E21676BAF9001F1324 /* EJCanvasContext.m */; };
+		B6F714AD1BCF126A0082A90F /* EJBindingCanvasContext2D.m in Sources */ = {isa = PBXBuildFile; fileRef = B6F114EB1676BD40001F1324 /* EJBindingCanvasContext2D.m */; };
+		B6F714AE1BCF126A0082A90F /* EJBindingImageData.m in Sources */ = {isa = PBXBuildFile; fileRef = B6F114ED1676BD40001F1324 /* EJBindingImageData.m */; };
+		B6F714AF1BCF126A0082A90F /* EJCanvasContext2D.m in Sources */ = {isa = PBXBuildFile; fileRef = B6F114EF1676BD40001F1324 /* EJCanvasContext2D.m */; };
+		B6F714B01BCF126A0082A90F /* EJCanvasContext2DScreen.m in Sources */ = {isa = PBXBuildFile; fileRef = B6F114F11676BD40001F1324 /* EJCanvasContext2DScreen.m */; };
+		B6F714B11BCF126A0082A90F /* EJCanvasContext2DTexture.m in Sources */ = {isa = PBXBuildFile; fileRef = B6F114F31676BD40001F1324 /* EJCanvasContext2DTexture.m */; };
+		B6F714B21BCF126A0082A90F /* EJFont.mm in Sources */ = {isa = PBXBuildFile; fileRef = B6F114F51676BD40001F1324 /* EJFont.mm */; };
+		B6F714B31BCF126A0082A90F /* EJCanvasContextWebGLScreen.m in Sources */ = {isa = PBXBuildFile; fileRef = B668475B182419A500ABCDF9 /* EJCanvasContextWebGLScreen.m */; };
+		B6F714B41BCF126A0082A90F /* EJImageData.m in Sources */ = {isa = PBXBuildFile; fileRef = B6F114F71676BD40001F1324 /* EJImageData.m */; };
+		B6F714B51BCF126A0082A90F /* EJPath.mm in Sources */ = {isa = PBXBuildFile; fileRef = B6F114F91676BD40001F1324 /* EJPath.mm */; };
+		B6F714B61BCF126A0082A90F /* EJConvertColorRGBA.m in Sources */ = {isa = PBXBuildFile; fileRef = B6F115051676BE18001F1324 /* EJConvertColorRGBA.m */; };
+		B6F714B71BCF126A0082A90F /* EJBindingDeviceMotion.m in Sources */ = {isa = PBXBuildFile; fileRef = B6F115191677F088001F1324 /* EJBindingDeviceMotion.m */; };
+		B6F714B81BCF126A0082A90F /* EJBindingCanvasContextWebGL.m in Sources */ = {isa = PBXBuildFile; fileRef = B6F1154C167A7D17001F1324 /* EJBindingCanvasContextWebGL.m */; };
+		B6F714B91BCF126A0082A90F /* EJCanvasContextWebGL.m in Sources */ = {isa = PBXBuildFile; fileRef = B6F1154F167A7DA1001F1324 /* EJCanvasContextWebGL.m */; };
+		B6F714BA1BCF126A0082A90F /* EJBindingWebGLObjects.m in Sources */ = {isa = PBXBuildFile; fileRef = B6F11555167BD59B001F1324 /* EJBindingWebGLObjects.m */; };
+		B6F714BB1BCF126A0082A90F /* EJConvertWebGL.m in Sources */ = {isa = PBXBuildFile; fileRef = B68037001682A58200833604 /* EJConvertWebGL.m */; };
+		B6F714BC1BCF126A0082A90F /* EJBindingCanvasPattern.m in Sources */ = {isa = PBXBuildFile; fileRef = B664B98A1699F3380093E04E /* EJBindingCanvasPattern.m */; };
+		B6F714BD1BCF126A0082A90F /* EJCanvasContextWebGLTexture.m in Sources */ = {isa = PBXBuildFile; fileRef = B66847581823FEDF00ABCDF9 /* EJCanvasContextWebGLTexture.m */; };
+		B6F714BE1BCF126A0082A90F /* EJCanvasPattern.m in Sources */ = {isa = PBXBuildFile; fileRef = B664B98D1699F49B0093E04E /* EJCanvasPattern.m */; };
+		B6F714BF1BCF126A0082A90F /* EJBindingGeolocation.m in Sources */ = {isa = PBXBuildFile; fileRef = B6D4B280183CDFBB008251EB /* EJBindingGeolocation.m */; };
+		B6F714C01BCF126A0082A90F /* EJCanvasGradient.m in Sources */ = {isa = PBXBuildFile; fileRef = B6A0F4AE16A9D86000477789 /* EJCanvasGradient.m */; };
+		B6F714C11BCF126A0082A90F /* EJBindingCanvasGradient.m in Sources */ = {isa = PBXBuildFile; fileRef = B6A0F4B316AB0B4500477789 /* EJBindingCanvasGradient.m */; };
+		B6F714C21BCF126A0082A90F /* EJBindingKeyInput.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EBC19BD16CECE190036F9F3 /* EJBindingKeyInput.m */; };
+		B6F714C31BCF126A0082A90F /* EJBindingVideo.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E314E41BC7D1BF00D024C3 /* EJBindingVideo.m */; };
+		B6F714C41BCF126A0082A90F /* EJFontCache.m in Sources */ = {isa = PBXBuildFile; fileRef = B668FCED1821C08500D4F629 /* EJFontCache.m */; };
+		B6F714C51BCF126A0082A90F /* EJJavaScriptView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EF00C5816C29360004599A4 /* EJJavaScriptView.m */; };
+		B6F714C61BCF126A0082A90F /* EJClassLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = B630048B16CB09850036D8D4 /* EJClassLoader.m */; };
+		B6F714C71BCF126A0082A90F /* EJTextureStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = B699669716CC4E6D006B9456 /* EJTextureStorage.m */; };
+		B6F714C81BCF126A0082A90F /* EJSharedTextureCache.m in Sources */ = {isa = PBXBuildFile; fileRef = B699669A16CC55F4006B9456 /* EJSharedTextureCache.m */; };
+		B6F714C91BCF126A0082A90F /* EJSharedOpenGLContext.m in Sources */ = {isa = PBXBuildFile; fileRef = B699669D16CC579B006B9456 /* EJSharedOpenGLContext.m */; };
+		B6F714CA1BCF126A0082A90F /* EJNonRetainingProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E02BBF16D4110900616925 /* EJNonRetainingProxy.m */; };
+		B6F714CB1BCF126A0082A90F /* SRWebSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = B63D256316E8DE23007E6034 /* SRWebSocket.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		B6F714CC1BCF126A0082A90F /* EJBindingWebSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = B63D256C16E8DFAB007E6034 /* EJBindingWebSocket.m */; };
+		B6F714CD1BCF126A0082A90F /* EJBindingCanvasStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = B6F629D016F353C700F16BAC /* EJBindingCanvasStyle.m */; };
+		B6F714CE1BCF126A0082A90F /* EJBindingWebGLExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = B870BDE816F2E11A00827F01 /* EJBindingWebGLExtensions.m */; };
+		B6F714CF1BCF126A0082A90F /* EJBindingIAPManager.m in Sources */ = {isa = PBXBuildFile; fileRef = B6D6E09F16F7E7B4009AB75F /* EJBindingIAPManager.m */; };
+		B6F714D01BCF126A0082A90F /* EJBindingIAPTransaction.m in Sources */ = {isa = PBXBuildFile; fileRef = B6D6E0A216F7E7D8009AB75F /* EJBindingIAPTransaction.m */; };
+		B6F714D11BCF126A0082A90F /* EJBindingIAPProduct.m in Sources */ = {isa = PBXBuildFile; fileRef = B6D6E0A516F7E81B009AB75F /* EJBindingIAPProduct.m */; };
+		B6F714D41BCF126A0082A90F /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6E314E71BC7E51200D024C3 /* CoreMedia.framework */; };
+		B6F714D51BCF126A0082A90F /* AVKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6E314E11BC7D08A00D024C3 /* AVKit.framework */; };
+		B6F714D61BCF126A0082A90F /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33BE9DE31868183900E0D16E /* MobileCoreServices.framework */; };
+		B6F714D71BCF126A0082A90F /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6D4B282183CF43A008251EB /* CoreLocation.framework */; };
+		B6F714D81BCF126A0082A90F /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B6CDA15F18295A5F00190074 /* libc++.dylib */; };
+		B6F714D91BCF126A0082A90F /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6D6E09916F7D03C009AB75F /* StoreKit.framework */; };
+		B6F714DA1BCF126A0082A90F /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B63D256916E8DF33007E6034 /* Security.framework */; };
+		B6F714DB1BCF126A0082A90F /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B63D256716E8DF23007E6034 /* CFNetwork.framework */; };
+		B6F714DD1BCF126A0082A90F /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6F463A31636C3FA00FC89C1 /* SystemConfiguration.framework */; };
+		B6F714DE1BCF126A0082A90F /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B7B76751619DB9700691910 /* CoreText.framework */; };
+		B6F714DF1BCF126A0082A90F /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6074FF215F8E41600D987F9 /* GameKit.framework */; };
+		B6F714E01BCF126A0082A90F /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B66F1E771476B3AC0090D208 /* libicucore.dylib */; };
+		B6F714E11BCF126A0082A90F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
+		B6F714E21BCF126A0082A90F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
+		B6F714E31BCF126A0082A90F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765FC0DF74451002DB57D /* CoreGraphics.framework */; };
+		B6F714E41BCF126A0082A90F /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B607AB66132EA6C300D7C3EA /* OpenAL.framework */; };
+		B6F714E51BCF126A0082A90F /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B607AC32132EA75F00D7C3EA /* AudioToolbox.framework */; };
+		B6F714E61BCF126A0082A90F /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B607AD09132EB51000D7C3EA /* OpenGLES.framework */; };
+		B6F714E71BCF126A0082A90F /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B607AD0F132EB52400D7C3EA /* QuartzCore.framework */; };
+		B6F714E81BCF126A0082A90F /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6CFCCD81332F152001F17AF /* AVFoundation.framework */; };
+		B6F714F01BCF130C0082A90F /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6F714EF1BCF130C0082A90F /* JavaScriptCore.framework */; };
 		B6F9AFC0169F81D400ABD91A /* EJBindingWindowEvents.m in Sources */ = {isa = PBXBuildFile; fileRef = B6F9AFBF169F81D400ABD91A /* EJBindingWindowEvents.m */; };
 		B870BDE916F2E11A00827F01 /* EJBindingWebGLExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = B870BDE816F2E11A00827F01 /* EJBindingWebGLExtensions.m */; };
 		B99F05C1188C4125002F194D /* Icon-60.png in Resources */ = {isa = PBXBuildFile; fileRef = B99F05BD188C4125002F194D /* Icon-60.png */; };
@@ -278,6 +377,10 @@
 		B6F463A31636C3FA00FC89C1 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		B6F629CF16F353C600F16BAC /* EJBindingCanvasStyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingCanvasStyle.h; sourceTree = "<group>"; };
 		B6F629D016F353C700F16BAC /* EJBindingCanvasStyle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingCanvasStyle.m; sourceTree = "<group>"; };
+		B6F7147F1BCF116E0082A90F /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Source/lib/ios/JavaScriptCore.framework; sourceTree = "<group>"; };
+		B6F714ED1BCF126A0082A90F /* Ejecta-TV.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Ejecta-TV.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B6F714EE1BCF126B0082A90F /* Ejecta copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Ejecta copy-Info.plist"; path = "/Users/dominic/xcode/Ejecta/Ejecta copy-Info.plist"; sourceTree = "<absolute>"; };
+		B6F714EF1BCF130C0082A90F /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Source/lib/tvos/JavaScriptCore.framework; sourceTree = "<group>"; };
 		B6F9AFBE169F81D400ABD91A /* EJBindingWindowEvents.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingWindowEvents.h; sourceTree = "<group>"; };
 		B6F9AFBF169F81D400ABD91A /* EJBindingWindowEvents.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingWindowEvents.m; sourceTree = "<group>"; };
 		B870BDE716F2E10400827F01 /* EJBindingWebGLExtensions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = EJBindingWebGLExtensions.h; path = WebGL/EJBindingWebGLExtensions.h; sourceTree = "<group>"; };
@@ -293,6 +396,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B6F714801BCF116E0082A90F /* JavaScriptCore.framework in Frameworks */,
 				B6E314E81BC7E51200D024C3 /* CoreMedia.framework in Frameworks */,
 				B6E314E61BC7D1D000D024C3 /* AVKit.framework in Frameworks */,
 				33BE9DE41868183900E0D16E /* MobileCoreServices.framework in Frameworks */,
@@ -315,7 +419,34 @@
 				B607AD10132EB52400D7C3EA /* QuartzCore.framework in Frameworks */,
 				B6CFCCD91332F152001F17AF /* AVFoundation.framework in Frameworks */,
 				B6AC4A061359E7A5003C4982 /* iAd.framework in Frameworks */,
-				B6468006188AB3260087F098 /* JavaScriptCore.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B6F714D21BCF126A0082A90F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B6F714F01BCF130C0082A90F /* JavaScriptCore.framework in Frameworks */,
+				B6F714D41BCF126A0082A90F /* CoreMedia.framework in Frameworks */,
+				B6F714D51BCF126A0082A90F /* AVKit.framework in Frameworks */,
+				B6F714D61BCF126A0082A90F /* MobileCoreServices.framework in Frameworks */,
+				B6F714D71BCF126A0082A90F /* CoreLocation.framework in Frameworks */,
+				B6F714D81BCF126A0082A90F /* libc++.dylib in Frameworks */,
+				B6F714D91BCF126A0082A90F /* StoreKit.framework in Frameworks */,
+				B6F714DA1BCF126A0082A90F /* Security.framework in Frameworks */,
+				B6F714DB1BCF126A0082A90F /* CFNetwork.framework in Frameworks */,
+				B6F714DD1BCF126A0082A90F /* SystemConfiguration.framework in Frameworks */,
+				B6F714DE1BCF126A0082A90F /* CoreText.framework in Frameworks */,
+				B6F714DF1BCF126A0082A90F /* GameKit.framework in Frameworks */,
+				B6F714E01BCF126A0082A90F /* libicucore.dylib in Frameworks */,
+				B6F714E11BCF126A0082A90F /* Foundation.framework in Frameworks */,
+				B6F714E21BCF126A0082A90F /* UIKit.framework in Frameworks */,
+				B6F714E31BCF126A0082A90F /* CoreGraphics.framework in Frameworks */,
+				B6F714E41BCF126A0082A90F /* OpenAL.framework in Frameworks */,
+				B6F714E51BCF126A0082A90F /* AudioToolbox.framework in Frameworks */,
+				B6F714E61BCF126A0082A90F /* OpenGLES.framework in Frameworks */,
+				B6F714E71BCF126A0082A90F /* QuartzCore.framework in Frameworks */,
+				B6F714E81BCF126A0082A90F /* AVFoundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -326,6 +457,7 @@
 			isa = PBXGroup;
 			children = (
 				1D6058910D05DD3D006BFB54 /* Ejecta.app */,
+				B6F714ED1BCF126A0082A90F /* Ejecta-TV.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -338,6 +470,7 @@
 				B64CE683166682B10087CF94 /* Resources */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
+				B6F714EE1BCF126B0082A90F /* Ejecta copy-Info.plist */,
 			);
 			name = CustomTemplate;
 			sourceTree = "<group>";
@@ -345,6 +478,8 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B6F714EF1BCF130C0082A90F /* JavaScriptCore.framework */,
+				B6F7147F1BCF116E0082A90F /* JavaScriptCore.framework */,
 				B6E314E71BC7E51200D024C3 /* CoreMedia.framework */,
 				B6E314E11BC7D08A00D024C3 /* AVKit.framework */,
 				33BE9DE31868183900E0D16E /* MobileCoreServices.framework */,
@@ -628,6 +763,23 @@
 			productReference = 1D6058910D05DD3D006BFB54 /* Ejecta.app */;
 			productType = "com.apple.product-type.application";
 		};
+		B6F714811BCF126A0082A90F /* Ejecta-TV */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B6F714EA1BCF126A0082A90F /* Build configuration list for PBXNativeTarget "Ejecta-TV" */;
+			buildPhases = (
+				B6F714821BCF126A0082A90F /* Resources */,
+				B6F714901BCF126A0082A90F /* Sources */,
+				B6F714D21BCF126A0082A90F /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Ejecta-TV";
+			productName = iOSImpact;
+			productReference = B6F714ED1BCF126A0082A90F /* Ejecta-TV.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -656,6 +808,7 @@
 			projectRoot = "";
 			targets = (
 				1D6058900D05DD3D006BFB54 /* Ejecta */,
+				B6F714811BCF126A0082A90F /* Ejecta-TV */,
 			);
 		};
 /* End PBXProject section */
@@ -678,6 +831,26 @@
 				B99F05C2188C4125002F194D /* Icon-60@2x.png in Resources */,
 				B99F05C3188C4125002F194D /* Icon-76.png in Resources */,
 				B99F05C4188C4125002F194D /* Icon-76@2x.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B6F714821BCF126A0082A90F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B6F714831BCF126A0082A90F /* MainWindow.xib in Resources */,
+				B6F714841BCF126A0082A90F /* App in Resources */,
+				B6F714851BCF126A0082A90F /* LaunchScreen.xib in Resources */,
+				B6F714861BCF126A0082A90F /* Icon-72.png in Resources */,
+				B6F714871BCF126A0082A90F /* Icon-72@2x.png in Resources */,
+				B6F714881BCF126A0082A90F /* Icon.png in Resources */,
+				B6F714891BCF126A0082A90F /* ejecta-logo.png in Resources */,
+				B6F7148A1BCF126A0082A90F /* Icon@2x.png in Resources */,
+				B6F7148B1BCF126A0082A90F /* Ejecta.js in Resources */,
+				B6F7148C1BCF126A0082A90F /* Icon-60.png in Resources */,
+				B6F7148D1BCF126A0082A90F /* Icon-60@2x.png in Resources */,
+				B6F7148E1BCF126A0082A90F /* Icon-76.png in Resources */,
+				B6F7148F1BCF126A0082A90F /* Icon-76@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -756,6 +929,78 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B6F714901BCF126A0082A90F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B6F714911BCF126A0082A90F /* EJBindingTextMetrics.m in Sources */,
+				B6F714921BCF126A0082A90F /* EJGLProgram2D.m in Sources */,
+				B6F714931BCF126A0082A90F /* EJGLProgram2DRadialGradient.m in Sources */,
+				B6F714941BCF126A0082A90F /* EJAppViewController.m in Sources */,
+				B6F714951BCF126A0082A90F /* EJAudioSourceAVAudio.m in Sources */,
+				B6F714961BCF126A0082A90F /* EJAudioSourceOpenAL.m in Sources */,
+				B6F714971BCF126A0082A90F /* EJBindingAudio.m in Sources */,
+				B6F714981BCF126A0082A90F /* EJOpenALBuffer.m in Sources */,
+				B6F714991BCF126A0082A90F /* EJSharedOpenALManager.m in Sources */,
+				B6F7149A1BCF126A0082A90F /* EJBindingBase.m in Sources */,
+				B6F7149B1BCF126A0082A90F /* EJBindingEjectaCore.m in Sources */,
+				B6F7149C1BCF126A0082A90F /* EJBindingEventedBase.m in Sources */,
+				B6F7149D1BCF126A0082A90F /* EAGLView.m in Sources */,
+				B6F7149E1BCF126A0082A90F /* EJBindingImage.m in Sources */,
+				B6F7149F1BCF126A0082A90F /* EJTexture.m in Sources */,
+				B6F714A01BCF126A0082A90F /* EJConvert.m in Sources */,
+				B6F714A11BCF126A0082A90F /* EJTimer.m in Sources */,
+				B6F714A21BCF126A0082A90F /* EJBindingAdBanner.m in Sources */,
+				B6F714A31BCF126A0082A90F /* EJBindingGameCenter.m in Sources */,
+				B6F714A41BCF126A0082A90F /* EJBindingHttpRequest.m in Sources */,
+				B6F714A51BCF126A0082A90F /* EJBindingImagePicker.m in Sources */,
+				B6F714A61BCF126A0082A90F /* EJBindingLocalStorage.m in Sources */,
+				B6F714A71BCF126A0082A90F /* EJBindingTouchInput.m in Sources */,
+				B6F714A81BCF126A0082A90F /* AppDelegate.m in Sources */,
+				B6F714A91BCF126A0082A90F /* main.m in Sources */,
+				B6F714AA1BCF126A0082A90F /* EJBindingWindowEvents.m in Sources */,
+				B6F714AB1BCF126A0082A90F /* EJBindingCanvas.m in Sources */,
+				B6F714AC1BCF126A0082A90F /* EJCanvasContext.m in Sources */,
+				B6F714AD1BCF126A0082A90F /* EJBindingCanvasContext2D.m in Sources */,
+				B6F714AE1BCF126A0082A90F /* EJBindingImageData.m in Sources */,
+				B6F714AF1BCF126A0082A90F /* EJCanvasContext2D.m in Sources */,
+				B6F714B01BCF126A0082A90F /* EJCanvasContext2DScreen.m in Sources */,
+				B6F714B11BCF126A0082A90F /* EJCanvasContext2DTexture.m in Sources */,
+				B6F714B21BCF126A0082A90F /* EJFont.mm in Sources */,
+				B6F714B31BCF126A0082A90F /* EJCanvasContextWebGLScreen.m in Sources */,
+				B6F714B41BCF126A0082A90F /* EJImageData.m in Sources */,
+				B6F714B51BCF126A0082A90F /* EJPath.mm in Sources */,
+				B6F714B61BCF126A0082A90F /* EJConvertColorRGBA.m in Sources */,
+				B6F714B71BCF126A0082A90F /* EJBindingDeviceMotion.m in Sources */,
+				B6F714B81BCF126A0082A90F /* EJBindingCanvasContextWebGL.m in Sources */,
+				B6F714B91BCF126A0082A90F /* EJCanvasContextWebGL.m in Sources */,
+				B6F714BA1BCF126A0082A90F /* EJBindingWebGLObjects.m in Sources */,
+				B6F714BB1BCF126A0082A90F /* EJConvertWebGL.m in Sources */,
+				B6F714BC1BCF126A0082A90F /* EJBindingCanvasPattern.m in Sources */,
+				B6F714BD1BCF126A0082A90F /* EJCanvasContextWebGLTexture.m in Sources */,
+				B6F714BE1BCF126A0082A90F /* EJCanvasPattern.m in Sources */,
+				B6F714BF1BCF126A0082A90F /* EJBindingGeolocation.m in Sources */,
+				B6F714C01BCF126A0082A90F /* EJCanvasGradient.m in Sources */,
+				B6F714C11BCF126A0082A90F /* EJBindingCanvasGradient.m in Sources */,
+				B6F714C21BCF126A0082A90F /* EJBindingKeyInput.m in Sources */,
+				B6F714C31BCF126A0082A90F /* EJBindingVideo.m in Sources */,
+				B6F714C41BCF126A0082A90F /* EJFontCache.m in Sources */,
+				B6F714C51BCF126A0082A90F /* EJJavaScriptView.m in Sources */,
+				B6F714C61BCF126A0082A90F /* EJClassLoader.m in Sources */,
+				B6F714C71BCF126A0082A90F /* EJTextureStorage.m in Sources */,
+				B6F714C81BCF126A0082A90F /* EJSharedTextureCache.m in Sources */,
+				B6F714C91BCF126A0082A90F /* EJSharedOpenGLContext.m in Sources */,
+				B6F714CA1BCF126A0082A90F /* EJNonRetainingProxy.m in Sources */,
+				B6F714CB1BCF126A0082A90F /* SRWebSocket.m in Sources */,
+				B6F714CC1BCF126A0082A90F /* EJBindingWebSocket.m in Sources */,
+				B6F714CD1BCF126A0082A90F /* EJBindingCanvasStyle.m in Sources */,
+				B6F714CE1BCF126A0082A90F /* EJBindingWebGLExtensions.m in Sources */,
+				B6F714CF1BCF126A0082A90F /* EJBindingIAPManager.m in Sources */,
+				B6F714D01BCF126A0082A90F /* EJBindingIAPTransaction.m in Sources */,
+				B6F714D11BCF126A0082A90F /* EJBindingIAPProduct.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
@@ -769,7 +1014,7 @@
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/Source/lib\"",
+					"$(PROJECT_DIR)/Source/lib/ios",
 				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -801,7 +1046,7 @@
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/Source/lib\"",
+					"$(PROJECT_DIR)/Source/lib/ios",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Source/Prefix.pch;
@@ -820,6 +1065,69 @@
 			};
 			name = Release;
 		};
+		B6F714EB1BCF126A0082A90F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Source/lib/tvos",
+				);
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = Source/Prefix.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "";
+				INFOPLIST_FILE = "Ejecta copy-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)\"",
+					"\"$(SRCROOT)/Source/lib\"",
+				);
+				OTHER_CFLAGS = "-DDEBUG";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.yourcompany.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "0ef57b97-3714-4889-9acc-9e4d455e1e7b";
+				SDKROOT = appletvos;
+				SUPPORTED_PLATFORMS = "appletvsimulator appletvos";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		B6F714EC1BCF126A0082A90F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Source/lib/tvos",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = Source/Prefix.pch;
+				INFOPLIST_FILE = "Ejecta copy-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)\"",
+					"\"$(SRCROOT)/Source/lib\"",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.yourcompany.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "0ef57b97-3714-4889-9acc-9e4d455e1e7b";
+				SDKROOT = appletvos;
+				SUPPORTED_PLATFORMS = "appletvsimulator appletvos";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 		C01FCF4F08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -830,10 +1138,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = NS_BLOCK_ASSERTIONS;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = (
-					"${SOURCE_ROOT}",
-					"${SOURCE_ROOT}/Source/lib",
-				);
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/Source/lib";
 				INFOPLIST_FILE = "";
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = "-DDEBUG";
@@ -850,10 +1155,7 @@
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = (
-					"${SOURCE_ROOT}",
-					"${SOURCE_ROOT}/Source/lib",
-				);
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/Source/lib";
 				INFOPLIST_FILE = "";
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				PROVISIONING_PROFILE = "";
@@ -870,6 +1172,15 @@
 			buildConfigurations = (
 				1D6058940D05DD3E006BFB54 /* Debug */,
 				1D6058950D05DD3E006BFB54 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B6F714EA1BCF126A0082A90F /* Build configuration list for PBXNativeTarget "Ejecta-TV" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B6F714EB1BCF126A0082A90F /* Debug */,
+				B6F714EC1BCF126A0082A90F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
