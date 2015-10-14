@@ -228,7 +228,10 @@ EJColorRGBA JSValueToColorRGBA(JSContextRef ctx, JSValueRef value) {
 	if( !jsString ) { return c; }
 	
 	size_t length = JSStringGetLength( jsString );
-	if( length < 3 ) { return c; }
+	if( length < 3 ) {
+		JSStringRelease(jsString);
+		return c;
+	}
 	
 	const JSChar *jsc = JSStringGetCharactersPtr(jsString);
 	char str[] = "ffffff";

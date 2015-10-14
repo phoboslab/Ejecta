@@ -14,9 +14,6 @@
 - (id)initWithContext:(JSContextRef)ctx argc:(size_t)argc argv:(const JSValueRef [])argv {
 	if( self = [super initWithContext:ctx argc:argc argv:argv] ) {
 		baseTime = [NSDate timeIntervalSinceReferenceDate];
-        animationCallbackBuffer = 0;
-        for (int i = 0; i < 2; ++i)
-            animationCallbacks[i] = [[NSPointerArray alloc] initWithOptions:(NSPointerFunctionsOpaqueMemory | NSPointerFunctionsObjectPointerPersonality)];
 	}
 	return self;
 }
@@ -39,26 +36,6 @@
 	} else {
 		return machine;
 	}
-}
-
-- (void)dealloc {
-	[urlToOpen release];
-	JSValueUnprotectSafe(scriptView.jsGlobalContext, getTextCallback);
-    for (int i = 0; i < 2; ++i)
-    {
-        NSPointerArray *callbackBuffer = animationCallbacks[i];
-        for (int j = 0, n = callbackBuffer.count; j < n; ++j)
-        {
-            JSObjectRef object = [callbackBuffer pointerAtIndex:j];
-            if (object)
-            {
-                JSValueUnprotectSafe(scriptView.jsGlobalContext, object);
-            }
-        }
-        [callbackBuffer setCount:0];
-        [callbackBuffer release];
-    }
-	[super dealloc];
 }
 
 EJ_BIND_FUNCTION(log, ctx, argc, argv ) {
@@ -111,20 +88,24 @@ EJ_BIND_FUNCTION(openURL, ctx, argc, argv ) {
 	if( argc < 1 ) { return NULL; }
 	
 	NSString *url = JSValueToNSString( ctx, argv[0] );
-#if !TARGET_OS_TV
-    if( argc == 2 ) {
-		[urlToOpen release];
-		urlToOpen = [url retain];
-		
+	if( argc == 2 ) {
 		NSString *confirm = JSValueToNSString( ctx, argv[1] );
-		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Open Browser?" message:confirm delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Ok", nil];
-		alert.tag = kEJCoreAlertViewOpenURL;
-		[alert show];
-		[alert release];
+		UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Open Browser?"
+			message:confirm preferredStyle:UIAlertControllerStyleAlert];
+		
+		UIAlertAction *ok = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
+			handler:^(UIAlertAction * action) {
+				[UIApplication.sharedApplication openURL:[NSURL URLWithString:url]];
+			}];
+		UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel
+			handler:^(UIAlertAction * action) {}];
+		
+		[alert addAction:ok];
+		[alert addAction:cancel];
+		
+		[self.scriptView.window.rootViewController presentViewController:alert animated:YES completion:nil];
 	}
-	else
-#endif
-    {
+	else {
 		[UIApplication.sharedApplication openURL:[NSURL URLWithString: url]];
 	}
 	return NULL;
@@ -136,98 +117,31 @@ EJ_BIND_FUNCTION(getText, ctx, argc, argv) {
 	NSString *title = JSValueToNSString(ctx, argv[0]);
 	NSString *message = JSValueToNSString(ctx, argv[1]);
 	
-	JSValueUnprotectSafe(ctx, getTextCallback);
-	getTextCallback = JSValueToObject(ctx, argv[2], NULL);
+	JSObjectRef getTextCallback = JSValueToObject(ctx, argv[2], NULL);
 	JSValueProtect(ctx, getTextCallback);
-#if !TARGET_OS_TV
-	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title message:message delegate:self
-		cancelButtonTitle:@"Cancel" otherButtonTitles:@"Ok", nil];
-	alert.alertViewStyle = UIAlertViewStylePlainTextInput;
-	alert.tag = kEJCoreAlertViewGetText;
-	[alert show];
-	[alert release];
-#endif
-	return NULL;
-}
-
-#if !TARGET_OS_TV
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)index {
-	if( alertView.tag == kEJCoreAlertViewOpenURL ) {
-		if( index == 1 ) {
-			[UIApplication.sharedApplication openURL:[NSURL URLWithString:urlToOpen]];
-		}
-		[urlToOpen release];
-		urlToOpen = nil;
-	}
 	
-	else if( alertView.tag == kEJCoreAlertViewGetText ) {
-		NSString *text = @"";
-		if( index == 1 ) {
-			text = [[alertView textFieldAtIndex:0] text];
-		}
-		JSValueRef params[] = { NSStringToJSValue(scriptView.jsGlobalContext, text) };
-		[scriptView invokeCallback:getTextCallback thisObject:NULL argc:1 argv:params];
-		
-		JSValueUnprotectSafe(scriptView.jsGlobalContext, getTextCallback);
-		getTextCallback = NULL;
-	}
-}
-#endif
-
-EJ_BIND_FUNCTION(requestAnimationFrame, ctx, argc, argv) {
-    if (!displayLink)
-    {
-        displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(displayLinkUpdate:)];
-        [displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-    }
-    
-    NSPointerArray *callbackBuffer = animationCallbacks[animationCallbackBuffer];
-    JSObjectRef callback = JSValueToObject(ctx, argv[0], NULL);
-    JSValueProtect(ctx, callback);
-    [callbackBuffer addPointer:callback];
-    
-    return JSValueMakeNumber(ctx, callbackBuffer.count);
-}
-
-EJ_BIND_FUNCTION(cancelAnimationFrame, ctx, argc, argv) {
-    NSUInteger bufferIndex = runningDisplayLinkUpdate ? (animationCallbackBuffer + 1) % 2 : animationCallbackBuffer;
-    NSPointerArray *callbackBuffer = animationCallbacks[bufferIndex];
-    NSUInteger objectIndex = (NSUInteger)(JSValueToNumberFast(ctx, argv[0]) - 1);
-    JSObjectRef callback = [callbackBuffer pointerAtIndex:objectIndex];
-    if (callback)
-    {
-        JSValueUnprotectSafe(scriptView.jsGlobalContext, callback);
-        [callbackBuffer replacePointerAtIndex:objectIndex withPointer:NULL];
-    }
-    return NULL;
-}
-
--(void) displayLinkUpdate:(CADisplayLink*)dl
-{
-    runningDisplayLinkUpdate = YES;
-    NSPointerArray *callbackBuffer = animationCallbacks[animationCallbackBuffer];
-    animationCallbackBuffer = (animationCallbackBuffer + 1) % 2;
-    
-    JSValueRef timeParam[] = { JSValueMakeNumber(scriptView.jsGlobalContext, ([NSDate timeIntervalSinceReferenceDate] - baseTime) * 1000.0) };
-    
-    for (int j = 0, n = callbackBuffer.count; j < n; ++j)
-    {
-        JSObjectRef callback = [callbackBuffer pointerAtIndex:j];
-        if (callback)
-        {
-            [scriptView invokeCallback:callback thisObject:NULL argc:1 argv:timeParam];
-            JSValueUnprotectSafe(scriptView.jsGlobalContext, callback);
-        }
-    }
-    [callbackBuffer setCount:0];
-    
-    if (!animationCallbacks[animationCallbackBuffer].count)
-    {
-        [displayLink invalidate];
-        displayLink = nil;
-    }
-    
-    runningDisplayLinkUpdate = NO;
+	UIAlertController *alert = [UIAlertController alertControllerWithTitle:title
+		message:message preferredStyle:UIAlertControllerStyleAlert];
+	
+	UIAlertAction *ok = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
+		handler:^(UIAlertAction * action) {
+			JSValueRef params[] = { NSStringToJSValue(scriptView.jsGlobalContext, alert.textFields[0].text) };
+			[scriptView invokeCallback:getTextCallback thisObject:NULL argc:1 argv:params];
+			JSValueUnprotectSafe(scriptView.jsGlobalContext, getTextCallback);
+		}];
+	
+	UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel
+		handler:^(UIAlertAction * action) {
+			[scriptView invokeCallback:getTextCallback thisObject:NULL argc:0 argv:NULL];
+			JSValueUnprotectSafe(scriptView.jsGlobalContext, getTextCallback);
+		}];
+	
+    [alert addAction:ok];
+    [alert addAction:cancel];
+    [alert addTextFieldWithConfigurationHandler:^(UITextField *textField){}];
+	
+    [self.scriptView.window.rootViewController presentViewController:alert animated:YES completion:nil];
+	return NULL;
 }
 
 EJ_BIND_FUNCTION(setTimeout, ctx, argc, argv ) {
@@ -287,7 +201,6 @@ EJ_BIND_GET(appVersion, ctx ) {
 
 EJ_BIND_GET(orientation, ctx ) {
 	int angle = 0;
-#if !TARGET_OS_TV
 	switch( UIApplication.sharedApplication.statusBarOrientation ) {
 		case UIDeviceOrientationPortrait: angle = 0; break;
 		case UIInterfaceOrientationLandscapeLeft: angle = -90; break;
@@ -295,7 +208,6 @@ EJ_BIND_GET(orientation, ctx ) {
 		case UIInterfaceOrientationPortraitUpsideDown: angle = 180; break;
 		default: angle = 0; break;
 	}
-#endif
 	return JSValueMakeNumber(ctx, angle);
 }
 

@@ -12,7 +12,6 @@ typedef enum {
 @interface EJBindingImagePicker : EJBindingBase <UIImagePickerControllerDelegate, UIPopoverControllerDelegate, UINavigationControllerDelegate> {
 	JSObjectRef callback;
 	UIImagePickerController *picker;
-	UIPopoverController *popover;
 	NSString *imgFormat;
 	float jpgCompression;
 	EJImagePickerType pickerType;
@@ -22,7 +21,6 @@ typedef enum {
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info;
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker;
-- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popup;
 - (void)successCallback:(JSValueRef[])params;
 - (void)errorCallback:(NSString *)message;
 - (void)closePicker:(JSContextRef)ctx;

@@ -43,7 +43,7 @@ typedef enum {
 @param value        The JSValue whose Typed Array type you want to obtain.
 @result             A value of type JSTypedArrayType that identifies value's Typed Array type.
 */
-JS_EXPORT JSTypedArrayType JSTypedArrayGetType(JSContextRef ctx, JSValueRef value);
+JS_EXPORT JSTypedArrayType JSObjectGetTypedArrayType(JSContextRef ctx, JSObjectRef object);
 
 /*!
 @function
@@ -53,7 +53,7 @@ JS_EXPORT JSTypedArrayType JSTypedArrayGetType(JSContextRef ctx, JSValueRef valu
 @param numElements  The number of elements for the array.
 @result             A JSObjectRef that is a Typed Array or NULL if there was an error
 */
-JS_EXPORT JSObjectRef JSTypedArrayMake(JSContextRef ctx, JSTypedArrayType arrayType, size_t numElements);
+JS_EXPORT JSObjectRef JSObjectMakeTypedArray(JSContextRef ctx, JSTypedArrayType arrayType, size_t numElements);
 
 /*!
 @function
@@ -61,9 +61,9 @@ JS_EXPORT JSObjectRef JSTypedArrayMake(JSContextRef ctx, JSTypedArrayType arrayT
 @param ctx          The execution context to use.
 @param value        The JSValue whose Typed Array type data pointer you want to obtain.
 @param byteLength   A pointer to a size_t in which to store the byte length of the Typed Array
-@result             A pointer to the Typed Array's data or NULL if the JSValue is not a Typed Array
+@result             A pointer to the Typed Array's data or NULL if the JSValue is not a Typed Array.
 */
-JS_EXPORT void * JSTypedArrayGetDataPtr(JSContextRef ctx, JSValueRef value, size_t * byteLength);
+JS_EXPORT void * JSObjectGetTypedArrayDataPtr(JSContextRef ctx, JSObjectRef object, size_t* byteLength);
 
 
 #ifdef __cplusplus

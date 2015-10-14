@@ -7,16 +7,6 @@ More info & Documentation: http://impactjs.com/ejecta
 Ejecta is published under the [MIT Open Source License](http://opensource.org/licenses/mit-license.php).
 
 
-## Recent Breaking Changes
-
-
- - 2013-07-10 - All events now supply a proper `event` object to their callbacks. The `keypress` event for `EJBindingKeyInput` provides the char to callbacks as property of the event object: `input.onkeypress = function(event) { console.log(event.char); }`
-
- - 2013-04-15 - The GameCenter's `softAuthenticate` now calls the callback function with an error if the auth was skipped, instead of doing nothing. Also, `softAuthenticate` will now always try to auth when called for the very first time after installation.
-
- - 2013-03-15 - `canvas.scaleMode` was removed in favor of the `canvas.style` property. To scale and position your canvas independently from its internal resolution, use the style's `width`, `height`, `top` and `left` properties. I.e. to always scale to fullscreen: `canvas.style.width = window.innerWidth; canvas.style.height = window.innerHeight`. Appending `px` suffixes is ok.
-
-
 ## WebGL Support
 
 Recently WebGL support has been merged into the main branch. A huge thanks goes to @vikerman - he did most of the grunt work of the WebGL implementation. To have the WebGL alongside Canvas2D, I modified the old 2D implementation to use OpenGL ES2 instead of ES1, just like WebGL itself. 

@@ -17,12 +17,12 @@
 #import <Foundation/Foundation.h>
 #import <Security/SecCertificate.h>
 
-typedef enum {
+typedef NS_ENUM(NSInteger, SRReadyState) {
     SR_CONNECTING   = 0,
     SR_OPEN         = 1,
     SR_CLOSING      = 2,
     SR_CLOSED       = 3,
-} SRReadyState;
+};
 
 typedef enum SRStatusCode : NSInteger {
     SRStatusCodeNormal = 1000,
@@ -54,6 +54,11 @@ extern NSString *const SRHTTPResponseErrorKey;
 
 @property (nonatomic, readonly) SRReadyState readyState;
 @property (nonatomic, readonly, retain) NSURL *url;
+
+@property (nonatomic, readonly) CFHTTPMessageRef receivedHTTPHeaders;
+
+// Optional array of cookies (NSHTTPCookie objects) to apply to the connections
+@property (nonatomic, readwrite, copy) NSArray * requestCookies;
 
 // This returns the negotiated protocol.
 // It will be nil until after the handshake completes.
