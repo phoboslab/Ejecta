@@ -1,4 +1,5 @@
 #if !TARGET_OS_TV
+
 #import "EJBindingAdBanner.h"
 #import "EJJavaScriptView.h"
 
@@ -80,4 +81,5 @@ EJ_BIND_EVENT(load);
 EJ_BIND_EVENT(error);
 
 @end
+
 #endif

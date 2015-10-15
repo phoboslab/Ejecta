@@ -201,15 +201,16 @@ EJ_BIND_GET(appVersion, ctx ) {
 
 EJ_BIND_GET(orientation, ctx ) {
 	int angle = 0;
-#if !TARGET_OS_TV
-	switch( UIApplication.sharedApplication.statusBarOrientation ) {
-		case UIDeviceOrientationPortrait: angle = 0; break;
-		case UIInterfaceOrientationLandscapeLeft: angle = -90; break;
-		case UIInterfaceOrientationLandscapeRight: angle = 90; break;
-		case UIInterfaceOrientationPortraitUpsideDown: angle = 180; break;
-		default: angle = 0; break;
-	}
-#endif
+	
+	#if !TARGET_OS_TV
+		switch( UIApplication.sharedApplication.statusBarOrientation ) {
+			case UIDeviceOrientationPortrait: angle = 0; break;
+			case UIInterfaceOrientationLandscapeLeft: angle = -90; break;
+			case UIInterfaceOrientationLandscapeRight: angle = 90; break;
+			case UIInterfaceOrientationPortraitUpsideDown: angle = 180; break;
+			default: angle = 0; break;
+		}
+	#endif
 	return JSValueMakeNumber(ctx, angle);
 }
 
