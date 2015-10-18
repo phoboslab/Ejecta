@@ -127,12 +127,28 @@
 - (UIImage *)image {
     
     [self flushBuffers];
-
+    
     EJCanvasContext *previousContext = scriptView.currentRenderingContext;
     scriptView.currentRenderingContext = self;
     
-    NSMutableData *pixels = [NSMutableData dataWithLength:bufferWidth * bufferHeight * 4 * sizeof(GLubyte)];
-    glReadPixels(0, 0, bufferWidth, bufferHeight, GL_RGBA, GL_UNSIGNED_BYTE, pixels.mutableBytes);
+    int size = bufferWidth * bufferHeight * 4 * sizeof(EJColorRGBA);
+    
+    EJColorRGBA *internalPixels = malloc( size );
+    glReadPixels(0, 0, bufferWidth, bufferHeight, GL_RGBA, GL_UNSIGNED_BYTE, internalPixels);
+    
+    EJColorRGBA *flippedPixels = malloc( size );
+    int index = 0;
+    for( int y = 0; y < bufferHeight; y++ ) {
+        int rowIndex = (bufferHeight-y-1) * bufferWidth;
+        for( int x = 0; x < bufferWidth; x++ ) {
+            int internalIndex = rowIndex + x;
+            flippedPixels[ index ] = internalPixels[ internalIndex ];
+            index++;
+        }
+    }
+    free(internalPixels);
+    
+    NSMutableData *pixels = [NSMutableData dataWithBytesNoCopy:flippedPixels length:size];
     
     UIImage *image = [EJTexture imageWithPixels:pixels width:bufferWidth height:bufferHeight scale:backingStoreRatio];
     
