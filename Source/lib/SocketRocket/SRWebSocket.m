@@ -227,7 +227,7 @@ typedef void (^data_callback)(SRWebSocket *webSocket,  NSData *data);
     BOOL _secure;
     NSURLRequest *_urlRequest;
 
-    CFHTTPMessageRef _receivedHTTPHeaders;
+    
     
     BOOL _sentClose;
     BOOL _didFail;
@@ -339,8 +339,10 @@ static __strong NSData *CRLFCRLF;
     [_inputStream close];
     [_outputStream close];
     
-    sr_dispatch_release(_workQueue);
-    _workQueue = NULL;
+    if (_workQueue) {
+        sr_dispatch_release(_workQueue);
+        _workQueue = NULL;
+    }
     
     if (_receivedHTTPHeaders) {
         CFRelease(_receivedHTTPHeaders);
@@ -492,7 +494,16 @@ static __strong NSData *CRLFCRLF;
     }
     
     assert([_secKey length] == 24);
-    
+
+    // Apply cookies if any have been provided
+    NSDictionary * cookies = [NSHTTPCookie requestHeaderFieldsWithCookies:[self requestCookies]];
+    for (NSString * cookieKey in cookies) {
+        NSString * cookieValue = [cookies objectForKey:cookieKey];
+        if ([cookieKey length] && [cookieValue length]) {
+            CFHTTPMessageSetHeaderFieldValue(request, (__bridge CFStringRef)cookieKey, (__bridge CFStringRef)cookieValue);
+        }
+    }
+ 
     CFHTTPMessageSetHeaderFieldValue(request, CFSTR("Upgrade"), CFSTR("websocket"));
     CFHTTPMessageSetHeaderFieldValue(request, CFSTR("Connection"), CFSTR("Upgrade"));
     CFHTTPMessageSetHeaderFieldValue(request, CFSTR("Sec-WebSocket-Key"), (__bridge CFStringRef)_secKey);

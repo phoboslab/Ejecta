@@ -42,7 +42,9 @@
 
 - (void) saveImage:(EJTexture *)texture destination:(NSString *)destination callback:(JSObjectRef)callback {
     
-    UIImage *image = [EJTexture imageWithPixels:texture.pixels width:texture.width height:texture.height scale:1.0];
+//    UIImage *image = [EJTexture imageWithPixels:texture.pixels width:texture.width height:texture.height scale:1.0];
+    UIImage *image = [texture image];
+
     NSString *filePath = [scriptView pathForResource:destination];
     NSData *raw;
     
