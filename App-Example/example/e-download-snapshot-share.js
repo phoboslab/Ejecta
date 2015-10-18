@@ -43,11 +43,14 @@ function drawImageFile(imgPath) {
         var h = img.height;
         // Draw it at center of canvas.
         if (context) {
-            console.log(1231231231312)
             context.drawImage(img, canvas.width - w >> 1, canvas.height - h >> 1);
         }
+
         // Take Screenshot.
+        // setTimeout(function() {
         takeScreenshot();
+        // }, 10);
+
     }
 }
 

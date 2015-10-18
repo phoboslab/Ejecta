@@ -116,8 +116,12 @@
 }
 
 - (EJTexture *)texture {
-    
-    [self flushBuffers];
+//    
+//    [self flushBuffers];
+//    
+//    glBindFramebuffer(GL_FRAMEBUFFER, viewFrameBuffer);
+//    glBindRenderbuffer(GL_RENDERBUFFER, viewRenderBuffer);
+//    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, viewRenderBuffer);
     
 	EJCanvasContext *previousContext = scriptView.currentRenderingContext;
 	scriptView.currentRenderingContext = self;
@@ -130,6 +134,11 @@
 
 	scriptView.currentRenderingContext = previousContext;
 	return texture;
+}
+
+- (UIImage *)image {
+    NSLog(@"1111111111");
+    return [ [self texture] image];
 }
 
 @end
