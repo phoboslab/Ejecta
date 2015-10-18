@@ -63,6 +63,15 @@
 	}
 }
 
+- (UIImage *)image {
+    if( [renderingContext respondsToSelector:@selector(image)] ) {
+        return (UIImage *)[(id)renderingContext image];
+    }
+    else {
+        return nil;
+    }
+}
+
 #define EJ_GET_SET_STYLE(GETTER, SETTER, TARGET) \
 	- (float)GETTER { return TARGET; } \
 	- (void)SETTER:(float)value { \

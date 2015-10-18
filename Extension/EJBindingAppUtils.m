@@ -40,26 +40,30 @@
 }
 
 
-- (void) saveImage:(EJTexture *)texture destination:(NSString *)destination callback:(JSObjectRef)callback {
+- (void) saveImage:(NSObject<EJDrawable> *)drawable destination:(NSString *)destination callback:(JSObjectRef)callback {
     
-//    UIImage *image = [EJTexture imageWithPixels:texture.pixels width:texture.width height:texture.height scale:1.0];
-    UIImage *image = [texture image];
+    UIImage *image = drawable.image;
 
-    NSString *filePath = [scriptView pathForResource:destination];
+    NSString *filePath = image ? [scriptView pathForResource:destination] : NULL;
+
     NSData *raw;
     
-    if ([destination hasSuffix:@".jpg"] || [destination hasSuffix:@".jpeg"]){
-        raw = UIImageJPEGRepresentation(image, 0.80);
-    }else{
-        raw = UIImagePNGRepresentation(image);
+    if (image){
+        if ([destination hasSuffix:@".jpg"] || [destination hasSuffix:@".jpeg"]){
+            raw = UIImageJPEGRepresentation(image, 0.80);
+        }else{
+            raw = UIImagePNGRepresentation(image);
+        }
     }
     
     dispatch_queue_t saveFileQueue = dispatch_get_main_queue();
     dispatch_retain(saveFileQueue);
 
     dispatch_async(saveFileQueue, ^{
-
-        [raw writeToFile:filePath atomically:YES];
+        
+        if (raw) {
+            [raw writeToFile:filePath atomically:YES];
+        }
 
         if(callback) {
             JSContextRef gctx = scriptView.jsGlobalContext;
@@ -108,7 +112,6 @@ EJ_BIND_FUNCTION(saveImage, ctx, argc, argv)
 {
     
     NSObject<EJDrawable> *drawable = (NSObject<EJDrawable> *)JSValueGetPrivate(argv[0]);
-    EJTexture *texture = drawable.texture;
     
     NSString *destination = JSValueToNSString(ctx, argv[1]);
     JSObjectRef callback = nil;
@@ -120,7 +123,7 @@ EJ_BIND_FUNCTION(saveImage, ctx, argc, argv)
         }
     }
     
-    [self saveImage:texture destination:destination callback:callback];
+    [self saveImage:drawable destination:destination callback:callback];
                                                       
     return JSValueMakeBoolean(ctx, true);
 }

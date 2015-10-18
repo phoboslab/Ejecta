@@ -889,4 +889,17 @@ const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
 	}
 }
 
+- (UIImage *)image {
+    EJCanvasContext *previousContext = scriptView.currentRenderingContext;
+    scriptView.currentRenderingContext = self;
+    
+    NSMutableData *pixels = [NSMutableData dataWithLength:bufferWidth * bufferHeight * 4 * sizeof(GLubyte)];
+    glReadPixels(0, 0, bufferWidth, bufferHeight, GL_RGBA, GL_UNSIGNED_BYTE, pixels.mutableBytes);
+    
+    UIImage *image = [EJTexture imageWithPixels:pixels width:bufferWidth height:bufferHeight scale:backingStoreRatio];
+    
+    scriptView.currentRenderingContext = previousContext;
+    return image;
+}
+
 @end
