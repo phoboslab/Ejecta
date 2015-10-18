@@ -4,6 +4,7 @@
 
 @implementation EJBindingImageData
 @synthesize imageData;
+@synthesize image;
 
 - (id)initWithImageData:(EJImageData *)data {
 	if( self = [super initWithContext:NULL argc:0 argv:NULL] ) {

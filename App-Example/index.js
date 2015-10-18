@@ -1,8 +1,8 @@
 //==================================================
 // Initialize the screen canvas.
 //==================================================
-//ejecta.include("example/e-init.js");
-ejecta.include("example/e-init-gl.js");
+ejecta.include("example/e-init.js");
+//ejecta.include("example/e-init-gl.js");
 ejecta.include("example/e-init-event.js");
 
 

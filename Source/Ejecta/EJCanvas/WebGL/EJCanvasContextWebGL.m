@@ -125,6 +125,9 @@
 }
 
 - (UIImage *)image {
+    
+    [self flushBuffers];
+
     EJCanvasContext *previousContext = scriptView.currentRenderingContext;
     scriptView.currentRenderingContext = self;
     
