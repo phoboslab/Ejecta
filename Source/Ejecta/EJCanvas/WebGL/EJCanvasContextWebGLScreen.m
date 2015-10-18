@@ -120,7 +120,7 @@
 	scriptView.currentRenderingContext = self;
 
 	NSMutableData *pixels = [NSMutableData dataWithLength:bufferWidth * bufferHeight * 4 * sizeof(GLubyte)];
-	glReadPixels(0, 0, bufferWidth, bufferWidth, GL_RGBA, GL_UNSIGNED_BYTE, pixels.mutableBytes);
+	glReadPixels(0, 0, bufferWidth, bufferHeight, GL_RGBA, GL_UNSIGNED_BYTE, pixels.mutableBytes);
 	
 	EJTexture *texture = [[[EJTexture alloc] initWithWidth:bufferWidth height:bufferHeight pixels:pixels] autorelease];
 	texture.contentScale = backingStoreRatio;
