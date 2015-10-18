@@ -46,12 +46,57 @@ window.canvas.type = 'canvas';
 
 // The console object
 window.console = {
-	_log: function(level, args) {
-		var txt = level + ':';
-		for (var i = 0; i < args.length; i++) {
-			txt += ' ' + (typeof args[i] === 'string' ? args[i] : JSON.stringify(args[i]));
+
+	// We try to be sensible of how much data we want to log here. Only the first
+	// level of an Object or Array is parsed. Each subsequent levels are ommited.
+	// Arrays are shortened to the first 32 entries.
+	// To log Object and traverse all levels, use console.logJSON()
+	_arrayMaxLength: 32,
+	
+	_toString: function(obj, deep) {
+		if( deep ) {
+			return JSON.stringify(obj);
 		}
-		ej.log( txt );
+		else if( obj instanceof Array || ArrayBuffer.isView(obj) ) {
+			var s = '',
+				length = Math.min(obj.length, window.console._arrayMaxLength),
+				omitted = obj.length - length;
+			for( var i = 0; i < length; i++ ) {
+				s += (i === 0 ? '' : ', ') + window.console._toStringFlat(obj[i]);
+			}
+			return '[' + s + (omitted ? ', ...'+omitted+' more]' : ']');
+		}
+		else {
+			var s = '',
+				first = true;
+			for( var i in obj ) {
+				s += (first ? '' : ', ') + i + ': ' + window.console._toStringFlat(obj[i]);
+				first = false;
+			}
+			return '{'+s+'}';
+		}
+	},
+	
+	_toStringFlat: function(obj) {
+		if( typeof(obj) === 'function' ) {
+			return '[Function]';
+		}
+		else if( obj instanceof Array || ArrayBuffer.isView(obj) ) {
+			return '[Array '+obj.length+']';
+		}
+		else {
+			return obj;
+		}
+	},
+	
+	_log: function(level, args, deep) {
+		var s = level + ':';
+		for (var i = 0; i < args.length; i++) {
+			s += ' ' + (typeof(args[i]) !== 'object'
+				? args[i]
+				: window.console._toString(args[i], deep));
+		}
+		ej.log( s );
 	},
 
 	assert: function() {
@@ -68,7 +113,7 @@ window.console.info =  function () { window.console._log('INFO', arguments); };
 window.console.warn =  function () { window.console._log('WARN', arguments); };
 window.console.error = function () { window.console._log('ERROR', arguments); };
 window.console.log =   function () { window.console._log('LOG', arguments); };
-
+window.console.logJSON =   function () { window.console._log('JSON', arguments, true); };
 
 var consoleTimers = {};
 console.time = function(name) {
