@@ -1,7 +1,6 @@
 #import <QuartzCore/QuartzCore.h>
 #import "EJCanvasContext2DScreen.h"
 #import "EJJavaScriptView.h"
-#import "EJJavaScriptView.h"
 
 @implementation EJCanvasContext2DScreen
 @synthesize style;

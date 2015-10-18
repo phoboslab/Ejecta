@@ -1,10 +1,11 @@
 #import "EJCanvasContextWebGLScreen.h"
+#import "EJJavaScriptView.h"
+#import "EJTexture.h"
 
 @implementation EJCanvasContextWebGLScreen
 @synthesize style;
 
 - (void)dealloc {
-	[texture release];
 	[glview removeFromSuperview];
 	[glview release];
 	[super dealloc];
@@ -83,13 +84,6 @@
 	glBindFramebuffer(GL_FRAMEBUFFER, viewFrameBuffer);
 	glBindRenderbuffer(GL_RENDERBUFFER, viewRenderBuffer);
 	
-    // Release previous texture if any, create the new texture and set it as
-    // the rendering target for this framebuffer
-    [texture release];
-    texture = [[EJTexture alloc] initAsRenderTargetWithWidth:newWidth height:newHeight
-        fbo:viewFrameBuffer contentScale:backingStoreRatio];
-    texture.drawFlippedY = true;
-    
 	// Set up the renderbuffer and some initial OpenGL properties
 	[glContext renderbufferStorage:GL_RENDERBUFFER fromDrawable:(CAEAGLLayer *)glview.layer];
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, viewRenderBuffer);
@@ -122,6 +116,16 @@
 }
 
 - (EJTexture *)texture {
+    EJCanvasContext *previousContext = scriptView.currentRenderingContext;
+    scriptView.currentRenderingContext = self;
+    
+    NSMutableData *pixels = [NSMutableData dataWithLength:bufferWidth * bufferHeight * 4 * sizeof(GLubyte)];
+    glReadPixels(0, 0, bufferWidth, bufferHeight, GL_RGBA, GL_UNSIGNED_BYTE, pixels.mutableBytes);
+    
+    EJTexture *texture = [[[EJTexture alloc] initWithWidth:bufferWidth height:bufferHeight pixels:pixels] autorelease];
+    texture.contentScale = backingStoreRatio;
+    
+    scriptView.currentRenderingContext = previousContext;
     return texture;
 }
 
