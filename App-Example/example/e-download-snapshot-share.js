@@ -1,9 +1,13 @@
 //==================================================
 // Draw something on screen canvas.
 //==================================================
-context.fillStyle = "#ff3300";
-context.fillRect(0, canvas.height >> 1, canvas.width, 12);
-context.fillRect(canvas.width >> 1, 0, 12, canvas.height);
+var context = context || null;
+if (context) {
+    context.fillStyle = "#ff3300";
+    context.fillRect(0, canvas.height >> 1, canvas.width, 12);
+    context.fillRect(canvas.width >> 1, 0, 12, canvas.height);
+}
+
 
 
 
@@ -38,7 +42,9 @@ function drawImageFile(imgPath) {
         var w = img.width;
         var h = img.height;
         // Draw it at center of canvas.
-        context.drawImage(img, canvas.width - w >> 1, canvas.height - h >> 1);
+        if (context) {
+            context.drawImage(img, canvas.width - w >> 1, canvas.height - h >> 1);
+        }
         // Take Screenshot.
         takeScreenshot();
     }

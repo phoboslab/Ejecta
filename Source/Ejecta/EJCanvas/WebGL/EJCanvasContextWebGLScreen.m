@@ -4,6 +4,7 @@
 @synthesize style;
 
 - (void)dealloc {
+	[texture release];
 	[glview removeFromSuperview];
 	[glview release];
 	[super dealloc];
@@ -82,6 +83,13 @@
 	glBindFramebuffer(GL_FRAMEBUFFER, viewFrameBuffer);
 	glBindRenderbuffer(GL_RENDERBUFFER, viewRenderBuffer);
 	
+    // Release previous texture if any, create the new texture and set it as
+    // the rendering target for this framebuffer
+    [texture release];
+    texture = [[EJTexture alloc] initAsRenderTargetWithWidth:newWidth height:newHeight
+        fbo:viewFrameBuffer contentScale:backingStoreRatio];
+    texture.drawFlippedY = true;
+    
 	// Set up the renderbuffer and some initial OpenGL properties
 	[glContext renderbufferStorage:GL_RENDERBUFFER fromDrawable:(CAEAGLLayer *)glview.layer];
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, viewRenderBuffer);
@@ -111,6 +119,10 @@
 	[glContext presentRenderbuffer:GL_RENDERBUFFER];
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 	needsPresenting = NO;
+}
+
+- (EJTexture *)texture {
+    return texture;
 }
 
 @end
