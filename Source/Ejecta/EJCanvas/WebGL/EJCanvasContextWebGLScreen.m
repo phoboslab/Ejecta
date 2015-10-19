@@ -127,21 +127,6 @@
 	needsPresenting = NO;
 }
 
-//- (EJTexture *)texture {
-//    // This context may not be the current one, but it has to be in order for
-//    // glReadPixels to succeed.
-//    EJCanvasContext *previousContext = scriptView.currentRenderingContext;
-//    scriptView.currentRenderingContext = self;
-//    
-//    float w = width * backingStoreRatio;
-//    float h = height * backingStoreRatio;
-//    
-//    EJTexture *texture = [self getImageDataScaled:1 flipped:upsideDown sx:0 sy:0 sw:w sh:h].texture;
-//    texture.contentScale = backingStoreRatio;
-//    
-//    scriptView.currentRenderingContext = previousContext;
-//    return texture;
-//}
 
 - (EJTexture *)texture {
 
@@ -151,7 +136,6 @@
     float w = width * backingStoreRatio;
     float h = height * backingStoreRatio;
     
-    NSLog(@"backingStoreRatio %d",width);
     NSMutableData *pixels = [self getPixels:1 flipped:true sx:0 sy:0 sw:w sh:h];
 	
 	EJTexture *texture = [[[EJTexture alloc] initWithWidth:w height:h pixels:pixels] autorelease];
