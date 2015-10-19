@@ -18,6 +18,7 @@
 - (void)create;
 - (void)prepare;
 - (void)clear;
+- (NSMutableData *)getPixels:(float)scale flipped:(bool)flipped sx:(short)sx sy:(short)sy sw:(short)sw sh:(short)sh;
 
 @property (nonatomic) BOOL needsPresenting;
 @property (nonatomic) GLuint boundFramebuffer;

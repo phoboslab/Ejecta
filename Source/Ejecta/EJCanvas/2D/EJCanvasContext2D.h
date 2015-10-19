@@ -213,6 +213,8 @@ static inline EJColorRGBA EJCanvasBlendStrokeColor( EJCanvasState *state ) {
 - (void)clip:(EJPathFillRule)fillRule;
 - (void)resetClip;
 
+- (NSMutableData *)getPixels:(float)scale flipped:(bool)flipped sx:(short)sx sy:(short)sy sw:(short)sw sh:(short)sh;
+
 @property (nonatomic) EJCanvasState *state;
 @property (nonatomic) EJCompositeOperation globalCompositeOperation;
 @property (nonatomic, retain) EJFontDescriptor *font;

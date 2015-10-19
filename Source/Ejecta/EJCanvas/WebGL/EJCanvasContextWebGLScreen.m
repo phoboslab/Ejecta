@@ -47,20 +47,32 @@
 
 - (void)resizeToWidth:(short)newWidth height:(short)newHeight {
 	[self flushBuffers];
-	
-	bufferWidth = width = newWidth;
-	bufferHeight = height = newHeight;
-	
-	CGRect frame = self.frame;
-	float contentScale = bufferWidth / frame.size.width;
-	
-	NSLog(
-		@"Creating ScreenCanvas (WebGL): "
-			@"size: %dx%d, "
-			@"style: %.0fx%.0f",
-		width, height, 
-		frame.size.width, frame.size.height
-	);
+
+    width = newWidth;
+    height = newHeight;
+    
+    
+    CGRect frame = self.frame;
+    
+    float contentScale = useRetinaResolution ? UIScreen.mainScreen.scale : 1;
+    backingStoreRatio = (frame.size.width / (float)width) * contentScale;
+    
+    bufferWidth = frame.size.width * contentScale;
+    bufferHeight = frame.size.height * contentScale;
+    
+    NSLog(
+          @"Creating ScreenCanvas (WebGL): "
+          @"size: %dx%d, "
+          @"style: %.0fx%.0f, "
+          @"retina: %@ = %.0fx%.0f, "
+          @"msaa: %@",
+          width, height,
+          frame.size.width, frame.size.height,
+          (useRetinaResolution ? @"yes" : @"no"),
+          frame.size.width * contentScale, frame.size.height * contentScale,
+          (msaaEnabled ? [NSString stringWithFormat:@"yes (%d samples)", msaaSamples] : @"no")
+          );
+    
 	
 	if( !glview ) {
 		// Create the OpenGL UIView with final screen size and content scaling (retina)
@@ -111,30 +123,44 @@
 	if( !needsPresenting ) { return; }
 	
 	[glContext presentRenderbuffer:GL_RENDERBUFFER];
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+//	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 	needsPresenting = NO;
 }
 
+//- (EJTexture *)texture {
+//    // This context may not be the current one, but it has to be in order for
+//    // glReadPixels to succeed.
+//    EJCanvasContext *previousContext = scriptView.currentRenderingContext;
+//    scriptView.currentRenderingContext = self;
+//    
+//    float w = width * backingStoreRatio;
+//    float h = height * backingStoreRatio;
+//    
+//    EJTexture *texture = [self getImageDataScaled:1 flipped:upsideDown sx:0 sy:0 sw:w sh:h].texture;
+//    texture.contentScale = backingStoreRatio;
+//    
+//    scriptView.currentRenderingContext = previousContext;
+//    return texture;
+//}
+
 - (EJTexture *)texture {
-    
-    [self flushBuffers];
-    
-	EJCanvasContext *previousContext = scriptView.currentRenderingContext;
+
+    EJCanvasContext *previousContext = scriptView.currentRenderingContext;
 	scriptView.currentRenderingContext = self;
 
-	NSMutableData *pixels = [NSMutableData dataWithLength:bufferWidth * bufferHeight * 4 * sizeof(GLubyte)];
-	glReadPixels(0, 0, bufferWidth, bufferHeight, GL_RGBA, GL_UNSIGNED_BYTE, pixels.mutableBytes);
+    float w = width * backingStoreRatio;
+    float h = height * backingStoreRatio;
+    
+    NSLog(@"backingStoreRatio %d",width);
+    NSMutableData *pixels = [self getPixels:1 flipped:true sx:0 sy:0 sw:w sh:h];
 	
-	EJTexture *texture = [[[EJTexture alloc] initWithWidth:bufferWidth height:bufferHeight pixels:pixels] autorelease];
-	texture.contentScale = backingStoreRatio;
+	EJTexture *texture = [[[EJTexture alloc] initWithWidth:w height:h pixels:pixels] autorelease];
+	texture.contentScale = 1;
 
 	scriptView.currentRenderingContext = previousContext;
+    
 	return texture;
 }
 
-- (UIImage *)image {
-    NSLog(@"1111111111");
-    return [ [self texture] image];
-}
 
 @end

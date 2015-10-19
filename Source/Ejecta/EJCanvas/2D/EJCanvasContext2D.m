@@ -713,43 +713,10 @@ const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
 	self.globalCompositeOperation = oldOp;
 }
 
+
 - (EJImageData*)getImageDataScaled:(float)scale flipped:(bool)flipped sx:(short)sx sy:(short)sy sw:(short)sw sh:(short)sh {
-	
-	[self flushBuffers];
-	
-	NSMutableData *pixels;
-	
-	// Fast case - no scaling, no flipping
-	if( scale == 1 && !flipped ) {
-		pixels = [NSMutableData dataWithLength:sw * sh * 4 * sizeof(GLubyte)];
-		glReadPixels(sx, sy, sw, sh, GL_RGBA, GL_UNSIGNED_BYTE, pixels.mutableBytes);
-	}
-	
-	// More processing needed - take care of the flipped screen layout and the scaling
-	else {
-		int internalWidth = sw * scale;
-		int internalHeight = sh * scale;
-		int internalX = sx * scale;
-		int internalY = ((bufferHeight/scale)-sy-sh) * scale;
 		
-		EJColorRGBA *internalPixels = malloc( internalWidth * internalHeight * sizeof(EJColorRGBA));
-		glReadPixels( internalX, internalY, internalWidth, internalHeight, GL_RGBA, GL_UNSIGNED_BYTE, internalPixels );
-		
-		int size = sw * sh * sizeof(EJColorRGBA);
-		EJColorRGBA *scaledPixels = malloc( size );
-		int index = 0;
-		for( int y = 0; y < sh; y++ ) {
-			int rowIndex = (int)((flipped ? sh-y-1 : y) * scale) * internalWidth;
-			for( int x = 0; x < sw; x++ ) {
-				int internalIndex = rowIndex + (int)(x * scale);
-				scaledPixels[ index ] = internalPixels[ internalIndex ];
-				index++;
-			}
-		}
-		free(internalPixels);
-	
-		pixels = [NSMutableData dataWithBytesNoCopy:scaledPixels length:size];
-	}
+    NSMutableData *pixels = [self getPixels:scale flipped:flipped sx:sx sy:sy sw:sw sh:sh];
 	
 	return [[[EJImageData alloc] initWithWidth:sw height:sh pixels:pixels] autorelease];
 }
@@ -890,36 +857,45 @@ const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
 }
 
 
-- (UIImage *)image {
+- (NSMutableData *)getPixels:(float)scale flipped:(bool)flipped sx:(short)sx sy:(short)sy sw:(short)sw sh:(short)sh {
     
     [self flushBuffers];
     
-    EJCanvasContext *previousContext = scriptView.currentRenderingContext;
-    scriptView.currentRenderingContext = self;
+    NSMutableData *pixels;
     
-    int size = bufferWidth * bufferHeight * 4 * sizeof(EJColorRGBA);
-    
-    EJColorRGBA *internalPixels = malloc( size );
-    glReadPixels(0, 0, bufferWidth, bufferHeight, GL_RGBA, GL_UNSIGNED_BYTE, internalPixels);
-    
-    EJColorRGBA *flippedPixels = malloc( size );
-    int index = 0;
-    for( int y = 0; y < bufferHeight; y++ ) {
-        int rowIndex = (bufferHeight-y-1) * bufferWidth;
-        for( int x = 0; x < bufferWidth; x++ ) {
-            int internalIndex = rowIndex + x;
-            flippedPixels[ index ] = internalPixels[ internalIndex ];
-            index++;
-        }
+    // Fast case - no scaling, no flipping
+    if( scale == 1 && !flipped ) {
+        pixels = [NSMutableData dataWithLength:sw * sh * 4 * sizeof(GLubyte)];
+        glReadPixels(sx, sy, sw, sh, GL_RGBA, GL_UNSIGNED_BYTE, pixels.mutableBytes);
     }
-    free(internalPixels);
     
-    NSMutableData *pixels = [NSMutableData dataWithBytesNoCopy:flippedPixels length:size];
+    // More processing needed - take care of the flipped screen layout and the scaling
+    else {
+        int internalWidth = sw * scale;
+        int internalHeight = sh * scale;
+        int internalX = sx * scale;
+        int internalY = ((bufferHeight/scale)-sy-sh) * scale;
+        
+        EJColorRGBA *internalPixels = malloc( internalWidth * internalHeight * sizeof(EJColorRGBA));
+        glReadPixels( internalX, internalY, internalWidth, internalHeight, GL_RGBA, GL_UNSIGNED_BYTE, internalPixels );
+        
+        int size = sw * sh * sizeof(EJColorRGBA);
+        EJColorRGBA *scaledPixels = malloc( size );
+        int index = 0;
+        for( int y = 0; y < sh; y++ ) {
+            int rowIndex = (int)((flipped ? sh-y-1 : y) * scale) * internalWidth;
+            for( int x = 0; x < sw; x++ ) {
+                int internalIndex = rowIndex + (int)(x * scale);
+                scaledPixels[ index ] = internalPixels[ internalIndex ];
+                index++;
+            }
+        }
+        free(internalPixels);
+        
+        pixels = [NSMutableData dataWithBytesNoCopy:scaledPixels length:size];
+    }
     
-    UIImage *image = [EJTexture imageWithPixels:pixels width:bufferWidth height:bufferHeight scale:backingStoreRatio];
-    
-    scriptView.currentRenderingContext = previousContext;
-    return image;
+    return pixels;
 }
 
 @end

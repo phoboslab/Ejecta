@@ -1,10 +1,14 @@
 var width = window.innerWidth;
 var height = window.innerHeight;
 var canvas = document.getElementById('canvas');
+canvas.retinaResolutionEnabled = true;
 canvas.width = width * window.devicePixelRatio;
 canvas.height = height * window.devicePixelRatio;
 canvas.style.width = width + "px";
 canvas.style.height = height + "px";
+
+
+console.log(canvas.width,width);
 
 var context = canvas.getContext("2d");
 context.fillStyle = "#999999";

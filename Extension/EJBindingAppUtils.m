@@ -42,11 +42,11 @@
 
 - (void) saveImage:(NSObject<EJDrawable> *)drawable destination:(NSString *)destination callback:(JSObjectRef)callback {
     
-    UIImage *image = drawable.image;
-
+    UIImage *image = [drawable.texture image];
+    
     NSString *filePath = image ? [scriptView pathForResource:destination] : NULL;
 
-    NSData *raw;
+    NSData *raw = nil;
     
     if (image){
         if ([destination hasSuffix:@".jpg"] || [destination hasSuffix:@".jpeg"]){
