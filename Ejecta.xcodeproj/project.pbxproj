@@ -379,7 +379,7 @@
 		B6F629D016F353C700F16BAC /* EJBindingCanvasStyle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingCanvasStyle.m; sourceTree = "<group>"; };
 		B6F7147F1BCF116E0082A90F /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Source/lib/ios/JavaScriptCore.framework; sourceTree = "<group>"; };
 		B6F714ED1BCF126A0082A90F /* Ejecta-TV.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Ejecta-TV.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		B6F714EE1BCF126B0082A90F /* Ejecta copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Ejecta copy-Info.plist"; path = "/Users/dominic/xcode/Ejecta/Ejecta copy-Info.plist"; sourceTree = "<absolute>"; };
+		B6F714EE1BCF126B0082A90F /* Info-TV.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Info-TV.plist"; path = "/Users/dominic/xcode/Ejecta/Resources/Info-TV.plist"; sourceTree = "<absolute>"; };
 		B6F714EF1BCF130C0082A90F /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Source/lib/tvos/JavaScriptCore.framework; sourceTree = "<group>"; };
 		B6F9AFBE169F81D400ABD91A /* EJBindingWindowEvents.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingWindowEvents.h; sourceTree = "<group>"; };
 		B6F9AFBF169F81D400ABD91A /* EJBindingWindowEvents.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingWindowEvents.m; sourceTree = "<group>"; };
@@ -470,7 +470,6 @@
 				B64CE683166682B10087CF94 /* Resources */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
-				B6F714EE1BCF126B0082A90F /* Ejecta copy-Info.plist */,
 			);
 			name = CustomTemplate;
 			sourceTree = "<group>";
@@ -661,6 +660,7 @@
 				B64CE68C166682B10087CF94 /* Icon.png */,
 				B64CE68D166682B10087CF94 /* Icon@2x.png */,
 				B64CE689166682B10087CF94 /* Info.plist */,
+				B6F714EE1BCF126B0082A90F /* Info-TV.plist */,
 				B637065D1A27BD5600F42B90 /* LaunchScreen.xib */,
 			);
 			path = Resources;
@@ -1082,7 +1082,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Source/Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = "";
-				INFOPLIST_FILE = "Ejecta copy-Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/Resources/Info-TV.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
@@ -1112,7 +1112,7 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Source/Prefix.pch;
-				INFOPLIST_FILE = "Ejecta copy-Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/Resources/Info-TV.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
