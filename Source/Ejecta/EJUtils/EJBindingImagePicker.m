@@ -1,3 +1,5 @@
+#if !TARGET_OS_TV
+
 #import <MobileCoreServices/UTCoreTypes.h> // for media filtering
 #import "EJBindingImagePicker.h"
 #import "EJJavaScriptView.h"
@@ -245,3 +247,5 @@ EJ_BIND_FUNCTION(isSourceTypeAvailable, ctx, argc, argv) {
 }
 
 @end
+
+#endif

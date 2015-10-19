@@ -1,3 +1,5 @@
+#if !TARGET_OS_TV
+
 #import "EJBindingEventedBase.h"
 #import "EJJavaScriptView.h"
 #import <CoreMotion/CoreMotion.h>
@@ -13,3 +15,5 @@
 - (void)triggerEventWithAccelerometerData:(CMAccelerometerData *)accel;
 
 @end
+
+#endif

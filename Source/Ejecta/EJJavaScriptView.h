@@ -72,7 +72,7 @@
 
 	NSOperationQueue *backgroundQueue;
 	JSClassRef jsBlockFunctionClass;
-		
+	
 	// Public for fast access in bound functions
 	@public JSValueRef jsUndefined;
 	@public JSValueRef jsTrue;
