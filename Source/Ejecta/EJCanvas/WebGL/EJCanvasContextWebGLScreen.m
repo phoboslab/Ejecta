@@ -48,19 +48,31 @@
 - (void)resizeToWidth:(short)newWidth height:(short)newHeight {
 	[self flushBuffers];
 	
-	bufferWidth = width = newWidth;
-	bufferHeight = height = newHeight;
+	width = newWidth;
+	height = newHeight;
+	
 	
 	CGRect frame = self.frame;
-	float contentScale = bufferWidth / frame.size.width;
+	
+	float contentScale = useRetinaResolution ? UIScreen.mainScreen.scale : 1;
+	backingStoreRatio = (frame.size.width / (float)width) * contentScale;
+	
+	bufferWidth = frame.size.width * contentScale;
+	bufferHeight = frame.size.height * contentScale;
 	
 	NSLog(
 		@"Creating ScreenCanvas (WebGL): "
 			@"size: %dx%d, "
-			@"style: %.0fx%.0f",
+			@"style: %.0fx%.0f, "
+			@"retina: %@ = %.0fx%.0f, "
+			@"msaa: %@",
 		width, height, 
-		frame.size.width, frame.size.height
+		frame.size.width, frame.size.height,
+		(useRetinaResolution ? @"yes" : @"no"),
+		frame.size.width * contentScale, frame.size.height * contentScale,
+		(msaaEnabled ? [NSString stringWithFormat:@"yes (%d samples)", msaaSamples] : @"no")
 	);
+	
 	
 	if( !glview ) {
 		// Create the OpenGL UIView with final screen size and content scaling (retina)
