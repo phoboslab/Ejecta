@@ -10,14 +10,24 @@
 - (void)resizeToWidth:(short)newWidth height:(short)newHeight {
 	[self flushBuffers];
 	
-	bufferWidth = width = newWidth;
-	bufferHeight = height = newHeight;
-	
-	NSLog(
-		@"Creating Offscreen Canvas (WebGL): size: %dx%d",
-		width, height
-	);
-	
+        width = newWidth;
+        height = newHeight;
+        
+        backingStoreRatio = (useRetinaResolution && [UIScreen mainScreen].scale == 2) ? 2 : 1;
+        bufferWidth = width * backingStoreRatio;
+        bufferHeight = height * backingStoreRatio;
+        
+        NSLog(
+              @"Creating Offscreen Canvas (WebGL): "
+              @"size: %dx%d, "
+              @"retina: %@ = %.0fx%.0f, "
+              @"msaa: %@",
+              width, height,
+              (useRetinaResolution ? @"yes" : @"no"),
+              width * backingStoreRatio, height * backingStoreRatio,
+              (msaaEnabled ? [NSString stringWithFormat:@"yes (%d samples)", msaaSamples] : @"no")
+              );
+		
 	GLint previousFrameBuffer;
 	GLint previousRenderBuffer;
 	glGetIntegerv( GL_FRAMEBUFFER_BINDING, &previousFrameBuffer );
