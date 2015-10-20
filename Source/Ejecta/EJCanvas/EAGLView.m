@@ -8,7 +8,9 @@
 
 - (id)initWithFrame:(CGRect)frame contentScale:(float)contentScale retainedBacking:(BOOL)retainedBacking {
 	if( self = [super initWithFrame:frame] ) {
-		[self setMultipleTouchEnabled:YES];
+		#if !TARGET_OS_TV
+			[self setMultipleTouchEnabled:YES];
+		#endif
 		
 		CAEAGLLayer *eaglLayer = (CAEAGLLayer *)self.layer;
 		

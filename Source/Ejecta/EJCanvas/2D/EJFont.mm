@@ -168,7 +168,7 @@ int EJFontGlyphLayoutSortByTextureIndex(const void *a, const void *b) {
 	EJFontGlyphInfo *glyphInfo = &glyphInfoMap[glyph];
 	
 	CGRect bbRect;
-	CTFontGetBoundingRectsForGlyphs(font, kCTFontDefaultOrientation, &glyph, &bbRect, 1);
+	CTFontGetBoundingRectsForGlyphs(font, kCTFontOrientationDefault, &glyph, &bbRect, 1);
 	
 	// Add some padding around the glyphs
 	glyphInfo->y = floorf(bbRect.origin.y) - glyphPadding;

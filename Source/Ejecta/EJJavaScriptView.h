@@ -75,6 +75,7 @@
 	
 	// Public for fast access in bound functions
 	@public JSValueRef jsUndefined;
+    @public JSValueRef jsNull;
 	@public JSValueRef jsTrue;
 	@public JSValueRef jsFalse;
 }

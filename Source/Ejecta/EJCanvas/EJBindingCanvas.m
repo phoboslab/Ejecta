@@ -18,7 +18,7 @@
 - (void)createWithJSObject:(JSObjectRef)obj scriptView:(EJJavaScriptView *)view {
 	[super createWithJSObject:obj scriptView:view];
 	
-	useRetinaResolution = false;
+	useRetinaResolution = true;
 	msaaEnabled = false;
 	msaaSamples = 2;
 	
@@ -26,7 +26,7 @@
 	if( !scriptView.hasScreenCanvas ) {
 		isScreenCanvas = YES;
 		scriptView.hasScreenCanvas = YES;
-    }else{
+    } else {
         useRetinaResolution = false;
 	}
 	
@@ -54,6 +54,15 @@
 	[super dealloc];
 }
 
+
+- (UIImage *)image {
+    if( [renderingContext respondsToSelector:@selector(image)] ) {
+        return (UIImage *)[(id)renderingContext image];
+    }
+    return nil ;
+}
+
+
 - (EJTexture *)texture {
 	if( [renderingContext respondsToSelector:@selector(texture)] ) {
 		return (EJTexture *)[(id)renderingContext texture];
@@ -61,15 +70,6 @@
 	else {
 		return nil;
 	}
-}
-
-- (UIImage *)image {
-    if( [renderingContext respondsToSelector:@selector(image)] ) {
-        return (UIImage *)[(id)renderingContext image];
-    }
-    else {
-        return nil;
-    }
 }
 
 #define EJ_GET_SET_STYLE(GETTER, SETTER, TARGET) \

@@ -95,6 +95,8 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
     jsUndefined = JSValueMakeUndefined(jsGlobalContext);
     JSValueProtect(jsGlobalContext, jsUndefined);
     
+    jsNull = JSValueMakeNull(jsGlobalContext);
+    JSValueProtect(jsGlobalContext, jsNull);
     jsTrue = JSValueMakeBoolean(jsGlobalContext, true);
     JSValueProtect(jsGlobalContext, jsTrue);
     jsFalse = JSValueMakeBoolean(jsGlobalContext, false);
