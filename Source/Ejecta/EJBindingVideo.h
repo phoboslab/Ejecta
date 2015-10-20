@@ -1,3 +1,4 @@
+#if !TARGET_OS_TV
 #import "EJBindingEventedBase.h"
 #import <MediaPlayer/MediaPlayer.h>
 #import <AVKit/AVkit.h>
@@ -14,3 +15,5 @@
 }
 
 @end
+#endif
+

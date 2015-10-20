@@ -33,6 +33,24 @@
 	jsPageYName = JSStringCreateWithUTF8CString("pageY");
 	jsClientXName = JSStringCreateWithUTF8CString("clientX");
 	jsClientYName = JSStringCreateWithUTF8CString("clientY");
+    
+    jsPressTypeName = JSStringCreateWithUTF8CString("pressType");
+    
+    jsPressTypeSelect = NSStringToJSValue(ctx, @"select");
+    jsPressTypeUpArrow = NSStringToJSValue(ctx, @"upArrow");
+    jsPressTypeDownArrow = NSStringToJSValue(ctx, @"downArrow");
+    jsPressTypeLeftArrow = NSStringToJSValue(ctx, @"leftArrow");
+    jsPressTypeRightArrow = NSStringToJSValue(ctx, @"rightArrow");
+    jsPressTypeMenu = NSStringToJSValue(ctx, @"menu");
+    jsPressTypePlayPause = NSStringToJSValue(ctx, @"playPause");
+    
+    JSValueProtect(ctx, jsPressTypeSelect);
+    JSValueProtect(ctx, jsPressTypeUpArrow);
+    JSValueProtect(ctx, jsPressTypeDownArrow);
+    JSValueProtect(ctx, jsPressTypeLeftArrow);
+    JSValueProtect(ctx, jsPressTypeRightArrow);
+    JSValueProtect(ctx, jsPressTypeMenu);
+    JSValueProtect(ctx, jsPressTypePlayPause);
 	
 	scriptView.touchDelegate = self;
 }
@@ -51,6 +69,16 @@
 	JSStringRelease( jsPageYName );
 	JSStringRelease( jsClientXName );
 	JSStringRelease( jsClientYName );
+    
+    JSStringRelease( jsPressTypeName );
+    
+    JSValueUnprotectSafe(ctx, jsPressTypeSelect);
+    JSValueUnprotectSafe(ctx, jsPressTypeUpArrow);
+    JSValueUnprotectSafe(ctx, jsPressTypeDownArrow);
+    JSValueUnprotectSafe(ctx, jsPressTypeLeftArrow);
+    JSValueUnprotectSafe(ctx, jsPressTypeRightArrow);
+    JSValueUnprotectSafe(ctx, jsPressTypeMenu);
+    JSValueUnprotectSafe(ctx, jsPressTypePlayPause);
 	
 	for( int i = 0; i < touchesInPool; i++ ) {
 		JSValueUnprotectSafe( ctx, jsTouchesPool[i] );
@@ -86,27 +114,67 @@
 		remainingIndex = 0,
 		changedIndex = 0;
 		
-	for( UITouch *touch in all ) {
-		CGPoint pos = [touch locationInView:touch.view];
+	for( id input in all ) {
+        
+        JSObjectRef jsTouch = jsTouchesPool[poolIndex++];
+        
+        JSValueRef identifier = JSValueMakeNumber(ctx, [input hash] );
+        JSObjectSetProperty( ctx, jsTouch, jsIdentifierName, identifier, kJSPropertyAttributeNone, NULL );
+        
+        if ([input isKindOfClass:[UITouch class]])
+        {
+            CGPoint pos = [input locationInView:[input view]];
 		
-		JSValueRef identifier = JSValueMakeNumber(ctx, touch.hash );
-		JSValueRef x = JSValueMakeNumber(ctx, pos.x);
-		JSValueRef y = JSValueMakeNumber(ctx, pos.y);
-		
-		JSObjectRef jsTouch = jsTouchesPool[poolIndex++];
-		JSObjectSetProperty( ctx, jsTouch, jsIdentifierName, identifier, kJSPropertyAttributeNone, NULL );
-		JSObjectSetProperty( ctx, jsTouch, jsPageXName, x, kJSPropertyAttributeNone, NULL );
-		JSObjectSetProperty( ctx, jsTouch, jsPageYName, y, kJSPropertyAttributeNone, NULL );
-		JSObjectSetProperty( ctx, jsTouch, jsClientXName, x, kJSPropertyAttributeNone, NULL );
-		JSObjectSetProperty( ctx, jsTouch, jsClientYName, y, kJSPropertyAttributeNone, NULL );
-		
-		if( [remaining member:touch] ) {
-			JSObjectSetPropertyAtIndex(ctx, jsRemainingTouches, remainingIndex++, jsTouch, NULL);
-		}
-		
-		if( [changed member:touch] ) {
-			JSObjectSetPropertyAtIndex(ctx, jsChangedTouches, changedIndex++, jsTouch, NULL);
-		}
+            JSValueRef x = JSValueMakeNumber(ctx, pos.x);
+            JSValueRef y = JSValueMakeNumber(ctx, pos.y);
+            
+            JSObjectSetProperty( ctx, jsTouch, jsPageXName, x, kJSPropertyAttributeNone, NULL );
+            JSObjectSetProperty( ctx, jsTouch, jsPageYName, y, kJSPropertyAttributeNone, NULL );
+            JSObjectSetProperty( ctx, jsTouch, jsClientXName, x, kJSPropertyAttributeNone, NULL );
+            JSObjectSetProperty( ctx, jsTouch, jsClientYName, y, kJSPropertyAttributeNone, NULL );
+        }
+#if TARGET_OS_TV
+        else if ([input isKindOfClass:[UIPress class]])
+        {
+            switch ([((UIPress*)input) type]) {
+                case UIPressTypeSelect:
+                    JSObjectSetProperty( ctx, jsTouch, jsPressTypeName, jsPressTypeSelect, kJSPropertyAttributeNone, NULL );
+                    break;
+                    
+                case UIPressTypeUpArrow:
+                    JSObjectSetProperty( ctx, jsTouch, jsPressTypeName, jsPressTypeUpArrow, kJSPropertyAttributeNone, NULL );
+                    break;
+                    
+                case UIPressTypeDownArrow:
+                    JSObjectSetProperty( ctx, jsTouch, jsPressTypeName, jsPressTypeDownArrow, kJSPropertyAttributeNone, NULL );
+                    break;
+                    
+                case UIPressTypeLeftArrow:
+                    JSObjectSetProperty( ctx, jsTouch, jsPressTypeName, jsPressTypeLeftArrow, kJSPropertyAttributeNone, NULL );
+                    break;
+                    
+                case UIPressTypeRightArrow:
+                    JSObjectSetProperty( ctx, jsTouch, jsPressTypeName, jsPressTypeRightArrow, kJSPropertyAttributeNone, NULL );
+                    break;
+                    
+                case UIPressTypeMenu:
+                    JSObjectSetProperty( ctx, jsTouch, jsPressTypeName, jsPressTypeMenu, kJSPropertyAttributeNone, NULL );
+                    break;
+                    
+                case UIPressTypePlayPause:
+                    JSObjectSetProperty( ctx, jsTouch, jsPressTypeName, jsPressTypePlayPause, kJSPropertyAttributeNone, NULL );
+                    break;
+            }
+        }
+#endif
+        
+        if( [remaining member:input] ) {
+            JSObjectSetPropertyAtIndex(ctx, jsRemainingTouches, remainingIndex++, jsTouch, NULL);
+        }
+        
+        if( [changed member:input] ) {
+            JSObjectSetPropertyAtIndex(ctx, jsChangedTouches, changedIndex++, jsTouch, NULL);
+        }
 		
 		if( poolIndex >= touchesInPool ) { break; }
 	}

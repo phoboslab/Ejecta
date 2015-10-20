@@ -7,6 +7,8 @@
 @interface EJBindingTouchInput : EJBindingEventedBase <EJTouchDelegate> {
 	JSStringRef jsLengthName;
 	JSStringRef jsTargetName, jsIdentifierName, jsPageXName, jsPageYName, jsClientXName, jsClientYName;
+    JSStringRef jsPressTypeName;
+    JSValueRef jsPressTypeSelect, jsPressTypeUpArrow, jsPressTypeDownArrow, jsPressTypeLeftArrow, jsPressTypeRightArrow, jsPressTypeMenu, jsPressTypePlayPause;
 	JSObjectRef jsRemainingTouches, jsChangedTouches;
 	JSObjectRef jsTouchesPool[EJ_TOUCH_INPUT_MAX_TOUCHES];
 	JSValueRef jsTouchTarget;

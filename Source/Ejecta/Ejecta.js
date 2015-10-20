@@ -153,10 +153,10 @@ window.setInterval = function(cb, t){ return ej.setInterval(cb, t||0); };
 window.clearTimeout = function(id){ return ej.clearTimeout(id); };
 window.clearInterval = function(id){ return ej.clearInterval(id); };
 window.requestAnimationFrame = function(cb, element){
-	return ej.setTimeout(function(){ cb(ej.performanceNow()); }, 16);
+	return ej.requestAnimationFrame(cb);
 };
 window.cancelAnimationFrame = function (id) {
-	return ej.clearTimeout(id);
+	return ej.cancelAnimationFrame(id);
 };
 
 
@@ -400,13 +400,18 @@ var dispatchTouchEvent = function( type, all, changed ) {
 	
 	document.dispatchEvent( touchEvent );
 };
-eventInit.touchstart = eventInit.touchend = eventInit.touchmove = function() {
+eventInit.touchstart = eventInit.touchend = eventInit.touchmove = eventInit.pressstart = eventInit.presschange = eventInit.pressend = function() {
 	if( touchInput ) { return; }
 
 	touchInput = new Ejecta.TouchInput(window.canvas);
 	touchInput.ontouchstart = function( all, changed ){ dispatchTouchEvent( 'touchstart', all, changed ); };
 	touchInput.ontouchend = function( all, changed ){ dispatchTouchEvent( 'touchend', all, changed ); };
 	touchInput.ontouchmove = function( all, changed ){ dispatchTouchEvent( 'touchmove', all, changed ); };
+ 
+    // piggy back here to handle press events
+    touchInput.addEventListener('pressstart', function( all, changed ){ dispatchTouchEvent( 'pressstart', all, changed ); });
+    touchInput.addEventListener('presschange', function( all, changed ){ dispatchTouchEvent( 'presschange', all, changed ); });
+    touchInput.addEventListener('pressend', function( all, changed ){ dispatchTouchEvent( 'pressend', all, changed ); });
 };
 
 

@@ -1,3 +1,4 @@
+#if !TARGET_OS_TV
 #import "EJBindingVideo.h"
 
 
@@ -164,3 +165,4 @@ EJ_BIND_EVENT(click);
 EJ_BIND_CONST(nodeName, "VIDEO");
 
 @end
+#endif

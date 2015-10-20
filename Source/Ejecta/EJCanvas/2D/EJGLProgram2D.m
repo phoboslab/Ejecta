@@ -29,6 +29,30 @@
 	return self;
 }
 
+- (id)initWithVertexShaderSource:(NSString *)vertexShaderSource fragmentShaderSource:(NSString *)fragmentShaderSource {
+    if( self = [super init] ) {
+        program = glCreateProgram();
+        GLuint vertexShader = [EJGLProgram2D compileShaderSource:vertexShaderSource type:GL_VERTEX_SHADER];
+        GLuint fragmentShader = [EJGLProgram2D compileShaderSource:fragmentShaderSource type:GL_FRAGMENT_SHADER];
+        
+        glAttachShader(program, vertexShader);
+        glAttachShader(program, fragmentShader);
+        
+        [self bindAttributeLocations];
+        
+        [EJGLProgram2D linkProgram:program];
+        
+        [self getUniforms];
+        
+        glDetachShader(program, vertexShader);
+        glDeleteShader(vertexShader);
+        
+        glDetachShader(program, fragmentShader);
+        glDeleteShader(fragmentShader);
+    }
+    return self;
+}
+
 - (void)dealloc {
 	if( program ) { glDeleteProgram(program); }
 	[super dealloc];

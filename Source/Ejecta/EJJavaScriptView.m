@@ -204,28 +204,32 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 #pragma mark Script loading and execution
 
 - (NSString *)pathForResource:(NSString *)path {
-	char specialPathName[16];
-	if( sscanf(path.UTF8String, "${%15[^}]", specialPathName) ) {
-		NSString *searchPath;
-		if( strcmp(specialPathName, "Documents") == 0 ) {
-			searchPath = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
-		}
-		else if( strcmp(specialPathName, "Library") == 0 ) {
-			searchPath = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES)[0];
-		}
-		else if( strcmp(specialPathName, "Caches") == 0 ) {
-			searchPath = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES)[0];
-		}
-		else if( strcmp(specialPathName, "tmp") == 0 ) {
-			searchPath = NSTemporaryDirectory();
-		}
-		
-		if( searchPath ) {
-			return [searchPath stringByAppendingPathComponent:[path substringFromIndex:strlen(specialPathName)+3]];
-		}
-	}
-	
-	return [NSString stringWithFormat:@"%@/%@%@", NSBundle.mainBundle.resourcePath, appFolder, path];
+    if (path)
+    {
+        char specialPathName[16];
+        if( sscanf(path.UTF8String, "${%15[^}]", specialPathName) ) {
+            NSString *searchPath;
+            if( strcmp(specialPathName, "Documents") == 0 ) {
+                searchPath = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
+            }
+            else if( strcmp(specialPathName, "Library") == 0 ) {
+                searchPath = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES)[0];
+            }
+            else if( strcmp(specialPathName, "Caches") == 0 ) {
+                searchPath = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES)[0];
+            }
+            else if( strcmp(specialPathName, "tmp") == 0 ) {
+                searchPath = NSTemporaryDirectory();
+            }
+            
+            if( searchPath ) {
+                return [searchPath stringByAppendingPathComponent:[path substringFromIndex:strlen(specialPathName)+3]];
+            }
+        }
+        
+        return [NSString stringWithFormat:@"%@/%@%@", NSBundle.mainBundle.resourcePath, appFolder, path];
+    }
+    return nil;
 }
 
 - (void)loadScriptAtPath:(NSString *)path {
@@ -434,6 +438,33 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 	[touchDelegate triggerEvent:@"touchmove" all:event.allTouches changed:touches remaining:event.allTouches];
 }
 
+#pragma mark -
+#pragma mark Press events
+#if TARGET_OS_TV
+- (void)pressesBegan:(NSSet<UIPress *> *)presses withEvent:(UIPressesEvent *)event
+{
+    [touchDelegate triggerEvent:@"pressstart" all:event.allPresses changed:presses remaining:event.allPresses];
+}
+
+- (void)pressesEnded:(NSSet<UIPress *> *)presses withEvent:(UIPressesEvent *)event
+{
+    NSMutableSet *remaining = [event.allPresses mutableCopy];
+    [remaining minusSet:presses];
+    
+    [touchDelegate triggerEvent:@"pressend" all:event.allPresses changed:presses remaining:remaining];
+    [remaining release];
+}
+
+- (void)pressesCancelled:(NSSet<UIPress *> *)presses withEvent:(UIPressesEvent *)event
+{
+    [self pressesEnded:presses withEvent:event];
+}
+
+- (void)pressesChanged:(NSSet<UIPress *> *)presses withEvent:(UIPressesEvent *)event
+{
+    [touchDelegate triggerEvent:@"presschange" all:event.allPresses changed:presses remaining:event.allPresses];
+}
+#endif
 
 //TODO: Does this belong in this class?
 #pragma mark
