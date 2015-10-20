@@ -282,7 +282,9 @@ EJ_BIND_FUNCTION(send, ctx, argc, argv) {
 	
 	state = kEJHttpRequestStateLoading;
 	NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
-	session = [[NSURLSession sessionWithConfiguration:configuration delegate:self delegateQueue:nil] retain];
+	
+	session = [[NSURLSession sessionWithConfiguration:configuration
+		delegate:self delegateQueue:NSOperationQueue.mainQueue] retain];
 	[[session dataTaskWithRequest:request] resume];
 	[request release];
 	
