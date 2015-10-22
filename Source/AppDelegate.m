@@ -13,19 +13,19 @@
 	// not being interacted with by touch. ie. games with motion control.
 	application.idleTimerDisabled = YES;
 	
+	window = [[UIWindow alloc] initWithFrame:UIScreen.mainScreen.bounds];
 	[self loadViewControllerWithScriptAtPath:@"index.js"];
 	
+	[window makeKeyAndVisible];
     return YES;
 }
 
 - (void)loadViewControllerWithScriptAtPath:(NSString *)path {
 	// Release any previous ViewController
-	window.frame = UIScreen.mainScreen.bounds;
 	window.rootViewController = nil;
 	
 	EJAppViewController *vc = [[EJAppViewController alloc] initWithScriptAtPath:path];
 	window.rootViewController = vc;
-	[window makeKeyWindow];
 	[vc release];
 }
 
