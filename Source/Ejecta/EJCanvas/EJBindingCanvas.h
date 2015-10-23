@@ -37,5 +37,6 @@ typedef enum {
 @property (nonatomic) float styleWidth;
 @property (nonatomic) float styleHeight;
 @property (readonly, nonatomic) EJTexture *texture;
+@property (nonatomic, retain) EJCanvasContext *renderingContext;
 
 @end

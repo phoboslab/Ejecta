@@ -7,6 +7,8 @@
 @synthesize msaaEnabled, msaaSamples;
 @synthesize backingStoreRatio;
 @synthesize useRetinaResolution;
+@synthesize needsPresenting;
+@synthesize ignoreClearing;
 
 - (void)create {}
 - (void)flushBuffers {}

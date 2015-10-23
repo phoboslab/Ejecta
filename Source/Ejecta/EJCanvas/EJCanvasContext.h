@@ -11,6 +11,8 @@
 	
 	float backingStoreRatio;
 	BOOL useRetinaResolution;
+
+    BOOL ignoreClearing;
 }
 
 - (void)create;
@@ -24,5 +26,7 @@
 @property (nonatomic, readonly) EAGLContext *glContext;
 @property (nonatomic) BOOL useRetinaResolution;
 @property (nonatomic, readonly) float backingStoreRatio;
+@property (nonatomic) BOOL needsPresenting;
+@property (nonatomic) BOOL ignoreClearing;
 
 @end

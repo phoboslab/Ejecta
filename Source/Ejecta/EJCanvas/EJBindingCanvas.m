@@ -14,6 +14,7 @@
 @implementation EJBindingCanvas
 @synthesize styleWidth, styleHeight;
 @synthesize styleLeft, styleTop;
+@synthesize renderingContext;
 
 - (void)createWithJSObject:(JSObjectRef)obj scriptView:(EJJavaScriptView *)view {
 	[super createWithJSObject:obj scriptView:view];
@@ -297,6 +298,14 @@ EJ_BIND_FUNCTION(toDataURL, ctx, argc, argv) {
 
 EJ_BIND_FUNCTION(toDataURLHD, ctx, argc, argv) {
 	return [self toDataURLWithCtx:ctx argc:argc argv:argv hd:YES];
+}
+
+EJ_BIND_SET(ignoreClearing, ctx, value) {
+    renderingContext.ignoreClearing = JSValueToBoolean(ctx, value);
+}
+
+EJ_BIND_GET(ignoreClearing, ctx) {
+    return JSValueMakeBoolean(ctx, renderingContext.ignoreClearing);
 }
 
 EJ_BIND_CONST(nodeName, "CANVAS");
