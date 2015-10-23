@@ -62,7 +62,9 @@ function takeScreenshot() {
     var destPath = "${Documents}/snapshot.png";
     // You could also use a offscreen canvas that you created via document.createElement().
 
+    canvas.ignoreClearing = true;
     renderSomething(); // ensure that gl isn't be cleared
+
     appUtils.saveImage(canvas, destPath, function(filePath) {
         console.log(" >> Snapshot: " + filePath);
         // Share Screenshot Image.

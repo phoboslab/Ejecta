@@ -14,7 +14,7 @@ ejecta.include("example/e-appUtils.js");
 
  ejecta.include("example/e-download-snapshot-share.js");
 
- ejecta.include("example/e-admob.js");
+// ejecta.include("example/e-admob.js");
 
 // ejecta.include("example/e-chartboost.js");
 
