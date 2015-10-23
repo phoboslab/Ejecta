@@ -205,6 +205,8 @@
 		B99F05C2188C4125002F194D /* Icon-60@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B99F05BE188C4125002F194D /* Icon-60@2x.png */; };
 		B99F05C3188C4125002F194D /* Icon-76.png in Resources */ = {isa = PBXBuildFile; fileRef = B99F05BF188C4125002F194D /* Icon-76.png */; };
 		B99F05C4188C4125002F194D /* Icon-76@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B99F05C0188C4125002F194D /* Icon-76@2x.png */; };
+		C9ED80CC1BDA823B0020D803 /* EJBindingPressInput.m in Sources */ = {isa = PBXBuildFile; fileRef = C9ED80C91BDA7D510020D803 /* EJBindingPressInput.m */; };
+		C9ED80CD1BDA83660020D803 /* EJBindingPressInput.m in Sources */ = {isa = PBXBuildFile; fileRef = C9ED80C91BDA7D510020D803 /* EJBindingPressInput.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -387,6 +389,8 @@
 		B99F05BE188C4125002F194D /* Icon-60@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-60@2x.png"; sourceTree = "<group>"; };
 		B99F05BF188C4125002F194D /* Icon-76.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-76.png"; sourceTree = "<group>"; };
 		B99F05C0188C4125002F194D /* Icon-76@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-76@2x.png"; sourceTree = "<group>"; };
+		C9ED80C81BDA7D510020D803 /* EJBindingPressInput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingPressInput.h; sourceTree = "<group>"; };
+		C9ED80C91BDA7D510020D803 /* EJBindingPressInput.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingPressInput.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -631,6 +635,8 @@
 				B63D256C16E8DFAB007E6034 /* EJBindingWebSocket.m */,
 				B6D4B27F183CDFBB008251EB /* EJBindingGeolocation.h */,
 				B6D4B280183CDFBB008251EB /* EJBindingGeolocation.m */,
+				C9ED80C81BDA7D510020D803 /* EJBindingPressInput.h */,
+				C9ED80C91BDA7D510020D803 /* EJBindingPressInput.m */,
 			);
 			path = EJUtils;
 			sourceTree = "<group>";
@@ -860,6 +866,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C9ED80CD1BDA83660020D803 /* EJBindingPressInput.m in Sources */,
 				B630048916C1A2390036D8D4 /* EJBindingTextMetrics.m in Sources */,
 				B64C87AC16B81BAA0097CD5B /* EJGLProgram2D.m in Sources */,
 				B64C87AE16B81BAA0097CD5B /* EJGLProgram2DRadialGradient.m in Sources */,
@@ -932,6 +939,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C9ED80CC1BDA823B0020D803 /* EJBindingPressInput.m in Sources */,
 				B6F714911BCF126A0082A90F /* EJBindingTextMetrics.m in Sources */,
 				B6F714921BCF126A0082A90F /* EJGLProgram2D.m in Sources */,
 				B6F714931BCF126A0082A90F /* EJGLProgram2DRadialGradient.m in Sources */,

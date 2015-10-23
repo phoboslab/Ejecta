@@ -37,6 +37,7 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 
 @synthesize windowEventsDelegate;
 @synthesize touchDelegate;
+@synthesize pressDelegate;
 @synthesize deviceMotionDelegate;
 @synthesize screenRenderingContext;
 
@@ -434,6 +435,18 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 	[touchDelegate triggerEvent:@"touchmove" all:event.allTouches changed:touches remaining:event.allTouches];
 }
 
+
+- (void)pressesBegan:(NSSet<UIPress *> *)presses withEvent:(UIPressesEvent *)event {
+    [pressDelegate triggerEvent:@"pressstart" presses:presses];
+}
+
+- (void)pressesCancelled:(NSSet<UIPress *> *)presses withEvent:(UIPressesEvent *)event {
+    [pressDelegate triggerEvent:@"pressend" presses:presses];
+}
+
+- (void)pressesEnded:(NSSet<UIPress *> *)presses withEvent:(UIPressesEvent *)event {
+    [pressDelegate triggerEvent:@"pressend" presses:presses];
+}
 
 //TODO: Does this belong in this class?
 #pragma mark

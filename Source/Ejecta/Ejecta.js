@@ -412,6 +412,35 @@ eventInit.touchstart = eventInit.touchend = eventInit.touchmove = function() {
 
 
 
+// Press events
+
+// Set press event properties for feature detection
+window.onpressstart = null;
+
+var pressInput = null;
+var pressEvent = {
+	type: 'pressstart',
+    presses: null,
+	preventDefault: function(){},
+	stopPropagation: function(){}
+};
+
+var dispatchPressEvent = function( type, presses ) {
+	pressEvent.type = type;
+	pressEvent.presses = presses;
+	
+	document.dispatchEvent( pressEvent );
+};
+eventInit.pressstart = eventInit.pressend = function() {
+	if( pressInput ) { return; }
+
+	pressInput = new Ejecta.PressInput(window.canvas);
+	pressInput.onpressstart = function( presses ){ dispatchPressEvent( 'pressstart', presses ); };
+	pressInput.onpressend = function( presses ){ dispatchPressEvent( 'pressend', presses ); };
+};
+
+
+
 // DeviceMotion and DeviceOrientation events
 
 var deviceMotion = null;
