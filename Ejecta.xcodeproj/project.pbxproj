@@ -81,7 +81,6 @@
 		B64CE67E166682700087CF94 /* EJBindingTouchInput.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE64E166682700087CF94 /* EJBindingTouchInput.m */; };
 		B64CE67F166682700087CF94 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE651166682700087CF94 /* AppDelegate.m */; };
 		B64CE682166682700087CF94 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE661166682700087CF94 /* main.m */; };
-		B65A25C119618E5C00CC1744 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = B65A25C019618E5C00CC1744 /* MainWindow.xib */; };
 		B664B98B1699F3380093E04E /* EJBindingCanvasPattern.m in Sources */ = {isa = PBXBuildFile; fileRef = B664B98A1699F3380093E04E /* EJBindingCanvasPattern.m */; };
 		B664B98E1699F49C0093E04E /* EJCanvasPattern.m in Sources */ = {isa = PBXBuildFile; fileRef = B664B98D1699F49B0093E04E /* EJCanvasPattern.m */; };
 		B66847591823FEDF00ABCDF9 /* EJCanvasContextWebGLTexture.m in Sources */ = {isa = PBXBuildFile; fileRef = B66847581823FEDF00ABCDF9 /* EJCanvasContextWebGLTexture.m */; };
@@ -253,7 +252,6 @@
 		B64CE661166682700087CF94 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		B64CE689166682B10087CF94 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B659D3121A4F6FE300B9AEF9 /* EJCanvasShaders.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EJCanvasShaders.h; sourceTree = "<group>"; };
-		B65A25C019618E5C00CC1744 /* MainWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = MainWindow.xib; path = Resources/MainWindow.xib; sourceTree = SOURCE_ROOT; };
 		B664B9891699F3370093E04E /* EJBindingCanvasPattern.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingCanvasPattern.h; sourceTree = "<group>"; };
 		B664B98A1699F3380093E04E /* EJBindingCanvasPattern.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingCanvasPattern.m; sourceTree = "<group>"; };
 		B664B98C1699F49B0093E04E /* EJCanvasPattern.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJCanvasPattern.h; sourceTree = "<group>"; };
@@ -518,7 +516,6 @@
 				B64CE650166682700087CF94 /* AppDelegate.h */,
 				B64CE651166682700087CF94 /* AppDelegate.m */,
 				B64CE661166682700087CF94 /* main.m */,
-				B65A25C019618E5C00CC1744 /* MainWindow.xib */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -786,7 +783,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B65A25C119618E5C00CC1744 /* MainWindow.xib in Resources */,
 				5C65A4D21BAAAB6A0090B53A /* Images.xcassets in Resources */,
 				5CA813FE1B9E244000172B7A /* WebviewBridge.js in Resources */,
 				B68C5B95132E6CD60015092E /* App in Resources */,

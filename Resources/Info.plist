@@ -37,10 +37,6 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
-	<key>NSMainNibFile</key>
-	<string>MainWindow</string>
-	<key>NSMainNibFile~ipad</key>
-	<string>MainWindow</string>
 	<key>UIAppFonts</key>
 	<array/>
 	<key>UIFileSharingEnabled</key>
