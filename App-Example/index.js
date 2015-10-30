@@ -16,9 +16,9 @@ ejecta.include("example/e-appUtils.js");
 
 // ejecta.include("example/e-admob.js");
 
-// ejecta.include("example/e-chartboost.js");
+ ejecta.include("example/e-chartboost.js");
 
-ejecta.include("example/e-vungle.js");
+//ejecta.include("example/e-vungle.js");
 
 // ejecta.include("example/e-encrypt.js");
 
