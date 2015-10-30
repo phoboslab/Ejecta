@@ -44,10 +44,18 @@
 }
 
 - (void)vungleSDKwillCloseAdWithViewInfo:(NSDictionary *)viewInfo willPresentProductSheet:(BOOL)willPresentProductSheet {
-    NSLog(@"vungleSDKwillCloseAdWithViewInfo");
-    
-    [viewInfo setValue:willPresentProductSheet forKey:@"willPresentProductSheet"];
-    JSValueRef jsViewInfo = NSObjectToJSValue(scriptView.jsGlobalContext, viewInfo);
+    NSLog(@"vungleSDKwillCloseAdWithViewInfo %d", willPresentProductSheet);
+
+//    "playTime":15,"didDownload":false,"videoLength":15,"completedView":true
+
+    JSValueRef jsViewInfo = NSObjectToJSValue(scriptView.jsGlobalContext,
+                                               @{
+                                                 @"playTime": [viewInfo objectForKey:@"playTime"],
+                                                 @"videoLength": [viewInfo objectForKey:@"videoLength"],
+                                                 @"completedView": [viewInfo objectForKey:@"completedView"],
+                                                 @"didDownload": [viewInfo objectForKey:@"didDownload"],
+                                                 @"willPresentProductSheet": @(willPresentProductSheet)
+                                                });
     JSValueRef params[] = { jsViewInfo };
     [self triggerEvent:@"close" argc:1 argv:params];
 }
