@@ -20,6 +20,7 @@
             sdk = [VungleSDK sharedSDK];
             [sdk setDelegate:self];
             [sdk startWithAppId:appID];
+            [sdk setLoggingEnabled:YES];
         }];
 
 	}
