@@ -17,10 +17,10 @@
         console.log(event.adType, event.message);
         if (event.adType == "Interstitial") {
             cb.showInterstitial();
-        } else if (event.adType == "MoreApps") {
-            cb.showMoreApps();
         } else if (event.adType == "RewardedVideo") {
             cb.showRewardedVideo();
+        } else if (event.adType == "MoreApps") {
+            cb.showMoreApps();
         } else {
             console.log(event);
         }
@@ -30,10 +30,10 @@
         console.log(event.adType, event.message);
         if (event.adType == "Interstitial") {
             cb.loadInterstitial();
-        } else if (event.adType == "MoreApps") {
-            cb.loadMoreApps();
         } else if (event.adType == "RewardedVideo") {
             cb.loadRewardedVideo();
+        } else if (event.adType == "MoreApps") {
+            cb.loadMoreApps();
         } else {
             console.log(event);
         }
