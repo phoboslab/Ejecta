@@ -32,7 +32,7 @@
 }
 
 - (void)dealloc {
-	sdk.delegate = nil;
+	[sdk setDelegate:nil];
 	[sdk release];
     loadCallback = nil;
 	[super dealloc];
