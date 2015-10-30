@@ -25,6 +25,30 @@
 		5C631C021911446F009AF7F0 /* EJBindingBaseInterceptor.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C631BFE1911446F009AF7F0 /* EJBindingBaseInterceptor.m */; };
 		5C631C031911446F009AF7F0 /* EJInterceptorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C631C011911446F009AF7F0 /* EJInterceptorManager.m */; };
 		5C65A4D21BAAAB6A0090B53A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5C65A4D11BAAAB6A0090B53A /* Images.xcassets */; settings = {ASSET_TAGS = (); }; };
+		5C8968A01BE3284900AC30E6 /* EJBindingVungle.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C89689F1BE3284900AC30E6 /* EJBindingVungle.m */; settings = {ASSET_TAGS = (); }; };
+		5C8968B01BE32B9F00AC30E6 /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C8968AB1BE32B9F00AC30E6 /* libc++.dylib */; };
+		5C8968B11BE32B9F00AC30E6 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C8968AC1BE32B9F00AC30E6 /* libicucore.dylib */; };
+		5C8968B21BE32B9F00AC30E6 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C8968AD1BE32B9F00AC30E6 /* libsqlite3.dylib */; };
+		5C8968B31BE32B9F00AC30E6 /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C8968AE1BE32B9F00AC30E6 /* libstdc++.dylib */; };
+		5C8968B41BE32B9F00AC30E6 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C8968AF1BE32B9F00AC30E6 /* libz.dylib */; };
+		5C8968BA1BE32C5C00AC30E6 /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C8968B51BE32C5C00AC30E6 /* libc++.dylib */; };
+		5C8968BB1BE32C5C00AC30E6 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C8968B61BE32C5C00AC30E6 /* libicucore.dylib */; };
+		5C8968BC1BE32C5C00AC30E6 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C8968B71BE32C5C00AC30E6 /* libsqlite3.dylib */; };
+		5C8968BD1BE32C5C00AC30E6 /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C8968B81BE32C5C00AC30E6 /* libstdc++.dylib */; };
+		5C8968BE1BE32C5C00AC30E6 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C8968B91BE32C5C00AC30E6 /* libz.dylib */; };
+		5C8968C41BE32CAE00AC30E6 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C8968BF1BE32CAE00AC30E6 /* libc++.tbd */; };
+		5C8968C51BE32CAE00AC30E6 /* libicucore.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C8968C01BE32CAE00AC30E6 /* libicucore.tbd */; };
+		5C8968C61BE32CAE00AC30E6 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C8968C11BE32CAE00AC30E6 /* libsqlite3.tbd */; };
+		5C8968C71BE32CAE00AC30E6 /* libstdc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C8968C21BE32CAE00AC30E6 /* libstdc++.tbd */; };
+		5C8968C81BE32CAE00AC30E6 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C8968C31BE32CAE00AC30E6 /* libz.tbd */; };
+		5C8968D81BE3387C00AC30E6 /* __vungle.db in Resources */ = {isa = PBXBuildFile; fileRef = 5C8968D11BE3387C00AC30E6 /* __vungle.db */; settings = {ASSET_TAGS = (); }; };
+		5C8968D91BE3387C00AC30E6 /* vg_close.png in Resources */ = {isa = PBXBuildFile; fileRef = 5C8968D21BE3387C00AC30E6 /* vg_close.png */; settings = {ASSET_TAGS = (); }; };
+		5C8968DA1BE3387C00AC30E6 /* vg_cta.png in Resources */ = {isa = PBXBuildFile; fileRef = 5C8968D31BE3387C00AC30E6 /* vg_cta.png */; settings = {ASSET_TAGS = (); }; };
+		5C8968DB1BE3387C00AC30E6 /* vg_mute_off.png in Resources */ = {isa = PBXBuildFile; fileRef = 5C8968D41BE3387C00AC30E6 /* vg_mute_off.png */; settings = {ASSET_TAGS = (); }; };
+		5C8968DC1BE3387C00AC30E6 /* vg_mute_on.png in Resources */ = {isa = PBXBuildFile; fileRef = 5C8968D51BE3387C00AC30E6 /* vg_mute_on.png */; settings = {ASSET_TAGS = (); }; };
+		5C8968DD1BE3387C00AC30E6 /* vg_privacy.png in Resources */ = {isa = PBXBuildFile; fileRef = 5C8968D61BE3387C00AC30E6 /* vg_privacy.png */; settings = {ASSET_TAGS = (); }; };
+		5C8968DE1BE3387C00AC30E6 /* VungleSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C8968D71BE3387C00AC30E6 /* VungleSDK.framework */; settings = {ASSET_TAGS = (); }; };
+		5C8968E01BE3390D00AC30E6 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C8968DF1BE3390D00AC30E6 /* WebKit.framework */; };
 		5C8E33F918C4EF1D007206AE /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C8E33F818C4EF1D007206AE /* Social.framework */; };
 		5C8E33FB18C4EF23007206AE /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C8E33FA18C4EF23007206AE /* Accounts.framework */; };
 		5C8E340B18C4EF40007206AE /* EJBindingAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C8E33FE18C4EF40007206AE /* EJBindingAlertView.m */; };
@@ -37,7 +61,6 @@
 		5C91E5B018E1C47F00FCF013 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C91E5AF18E1C47F00FCF013 /* AdSupport.framework */; };
 		5C91E5B118E1C4A800FCF013 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C91E5AA18E1C43A00FCF013 /* CoreTelephony.framework */; };
 		5C91E5B418E1CEFE00FCF013 /* EJBindingAdMobBanner.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C91E5B318E1CEFE00FCF013 /* EJBindingAdMobBanner.m */; };
-		5C9AA4DF19739F4700089207 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C9AA4DE19739F4600089207 /* libz.dylib */; };
 		5C9CF4B11A58416A00AEE55E /* EventKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C9CF4B01A58416A00AEE55E /* EventKit.framework */; };
 		5C9CF4B31A58419100AEE55E /* EventKitUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C9CF4B21A58419100AEE55E /* EventKitUI.framework */; };
 		5CA813FE1B9E244000172B7A /* WebviewBridge.js in Resources */ = {isa = PBXBuildFile; fileRef = 5CA813FD1B9E244000172B7A /* WebviewBridge.js */; };
@@ -86,7 +109,6 @@
 		B66847591823FEDF00ABCDF9 /* EJCanvasContextWebGLTexture.m in Sources */ = {isa = PBXBuildFile; fileRef = B66847581823FEDF00ABCDF9 /* EJCanvasContextWebGLTexture.m */; };
 		B668475C182419A500ABCDF9 /* EJCanvasContextWebGLScreen.m in Sources */ = {isa = PBXBuildFile; fileRef = B668475B182419A500ABCDF9 /* EJCanvasContextWebGLScreen.m */; };
 		B668FCEE1821C08500D4F629 /* EJFontCache.m in Sources */ = {isa = PBXBuildFile; fileRef = B668FCED1821C08500D4F629 /* EJFontCache.m */; };
-		B66F1E811476B6B90090D208 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B66F1E771476B3AC0090D208 /* libicucore.dylib */; };
 		B68037011682A58300833604 /* EJConvertWebGL.m in Sources */ = {isa = PBXBuildFile; fileRef = B68037001682A58200833604 /* EJConvertWebGL.m */; };
 		B68C5B95132E6CD60015092E /* App in Resources */ = {isa = PBXBuildFile; fileRef = B68C5AEF132E6CD60015092E /* App */; };
 		B699669816CC4E6E006B9456 /* EJTextureStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = B699669716CC4E6D006B9456 /* EJTextureStorage.m */; };
@@ -95,7 +117,6 @@
 		B6A0F4AF16A9D86100477789 /* EJCanvasGradient.m in Sources */ = {isa = PBXBuildFile; fileRef = B6A0F4AE16A9D86000477789 /* EJCanvasGradient.m */; };
 		B6A0F4B416AB0B4600477789 /* EJBindingCanvasGradient.m in Sources */ = {isa = PBXBuildFile; fileRef = B6A0F4B316AB0B4500477789 /* EJBindingCanvasGradient.m */; };
 		B6AC4A061359E7A5003C4982 /* iAd.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6AC4A051359E7A5003C4982 /* iAd.framework */; };
-		B6CDA16018295A5F00190074 /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B6CDA15F18295A5F00190074 /* libc++.dylib */; };
 		B6CFCCD91332F152001F17AF /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6CFCCD81332F152001F17AF /* AVFoundation.framework */; };
 		B6D4B281183CDFBB008251EB /* EJBindingGeolocation.m in Sources */ = {isa = PBXBuildFile; fileRef = B6D4B280183CDFBB008251EB /* EJBindingGeolocation.m */; };
 		B6D4B283183CF43A008251EB /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6D4B282183CF43A008251EB /* CoreLocation.framework */; };
@@ -156,6 +177,31 @@
 		5C631C001911446F009AF7F0 /* EJInterceptorManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJInterceptorManager.h; sourceTree = "<group>"; };
 		5C631C011911446F009AF7F0 /* EJInterceptorManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJInterceptorManager.m; sourceTree = "<group>"; };
 		5C65A4D11BAAAB6A0090B53A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Resources/Images.xcassets; sourceTree = SOURCE_ROOT; };
+		5C89689E1BE3284900AC30E6 /* EJBindingVungle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingVungle.h; sourceTree = "<group>"; };
+		5C89689F1BE3284900AC30E6 /* EJBindingVungle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingVungle.m; sourceTree = "<group>"; };
+		5C8968AB1BE32B9F00AC30E6 /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS7.1.sdk/usr/lib/libc++.dylib"; sourceTree = DEVELOPER_DIR; };
+		5C8968AC1BE32B9F00AC30E6 /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS7.1.sdk/usr/lib/libicucore.dylib; sourceTree = DEVELOPER_DIR; };
+		5C8968AD1BE32B9F00AC30E6 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS7.1.sdk/usr/lib/libsqlite3.dylib; sourceTree = DEVELOPER_DIR; };
+		5C8968AE1BE32B9F00AC30E6 /* libstdc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.dylib"; path = "Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS7.1.sdk/usr/lib/libstdc++.dylib"; sourceTree = DEVELOPER_DIR; };
+		5C8968AF1BE32B9F00AC30E6 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS7.1.sdk/usr/lib/libz.dylib; sourceTree = DEVELOPER_DIR; };
+		5C8968B51BE32C5C00AC30E6 /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.4.sdk/usr/lib/libc++.dylib"; sourceTree = DEVELOPER_DIR; };
+		5C8968B61BE32C5C00AC30E6 /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.4.sdk/usr/lib/libicucore.dylib; sourceTree = DEVELOPER_DIR; };
+		5C8968B71BE32C5C00AC30E6 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.4.sdk/usr/lib/libsqlite3.dylib; sourceTree = DEVELOPER_DIR; };
+		5C8968B81BE32C5C00AC30E6 /* libstdc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.dylib"; path = "Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.4.sdk/usr/lib/libstdc++.dylib"; sourceTree = DEVELOPER_DIR; };
+		5C8968B91BE32C5C00AC30E6 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.4.sdk/usr/lib/libz.dylib; sourceTree = DEVELOPER_DIR; };
+		5C8968BF1BE32CAE00AC30E6 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
+		5C8968C01BE32CAE00AC30E6 /* libicucore.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libicucore.tbd; path = usr/lib/libicucore.tbd; sourceTree = SDKROOT; };
+		5C8968C11BE32CAE00AC30E6 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
+		5C8968C21BE32CAE00AC30E6 /* libstdc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libstdc++.tbd"; path = "usr/lib/libstdc++.tbd"; sourceTree = SDKROOT; };
+		5C8968C31BE32CAE00AC30E6 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		5C8968D11BE3387C00AC30E6 /* __vungle.db */ = {isa = PBXFileReference; lastKnownFileType = file; path = __vungle.db; sourceTree = "<group>"; };
+		5C8968D21BE3387C00AC30E6 /* vg_close.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = vg_close.png; sourceTree = "<group>"; };
+		5C8968D31BE3387C00AC30E6 /* vg_cta.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = vg_cta.png; sourceTree = "<group>"; };
+		5C8968D41BE3387C00AC30E6 /* vg_mute_off.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = vg_mute_off.png; sourceTree = "<group>"; };
+		5C8968D51BE3387C00AC30E6 /* vg_mute_on.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = vg_mute_on.png; sourceTree = "<group>"; };
+		5C8968D61BE3387C00AC30E6 /* vg_privacy.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = vg_privacy.png; sourceTree = "<group>"; };
+		5C8968D71BE3387C00AC30E6 /* VungleSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = VungleSDK.framework; sourceTree = "<group>"; };
+		5C8968DF1BE3390D00AC30E6 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		5C8E33F818C4EF1D007206AE /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		5C8E33FA18C4EF23007206AE /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		5C8E33FD18C4EF40007206AE /* EJBindingAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingAlertView.h; sourceTree = "<group>"; };
@@ -175,7 +221,6 @@
 		5C91E5AF18E1C47F00FCF013 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		5C91E5B218E1CEFE00FCF013 /* EJBindingAdMobBanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingAdMobBanner.h; sourceTree = "<group>"; };
 		5C91E5B318E1CEFE00FCF013 /* EJBindingAdMobBanner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingAdMobBanner.m; sourceTree = "<group>"; };
-		5C9AA4DE19739F4600089207 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		5C9CF4B01A58416A00AEE55E /* EventKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKit.framework; path = System/Library/Frameworks/EventKit.framework; sourceTree = SDKROOT; };
 		5C9CF4B21A58419100AEE55E /* EventKitUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKitUI.framework; path = System/Library/Frameworks/EventKitUI.framework; sourceTree = SDKROOT; };
 		5CA813FD1B9E244000172B7A /* WebviewBridge.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = WebviewBridge.js; sourceTree = "<group>"; };
@@ -262,8 +307,6 @@
 		B668475B182419A500ABCDF9 /* EJCanvasContextWebGLScreen.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EJCanvasContextWebGLScreen.m; path = WebGL/EJCanvasContextWebGLScreen.m; sourceTree = "<group>"; };
 		B668FCEC1821C08500D4F629 /* EJFontCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJFontCache.h; sourceTree = "<group>"; };
 		B668FCED1821C08500D4F629 /* EJFontCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJFontCache.m; sourceTree = "<group>"; };
-		B66F1E771476B3AC0090D208 /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = usr/lib/libicucore.dylib; sourceTree = SDKROOT; };
-		B66F1E7F1476B6A40090D208 /* libstdc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.dylib"; path = "usr/lib/libstdc++.dylib"; sourceTree = SDKROOT; };
 		B68036FF1682A58200833604 /* EJConvertWebGL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EJConvertWebGL.h; path = WebGL/EJConvertWebGL.h; sourceTree = "<group>"; };
 		B68037001682A58200833604 /* EJConvertWebGL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EJConvertWebGL.m; path = WebGL/EJConvertWebGL.m; sourceTree = "<group>"; };
 		B68C5AEF132E6CD60015092E /* App */ = {isa = PBXFileReference; lastKnownFileType = folder; path = App; sourceTree = "<group>"; };
@@ -278,7 +321,6 @@
 		B6A0F4B216AB0B4500477789 /* EJBindingCanvasGradient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingCanvasGradient.h; sourceTree = "<group>"; };
 		B6A0F4B316AB0B4500477789 /* EJBindingCanvasGradient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingCanvasGradient.m; sourceTree = "<group>"; };
 		B6AC4A051359E7A5003C4982 /* iAd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iAd.framework; path = System/Library/Frameworks/iAd.framework; sourceTree = SDKROOT; };
-		B6CDA15F18295A5F00190074 /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
 		B6CFCCD81332F152001F17AF /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		B6D4B27F183CDFBB008251EB /* EJBindingGeolocation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingGeolocation.h; sourceTree = "<group>"; };
 		B6D4B280183CDFBB008251EB /* EJBindingGeolocation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingGeolocation.m; sourceTree = "<group>"; };
@@ -339,19 +381,34 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5C8968E01BE3390D00AC30E6 /* WebKit.framework in Frameworks */,
+				5C8968C41BE32CAE00AC30E6 /* libc++.tbd in Frameworks */,
+				5C8968C51BE32CAE00AC30E6 /* libicucore.tbd in Frameworks */,
+				5C8968C61BE32CAE00AC30E6 /* libsqlite3.tbd in Frameworks */,
+				5C8968C71BE32CAE00AC30E6 /* libstdc++.tbd in Frameworks */,
+				5C8968C81BE32CAE00AC30E6 /* libz.tbd in Frameworks */,
+				5C8968BA1BE32C5C00AC30E6 /* libc++.dylib in Frameworks */,
+				5C8968BB1BE32C5C00AC30E6 /* libicucore.dylib in Frameworks */,
+				5C8968BC1BE32C5C00AC30E6 /* libsqlite3.dylib in Frameworks */,
+				5C8968BD1BE32C5C00AC30E6 /* libstdc++.dylib in Frameworks */,
+				5C8968BE1BE32C5C00AC30E6 /* libz.dylib in Frameworks */,
+				5C8968B01BE32B9F00AC30E6 /* libc++.dylib in Frameworks */,
+				5C8968B11BE32B9F00AC30E6 /* libicucore.dylib in Frameworks */,
+				5C8968B21BE32B9F00AC30E6 /* libsqlite3.dylib in Frameworks */,
+				5C8968B31BE32B9F00AC30E6 /* libstdc++.dylib in Frameworks */,
+				5C8968B41BE32B9F00AC30E6 /* libz.dylib in Frameworks */,
 				5C3B72E41ADAB7D3002A3FB5 /* CoreMedia.framework in Frameworks */,
 				5C9CF4B31A58419100AEE55E /* EventKitUI.framework in Frameworks */,
 				5C9CF4B11A58416A00AEE55E /* EventKit.framework in Frameworks */,
 				5C2514921ADAB0A600761DA8 /* GoogleMobileAds.framework in Frameworks */,
-				5C9AA4DF19739F4700089207 /* libz.dylib in Frameworks */,
 				5C91E5B118E1C4A800FCF013 /* CoreTelephony.framework in Frameworks */,
+				5C8968DE1BE3387C00AC30E6 /* VungleSDK.framework in Frameworks */,
 				5C91E5B018E1C47F00FCF013 /* AdSupport.framework in Frameworks */,
 				5C91E5AE18E1C45700FCF013 /* MessageUI.framework in Frameworks */,
 				5C8E33FB18C4EF23007206AE /* Accounts.framework in Frameworks */,
 				5C8E33F918C4EF1D007206AE /* Social.framework in Frameworks */,
 				33BE9DE41868183900E0D16E /* MobileCoreServices.framework in Frameworks */,
 				B6D4B283183CF43A008251EB /* CoreLocation.framework in Frameworks */,
-				B6CDA16018295A5F00190074 /* libc++.dylib in Frameworks */,
 				B60FA92A1702297C00078D20 /* MediaPlayer.framework in Frameworks */,
 				B6D6E09A16F7D03F009AB75F /* StoreKit.framework in Frameworks */,
 				B63D256A16E8DF33007E6034 /* Security.framework in Frameworks */,
@@ -361,7 +418,6 @@
 				5B7B76761619DB9700691910 /* CoreText.framework in Frameworks */,
 				B6074FF315F8E41700D987F9 /* GameKit.framework in Frameworks */,
 				5C3B72E81ADAD976002A3FB5 /* Chartboost.framework in Frameworks */,
-				B66F1E811476B6B90090D208 /* libicucore.dylib in Frameworks */,
 				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
 				288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */,
@@ -402,9 +458,16 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				5C3B72E31ADAB7D3002A3FB5 /* CoreMedia.framework */,
-				5C9CF4B21A58419100AEE55E /* EventKitUI.framework */,
-				5C9CF4B01A58416A00AEE55E /* EventKit.framework */,
+				5C8968B51BE32C5C00AC30E6 /* libc++.dylib */,
+				5C8968AB1BE32B9F00AC30E6 /* libc++.dylib */,
+				5C8968B61BE32C5C00AC30E6 /* libicucore.dylib */,
+				5C8968AC1BE32B9F00AC30E6 /* libicucore.dylib */,
+				5C8968B71BE32C5C00AC30E6 /* libsqlite3.dylib */,
+				5C8968AD1BE32B9F00AC30E6 /* libsqlite3.dylib */,
+				5C8968B81BE32C5C00AC30E6 /* libstdc++.dylib */,
+				5C8968AE1BE32B9F00AC30E6 /* libstdc++.dylib */,
+				5C8968B91BE32C5C00AC30E6 /* libz.dylib */,
+				5C8968AF1BE32B9F00AC30E6 /* libz.dylib */,
 				5C8E33FA18C4EF23007206AE /* Accounts.framework */,
 				5C91E5AF18E1C47F00FCF013 /* AdSupport.framework */,
 				B607AC32132EA75F00D7C3EA /* AudioToolbox.framework */,
@@ -412,16 +475,15 @@
 				B63D256716E8DF23007E6034 /* CFNetwork.framework */,
 				288765FC0DF74451002DB57D /* CoreGraphics.framework */,
 				B6D4B282183CF43A008251EB /* CoreLocation.framework */,
+				5C3B72E31ADAB7D3002A3FB5 /* CoreMedia.framework */,
 				B6F1151B1677FCF2001F1324 /* CoreMotion.framework */,
 				5C91E5AA18E1C43A00FCF013 /* CoreTelephony.framework */,
 				5B7B76751619DB9700691910 /* CoreText.framework */,
+				5C9CF4B01A58416A00AEE55E /* EventKit.framework */,
+				5C9CF4B21A58419100AEE55E /* EventKitUI.framework */,
 				1D30AB110D05D00D00671497 /* Foundation.framework */,
 				B6074FF215F8E41600D987F9 /* GameKit.framework */,
 				B6AC4A051359E7A5003C4982 /* iAd.framework */,
-				B6CDA15F18295A5F00190074 /* libc++.dylib */,
-				B66F1E771476B3AC0090D208 /* libicucore.dylib */,
-				B66F1E7F1476B6A40090D208 /* libstdc++.dylib */,
-				5C9AA4DE19739F4600089207 /* libz.dylib */,
 				B60FA9291702297C00078D20 /* MediaPlayer.framework */,
 				5C91E5AD18E1C45700FCF013 /* MessageUI.framework */,
 				33BE9DE31868183900E0D16E /* MobileCoreServices.framework */,
@@ -433,6 +495,12 @@
 				B6D6E09916F7D03C009AB75F /* StoreKit.framework */,
 				B6F463A31636C3FA00FC89C1 /* SystemConfiguration.framework */,
 				1DF5F4DF0D08C38300B7A737 /* UIKit.framework */,
+				5C8968DF1BE3390D00AC30E6 /* WebKit.framework */,
+				5C8968BF1BE32CAE00AC30E6 /* libc++.tbd */,
+				5C8968C01BE32CAE00AC30E6 /* libicucore.tbd */,
+				5C8968C11BE32CAE00AC30E6 /* libsqlite3.tbd */,
+				5C8968C21BE32CAE00AC30E6 /* libstdc++.tbd */,
+				5C8968C31BE32CAE00AC30E6 /* libz.tbd */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -440,6 +508,7 @@
 		5C2514851ADAAF9300761DA8 /* lib */ = {
 			isa = PBXGroup;
 			children = (
+				5C8968CF1BE3387C00AC30E6 /* VungleSDK.embeddedframework */,
 				5C3B72E71ADAD976002A3FB5 /* Chartboost.framework */,
 				5C2514911ADAB0A600761DA8 /* GoogleMobileAds.framework */,
 				5C2514871ADAAF9300761DA8 /* OpenUDID */,
@@ -468,6 +537,28 @@
 			path = EJInterceptor;
 			sourceTree = "<group>";
 		};
+		5C8968CF1BE3387C00AC30E6 /* VungleSDK.embeddedframework */ = {
+			isa = PBXGroup;
+			children = (
+				5C8968D01BE3387C00AC30E6 /* Resources */,
+				5C8968D71BE3387C00AC30E6 /* VungleSDK.framework */,
+			);
+			path = VungleSDK.embeddedframework;
+			sourceTree = "<group>";
+		};
+		5C8968D01BE3387C00AC30E6 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				5C8968D11BE3387C00AC30E6 /* __vungle.db */,
+				5C8968D21BE3387C00AC30E6 /* vg_close.png */,
+				5C8968D31BE3387C00AC30E6 /* vg_cta.png */,
+				5C8968D41BE3387C00AC30E6 /* vg_mute_off.png */,
+				5C8968D51BE3387C00AC30E6 /* vg_mute_on.png */,
+				5C8968D61BE3387C00AC30E6 /* vg_privacy.png */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		5C8E33FC18C4EF40007206AE /* Extension */ = {
 			isa = PBXGroup;
 			children = (
@@ -490,6 +581,8 @@
 				5C8E340418C4EF40007206AE /* EJBindingSocial.m */,
 				5C2387D618CEFBFD00D0CC1A /* EJBindingTimer.h */,
 				5C2387D718CEFBFD00D0CC1A /* EJBindingTimer.m */,
+				5C89689E1BE3284900AC30E6 /* EJBindingVungle.h */,
+				5C89689F1BE3284900AC30E6 /* EJBindingVungle.m */,
 				5C8E340518C4EF40007206AE /* EJBindingWebView.h */,
 				5C8E340618C4EF40007206AE /* EJBindingWebView.m */,
 				5CA813FD1B9E244000172B7A /* WebviewBridge.js */,
@@ -784,11 +877,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				5C65A4D21BAAAB6A0090B53A /* Images.xcassets in Resources */,
+				5C8968D91BE3387C00AC30E6 /* vg_close.png in Resources */,
+				5C8968D81BE3387C00AC30E6 /* __vungle.db in Resources */,
+				5C8968DB1BE3387C00AC30E6 /* vg_mute_off.png in Resources */,
+				5C8968DA1BE3387C00AC30E6 /* vg_cta.png in Resources */,
 				5CA813FE1B9E244000172B7A /* WebviewBridge.js in Resources */,
 				B68C5B95132E6CD60015092E /* App in Resources */,
 				B637065E1A27BD5600F42B90 /* LaunchScreen.xib in Resources */,
 				B63706601A27C15200F42B90 /* ejecta-logo.png in Resources */,
+				5C8968DC1BE3387C00AC30E6 /* vg_mute_on.png in Resources */,
 				B62436681666851E0046B8C7 /* Ejecta.js in Resources */,
+				5C8968DD1BE3387C00AC30E6 /* vg_privacy.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -877,6 +976,7 @@
 				B6D6E0A616F7E81B009AB75F /* EJBindingIAPProduct.m in Sources */,
 				B60FA92817021E0900078D20 /* EJBindingVideo.m in Sources */,
 				5C8E340D18C4EF40007206AE /* EJBindingLocalNotification.m in Sources */,
+				5C8968A01BE3284900AC30E6 /* EJBindingVungle.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -896,6 +996,8 @@
 					"$(inherited)",
 					"${SOURCE_ROOT}/Source/lib",
 					"${SOURCE_ROOT}/Extension/lib",
+					"$(PROJECT_DIR)/Extension/lib/VungleSDK.embeddedframework",
+					"$(PROJECT_DIR)/Extension/lib",
 				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -914,6 +1016,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "cn.fattyboy.${PRODUCT_NAME}";
 				PRODUCT_NAME = Ejecta;
 				PROVISIONING_PROFILE = "";
+				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -931,6 +1034,8 @@
 					"$(inherited)",
 					"${SOURCE_ROOT}/Source/lib",
 					"${SOURCE_ROOT}/Extension/lib",
+					"$(PROJECT_DIR)/Extension/lib/VungleSDK.embeddedframework",
+					"$(PROJECT_DIR)/Extension/lib",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Source/Prefix.pch;
@@ -945,6 +1050,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "cn.fattyboy.${PRODUCT_NAME}";
 				PRODUCT_NAME = Ejecta;
 				PROVISIONING_PROFILE = "";
+				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};

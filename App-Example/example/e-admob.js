@@ -2,7 +2,7 @@
 
 (function() {
 
- 
+
     var width = window.innerWidth;
     var height = window.innerWidth;
 
@@ -19,20 +19,20 @@
     }
     adBanner.onclose = function() {
         console.log("close adBanner");
-        setTimeout(function(){
+        setTimeout(function() {
             console.log("auto load adBanner again");
-             adBanner.load();
-        },2000)
+            adBanner.load();
+        }, 2000)
     }
     adBanner.onclick = function() {
         console.log("click adBanner")
     }
 
-//    setTimeout(function() {
-        adBanner.load();
-//    }, 500);
- 
-///////////////////////////////
+    //    setTimeout(function() {
+    adBanner.load();
+    //    }, 500);
+
+    ///////////////////////////////
 
     var adPage = new Ejecta.AdMobPage("a15318cc08698ce");
     adPage.onload = function() {
@@ -42,18 +42,18 @@
     }
     adPage.onclose = function() {
         console.log("close adPage")
-        setTimeout(function(){
+        setTimeout(function() {
             console.log("auto load adPage again");
             adPage.load();
-        },1000)
+        }, 1000)
     }
     adPage.onclick = function() {
         console.log("click adPage")
     }
 
     console.log("start");
-//    setTimeout(function() {
-       adPage.load();
-//    }, 500);
+    //    setTimeout(function() {
+    adPage.load();
+    //    }, 500);
 
 }());
