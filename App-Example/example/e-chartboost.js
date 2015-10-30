@@ -29,9 +29,9 @@
     cb.addEventListener("error", function(event) {
         console.log(event.adType, event.message);
         if (event.adType == "Interstitial") {
-            cb.cb.loadInterstitial();
+            cb.loadInterstitial();
         } else if (event.adType == "MoreApps") {
-            cb.cb.loadMoreApps();
+            cb.loadMoreApps();
         } else if (event.adType == "RewardedVideo") {
             cb.loadRewardedVideo();
         } else {
