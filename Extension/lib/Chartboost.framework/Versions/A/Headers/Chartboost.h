@@ -1,7 +1,7 @@
 /*
  * Chartboost.h
  * Chartboost
- * 5.5.3
+ * 6.0.1
  *
  * Copyright 2011 Chartboost. All rights reserved.
  */
@@ -39,6 +39,32 @@ typedef NS_ENUM(NSUInteger, CBFramework) {
 };
 
 /*!
+ @typedef NS_ENUM (NSUInteger, CBMediation)
+ 
+ @abstract
+ Used with setMediation:(CBMediation)library calls to set mediation library name
+ partners. If you don't see your library here, contact support.
+ */
+typedef NS_ENUM(NSUInteger, CBMediation) {
+    /*! Unknown. Other */
+    CBMediationOther,
+    /*! AdMarvel */
+    CBMediationAdMarvel,
+    /*! Fuse */
+    CBMediationFuse,
+    /*! Fyber */
+    CBMediationFyber,
+    /*! HeyZap */
+    CBMediationHeyZap,
+    /*! MoPub */
+    CBMediationMoPub,
+    /*! Supersonic */
+    CBMediationSupersonic,
+};
+
+
+
+/*!
  @typedef NS_ENUM (NSUInteger, CBLoadError)
  
  @abstract
@@ -67,6 +93,8 @@ typedef NS_ENUM(NSUInteger, CBLoadError) {
     CBLoadErrorNoLocationFound,
     /*! Video Prefetching is not finished */
     CBLoadErrorPrefetchingIncomplete,
+    /*! There is an impression already visible.*/
+    CBLoadErrorImpressionAlreadyVisible
 };
 
 /*!
@@ -413,14 +441,14 @@ example setFramework:Unity withVersion:4.6, setFrameworkVersion:5.2.1
 /*!
  @abstract
  Set a custom mediation library to append to the POST body of every request.
- example setMediation:@"MoPub" withVersion:@"3.8.0"
+ example setMediation:CBMediationMoPub withVersion:@"3.8.0"
  
- @param libraryName The name of the mediation library.
+ @param library The constant for the name of the mediation library.
  @param libraryVersion The version sent as a string.
  
  @discussion This is an internal method used by mediation partners to track their usage.
  */
-+ (void)setMediation:(NSString *)libraryName withVersion:(NSString*)libraryVersion;
++ (void)setMediation:(CBMediation)library withVersion:(NSString*)libraryVersion;
 
 /*!
  @abstract

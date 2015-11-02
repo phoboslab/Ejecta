@@ -73,9 +73,9 @@ function shareImage(imgPath) {
     var message = "test message";
     var shareUrl = "http://impactjs.com";
 
-    // // Test openShare()
-    // social.openShare(message, imgPath);
-    // return;
+    // Test openShare()
+    social.openShare(message, imgPath);
+    return;
 
     // Test showPostDialog()
     social.showPostDialog(snsName, message, imgPath, shareUrl,
