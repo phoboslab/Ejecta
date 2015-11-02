@@ -2,11 +2,12 @@
 
 (function() {
 
-
     var width = window.innerWidth;
     var height = window.innerWidth;
 
-    var adVungle = new Ejecta.Vungle("phoena"); // phoena  5632ff9e2969297047000010
+    // var adVungle = new Ejecta.Vungle("phoena");
+    var adVungle = new Ejecta.Vungle("5632ff9e2969297047000010");
+
 
     adVungle.addEventListener("close", function(info) {
         console.log(JSON.stringify(info));
@@ -17,7 +18,6 @@
             adVungle.show();
             clearInterval(id);
         }
-    }, 1000);
-
+    }, 2000);
 
 }());

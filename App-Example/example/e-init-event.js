@@ -1,4 +1,3 @@
-
 var TouchInfo = {
     start: null
 };

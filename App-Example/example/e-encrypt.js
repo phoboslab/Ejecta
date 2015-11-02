@@ -10,4 +10,5 @@ ejecta.include("example/encryption/encrypted-test-log.js");
     img.onload = function() {
         context.drawImage(img, 100, 100);
     }
+
 }());

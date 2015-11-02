@@ -1,15 +1,5 @@
 //==================================================
 // Draw something on screen canvas.
-//==================================================
-var context = context || null;
-if (context) {
-    context.fillStyle = "#ff3300";
-    context.fillRect(0, canvas.height >> 1, canvas.width, 12);
-    context.fillRect(canvas.width >> 1, 0, 12, canvas.height);
-}
-
-
-
 
 //==================================================
 // Init Extensions (In my fork version of Ejecta ).
@@ -79,7 +69,7 @@ function takeScreenshot() {
 function shareImage(imgPath) {
     // You can't open social dialog as soon as app starts.
     // You must wait a moment for initialization of SocialSDK.
-    var snsName = "twitter"; // twitter , facebook , sinaweibo (Chinese twitter)
+    var snsName = "facebook"; // twitter , facebook , sinaweibo (Chinese twitter)
     var message = "test message";
     var shareUrl = "http://impactjs.com";
 

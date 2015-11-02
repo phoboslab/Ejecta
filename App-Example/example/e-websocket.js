@@ -21,8 +21,8 @@ ws.onerror = function(event) {
 };
 
 var no = 1;
-setInterval(function(){
-    if (ws.readyState === ws.OPEN){
-        ws.send("message "+ (no++) );
+setInterval(function() {
+    if (ws.readyState === ws.OPEN) {
+        ws.send("message " + (no++));
     }
-},1000);
+}, 1000);
