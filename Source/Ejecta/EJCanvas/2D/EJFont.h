@@ -72,7 +72,6 @@ int EJFontGlyphLayoutSortByTextureIndex(const void *a, const void *b);
 	
 	// Font references
 	CTFontRef ctMainFont;
-	CGFontRef cgMainFont;
 	
 	// Core text variables for line layout
 	CGGlyph *glyphsBuffer;
