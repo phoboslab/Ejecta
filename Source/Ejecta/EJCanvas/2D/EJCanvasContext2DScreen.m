@@ -48,28 +48,19 @@
 - (void)resizeToWidth:(short)newWidth height:(short)newHeight {
 	[self flushBuffers];
 	
-	width = newWidth;
-	height = newHeight;
-	
+	bufferWidth = width = newWidth;
+	bufferHeight = height = newHeight;
 	
 	CGRect frame = self.frame;
-	
-	float contentScale = useRetinaResolution ? UIScreen.mainScreen.scale : 1;
-	backingStoreRatio = (frame.size.width / (float)width) * contentScale;
-	
-	bufferWidth = frame.size.width * contentScale;
-	bufferHeight = frame.size.height * contentScale;
+	float contentScale = bufferWidth / frame.size.width;
 	
 	NSLog(
 		@"Creating ScreenCanvas (2D): "
 			@"size: %dx%d, "
 			@"style: %.0fx%.0f, "
-			@"retina: %@ = %.0fx%.0f, "
 			@"msaa: %@",
 		width, height, 
 		frame.size.width, frame.size.height,
-		(useRetinaResolution ? @"yes" : @"no"),
-		frame.size.width * contentScale, frame.size.height * contentScale,
 		(msaaEnabled ? [NSString stringWithFormat:@"yes (%d samples)", msaaSamples] : @"no")
 	);
 	
@@ -127,12 +118,8 @@
 	// glReadPixels to succeed.
 	EJCanvasContext *previousContext = scriptView.currentRenderingContext;
 	scriptView.currentRenderingContext = self;
-
-	float w = width * backingStoreRatio;
-	float h = height * backingStoreRatio;
 	
-	EJTexture *texture = [self getImageDataScaled:1 flipped:upsideDown sx:0 sy:0 sw:w sh:h].texture;
-	texture.contentScale = backingStoreRatio;
+	EJTexture *texture = [self getImageDataSx:0 sy:0 sw:width sh:height].texture;
 	
 	scriptView.currentRenderingContext = previousContext;
 	return texture;

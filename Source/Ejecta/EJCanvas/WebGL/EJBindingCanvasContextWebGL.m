@@ -142,11 +142,11 @@
 
 
 EJ_BIND_GET(drawingBufferWidth, ctx) {
-	return JSValueMakeNumber(ctx, renderingContext.width * renderingContext.backingStoreRatio);
+	return JSValueMakeNumber(ctx, renderingContext.width);
 }
 
 EJ_BIND_GET(drawingBufferHeight, ctx) {
-	return JSValueMakeNumber(ctx, renderingContext.height * renderingContext.backingStoreRatio);
+	return JSValueMakeNumber(ctx, renderingContext.height);
 }
 
 
@@ -1796,15 +1796,7 @@ EJ_BIND_FUNCTION(vertexAttribPointer, ctx, argc, argv) {
 	return NULL;
 }
 
-EJ_BIND_FUNCTION(viewport, ctx, argc, argv) {
-	EJ_UNPACK_ARGV(GLint x, GLint y, GLsizei w, GLsizei h);
-	
-	scriptView.currentRenderingContext = renderingContext;
-	
-	float scale = renderingContext.backingStoreRatio;
-	glViewport(x * scale, y * scale, w * scale, h * scale);
-	return NULL;
-}
+EJ_BIND_FUNCTION_DIRECT(viewport, glViewport, x, y, width, height);
 
 #undef EJ_BIND_FUNCTION_DIRECT
 

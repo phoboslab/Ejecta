@@ -29,8 +29,7 @@
 	// Release previous texture if any, create the new texture and set it as
 	// the rendering target for this framebuffer
 	[texture release];
-	texture = [[EJTexture alloc] initAsRenderTargetWithWidth:newWidth height:newHeight
-		fbo:viewFrameBuffer contentScale:backingStoreRatio];
+	texture = [[EJTexture alloc] initAsRenderTargetWithWidth:newWidth height:newHeight fbo:viewFrameBuffer];
 	texture.drawFlippedY = true;
 	
 	glBindFramebuffer(GL_FRAMEBUFFER, viewFrameBuffer);

@@ -16,7 +16,6 @@
 	EJTextureStorage *textureStorage;
 	GLenum format;
 	GLuint fbo;
-	float contentScale;
 	
 	EJTextureParams params;
 	NSBlockOperation *loadCallback;
@@ -29,7 +28,7 @@
 - (id)initWithWidth:(int)widthp height:(int)heightp;
 - (id)initWithWidth:(int)widthp height:(int)heightp format:(GLenum) format;
 - (id)initWithWidth:(int)widthp height:(int)heightp pixels:(NSData *)pixels;
-- (id)initAsRenderTargetWithWidth:(int)widthp height:(int)heightp fbo:(GLuint)fbo contentScale:(float)contentScalep;
+- (id)initAsRenderTargetWithWidth:(int)widthp height:(int)heightp fbo:(GLuint)fbo;
 - (id)initWithUIImage:(UIImage *)image;
 
 - (void)maybeReleaseStorage;
@@ -52,7 +51,7 @@
 - (void)bindToTarget:(GLenum)target;
 
 - (UIImage *)image;
-+ (UIImage *)imageWithPixels:(NSData *)pixels width:(int)width height:(int)height scale:(float)scale;
++ (UIImage *)imageWithPixels:(NSData *)pixels width:(int)width height:(int)height;
 
 + (void)premultiplyPixels:(const GLubyte *)inPixels to:(GLubyte *)outPixels byteLength:(int)byteLength format:(GLenum)format;
 + (void)unPremultiplyPixels:(const GLubyte *)inPixels to:(GLubyte *)outPixels byteLength:(int)byteLength format:(GLenum)format;
@@ -62,7 +61,6 @@
 @property (readonly, nonatomic) BOOL isDynamic;
 @property (readonly, nonatomic) BOOL lazyLoaded;
 @property (readonly, nonatomic) NSMutableData *pixels;
-@property (readwrite, nonatomic) float contentScale;
 @property (readonly, nonatomic) GLuint textureId;
 @property (readonly, nonatomic) GLenum format;
 @property (readonly, nonatomic) short width, height;

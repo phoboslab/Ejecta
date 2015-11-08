@@ -26,7 +26,6 @@ typedef enum {
 	CGRect style;
 	
 	BOOL isScreenCanvas;
-	BOOL useRetinaResolution;
 	
 	BOOL msaaEnabled;
 	int msaaSamples;

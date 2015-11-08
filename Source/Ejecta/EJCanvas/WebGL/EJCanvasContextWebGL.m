@@ -21,7 +21,6 @@
 		glContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2
 			sharegroup:scriptView.openGLContext.glSharegroup];
 		
-		backingStoreRatio = 1;
 		bufferWidth = width = widthp;
 		bufferHeight = height = heightp;
 		
@@ -36,12 +35,8 @@
 
 - (void)resizeToWidth:(short)newWidth height:(short)newHeight {
 	// This function is a stub - Overwritten in both subclasses
-	width = newWidth;
-	height = newHeight;
-	
-	backingStoreRatio = (useRetinaResolution && [UIScreen mainScreen].scale == 2) ? 2 : 1;
-	bufferWidth = width * backingStoreRatio;
-	bufferHeight = height * backingStoreRatio;
+	bufferWidth = width = newWidth;
+	bufferHeight = height = newHeight;
 }
 
 - (void)create {

@@ -11,21 +11,14 @@
 - (void)resizeToWidth:(short)newWidth height:(short)newHeight {
 	[self flushBuffers];
 	
-	width = newWidth;
-	height = newHeight;
-	
-	backingStoreRatio = (useRetinaResolution && [UIScreen mainScreen].scale == 2) ? 2 : 1;
-	bufferWidth = width * backingStoreRatio;
-	bufferHeight = height * backingStoreRatio;
+	bufferWidth = width = newWidth;
+	bufferHeight = height = newHeight;
 	
 	NSLog(
 		@"Creating Offscreen Canvas (2D): "
 			@"size: %dx%d, "
-			@"retina: %@ = %.0fx%.0f, "
 			@"msaa: %@",
 		width, height,
-		(useRetinaResolution ? @"yes" : @"no"),
-		width * backingStoreRatio, height * backingStoreRatio,
 		(msaaEnabled ? [NSString stringWithFormat:@"yes (%d samples)", msaaSamples] : @"no")
 	);
 	
@@ -33,7 +26,7 @@
 	// the rendering target for this framebuffer
 	[texture release];
 	texture = [[EJTexture alloc] initAsRenderTargetWithWidth:newWidth height:newHeight
-		fbo:viewFrameBuffer contentScale:backingStoreRatio];
+		fbo:viewFrameBuffer];
 	
 	glBindFramebuffer(GL_FRAMEBUFFER, viewFrameBuffer);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture.textureId, 0);
@@ -58,13 +51,8 @@
 	}
 	
 	// Special case where this canvas is drawn into itself - we have to use glReadPixels to get a texture
-	if( scriptView.currentRenderingContext == self ) {	
-		float w = width * backingStoreRatio;
-		float h = height * backingStoreRatio;
-		
-		EJTexture *tempTexture = [self getImageDataScaled:1 flipped:upsideDown sx:0 sy:0 sw:w sh:h].texture;
-		tempTexture.contentScale = backingStoreRatio;
-		return tempTexture;
+	if( scriptView.currentRenderingContext == self ) {
+		return [self getImageDataSx:0 sy:0 sw:width sh:height].texture;
 	}
 	
 	// Just use the framebuffer texture directly
