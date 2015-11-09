@@ -4,7 +4,7 @@
 
 
     var width = window.innerWidth;
-    var height = window.innerWidth;
+    var height = window.innerHeight;
 
     var adBanner = new Ejecta.AdMobBanner("a15318cc08698ce");
     adBanner.type = "banner";
@@ -13,24 +13,31 @@
     adBanner.y = 0;
     adBanner.onload = function() {
         adBanner.loading = false;
-        adBanner.x = (width - adBanner.width) >> 1;
         console.log("loaded adBanner", adBanner.type, adBanner.x, adBanner.y, adBanner.width, adBanner.height);
+
+        // let banner be at center of screen in the horizontal direction.
+        adBanner.x = (width - adBanner.width) >> 1;
+        // let banner be at bottom of screen.
+        adBanner.y = height - adBanner.height;
+
         adBanner.show();
-    }
+    };
+
     adBanner.onclose = function() {
         console.log("close adBanner");
         setTimeout(function() {
             console.log("auto load adBanner again");
             adBanner.load();
         }, 2000)
-    }
+    };
+
     adBanner.onclick = function() {
         console.log("click adBanner")
-    }
+    };
 
-    //    setTimeout(function() {
+    // setTimeout(function() {
     adBanner.load();
-    //    }, 500);
+    // }, 500);
 
     ///////////////////////////////
 
