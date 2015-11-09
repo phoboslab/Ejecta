@@ -16,11 +16,11 @@
         loading = false;
         loadCallback = nil;
         
+        sdk = [VungleSDK sharedSDK];
+        
         [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-            sdk = [VungleSDK sharedSDK];
             [sdk setDelegate:self];
             [sdk startWithAppId:appID];
-            [sdk setLoggingEnabled:YES];
         }];
 
 	}
@@ -89,14 +89,77 @@ EJ_BIND_GET(isReady, ctx)
     return JSValueMakeBoolean(ctx, sdk.isAdPlayable);
 }
 
+EJ_BIND_FUNCTION(setLoggingEnabled, ctx, argc, argv)
+{
+    [sdk setLoggingEnabled:JSValueToBoolean(ctx, argv[0])];
+    return NULL;
+}
 
 EJ_BIND_FUNCTION(show, ctx, argc, argv)
 {
 
-    NSDictionary* options = @{VunglePlayAdOptionKeyIncentivized: @YES};
-                              
+    /*
+     Options ( VunglePlayAdOptionKey + key ) :
+     Incentivized    boolean
+     IncentivizedAlertTitleText      string
+     IncentivizedAlertBodyText       string
+     IncentivizedAlertCloseButtonText        string
+     IncentivizedAlertContinueButtonText     string
+     Orientations        string
+     Placement       string
+     User        string
+     * ExtraInfoDictionary  (don't support)
+    */
+    
+    NSMutableDictionary* options = nil;
+    
+    JSObjectRef jsOptions;
+    if (argc > 0){
+        jsOptions = JSValueToObject(ctx, argv[0], NULL);
+        NSDictionary *inOptions = (NSDictionary *)JSValueToNSObject(ctx, jsOptions);
+        NSEnumerator *keys = [inOptions keyEnumerator];
+        options = [[NSMutableDictionary alloc] init];
+        NSString *prefix = @"VunglePlayAdOptionKey";
+        id keyId;
+        while ((keyId = [keys nextObject])) {
+            NSString *key = (NSString *)keyId;
+            NSString *value = (NSString *)[inOptions objectForKey:keyId];
+            NSString *fullKey = [prefix stringByAppendingString:key];
+            NSLog(@"key : %@, value: %@", fullKey, value);
+            if ([key isEqualToString:@"Incentivized"]){
+                [options setObject:@([[inOptions objectForKey:keyId] boolValue]) forKey:fullKey];
+            }else if ([key isEqualToString:@"IncentivizedAlertTitleText"]){
+                 [options setObject:value forKey:fullKey];
+            }else if ([key isEqualToString:@"IncentivizedAlertBodyText"]){
+                [options setObject:value forKey:fullKey];
+            }else if ([key isEqualToString:@"IncentivizedAlertCloseButtonText"]){
+                [options setObject:value forKey:fullKey];
+            }else if ([key isEqualToString:@"IncentivizedAlertContinueButtonText"]){
+                [options setObject:value forKey:fullKey];
+            }else if ([key isEqualToString:@"Orientations"]){
+                if ([value isEqualToString:@"portrait"]){
+                     [options setObject:@(UIInterfaceOrientationMaskPortrait) forKey:fullKey];
+                }else if ([value isEqualToString:@"landscape"]){
+                    [options setObject:@(UIInterfaceOrientationMaskLandscape) forKey:fullKey];
+                }
+            }else if ([key isEqualToString:@"Placement"]){
+                [options setObject:value forKey:fullKey];
+            }else if ([key isEqualToString:@"User"]){
+                [options setObject:value forKey:fullKey];
+            }
+        }
+    }
+
+    
     NSError *error;
-    [sdk playAd:scriptView.window.rootViewController withOptions:options error:&error];
+
+    if (options){
+        [sdk playAd:scriptView.window.rootViewController withOptions:options error:&error];
+        [options release];
+    }else{
+        [sdk playAd:scriptView.window.rootViewController error:&error];
+    }
+
 
     if (error) {
         NSLog(@"Error encountered playing ad: %@", error);
