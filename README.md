@@ -9,11 +9,26 @@ Ejecta is published under the [MIT Open Source License](http://opensource.org/li
 
 ## Recent Breaking Changes
 
+### 2015-11-09 - Moved Antialias (MSAA) settings to getContext options
+
+The `canvas.MSAAEnabled` and `canvas.MSAASamples` properties have been removed. Instead, you can now specify antialias settings in a separate options object when calling `getContext()`, similar to how it works in a browser. Antialias now works on 2D and WebGL contexts.
+
+Note that for 2D contexts antialias will have no effect when drawing images, other than slowing down performance. It only makes sense to enable antialias if you draw shapes and paths.
+
+```javascript
+var gl = canvas.getContext('webgl', {antialias: true, antialiasSamples: 4});
+
+// Or for 2d contexts
+
+var ctx = canvas.getContext('2d', {antialias: true, antialiasSamples: 4});
+```
+
+
 ### 2015-11-08 - Removed automatic pixel doubling for retina devices
 
 The Canvas' backing store is now exactly the same size as the `canvas.width` and `canvas.height`. Ejecta *does not* automatically double the internal resolution on retina devices anymore. The `ctx.backingStorePixelRatio` and `canvas.retinaResolutionEnabled` properties as well as the `HD` variants for the `ctx.getImageData`, `ctx.putImageData` and `ctx.createImageData` functions have been removed.
 
-You can of course still render in retina resolution, by setting the `width` and `height` to the retina resolution while forcing the `style` to scale the canvas to the logical display resolution.
+You can of course still render in retina resolution, by setting the `width` and `height` to the retina resolution while forcing the `style` to scale the canvas to the logical display resolution. This is in line with current browsers.
 
  ```javascript
 canvas.width = window.innerWidth * window.devicePixelRatio;
