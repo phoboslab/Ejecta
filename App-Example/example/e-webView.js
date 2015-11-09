@@ -1,3 +1,5 @@
+"use strict";
+
 var webview = new Ejecta.WebView();
 webview.src = "./example/webview.html"; //  http/https url ,  html-file path
 webview.backgroundColor = "rgba(222,111,220,1)"; // "transparent" === "rgba(0,0,0,0)"

@@ -1,3 +1,5 @@
+"use strict";
+
 var decryptor = new Ejecta.DecryptorXOR();
 decryptor.enable();
 

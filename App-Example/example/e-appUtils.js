@@ -1,3 +1,5 @@
+"use strict";
+
 var appUtils = new Ejecta.AppUtils();
 
 

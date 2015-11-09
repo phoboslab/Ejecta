@@ -1,5 +1,4 @@
-//==================================================
-// Draw something on screen canvas.
+"use strict";
 
 //==================================================
 // Init Extensions (In my fork version of Ejecta ).

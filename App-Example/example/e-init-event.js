@@ -1,3 +1,5 @@
+"use strict";
+
 var TouchInfo = {
     start: null
 };

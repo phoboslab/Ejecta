@@ -2,6 +2,8 @@
 //  $ npm install ws
 //  $ node websocket-server.js
 
+"use strict";
+
 var WebSocketServer = require('ws').Server,
     wss = new WebSocketServer({
         port: 8080

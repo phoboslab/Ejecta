@@ -1,3 +1,5 @@
+"use strict";
+
 var width = window.innerWidth;
 var height = window.innerHeight;
 var canvas = document.getElementById('canvas');

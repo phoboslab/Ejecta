@@ -1,5 +1,7 @@
 // The AlertView is not same to window.alert , it's non-block.
 
+"use strict";
+
 // var alertView = new Ejecta.AlertView("title","message","cancelTitle");
 var alertView = new Ejecta.AlertView("title", "message", "cancelTitle", "b1Title", "b2Title");
 

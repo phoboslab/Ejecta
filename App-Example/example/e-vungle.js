@@ -3,7 +3,7 @@
 (function() {
 
     var width = window.innerWidth;
-    var height = window.innerWidth;
+    var height = window.innerHeight;
 
     // var adVungle = new Ejecta.Vungle("phoena");
     var adVungle = new Ejecta.Vungle("5632ff9e2969297047000010");

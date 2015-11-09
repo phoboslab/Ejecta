@@ -1,3 +1,5 @@
+"use strict";
+
 var url = "ws://localhost:8080";
 var ws = new WebSocket(url);
 

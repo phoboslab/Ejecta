@@ -4,7 +4,7 @@
 
 
     var width = window.innerWidth;
-    var height = window.innerWidth;
+    var height = window.innerHeight;
 
      // var cb = new Ejecta.Chartboost("4f21c409cd1cb2fb7000001b", "92e2de2fd7070327bdeb54c15a5295309c6fcd2d");
      var cb = new Ejecta.Chartboost("563399dfc909a662da96644e", "37d6219e4bff1a7ba6033d0e13e82ebb1be53214");
