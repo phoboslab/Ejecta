@@ -31,7 +31,7 @@ function drawImageFile(imgPath) {
         var w = img.width;
         var h = img.height;
         // Draw it at center of canvas.
-        if (context) {
+        if (typeof context!="undefined") {
             context.drawImage(img, canvas.width - w >> 1, canvas.height - h >> 1);
         }
 
