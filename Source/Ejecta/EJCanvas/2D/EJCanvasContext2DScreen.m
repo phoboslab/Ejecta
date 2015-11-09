@@ -76,6 +76,8 @@
 	else {
 		// Resize an existing view
 		glview.frame = frame;
+		glview.contentScaleFactor = contentScale;
+		glview.layer.contentsScale = contentScale;
 	}
 	
 	// Set up the renderbuffer
