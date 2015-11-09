@@ -7,7 +7,7 @@
 - (id)initWithContext:(JSContextRef)ctxp argc:(size_t)argc argv:(const JSValueRef [])argv {
 	if( self = [super initWithContext:ctxp argc:argc argv:argv] ) {
 		requestHeaders = [[NSMutableDictionary alloc] init];
-		defaultEncoding = NSASCIIStringEncoding;
+		defaultEncoding = NSUTF8StringEncoding;
 	}
 	return self;
 }
@@ -229,7 +229,16 @@ EJ_BIND_FUNCTION(getResponseHeader, ctx, argc, argv) {
 }
 
 EJ_BIND_FUNCTION(overrideMimeType, ctx, argc, argv) {
-	// TODO?
+	if( argc == 0 ) { return NULL; }
+	
+	NSString *mime = JSValueToNSString(ctx, argv[0]);
+	if(
+		[mime rangeOfString:@"binary"].location != NSNotFound ||
+		[mime rangeOfString:@"ascii"].location != NSNotFound ||
+		[mime rangeOfString:@"user-defined"].location != NSNotFound
+	) {
+		defaultEncoding = NSASCIIStringEncoding;
+	}
 	return NULL;
 }
 
@@ -240,9 +249,8 @@ EJ_BIND_FUNCTION(send, ctx, argc, argv) {
 
 	NSURL *requestUrl = [NSURL URLWithString:url];
 	if( !requestUrl.host ) {
-		// No host? Assume it's a local file in utf8 encoding
+		// No host? Assume it's a local file
 		requestUrl = [NSURL fileURLWithPath:[scriptView pathForResource:requestUrl.path]];
-		defaultEncoding = NSUTF8StringEncoding;
 	}
 	NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:requestUrl];
 	[request setHTTPMethod:method];
@@ -282,7 +290,9 @@ EJ_BIND_FUNCTION(send, ctx, argc, argv) {
 	
 	state = kEJHttpRequestStateLoading;
 	NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
-    session = [[NSURLSession sessionWithConfiguration:configuration delegate:self delegateQueue:NSOperationQueue.mainQueue] retain];
+	
+	session = [[NSURLSession sessionWithConfiguration:configuration
+		delegate:self delegateQueue:NSOperationQueue.mainQueue] retain];
 	[[session dataTaskWithRequest:request] resume];
 	[request release];
 	
