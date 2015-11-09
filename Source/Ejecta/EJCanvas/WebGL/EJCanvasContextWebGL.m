@@ -3,9 +3,6 @@
 
 @implementation EJCanvasContextWebGL
 
-@synthesize boundFramebuffer;
-@synthesize boundRenderbuffer;
-
 - (BOOL)needsPresenting { return needsPresenting; }
 - (void)setNeedsPresenting:(BOOL)needsPresentingp { needsPresenting = needsPresentingp; }
 
@@ -26,9 +23,7 @@
 		
 		msaaEnabled = NO;
 		msaaSamples = 2;
-		
-		boundFramebuffer = 0;
-		boundRenderbuffer = 0;
+		preserveDrawingBuffer = NO;
 	}
 	return self;
 }
@@ -39,7 +34,35 @@
 	bufferHeight = height = newHeight;
 }
 
+- (void)resizeAuxiliaryBuffers {
+	// Resize the MSAA buffer, if enabled
+	if( msaaEnabled && msaaFrameBuffer && msaaRenderBuffer ) {
+		glBindFramebuffer(GL_FRAMEBUFFER, msaaFrameBuffer);
+		glBindRenderbuffer(GL_RENDERBUFFER, msaaRenderBuffer);
+		
+		glRenderbufferStorageMultisampleAPPLE(GL_RENDERBUFFER, msaaSamples, GL_RGBA8_OES, bufferWidth, bufferHeight);
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, msaaRenderBuffer);
+	}
+	
+	// Resize the depth and stencil buffer
+	glBindRenderbuffer(GL_RENDERBUFFER, depthStencilBuffer);
+	if( msaaEnabled ) {
+		glRenderbufferStorageMultisampleAPPLE(GL_RENDERBUFFER, msaaSamples, GL_DEPTH24_STENCIL8_OES, bufferWidth, bufferHeight);
+	}
+	else {
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8_OES, bufferWidth, bufferHeight);
+	}
+	
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthStencilBuffer);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, depthStencilBuffer);
+}
+
 - (void)create {
+	if( msaaEnabled ) {
+		glGenFramebuffers(1, &msaaFrameBuffer);
+		glGenRenderbuffers(1, &msaaRenderBuffer);
+	}
+	
 	// Create the frame- and renderbuffers
 	glGenFramebuffers(1, &viewFrameBuffer);	
 	glGenRenderbuffers(1, &viewRenderBuffer);
@@ -58,6 +81,8 @@
 	
 	if( viewFrameBuffer ) { glDeleteFramebuffers( 1, &viewFrameBuffer); }
 	if( viewRenderBuffer ) { glDeleteRenderbuffers(1, &viewRenderBuffer); }
+	if( msaaFrameBuffer ) {	glDeleteFramebuffers( 1, &msaaFrameBuffer); }
+	if( msaaRenderBuffer ) { glDeleteRenderbuffers(1, &msaaRenderBuffer); }
 	if( depthStencilBuffer ) { glDeleteRenderbuffers(1, &depthStencilBuffer); }
 	[glContext release];
 	
@@ -67,10 +92,8 @@
 
 - (void)prepare {
 	// Bind to the frame/render buffer last bound on this context
-	GLuint framebuffer = boundFramebuffer ? boundFramebuffer : viewFrameBuffer;
-	GLuint renderbuffer = boundRenderbuffer ? boundRenderbuffer : viewRenderBuffer;
-	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-	glBindRenderbuffer(GL_RENDERBUFFER, renderbuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, boundFrameBuffer);
+	glBindRenderbuffer(GL_RENDERBUFFER, boundRenderBuffer);
 	
 	// Re-bind textures; they may have been changed in a different context
 	GLint boundTexture2D;
@@ -87,17 +110,25 @@
 	glGetFloatv(GL_COLOR_CLEAR_VALUE, c);
 	
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 	
 	glClearColor(c[0], c[1], c[2], c[3]);
 }
 
-- (void)bindRenderbuffer {
-	glBindRenderbuffer(GL_RENDERBUFFER, viewRenderBuffer);
+- (void)bindFramebuffer:(GLuint)framebuffer toTarget:(GLuint)target {
+	if( framebuffer == 0 ) {
+		framebuffer = msaaEnabled ? msaaFrameBuffer : viewFrameBuffer;
+	}
+	glBindFramebuffer(target, framebuffer);
+	boundFrameBuffer = framebuffer;
 }
 
-- (void)bindFramebuffer {
-	glBindFramebuffer(GL_FRAMEBUFFER, viewFrameBuffer);
+- (void)bindRenderbuffer:(GLuint)renderbuffer toTarget:(GLuint)target {
+	if( renderbuffer == 0 ) {
+		renderbuffer = msaaEnabled ? msaaRenderBuffer : viewRenderBuffer;
+	}
+	glBindRenderbuffer(target, renderbuffer);
+	boundRenderBuffer = renderbuffer;
 }
 
 - (void)setWidth:(short)newWidth {

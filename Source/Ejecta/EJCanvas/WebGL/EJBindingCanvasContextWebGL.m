@@ -283,26 +283,23 @@ EJ_BIND_FUNCTION(bindBuffer, ctx, argc, argv) {
 	return NULL;
 }
 
-#define EJ_BIND_BIND(I, NAME) \
-	EJ_BIND_FUNCTION(bind##NAME, ctx, argc, argv) { \
-		if( argc < 2 ) { return NULL; } \
-		scriptView.currentRenderingContext = renderingContext; \
-		GLenum target = JSValueToNumberFast(ctx, argv[0]); \
-		GLuint index = [EJBindingWebGL##NAME indexFromJSValue:argv[1]]; \
-		if( index ) { \
-			glBind##NAME(target, index); \
-		} \
-		else { \
-			[renderingContext bind##NAME]; \
-		} \
-		renderingContext.bound##NAME = index; \
-		return NULL; \
-	}
+EJ_BIND_FUNCTION(bindRenderbuffer, ctx, argc, argv) {
+	if( argc < 2 ) { return NULL; }
+	scriptView.currentRenderingContext = renderingContext;
+	[renderingContext
+		bindRenderbuffer:JSValueToNumberFast(ctx, argv[0])
+		toTarget:[EJBindingWebGLRenderbuffer indexFromJSValue:argv[1]]];
+	return NULL;
+}
 
-	EJ_MAP(EJ_BIND_BIND, Renderbuffer, Framebuffer);
-
-#undef EJ_BIND_BIND
-
+EJ_BIND_FUNCTION(bindFramebuffer, ctx, argc, argv) {
+	if( argc < 2 ) { return NULL; }
+	scriptView.currentRenderingContext = renderingContext;
+	[renderingContext
+		bindFramebuffer:JSValueToNumberFast(ctx, argv[0])
+		toTarget:[EJBindingWebGLFramebuffer indexFromJSValue:argv[1]]];
+	return NULL;
+}
 
 EJ_BIND_FUNCTION(bindTexture, ctx, argc, argv) {
 	if( argc < 2 ) { return NULL; }

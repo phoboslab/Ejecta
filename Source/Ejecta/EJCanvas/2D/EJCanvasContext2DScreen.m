@@ -58,16 +58,17 @@
 		@"Creating ScreenCanvas (2D): "
 			@"size: %dx%d, "
 			@"style: %.0fx%.0f, "
-			@"msaa: %@",
+			@"antialias: %@, preserveDrawingBuffer: %@",
 		width, height, 
 		frame.size.width, frame.size.height,
-		(msaaEnabled ? [NSString stringWithFormat:@"yes (%d samples)", msaaSamples] : @"no")
+		(msaaEnabled ? [NSString stringWithFormat:@"yes (%d samples)", msaaSamples] : @"no"),
+		(preserveDrawingBuffer ? @"yes" : @"no")
 	);
 	
 	
 	if( !glview ) {
 		// Create the OpenGL UIView with final screen size and content scaling (retina)
-		glview = [[EAGLView alloc] initWithFrame:frame contentScale:contentScale retainedBacking:YES];
+		glview = [[EAGLView alloc] initWithFrame:frame contentScale:contentScale retainedBacking:preserveDrawingBuffer];
 		
 		// Append the OpenGL view to Ejecta's main view
 		[scriptView addSubview:glview];

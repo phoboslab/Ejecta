@@ -17,7 +17,7 @@
 	NSLog(
 		@"Creating Offscreen Canvas (2D): "
 			@"size: %dx%d, "
-			@"msaa: %@",
+			@"antialias: %@",
 		width, height,
 		(msaaEnabled ? [NSString stringWithFormat:@"yes (%d samples)", msaaSamples] : @"no")
 	);

@@ -4,6 +4,7 @@
 @interface EJCanvasContext : NSObject {
 	short width, height;
 	
+	BOOL preserveDrawingBuffer;
 	BOOL msaaEnabled;
 	BOOL needsPresenting;
 	int msaaSamples;
@@ -14,6 +15,7 @@
 - (void)flushBuffers;
 - (void)prepare;
 
+@property (nonatomic) BOOL preserveDrawingBuffer;
 @property (nonatomic) BOOL msaaEnabled;
 @property (nonatomic) int msaaSamples;
 @property (nonatomic) short width;

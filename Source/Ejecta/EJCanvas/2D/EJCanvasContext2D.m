@@ -60,6 +60,7 @@ const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
 		textureFilter = GL_LINEAR;
 		msaaEnabled = NO;
 		msaaSamples = 2;
+		preserveDrawingBuffer = YES;
 		stencilMask = 0x1;
 	}
 	return self;

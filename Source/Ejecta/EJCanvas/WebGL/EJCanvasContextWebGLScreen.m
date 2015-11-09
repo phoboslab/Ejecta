@@ -57,14 +57,17 @@
 	NSLog(
 		@"Creating ScreenCanvas (WebGL): "
 			@"size: %dx%d, "
-			@"style: %.0fx%.0f",
+			@"style: %.0fx%.0f, "
+			@"antialias: %@, preserveDrawingBuffer: %@",
 		width, height, 
-		frame.size.width, frame.size.height
+		frame.size.width, frame.size.height,
+		(msaaEnabled ? [NSString stringWithFormat:@"yes (%d samples)", msaaSamples] : @"no"),
+		(preserveDrawingBuffer ? @"yes" : @"no")
 	);
 	
 	if( !glview ) {
 		// Create the OpenGL UIView with final screen size and content scaling (retina)
-		glview = [[EAGLView alloc] initWithFrame:frame contentScale:contentScale retainedBacking:YES];
+		glview = [[EAGLView alloc] initWithFrame:frame contentScale:contentScale retainedBacking:preserveDrawingBuffer];
 		
 		// Append the OpenGL view to Ejecta's main view
 		[scriptView addSubview:glview];
@@ -87,20 +90,17 @@
 	// Set up the renderbuffer and some initial OpenGL properties
 	[glContext renderbufferStorage:GL_RENDERBUFFER fromDrawable:(CAEAGLLayer *)glview.layer];
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, viewRenderBuffer);
-	
-	// Set up the depth and stencil buffer
-	glBindRenderbuffer(GL_RENDERBUFFER, depthStencilBuffer);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8_OES, bufferWidth, bufferHeight);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthStencilBuffer);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, depthStencilBuffer);
+
+	[self resizeAuxiliaryBuffers];
 	
 	// Clear
 	glViewport(0, 0, width, height);
 	[self clear];
 	
+	
 	// Reset to the previously bound frame and renderbuffers
-	glBindFramebuffer(GL_FRAMEBUFFER, previousFrameBuffer);
-	glBindRenderbuffer(GL_RENDERBUFFER, previousRenderBuffer);
+	[self bindFramebuffer:previousFrameBuffer toTarget:GL_FRAMEBUFFER];
+	[self bindRenderbuffer:previousRenderBuffer toTarget:GL_RENDERBUFFER];
 }
 
 - (void)finish {
@@ -110,8 +110,26 @@
 - (void)present {
 	if( !needsPresenting ) { return; }
 	
-	[glContext presentRenderbuffer:GL_RENDERBUFFER];
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+	if( msaaEnabled ) {
+		//Bind the MSAA and View frameBuffers and resolve
+		glBindFramebuffer(GL_READ_FRAMEBUFFER_APPLE, msaaFrameBuffer);
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER_APPLE, viewFrameBuffer);
+		glResolveMultisampleFramebufferAPPLE();
+		
+		glBindRenderbuffer(GL_RENDERBUFFER, viewRenderBuffer);
+		[glContext presentRenderbuffer:GL_RENDERBUFFER];
+		glBindFramebuffer(GL_FRAMEBUFFER, msaaFrameBuffer);
+	}
+	else {
+		[glContext presentRenderbuffer:GL_RENDERBUFFER];
+	}
+	
+	if( preserveDrawingBuffer ) {
+		glClear(GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+	}
+	else {
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+	}
 	needsPresenting = NO;
 }
 

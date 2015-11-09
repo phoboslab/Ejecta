@@ -26,9 +26,6 @@ typedef enum {
 	CGRect style;
 	
 	BOOL isScreenCanvas;
-	
-	BOOL msaaEnabled;
-	int msaaSamples;
 }
 
 @property (nonatomic) float styleLeft;

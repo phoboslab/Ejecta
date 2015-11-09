@@ -18,9 +18,6 @@
 - (void)createWithJSObject:(JSObjectRef)obj scriptView:(EJJavaScriptView *)view {
 	[super createWithJSObject:obj scriptView:view];
 	
-	msaaEnabled = false;
-	msaaSamples = 2;
-	
 	// If we don't have a screen canvas yet, make it this one
 	if( !scriptView.hasScreenCanvas ) {
 		isScreenCanvas = YES;
@@ -131,25 +128,6 @@ EJ_BIND_GET(offsetHeight, ctx) {
 	return JSValueMakeNumber(ctx, style.size.height ? style.size.height : height);
 }
 
-EJ_BIND_SET(MSAAEnabled, ctx, value) {
-	msaaEnabled = JSValueToBoolean(ctx, value);
-}
-
-EJ_BIND_GET(MSAAEnabled, ctx) {
-	return JSValueMakeBoolean(ctx, msaaEnabled);
-}
-
-EJ_BIND_SET(MSAASamples, ctx, value) {
-	int samples = JSValueToNumberFast(ctx, value);
-	if( samples == 2 || samples == 4 ) {
-		msaaSamples	= samples;
-	}
-}
-
-EJ_BIND_GET(MSAASamples, ctx) {
-	return JSValueMakeNumber(ctx, msaaSamples);
-}
-
 EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 	if( argc < 1 ) { return NULL; };
 	
@@ -195,8 +173,33 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 	
 	// Configure and create the Canvas Context
 	renderingContext = [[contextClass alloc] initWithScriptView:scriptView width:width height:height];
-	renderingContext.msaaEnabled = msaaEnabled;
-	renderingContext.msaaSamples = msaaSamples;
+	
+	// Parse the options object, if present.
+	// E.g.: {antialias: true, antialiasSamples: 4, preserveDrawingBuffer: true}
+	if( argc > 1 ) {
+		NSObject *optionsObj = JSValueToNSObject(ctx, argv[1]);
+		if( [optionsObj isKindOfClass:NSDictionary.class] ) {
+			
+			NSDictionary *options = (NSDictionary *)optionsObj;
+			
+			// Only override the default for preserveDrawingBuffer if this options is not undefined.
+			// For Canvas2D this defaults to true, for WebGL it defaults to false.
+			if( options[@"preserveDrawingBuffer"] ) {
+				renderingContext.preserveDrawingBuffer = [options[@"preserveDrawingBuffer"] boolValue];
+			}
+			
+			// If antialias is enabled, figure out the max samples this hardware supports and
+			// clamp the antialiasSamples to it, if present. Otherwise default to 2 samples.
+			if( [options[@"antialias"] boolValue] ) {
+				int msaaSamples = (int)[options[@"antialiasSamples"] integerValue];
+				int maxSamples = 2;
+				glGetIntegerv(GL_MAX_SAMPLES_APPLE, &maxSamples);
+			
+				renderingContext.msaaEnabled = maxSamples > 1;
+				renderingContext.msaaSamples = MAX(2, MIN(maxSamples, msaaSamples));
+			}
+		}
+	}
 	
 	if( isScreenCanvas ) {
 		scriptView.screenRenderingContext = (EJCanvasContext<EJPresentable> *)renderingContext;
