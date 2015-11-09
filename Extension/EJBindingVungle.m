@@ -164,6 +164,7 @@ EJ_BIND_FUNCTION(show, ctx, argc, argv)
     if (error) {
         NSLog(@"Error encountered playing ad: %@", error);
         [self triggerEvent:@"error"];
+        return scriptView->jsFalse;
     }
     
     return scriptView->jsTrue;
