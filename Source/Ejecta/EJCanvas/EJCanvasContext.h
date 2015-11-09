@@ -4,29 +4,22 @@
 @interface EJCanvasContext : NSObject {
 	short width, height;
 	
+	BOOL preserveDrawingBuffer;
 	BOOL msaaEnabled;
 	BOOL needsPresenting;
 	int msaaSamples;
 	EAGLContext *glContext;
-	
-	float backingStoreRatio;
-	BOOL useRetinaResolution;
-
-    BOOL ignoreClearing;
 }
 
 - (void)create;
 - (void)flushBuffers;
 - (void)prepare;
 
+@property (nonatomic) BOOL preserveDrawingBuffer;
 @property (nonatomic) BOOL msaaEnabled;
 @property (nonatomic) int msaaSamples;
 @property (nonatomic) short width;
 @property (nonatomic) short height;
 @property (nonatomic, readonly) EAGLContext *glContext;
-@property (nonatomic) BOOL useRetinaResolution;
-@property (nonatomic, readonly) float backingStoreRatio;
-@property (nonatomic) BOOL needsPresenting;
-@property (nonatomic) BOOL ignoreClearing;
 
 @end

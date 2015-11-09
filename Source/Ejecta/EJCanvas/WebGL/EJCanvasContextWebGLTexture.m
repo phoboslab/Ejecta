@@ -10,24 +10,14 @@
 - (void)resizeToWidth:(short)newWidth height:(short)newHeight {
 	[self flushBuffers];
 	
-    width = newWidth;
-    height = newHeight;
-    
-    backingStoreRatio = (useRetinaResolution && [UIScreen mainScreen].scale == 2) ? 2 : 1;
-    bufferWidth = width * backingStoreRatio;
-    bufferHeight = height * backingStoreRatio;
-    
-    NSLog(
-          @"Creating Offscreen Canvas (WebGL): "
-          @"size: %dx%d, "
-          @"retina: %@ = %.0fx%.0f, "
-          @"msaa: %@",
-          width, height,
-          (useRetinaResolution ? @"yes" : @"no"),
-          width * backingStoreRatio, height * backingStoreRatio,
-          (msaaEnabled ? [NSString stringWithFormat:@"yes (%d samples)", msaaSamples] : @"no")
-          );
-
+	bufferWidth = width = newWidth;
+	bufferHeight = height = newHeight;
+	
+	NSLog(
+		@"Creating Offscreen Canvas (WebGL): size: %dx%d, antialias: %@",
+		width, height,
+		(msaaEnabled ? [NSString stringWithFormat:@"yes (%d samples)", msaaSamples] : @"no")
+	);
 	
 	GLint previousFrameBuffer;
 	GLint previousRenderBuffer;
@@ -40,29 +30,39 @@
 	// Release previous texture if any, create the new texture and set it as
 	// the rendering target for this framebuffer
 	[texture release];
-	texture = [[EJTexture alloc] initAsRenderTargetWithWidth:newWidth height:newHeight
-		fbo:viewFrameBuffer contentScale:backingStoreRatio];
+	texture = [[EJTexture alloc] initAsRenderTargetWithWidth:newWidth height:newHeight fbo:viewFrameBuffer];
 	texture.drawFlippedY = true;
 	
 	glBindFramebuffer(GL_FRAMEBUFFER, viewFrameBuffer);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture.textureId, 0);
 	
-	// Set up the depth buffer
-	glBindRenderbuffer(GL_RENDERBUFFER, depthStencilBuffer);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8_OES, bufferWidth, bufferHeight);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthStencilBuffer);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, depthStencilBuffer);
+	[self resizeAuxiliaryBuffers];
 	
 	// Clear
 	glViewport(0, 0, width, height);
 	[self clear];
 	
 	// Reset to the previously bound frame and renderbuffers
-	glBindFramebuffer(GL_FRAMEBUFFER, previousFrameBuffer);
-	glBindRenderbuffer(GL_RENDERBUFFER, previousRenderBuffer);
+	[self bindFramebuffer:previousFrameBuffer toTarget:GL_FRAMEBUFFER];
+	[self bindRenderbuffer:previousRenderBuffer toTarget:GL_RENDERBUFFER];
 }
 
 - (EJTexture *)texture {
+	// If this texture Canvas uses MSAA, we need to resolve the MSAA first,
+	// before we can use the texture for drawing.
+	if( msaaEnabled && needsPresenting ) {
+		GLint previousFrameBuffer;
+		glGetIntegerv( GL_FRAMEBUFFER_BINDING, &previousFrameBuffer );
+		
+		//Bind the MSAA and View frameBuffers and resolve
+		glBindFramebuffer(GL_READ_FRAMEBUFFER_APPLE, msaaFrameBuffer);
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER_APPLE, viewFrameBuffer);
+		glResolveMultisampleFramebufferAPPLE();
+		
+		glBindFramebuffer(GL_FRAMEBUFFER, previousFrameBuffer);
+		needsPresenting = NO;
+	}
+	
 	return texture;
 }
 

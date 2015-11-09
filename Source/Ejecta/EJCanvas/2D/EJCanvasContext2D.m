@@ -54,13 +54,13 @@ const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
 		bufferHeight = height = heightp;
 		
 		path = [[EJPath alloc] init];
-		backingStoreRatio = 1;
 		
 		fontCache = [[EJFontCache instance] retain];
 		
 		textureFilter = GL_LINEAR;
 		msaaEnabled = NO;
 		msaaSamples = 2;
+		preserveDrawingBuffer = YES;
 		stencilMask = 0x1;
 	}
 	return self;
@@ -120,9 +120,8 @@ const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
 	width = newWidth;
 	height = newHeight;
 	
-	backingStoreRatio = (useRetinaResolution && UIScreen.mainScreen.scale == 2) ? 2 : 1;
-	bufferWidth = width * backingStoreRatio;
-	bufferHeight = height * backingStoreRatio;
+	bufferWidth = width;
+	bufferHeight = height;
 	
 	[self resetFramebuffer];
 }
@@ -445,10 +444,9 @@ const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
 	withTransform:(CGAffineTransform)transform
 {
 	EJTexture *texture = pattern.texture;
-	float scale = texture.contentScale;
 	float
-		tw = texture.width / scale,
-		th = texture.height / scale,
+		tw = texture.width,
+		th = texture.height,
 		pw = w,
 		ph = h;
 		
@@ -713,29 +711,31 @@ const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
 	self.globalCompositeOperation = oldOp;
 }
 
-
-- (EJImageData*)getImageDataScaled:(float)scale flipped:(bool)flipped sx:(short)sx sy:(short)sy sw:(short)sw sh:(short)sh {
-		
-    NSMutableData *pixels = [self getPixels:scale flipped:flipped sx:sx sy:sy sw:sw sh:sh];
+- (EJImageData*)getImageDataSx:(short)sx sy:(short)sy sw:(short)sw sh:(short)sh {
+	
+	[self flushBuffers];
+	
+	if( upsideDown ) {
+		sy = bufferHeight-sy-sh;
+	}
+	
+	NSMutableData *pixels = [NSMutableData dataWithLength:sw * sh * 4 * sizeof(GLubyte)];
+	glReadPixels(sx, sy, sw, sh, GL_RGBA, GL_UNSIGNED_BYTE, pixels.mutableBytes);
+	
+	if( upsideDown ) {
+		[EJTexture flipPixelsY:pixels.mutableBytes bytesPerRow:sw*4 rows:sh];
+	}
 	
 	return [[[EJImageData alloc] initWithWidth:sw height:sh pixels:pixels] autorelease];
 }
 
-- (EJImageData*)getImageDataSx:(short)sx sy:(short)sy sw:(short)sw sh:(short)sh {
-	return [self getImageDataScaled:backingStoreRatio flipped:upsideDown sx:sx sy:sy sw:sw sh:sh];
-}
-
-- (EJImageData*)getImageDataHDSx:(short)sx sy:(short)sy sw:(short)sw sh:(short)sh {
-	return [self getImageDataScaled:1 flipped:upsideDown sx:sx sy:sy sw:sw sh:sh];
-}
-
-- (void)putImageData:(EJImageData*)imageData scaled:(float)scale dx:(float)dx dy:(float)dy {
+- (void)putImageData:(EJImageData*)imageData dx:(float)dx dy:(float)dy {
 	EJTexture *texture = imageData.texture;
 	[self setProgram:sharedGLContext.glProgram2DTexture];
 	[self setTexture:texture];
 	
-	short tw = texture.width / scale;
-	short th = texture.height / scale;
+	short tw = texture.width;
+	short th = texture.height;
 	
 	static EJColorRGBA white = {.hex = 0xffffffff};
 	
@@ -746,14 +746,6 @@ const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
 	[self flushBuffers];
 	
 	self.globalCompositeOperation = oldOp;
-}
-
-- (void)putImageData:(EJImageData*)imageData dx:(float)dx dy:(float)dy {
-	[self putImageData:imageData scaled:1 dx:dx dy:dy];
-}
-
-- (void)putImageDataHD:(EJImageData*)imageData dx:(float)dx dy:(float)dy {
-	[self putImageData:imageData scaled:backingStoreRatio dx:dx dy:dy];
 }
 
 - (void)beginPath {
@@ -812,7 +804,7 @@ const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
 }
 
 - (void)fillText:(NSString *)text x:(float)x y:(float)y {
-	float scale = CGAffineTransformGetScale( state->transform ) * backingStoreRatio;
+	float scale = CGAffineTransformGetScale( state->transform );
 	EJFont *font = [fontCache fontWithDescriptor:state->font contentScale:scale];
 	
 	[self setProgram:sharedGLContext.glProgram2DAlphaTexture];
@@ -820,7 +812,7 @@ const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
 }
 
 - (void)strokeText:(NSString *)text x:(float)x y:(float)y {
-	float scale = CGAffineTransformGetScale( state->transform ) * backingStoreRatio;
+	float scale = CGAffineTransformGetScale( state->transform );
 	EJFont *font = [fontCache outlineFontWithDescriptor:state->font lineWidth:state->lineWidth contentScale:scale];
 	
 	[self setProgram:sharedGLContext.glProgram2DAlphaTexture];
@@ -828,7 +820,7 @@ const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
 }
 
 - (EJTextMetrics)measureText:(NSString *)text {
-	float scale = CGAffineTransformGetScale( state->transform ) * backingStoreRatio;
+	float scale = CGAffineTransformGetScale( state->transform );
 	EJFont *font = [fontCache fontWithDescriptor:state->font contentScale:scale];
 	return [font measureString:text forContext:self];
 }
@@ -854,48 +846,6 @@ const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
 		glDepthMask(GL_FALSE);
 		glDepthFunc(GL_ALWAYS);
 	}
-}
-
-
-- (NSMutableData *)getPixels:(float)scale flipped:(bool)flipped sx:(short)sx sy:(short)sy sw:(short)sw sh:(short)sh {
-    
-    [self flushBuffers];
-    
-    NSMutableData *pixels;
-    
-    // Fast case - no scaling, no flipping
-    if( scale == 1 && !flipped ) {
-        pixels = [NSMutableData dataWithLength:sw * sh * 4 * sizeof(GLubyte)];
-        glReadPixels(sx, sy, sw, sh, GL_RGBA, GL_UNSIGNED_BYTE, pixels.mutableBytes);
-    }
-    
-    // More processing needed - take care of the flipped screen layout and the scaling
-    else {
-        int internalWidth = sw * scale;
-        int internalHeight = sh * scale;
-        int internalX = sx * scale;
-        int internalY = ((bufferHeight/scale)-sy-sh) * scale;
-        
-        EJColorRGBA *internalPixels = malloc( internalWidth * internalHeight * sizeof(EJColorRGBA));
-        glReadPixels( internalX, internalY, internalWidth, internalHeight, GL_RGBA, GL_UNSIGNED_BYTE, internalPixels );
-        
-        int size = sw * sh * sizeof(EJColorRGBA);
-        EJColorRGBA *scaledPixels = malloc( size );
-        int index = 0;
-        for( int y = 0; y < sh; y++ ) {
-            int rowIndex = (int)((flipped ? sh-y-1 : y) * scale) * internalWidth;
-            for( int x = 0; x < sw; x++ ) {
-                int internalIndex = rowIndex + (int)(x * scale);
-                scaledPixels[ index ] = internalPixels[ internalIndex ];
-                index++;
-            }
-        }
-        free(internalPixels);
-        
-        pixels = [NSMutableData dataWithBytesNoCopy:scaledPixels length:size];
-    }
-    
-    return pixels;
 }
 
 @end

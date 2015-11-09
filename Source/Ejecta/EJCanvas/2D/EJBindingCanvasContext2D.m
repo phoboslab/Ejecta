@@ -212,10 +212,6 @@ EJ_BIND_GET(imageSmoothingEnabled, ctx) {
 	return JSValueMakeBoolean(ctx, renderingContext.imageSmoothingEnabled);
 }
 
-EJ_BIND_GET(backingStorePixelRatio, ctx) {
-	return JSValueMakeNumber(ctx, renderingContext.backingStoreRatio);
-}
-
 EJ_BIND_FUNCTION(save, ctx, argc, argv) {
 	[renderingContext save];
 	return NULL;
@@ -281,8 +277,6 @@ EJ_BIND_FUNCTION(drawImage, ctx, argc, argv) {
 	
 	if( !image.textureId ) { return NULL; }
 	
-	float scale = image.contentScale;
-	
 	short sx = 0, sy = 0, sw, sh;
 	float dx, dy, dw, dh;
 	
@@ -291,8 +285,8 @@ EJ_BIND_FUNCTION(drawImage, ctx, argc, argv) {
 		EJ_UNPACK_ARGV_OFFSET(1, dx, dy);
 		sw = image.width;
 		sh = image.height;
-		dw = sw / scale;
-		dh = sh / scale;
+		dw = sw;
+		dh = sh;
 	}
 	else if( argc == 5 ) {
 		// drawImage(image, dx, dy, dw, dh)
@@ -303,10 +297,6 @@ EJ_BIND_FUNCTION(drawImage, ctx, argc, argv) {
 	else if( argc >= 9 ) {
 		// drawImage(image, sx, sy, sw, sh, dx, dy, dw, dh)
 		EJ_UNPACK_ARGV_OFFSET(1, sx, sy, sw, sh, dx, dy, dw, dh);
-		sx *= scale;
-		sy *= scale;
-		sw *= scale;
-		sh *= scale;
 	}
 	else {
 		return NULL;
@@ -367,36 +357,6 @@ EJ_BIND_FUNCTION(putImageData, ctx, argc, argv) {
 	
 	scriptView.currentRenderingContext = renderingContext;
 	[renderingContext putImageData:jsImageData.imageData dx:dx dy:dy];
-	return NULL;
-}
-
-EJ_BIND_FUNCTION(getImageDataHD, ctx, argc, argv) {
-	EJ_UNPACK_ARGV(short sx, short sy, short sw, short sh);
-	
-	scriptView.currentRenderingContext = renderingContext;
-	
-	EJImageData *imageData = [renderingContext getImageDataHDSx:sx sy:sy sw:sw sh:sh];
-	
-	EJBindingImageData *binding = [[[EJBindingImageData alloc] initWithImageData:imageData] autorelease];
-	return [EJBindingImageData createJSObjectWithContext:ctx scriptView:scriptView instance:binding];
-}
-
-EJ_BIND_FUNCTION(createImageDataHD, ctx, argc, argv) {
-	EJ_UNPACK_ARGV(short sw, short sh);
-		
-	NSMutableData *pixels = [NSMutableData dataWithLength:sw * sh * 4];
-	EJImageData *imageData = [[[EJImageData alloc] initWithWidth:sw height:sh pixels:pixels] autorelease];
-	
-	EJBindingImageData *binding = [[[EJBindingImageData alloc] initWithImageData:imageData] autorelease];
-	return [EJBindingImageData createJSObjectWithContext:ctx scriptView:scriptView instance:binding];
-}
-
-EJ_BIND_FUNCTION(putImageDataHD, ctx, argc, argv) {
-	EJ_UNPACK_ARGV_OFFSET(1, float dx, float dy);
-	EJBindingImageData *jsImageData = (EJBindingImageData *)JSValueGetPrivate(argv[0]);
-	
-	scriptView.currentRenderingContext = renderingContext;
-	[renderingContext putImageDataHD:jsImageData.imageData dx:dx dy:dy];
 	return NULL;
 }
 

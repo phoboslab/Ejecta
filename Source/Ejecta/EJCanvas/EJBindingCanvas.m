@@ -14,21 +14,14 @@
 @implementation EJBindingCanvas
 @synthesize styleWidth, styleHeight;
 @synthesize styleLeft, styleTop;
-@synthesize renderingContext;
 
 - (void)createWithJSObject:(JSObjectRef)obj scriptView:(EJJavaScriptView *)view {
 	[super createWithJSObject:obj scriptView:view];
-	
-	useRetinaResolution = true;
-	msaaEnabled = false;
-	msaaSamples = 2;
 	
 	// If we don't have a screen canvas yet, make it this one
 	if( !scriptView.hasScreenCanvas ) {
 		isScreenCanvas = YES;
 		scriptView.hasScreenCanvas = YES;
-    } else {
-        useRetinaResolution = false;
 	}
 	
 	CGSize screen = scriptView.bounds.size;
@@ -54,15 +47,6 @@
 	
 	[super dealloc];
 }
-
-
-- (UIImage *)image {
-    if( [renderingContext respondsToSelector:@selector(image)] ) {
-        return (UIImage *)[(id)renderingContext image];
-    }
-    return nil ;
-}
-
 
 - (EJTexture *)texture {
 	if( [renderingContext respondsToSelector:@selector(texture)] ) {
@@ -144,33 +128,6 @@ EJ_BIND_GET(offsetHeight, ctx) {
 	return JSValueMakeNumber(ctx, style.size.height ? style.size.height : height);
 }
 
-EJ_BIND_SET(retinaResolutionEnabled, ctx, value) {
-	useRetinaResolution = JSValueToBoolean(ctx, value);
-}
-
-EJ_BIND_GET(retinaResolutionEnabled, ctx) {
-	return JSValueMakeBoolean(ctx, useRetinaResolution);
-}
-
-EJ_BIND_SET(MSAAEnabled, ctx, value) {
-	msaaEnabled = JSValueToBoolean(ctx, value);
-}
-
-EJ_BIND_GET(MSAAEnabled, ctx) {
-	return JSValueMakeBoolean(ctx, msaaEnabled);
-}
-
-EJ_BIND_SET(MSAASamples, ctx, value) {
-	int samples = JSValueToNumberFast(ctx, value);
-	if( samples == 2 || samples == 4 ) {
-		msaaSamples	= samples;
-	}
-}
-
-EJ_BIND_GET(MSAASamples, ctx) {
-	return JSValueMakeNumber(ctx, msaaSamples);
-}
-
 EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 	if( argc < 1 ) { return NULL; };
 	
@@ -216,9 +173,33 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 	
 	// Configure and create the Canvas Context
 	renderingContext = [[contextClass alloc] initWithScriptView:scriptView width:width height:height];
-	renderingContext.useRetinaResolution = useRetinaResolution;
-	renderingContext.msaaEnabled = msaaEnabled;
-	renderingContext.msaaSamples = msaaSamples;
+	
+	// Parse the options object, if present.
+	// E.g.: {antialias: true, antialiasSamples: 4, preserveDrawingBuffer: true}
+	if( argc > 1 ) {
+		NSObject *optionsObj = JSValueToNSObject(ctx, argv[1]);
+		if( [optionsObj isKindOfClass:NSDictionary.class] ) {
+			
+			NSDictionary *options = (NSDictionary *)optionsObj;
+			
+			// Only override the default for preserveDrawingBuffer if this options is not undefined.
+			// For Canvas2D this defaults to true, for WebGL it defaults to false.
+			if( options[@"preserveDrawingBuffer"] ) {
+				renderingContext.preserveDrawingBuffer = [options[@"preserveDrawingBuffer"] boolValue];
+			}
+			
+			// If antialias is enabled, figure out the max samples this hardware supports and
+			// clamp the antialiasSamples to it, if present. Otherwise default to 2 samples.
+			if( [options[@"antialias"] boolValue] ) {
+				int msaaSamples = (int)[options[@"antialiasSamples"] integerValue];
+				int maxSamples = 2;
+				glGetIntegerv(GL_MAX_SAMPLES_APPLE, &maxSamples);
+			
+				renderingContext.msaaEnabled = maxSamples > 1;
+				renderingContext.msaaSamples = MAX(2, MIN(maxSamples, msaaSamples));
+			}
+		}
+	}
 	
 	if( isScreenCanvas ) {
 		scriptView.screenRenderingContext = (EJCanvasContext<EJPresentable> *)renderingContext;
@@ -248,7 +229,7 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 	return jsCanvasContext;
 }
 
-- (JSValueRef)toDataURLWithCtx:(JSContextRef)ctx argc:(size_t)argc argv:(const JSValueRef [])argv hd:(BOOL)hd {
+- (JSValueRef)toDataURLWithCtx:(JSContextRef)ctx argc:(size_t)argc argv:(const JSValueRef [])argv {
 	if( contextMode != kEJCanvasContextMode2D ) {
 		NSLog(@"Error: toDataURL() not supported for this context");
 		return NSStringToJSValue(ctx, @"data:,");
@@ -257,18 +238,9 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 	
 	EJCanvasContext2D *context = (EJCanvasContext2D *)renderingContext;
 	
-	// Get the ImageData from the Canvas
-	float scale = hd ? context.backingStoreRatio : 1;
-	float w = context.width * context.backingStoreRatio;
-	float h = context.height * context.backingStoreRatio;
-	
-	EJImageData *imageData = (scale != 1)
-		? [context getImageDataHDSx:0 sy:0 sw:w sh:h]
-		: [context getImageDataSx:0 sy:0 sw:w sh:h];
-			
-	
-	// Generate the UIImage
-	UIImage *image = [EJTexture imageWithPixels:imageData.pixels width:imageData.width height:imageData.height scale:scale];
+	// Get the ImageData from the Canvas and generate the UIImage
+	EJImageData *imageData = [context getImageDataSx:0 sy:0 sw:context.width sh:context.height];
+	UIImage *image = [EJTexture imageWithPixels:imageData.pixels width:imageData.width height:imageData.height];
 	
 	NSString *prefix;
 	NSData *raw;
@@ -293,19 +265,7 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 }
 
 EJ_BIND_FUNCTION(toDataURL, ctx, argc, argv) {
-	return [self toDataURLWithCtx:ctx argc:argc argv:argv hd:NO];
-}
-
-EJ_BIND_FUNCTION(toDataURLHD, ctx, argc, argv) {
-	return [self toDataURLWithCtx:ctx argc:argc argv:argv hd:YES];
-}
-
-EJ_BIND_SET(ignoreClearing, ctx, value) {
-    renderingContext.ignoreClearing = JSValueToBoolean(ctx, value);
-}
-
-EJ_BIND_GET(ignoreClearing, ctx) {
-    return JSValueMakeBoolean(ctx, renderingContext.ignoreClearing);
+	return [self toDataURLWithCtx:ctx argc:argc argv:argv];
 }
 
 EJ_BIND_CONST(nodeName, "CANVAS");

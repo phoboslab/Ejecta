@@ -26,10 +26,6 @@ typedef enum {
 	CGRect style;
 	
 	BOOL isScreenCanvas;
-	BOOL useRetinaResolution;
-	
-	BOOL msaaEnabled;
-	int msaaSamples;
 }
 
 @property (nonatomic) float styleLeft;
@@ -37,6 +33,5 @@ typedef enum {
 @property (nonatomic) float styleWidth;
 @property (nonatomic) float styleHeight;
 @property (readonly, nonatomic) EJTexture *texture;
-@property (nonatomic, retain) EJCanvasContext *renderingContext;
 
 @end

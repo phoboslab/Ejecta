@@ -47,36 +47,27 @@
 
 - (void)resizeToWidth:(short)newWidth height:(short)newHeight {
 	[self flushBuffers];
-
-    width = newWidth;
-    height = newHeight;
-    
-    
-    CGRect frame = self.frame;
-    
-    float contentScale = useRetinaResolution ? UIScreen.mainScreen.scale : 1;
-    backingStoreRatio = (frame.size.width / (float)width) * contentScale;
-    
-    bufferWidth = frame.size.width * contentScale;
-    bufferHeight = frame.size.height * contentScale;
-    
-    NSLog(
-          @"Creating ScreenCanvas (WebGL): "
-          @"size: %dx%d, "
-          @"style: %.0fx%.0f, "
-          @"retina: %@ = %.0fx%.0f, "
-          @"msaa: %@",
-          width, height,
-          frame.size.width, frame.size.height,
-          (useRetinaResolution ? @"yes" : @"no"),
-          frame.size.width * contentScale, frame.size.height * contentScale,
-          (msaaEnabled ? [NSString stringWithFormat:@"yes (%d samples)", msaaSamples] : @"no")
-          );
-    
+	
+	bufferWidth = width = newWidth;
+	bufferHeight = height = newHeight;
+	
+	CGRect frame = self.frame;
+	float contentScale = bufferWidth / frame.size.width;
+	
+	NSLog(
+		@"Creating ScreenCanvas (WebGL): "
+			@"size: %dx%d, "
+			@"style: %.0fx%.0f, "
+			@"antialias: %@, preserveDrawingBuffer: %@",
+		width, height, 
+		frame.size.width, frame.size.height,
+		(msaaEnabled ? [NSString stringWithFormat:@"yes (%d samples)", msaaSamples] : @"no"),
+		(preserveDrawingBuffer ? @"yes" : @"no")
+	);
 	
 	if( !glview ) {
 		// Create the OpenGL UIView with final screen size and content scaling (retina)
-		glview = [[EAGLView alloc] initWithFrame:frame contentScale:contentScale retainedBacking:YES];
+		glview = [[EAGLView alloc] initWithFrame:frame contentScale:contentScale retainedBacking:preserveDrawingBuffer];
 		
 		// Append the OpenGL view to Ejecta's main view
 		[scriptView addSubview:glview];
@@ -99,20 +90,17 @@
 	// Set up the renderbuffer and some initial OpenGL properties
 	[glContext renderbufferStorage:GL_RENDERBUFFER fromDrawable:(CAEAGLLayer *)glview.layer];
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, viewRenderBuffer);
-	
-	// Set up the depth and stencil buffer
-	glBindRenderbuffer(GL_RENDERBUFFER, depthStencilBuffer);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8_OES, bufferWidth, bufferHeight);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthStencilBuffer);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, depthStencilBuffer);
+
+	[self resizeAuxiliaryBuffers];
 	
 	// Clear
 	glViewport(0, 0, width, height);
 	[self clear];
 	
+	
 	// Reset to the previously bound frame and renderbuffers
-	glBindFramebuffer(GL_FRAMEBUFFER, previousFrameBuffer);
-	glBindRenderbuffer(GL_RENDERBUFFER, previousRenderBuffer);
+	[self bindFramebuffer:previousFrameBuffer toTarget:GL_FRAMEBUFFER];
+	[self bindRenderbuffer:previousRenderBuffer toTarget:GL_RENDERBUFFER];
 }
 
 - (void)finish {
@@ -122,31 +110,41 @@
 - (void)present {
 	if( !needsPresenting ) { return; }
 	
-	[glContext presentRenderbuffer:GL_RENDERBUFFER];
-    if ( !ignoreClearing ) {
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-    }
-    needsPresenting = NO;
+	if( msaaEnabled ) {
+		//Bind the MSAA and View frameBuffers and resolve
+		glBindFramebuffer(GL_READ_FRAMEBUFFER_APPLE, msaaFrameBuffer);
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER_APPLE, viewFrameBuffer);
+		glResolveMultisampleFramebufferAPPLE();
+		
+		glBindRenderbuffer(GL_RENDERBUFFER, viewRenderBuffer);
+		[glContext presentRenderbuffer:GL_RENDERBUFFER];
+		glBindFramebuffer(GL_FRAMEBUFFER, msaaFrameBuffer);
+	}
+	else {
+		[glContext presentRenderbuffer:GL_RENDERBUFFER];
+	}
+	
+	if( preserveDrawingBuffer ) {
+		glClear(GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+	}
+	else {
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+	}
+	needsPresenting = NO;
 }
-
 
 - (EJTexture *)texture {
-
-    EJCanvasContext *previousContext = scriptView.currentRenderingContext;
+	EJCanvasContext *previousContext = scriptView.currentRenderingContext;
 	scriptView.currentRenderingContext = self;
 
-    float w = width * backingStoreRatio;
-    float h = height * backingStoreRatio;
-    
-    NSMutableData *pixels = [self getPixels:1 flipped:true sx:0 sy:0 sw:w sh:h];
+	NSMutableData *pixels = [NSMutableData dataWithLength:bufferWidth * bufferHeight * 4 * sizeof(GLubyte)];
+	glReadPixels(0, 0, bufferWidth, bufferHeight, GL_RGBA, GL_UNSIGNED_BYTE, pixels.mutableBytes);
 	
-	EJTexture *texture = [[[EJTexture alloc] initWithWidth:w height:h pixels:pixels] autorelease];
-	texture.contentScale = 1;
+	[EJTexture flipPixelsY:pixels.mutableBytes bytesPerRow:bufferWidth * 4 rows:bufferHeight];
+	EJTexture *texture = [[[EJTexture alloc] initWithWidth:bufferWidth height:bufferHeight pixels:pixels] autorelease];
 
 	scriptView.currentRenderingContext = previousContext;
-    
 	return texture;
 }
-
 
 @end

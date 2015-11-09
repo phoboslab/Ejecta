@@ -30,7 +30,6 @@ typedef struct {
 } PVRTextureHeader;
 
 @implementation EJTexture
-@synthesize contentScale;
 @synthesize format;
 @synthesize drawFlippedY;
 
@@ -40,8 +39,6 @@ typedef struct {
 	// For WebGL textures; this will not create a textureStorage
 	
 	if( self = [super init] ) {
-		contentScale = 1;
-		
 		params[kEJTextureParamMinFilter] = GL_LINEAR;
 		params[kEJTextureParamMagFilter] = GL_LINEAR;
 		params[kEJTextureParamWrapS] = GL_REPEAT;
@@ -54,7 +51,6 @@ typedef struct {
 	// For loading on the main thread (blocking)
 	
 	if( self = [super init] ) {
-		contentScale = 1;
 		fullPath = [path retain];
 		
 		NSMutableData *pixels = [self loadPixelsFromPath:path];
@@ -104,7 +100,6 @@ typedef struct {
 	// This will defer loading for local images
 	
 	if( self = [super init] ) {
-		contentScale = 1;
 		fullPath = [path retain];
 		
 		BOOL isURL = [path hasPrefix:@"http:"] || [path hasPrefix:@"https:"];
@@ -156,8 +151,6 @@ typedef struct {
 	// Create an empty texture
 	
 	if( self = [super init] ) {
-		contentScale = 1;
-		
 		width = widthp;
 		height = heightp;
 		dimensionsKnown = true;
@@ -170,8 +163,6 @@ typedef struct {
 	// Creates a texture with the given pixels
 	
 	if( self = [super init] ) {
-		contentScale = 1;
-		
 		width = widthp;
 		height = heightp;
 		dimensionsKnown = true;
@@ -180,23 +171,15 @@ typedef struct {
 	return self;
 }
 
-- (id)initAsRenderTargetWithWidth:(int)widthp height:(int)heightp fbo:(GLuint)fbop contentScale:(float)contentScalep {
-	if( self = [self initWithWidth:widthp*contentScalep height:heightp*contentScalep] ) {
+- (id)initAsRenderTargetWithWidth:(int)widthp height:(int)heightp fbo:(GLuint)fbop {
+	if( self = [self initWithWidth:widthp height:heightp] ) {
 		fbo = fbop;
-		contentScale = contentScalep;
 	}
 	return self;
 }
 
 - (id)initWithUIImage:(UIImage *)image {
 	if( self = [super init] ) {
-		if( [UIScreen mainScreen].scale == 2 ) {
-			contentScale = 2;
-		}
-		else {
-			contentScale = 1;
-		}
-
 		NSMutableData *pixels = [self loadPixelsFromUIImage:image];
 		if( pixels ) {
 			[self createWithPixels:pixels format:GL_RGBA];
@@ -261,7 +244,7 @@ typedef struct {
 	return textureStorage.lastBound;
 }
 
-// When accessing the .textureId, .width, .height or .contentScale we need to
+// When accessing the .textureId, .width or .height we need to
 // ensure that lazyLoaded textures are actually loaded by now.
 
 #define EJ_ENSURE_LAZY_LOADED_STORAGE() \
@@ -297,14 +280,6 @@ typedef struct {
 	return height;
 }
 
-- (float)contentScale {
-	if( dimensionsKnown ) {
-		return contentScale;
-	}
-	EJ_ENSURE_LAZY_LOADED_STORAGE();
-	return contentScale;
-}
-
 - (id)copyWithZone:(NSZone *)zone {
 	EJTexture *copy = [[EJTexture allocWithZone:zone] init];
 	
@@ -329,7 +304,6 @@ typedef struct {
 	[fullPath release];
 	
 	format = other->format;
-	contentScale = other->contentScale;
 	fullPath = [other->fullPath retain];
 	
 	width = other->width;
@@ -483,19 +457,6 @@ typedef struct {
 	BOOL isURL = [path hasPrefix:@"http:"] || [path hasPrefix:@"https:"];
 	BOOL isDataURI = !isURL && [path hasPrefix:@"data:"];
 	
-	// Try @2x texture?
-	if( !isURL && !isDataURI && [UIScreen mainScreen].scale == 2 ) {
-		NSString *path2x = [[[path stringByDeletingPathExtension]
-			stringByAppendingString:@"@2x"]
-			stringByAppendingPathExtension:[path pathExtension]];
-		
-		if( [[NSFileManager defaultManager] fileExistsAtPath:path2x] ) {
-			contentScale = 2;
-			path = path2x;
-		}
-	}
-	
-	
 	NSMutableData *pixels;
 	if( isDataURI || isURL ) {
 		// Load directly from a Data URI string or an URL
@@ -591,10 +552,10 @@ typedef struct {
 }
 
 - (UIImage *)image {
-	return [EJTexture imageWithPixels:self.pixels width:width height:height scale:contentScale];
+	return [EJTexture imageWithPixels:self.pixels width:width height:height];
 }
 
-+ (UIImage *)imageWithPixels:(NSData *)pixels width:(int)width height:(int)height scale:(float)scale {
++ (UIImage *)imageWithPixels:(NSData *)pixels width:(int)width height:(int)height {
 	UIImage *newImage = nil;
 	
 	int nrOfColorComponents = 4; // RGBA
@@ -615,7 +576,7 @@ typedef struct {
 			bitsPerColorComponent, bitsPerColorComponent * nrOfColorComponents, width * nrOfColorComponents,
 			colorSpaceRef, bitmapInfo, dataProviderRef, NULL, interpolateAndSmoothPixels, renderingIntent
 		);
-		newImage = [[UIImage alloc] initWithCGImage:imageRef scale:scale orientation:UIImageOrientationUp];
+		newImage = [[UIImage alloc] initWithCGImage:imageRef scale:1.0 orientation:UIImageOrientationUp];
 	}
 	@finally {
 		CGDataProviderRelease(dataProviderRef);

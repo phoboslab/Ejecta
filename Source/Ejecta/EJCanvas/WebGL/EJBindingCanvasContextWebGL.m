@@ -142,11 +142,11 @@
 
 
 EJ_BIND_GET(drawingBufferWidth, ctx) {
-	return JSValueMakeNumber(ctx, renderingContext.width * renderingContext.backingStoreRatio);
+	return JSValueMakeNumber(ctx, renderingContext.width);
 }
 
 EJ_BIND_GET(drawingBufferHeight, ctx) {
-	return JSValueMakeNumber(ctx, renderingContext.height * renderingContext.backingStoreRatio);
+	return JSValueMakeNumber(ctx, renderingContext.height);
 }
 
 
@@ -283,26 +283,23 @@ EJ_BIND_FUNCTION(bindBuffer, ctx, argc, argv) {
 	return NULL;
 }
 
-#define EJ_BIND_BIND(I, NAME) \
-	EJ_BIND_FUNCTION(bind##NAME, ctx, argc, argv) { \
-		if( argc < 2 ) { return NULL; } \
-		scriptView.currentRenderingContext = renderingContext; \
-		GLenum target = JSValueToNumberFast(ctx, argv[0]); \
-		GLuint index = [EJBindingWebGL##NAME indexFromJSValue:argv[1]]; \
-		if( index ) { \
-			glBind##NAME(target, index); \
-		} \
-		else { \
-			[renderingContext bind##NAME]; \
-		} \
-		renderingContext.bound##NAME = index; \
-		return NULL; \
-	}
+EJ_BIND_FUNCTION(bindRenderbuffer, ctx, argc, argv) {
+	if( argc < 2 ) { return NULL; }
+	scriptView.currentRenderingContext = renderingContext;
+	[renderingContext
+		bindRenderbuffer:JSValueToNumberFast(ctx, argv[0])
+		toTarget:[EJBindingWebGLRenderbuffer indexFromJSValue:argv[1]]];
+	return NULL;
+}
 
-	EJ_MAP(EJ_BIND_BIND, Renderbuffer, Framebuffer);
-
-#undef EJ_BIND_BIND
-
+EJ_BIND_FUNCTION(bindFramebuffer, ctx, argc, argv) {
+	if( argc < 2 ) { return NULL; }
+	scriptView.currentRenderingContext = renderingContext;
+	[renderingContext
+		bindFramebuffer:JSValueToNumberFast(ctx, argv[0])
+		toTarget:[EJBindingWebGLFramebuffer indexFromJSValue:argv[1]]];
+	return NULL;
+}
 
 EJ_BIND_FUNCTION(bindTexture, ctx, argc, argv) {
 	if( argc < 2 ) { return NULL; }
@@ -360,23 +357,26 @@ EJ_BIND_FUNCTION(bufferData, ctx, argc, argv) {
 	scriptView.currentRenderingContext = renderingContext;
 	
 	GLenum target = JSValueToNumberFast(ctx, argv[0]);
-	size_t size;
-	GLvoid *buffer = JSTypedArrayGetDataPtr(ctx, argv[1], &size);
 	GLenum usage = JSValueToNumberFast(ctx, argv[2]);
-
-	if( buffer ) {
-		glBufferData(target, size, buffer, usage);
-	}
-	else if( JSValueIsNumber(ctx, argv[1]) ){
-		// 2nd param is not an array? Must be the size; initialize empty
+	
+	if( JSValueIsNumber(ctx, argv[1]) ) {
+		// 2nd param is a number: use as size
 		GLintptr psize = JSValueToNumberFast(ctx, argv[1]);
 		glBufferData(target, psize, NULL, usage);
 	}
+	else if( JSValueIsObject(ctx, argv[1]) ) {
+		size_t size;
+		GLvoid *buffer = JSTypedArrayGetDataPtr(ctx, argv[1], &size);
+		if( buffer ) {
+			glBufferData(target, size, buffer, usage);
+		}
+	}
+	
 	return NULL;
 }
 
 EJ_BIND_FUNCTION(bufferSubData, ctx, argc, argv) {
-	if( argc < 3 ) { return NULL; }
+	if( argc < 3 || !JSValueIsObject(ctx, argv[2]) ) { return NULL; }
 	
 	scriptView.currentRenderingContext = renderingContext;
 	
@@ -1292,7 +1292,7 @@ EJ_BIND_FUNCTION(pixelStorei, ctx, argc, argv) {
 EJ_BIND_FUNCTION_DIRECT(polygonOffset, glPolygonOffset, factor, units);
 
 EJ_BIND_FUNCTION(readPixels, ctx, argc, argv) {
-	if( argc < 7 ) { return NULL; }
+	if( argc < 7 || !JSValueIsObject(ctx, argv[6]) ) { return NULL; }
 	EJ_UNPACK_ARGV(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type);
 	
 	JSTypedArrayType arrayType = JSTypedArrayGetType(ctx, argv[6]);
@@ -1447,40 +1447,41 @@ EJ_BIND_FUNCTION(texImage2D, ctx, argc, argv) {
 		[sourceTexture maybeReleaseStorage];
 	}
 	
-	// With ArrayBufferView
+	// With NULL or ArrayBufferView
 	else if( argc == 9 ) {
 		EJ_UNPACK_ARGV_OFFSET(3, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type);
 		
-		
-		JSTypedArrayType arrayType = JSTypedArrayGetType(ctx, argv[8]);
-		if( border == 0 && EJ_ARRAY_MATCHES_TYPE(arrayType, type) ) {
-			int bytesPerPixel = EJGetBytesPerPixel(type, format);
-			
-			size_t byteLength;
-			void *pixels = JSTypedArrayGetDataPtr(ctx, argv[8], &byteLength);
-			
-			if( bytesPerPixel && byteLength >= width * height * bytesPerPixel ) {
-				if( unpackFlipY ) {
-					[EJTexture flipPixelsY:pixels bytesPerRow:(width * bytesPerPixel) rows:height];
-				}
-				if( premultiplyAlpha ) {
-					[EJTexture premultiplyPixels:pixels to:pixels byteLength:(width * height * bytesPerPixel) format:format];
-				}
-				
-				// If we write mip level 0, there's no point in keeping pixels
-				BOOL keepPixels = (level != 0);
-				
-				[targetTexture ensureMutableKeepPixels:keepPixels forTarget:bindTarget];
-				[targetTexture bindToTarget:bindTarget];
-				glTexImage2D(target, level, format, width, height, 0, format, type, pixels);
- 			}
-		}
-		else if( JSValueIsNull(ctx, argv[8]) ) {
+		if( JSValueIsNull(ctx, argv[8]) ) {
 			[targetTexture ensureMutableKeepPixels:NO forTarget:bindTarget];
 			[targetTexture bindToTarget:bindTarget];
 			void *nulled = calloc(width * height, EJGetBytesPerPixel(type, format));
 			glTexImage2D(target, level, format, width, height, 0, format, type, nulled);
 			free(nulled);
+		}
+		else if( JSValueIsObject(ctx, argv[8]) ) {
+			JSTypedArrayType arrayType = JSTypedArrayGetType(ctx, argv[8]);
+			if( border == 0 && EJ_ARRAY_MATCHES_TYPE(arrayType, type) ) {
+				int bytesPerPixel = EJGetBytesPerPixel(type, format);
+				
+				size_t byteLength;
+				void *pixels = JSTypedArrayGetDataPtr(ctx, argv[8], &byteLength);
+				
+				if( bytesPerPixel && byteLength >= width * height * bytesPerPixel ) {
+					if( unpackFlipY ) {
+						[EJTexture flipPixelsY:pixels bytesPerRow:(width * bytesPerPixel) rows:height];
+					}
+					if( premultiplyAlpha ) {
+						[EJTexture premultiplyPixels:pixels to:pixels byteLength:(width * height * bytesPerPixel) format:format];
+					}
+					
+					// If we write mip level 0, there's no point in keeping pixels
+					BOOL keepPixels = (level != 0);
+					
+					[targetTexture ensureMutableKeepPixels:keepPixels forTarget:bindTarget];
+					[targetTexture bindToTarget:bindTarget];
+					glTexImage2D(target, level, format, width, height, 0, format, type, pixels);
+				}
+			}
 		}
 	}
 
@@ -1578,39 +1579,40 @@ EJ_BIND_FUNCTION(texSubImage2D, ctx, argc, argv) {
 		[sourceTexture maybeReleaseStorage];
 	}
 	
-	// With ArrayBufferView
+	// With NULL or ArrayBufferView
 	else if( argc == 9 ) {
 		EJ_UNPACK_ARGV_OFFSET(4, GLsizei width, GLsizei height, GLenum format, GLenum type);
 		
-		
-		JSTypedArrayType arrayType = JSTypedArrayGetType(ctx, argv[8]);
-		if( EJ_ARRAY_MATCHES_TYPE(arrayType, type) ) {
-			int bytesPerPixel = EJGetBytesPerPixel(type, format);
-			
-			size_t byteLength;
-			void *pixels = JSTypedArrayGetDataPtr(ctx, argv[8], &byteLength);
-			
-			if( bytesPerPixel && byteLength >= width * height * bytesPerPixel ) {
-				if( unpackFlipY ) {
-					[EJTexture flipPixelsY:pixels bytesPerRow:(width * bytesPerPixel) rows:height];
-				}
-				if( premultiplyAlpha ) {
-					[EJTexture premultiplyPixels:pixels to:pixels byteLength:width*height*bytesPerPixel format:format];
-				}
-				
-				// Always keep previous pixels when ensuring mutability, as we're just updating
-				// a portion of the texture
-				[targetTexture ensureMutableKeepPixels:YES forTarget:bindTarget];
-				[targetTexture bindToTarget:bindTarget];
-				glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, type, pixels);
- 			}
-		}
-		else if( JSValueIsNull(ctx, argv[8]) ) {
+		if( JSValueIsNull(ctx, argv[8]) ) {
 			[targetTexture ensureMutableKeepPixels:YES forTarget:bindTarget];
 			[targetTexture bindToTarget:bindTarget];
 			void *nulled = calloc(width * height, EJGetBytesPerPixel(type, format));
 			glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, type, nulled);
 			free(nulled);
+		}
+		else if( JSValueIsObject(ctx, argv[8]) ) {
+			JSTypedArrayType arrayType = JSTypedArrayGetType(ctx, argv[8]);
+			if( EJ_ARRAY_MATCHES_TYPE(arrayType, type) ) {
+				int bytesPerPixel = EJGetBytesPerPixel(type, format);
+				
+				size_t byteLength;
+				void *pixels = JSTypedArrayGetDataPtr(ctx, argv[8], &byteLength);
+				
+				if( bytesPerPixel && byteLength >= width * height * bytesPerPixel ) {
+					if( unpackFlipY ) {
+						[EJTexture flipPixelsY:pixels bytesPerRow:(width * bytesPerPixel) rows:height];
+					}
+					if( premultiplyAlpha ) {
+						[EJTexture premultiplyPixels:pixels to:pixels byteLength:width*height*bytesPerPixel format:format];
+					}
+					
+					// Always keep previous pixels when ensuring mutability, as we're just updating
+					// a portion of the texture
+					[targetTexture ensureMutableKeepPixels:YES forTarget:bindTarget];
+					[targetTexture bindToTarget:bindTarget];
+					glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, type, pixels);
+				}
+			}
 		}
 	}
 
@@ -1791,15 +1793,7 @@ EJ_BIND_FUNCTION(vertexAttribPointer, ctx, argc, argv) {
 	return NULL;
 }
 
-EJ_BIND_FUNCTION(viewport, ctx, argc, argv) {
-	EJ_UNPACK_ARGV(GLint x, GLint y, GLsizei w, GLsizei h);
-	
-	scriptView.currentRenderingContext = renderingContext;
-	
-	float scale = renderingContext.backingStoreRatio;
-	glViewport(x * scale, y * scale, w * scale, h * scale);
-	return NULL;
-}
+EJ_BIND_FUNCTION_DIRECT(viewport, glViewport, x, y, width, height);
 
 #undef EJ_BIND_FUNCTION_DIRECT
 
