@@ -9,7 +9,9 @@
 	NSString *appID;
     VungleSDK* sdk;
     BOOL loading;
-    JSObjectRef loadCallback;
+    
+    JSObjectRef hookBeforeShow;
+    JSObjectRef hookAfterClose;
 }
 
 @end

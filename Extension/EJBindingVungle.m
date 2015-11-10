@@ -14,7 +14,8 @@
 		}
         
         loading = false;
-        loadCallback = nil;
+        hookBeforeShow = nil;
+        hookAfterClose = nil;
         
         sdk = [VungleSDK sharedSDK];
         
@@ -35,12 +36,27 @@
 - (void)dealloc {
 	[sdk setDelegate:nil];
 	[sdk release];
-    loadCallback = nil;
+
+    if (hookBeforeShow) {
+        JSValueUnprotect(scriptView.jsGlobalContext, hookBeforeShow);
+        hookBeforeShow = nil;
+    }
+
+    if (hookAfterClose) {
+        JSValueUnprotect(scriptView.jsGlobalContext, hookAfterClose);
+        hookAfterClose = nil;
+    }
+    
 	[super dealloc];
 }
 
 -(void)vungleSDKwillShowAd {
     NSLog(@"vungleSDKwillShowAd");
+    if (hookBeforeShow) {
+        [scriptView invokeCallback: hookBeforeShow thisObject: NULL argc: 0 argv: NULL];
+        JSValueUnprotect(scriptView.jsGlobalContext, hookBeforeShow);
+        hookBeforeShow = nil;
+    }
     [self triggerEvent:@"beforeShow"];
 }
 
@@ -58,6 +74,13 @@
                                                  @"willPresentProductSheet": @(willPresentProductSheet)
                                                 });
     JSValueRef params[] = { jsViewInfo };
+
+    if (hookAfterClose) {
+        [scriptView invokeCallback: hookAfterClose thisObject: NULL argc: 1 argv: params];
+        JSValueUnprotect(scriptView.jsGlobalContext, hookAfterClose);
+        hookAfterClose = nil;
+    }
+    
     [self triggerEvent:@"close" argc:1 argv:params];
 }
 
@@ -97,6 +120,16 @@ EJ_BIND_FUNCTION(setLoggingEnabled, ctx, argc, argv)
 
 EJ_BIND_FUNCTION(show, ctx, argc, argv)
 {
+
+    if (hookBeforeShow) {
+        JSValueUnprotect(scriptView.jsGlobalContext, hookBeforeShow);
+        hookBeforeShow = nil;
+    }
+    
+    if (hookAfterClose) {
+        JSValueUnprotect(scriptView.jsGlobalContext, hookAfterClose);
+        hookAfterClose = nil;
+    }
 
     /*
      Options ( VunglePlayAdOptionKey + key ) :
@@ -146,10 +179,31 @@ EJ_BIND_FUNCTION(show, ctx, argc, argv)
                 [options setObject:value forKey:fullKey];
             }else if ([key isEqualToString:@"User"]){
                 [options setObject:value forKey:fullKey];
+            }else if ([key isEqualToString:@"beforeShow"]){
+                JSStringRef funcName = JSStringCreateWithUTF8CString("beforeShow");
+                JSValueRef jsFunc = JSObjectGetProperty(ctx, jsOptions, funcName, NULL);
+                JSStringRelease(funcName);
+                hookBeforeShow = JSValueToObject(ctx, jsFunc, NULL);
+                if (hookBeforeShow) {
+                    JSValueProtect(ctx, hookBeforeShow);
+                }
+            }else if ([key isEqualToString:@"afterClose"]){
+                JSStringRef funcName = JSStringCreateWithUTF8CString("afterClose");
+                JSValueRef jsFunc = JSObjectGetProperty(ctx, jsOptions, funcName, NULL);
+                JSStringRelease(funcName);
+                hookAfterClose = JSValueToObject(ctx, jsFunc, NULL);
+                if (hookAfterClose) {
+                    JSValueProtect(ctx, hookAfterClose);
+                }
             }
         }
     }
 
+    if (hookBeforeShow) {
+        [scriptView invokeCallback: hookBeforeShow thisObject: NULL argc: 0 argv: NULL];
+        JSValueUnprotect(scriptView.jsGlobalContext, hookBeforeShow);
+        hookBeforeShow = nil;
+    }
     
     NSError *error;
 

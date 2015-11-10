@@ -9,9 +9,9 @@
     var adVungle = new Ejecta.Vungle("5632ff9e2969297047000010");
     adVungle.setLoggingEnabled(true);
 
-    adVungle.addEventListener("close", function(info) {
-        console.log(JSON.stringify(info));
-    });
+    //    adVungle.addEventListener("close", function(info) {
+    //        console.log(JSON.stringify(info));
+    //    });
     adVungle.addEventListener("closeProductSheet", function() {
         console.log("closeProductSheet");
     });
@@ -46,6 +46,12 @@
             Orientations: "portrait",
             Placement: "Placement-A",
             // User: "test-user-1",
+            beforeShow: function() {
+                console.log("beforeShow");
+            },
+            afterClose: function(info) {
+                console.log("afterClose", JSON.stringify(info));
+            },
         });
     }
 

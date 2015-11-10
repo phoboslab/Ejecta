@@ -26,6 +26,9 @@
 - (void)dealloc {
 	interstitial.delegate = nil;
 	[interstitial release];
+    if (loadCallback){
+        JSValueUnprotect(scriptView.jsGlobalContext, loadCallback);
+    }
     loadCallback = nil;
 	[super dealloc];
 }

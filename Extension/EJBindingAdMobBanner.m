@@ -53,6 +53,9 @@
 	banner.rootViewController = nil;
     banner.delegate = nil;
     [banner release];
+    if (loadCallback){
+        JSValueUnprotect(scriptView.jsGlobalContext, loadCallback);
+    }
     loadCallback = nil;
 	[super dealloc];
 }
