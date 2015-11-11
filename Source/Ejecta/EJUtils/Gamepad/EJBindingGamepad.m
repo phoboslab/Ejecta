@@ -3,7 +3,6 @@
 
 @implementation EJBindingGamepad
 @synthesize controller;
-@synthesize connected;
 
 - (id)initWithController:(GCController *)controllerp atIndex:(NSUInteger)indexp {
 	if( self = [super initWithContext:NULL argc:0 argv:NULL] ) {
@@ -19,7 +18,11 @@
 
 - (void)createWithJSObject:(JSObjectRef)obj scriptView:(EJJavaScriptView *)view {
 	[super createWithJSObject:obj scriptView:view];
-	JSValueProtect(scriptView.jsGlobalContext, obj); // FIXME
+	
+	// We have to hold on to the JS Object here as long as the gamepad is connectd
+	// and can be reached through navigator.getGamepads(). It will be unprotected
+	// in (void)disconnet.
+	JSValueProtect(scriptView.jsGlobalContext, obj);
 
 	// Initialize Axes - JS Array with Numbers
 	if( controller.extendedGamepad ) {
@@ -113,6 +116,11 @@
 	
 	
 	[mapping[kEJGamepadButtonHome] release];
+}
+
+- (void)disconnect {
+	connected = NO;
+	JSValueUnprotectSafe(scriptView.jsGlobalContext, jsObject);
 }
 
 - (void)dealloc {

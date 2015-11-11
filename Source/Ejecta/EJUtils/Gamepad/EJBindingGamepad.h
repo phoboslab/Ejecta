@@ -36,10 +36,10 @@ typedef enum {
 }
 
 - (id)initWithController:(GCController *)controller atIndex:(NSUInteger)index;
+- (void)disconnect;
 
 @property (readonly) JSObjectRef jsObject;
 @property (readonly) GCController *controller;
-@property (readwrite) BOOL connected;
 	
 @end
 

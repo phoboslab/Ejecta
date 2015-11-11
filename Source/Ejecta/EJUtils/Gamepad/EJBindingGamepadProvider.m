@@ -87,11 +87,11 @@
 	}
 	
 	if( disconnectedBinding ) {
-		disconnectedBinding.connected = NO;
 		[self triggerEvent:@"gamepaddisconnected" properties:(JSEventProperty[]){
 			{"gamepad", disconnectedBinding.jsObject},
 			{NULL, NULL},
 		}];
+		[disconnectedBinding disconnect];
 	}
 	
 	// Replace the binding with NSNull
