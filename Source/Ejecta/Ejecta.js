@@ -537,4 +537,25 @@ eventInit.visibilitychange = eventInit.pagehide = eventInit.pageshow = eventInit
 	};
 };
 
+
+// Gamepad API
+
+var gamepadProvider = null;
+var initGamepadProvider = function() {
+	if( gamepadProvider ) { return; }
+	gamepadProvider = new Ejecta.GamepadProvider();
+	
+	gamepadProvider.ongamepadconnected = gamepadProvider.ongamepaddisconnected = function(ev) {
+		document.dispatchEvent(ev);
+	};
+};
+
+navigator.getGamepads = function() {
+	initGamepadProvider();
+	return gamepadProvider.getGamepads();
+};
+
+eventInit.gamepadconnected = eventInit.gamepaddisconnected = initGamepadProvider;
+
+
 })(this);

@@ -31,6 +31,7 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 @synthesize isPaused;
 @synthesize hasScreenCanvas;
 @synthesize jsGlobalContext;
+@synthesize exitOnMenuPress;
 
 @synthesize currentRenderingContext;
 @synthesize openGLContext;
@@ -63,6 +64,7 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
     appFolder = [folder retain];
     
     isPaused = false;
+	exitOnMenuPress = true;
     
     // CADisplayLink (and NSNotificationCenter?) retains it's target, but this
     // is causing a retain loop - we can't completely release the scriptView
@@ -313,7 +315,7 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 }
 
 - (void)logException:(JSValueRef)exception ctx:(JSContextRef)ctxp {
-	if( !exception ) return;
+	if( !exception ) { return; }
 	
 	JSStringRef jsLinePropertyName = JSStringCreateWithUTF8CString("line");
 	JSStringRef jsFilePropertyName = JSStringCreateWithUTF8CString("sourceURL");
@@ -432,6 +434,12 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
 	[touchDelegate triggerEvent:@"touchmove" all:event.allTouches changed:touches remaining:event.allTouches];
+}
+
+-(void)pressesBegan:(NSSet*)presses withEvent:(UIPressesEvent *)event {
+	if( exitOnMenuPress && ((UIPress *)presses.anyObject).type == UIPressTypeMenu ) {
+		return [super pressesBegan:presses withEvent:event];
+	}
 }
 
 
