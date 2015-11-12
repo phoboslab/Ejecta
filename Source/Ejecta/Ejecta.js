@@ -188,7 +188,7 @@ window.Event = function (type) {
 
 window.location = { href: 'index' };
 window.location.reload = function(){
-	ejecta.reload();
+	ejecta.load("index.js");
 };
 
 // Set up a "fake" HTMLElement
