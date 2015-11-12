@@ -34,8 +34,6 @@ EJ_BIND_FUNCTION(getPicture, ctx, argc, argv) {
 	maxJsHeight          = options[@"maxHeight"]      ? [options[@"maxHeight"] floatValue]      : maxTexSize / [UIScreen mainScreen].scale;
 	float popupX         = options[@"popupX"]         ? [options[@"popupX"] floatValue]         : 0.0f;
 	float popupY         = options[@"popupY"]         ? [options[@"popupY"] floatValue]         : 0.0f;
-//	float popupWidth     = options[@"popupWidth"]     ? [options[@"popupWidth"] floatValue]     : 1.0f;
-//	float popupHeight    = options[@"popupHeight"]    ? [options[@"popupHeight"] floatValue]    : 1.0f;
 	
 	// Source type validation
 	if( ![EJBindingImagePicker isSourceTypeAvailable:sourceType] ) {
@@ -68,8 +66,6 @@ EJ_BIND_FUNCTION(getPicture, ctx, argc, argv) {
 	if( pickerType == kEJImagePickerTypePopup ) {
 		picker.modalPresentationStyle = UIModalPresentationPopover;
 		UIPopoverPresentationController *popover = picker.popoverPresentationController;
-		// FIXME!? No way to resize the popover!?
-//		popover.preferredContentSize = CGSizeMake(popupWidth, popupHeight);
 		popover.sourceRect = CGRectMake(popupX,popupY,0,0);
 	}
 	
