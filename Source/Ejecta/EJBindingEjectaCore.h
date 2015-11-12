@@ -14,7 +14,8 @@ typedef enum {
 } EJCoreAudioSession;
 
 @interface EJBindingEjectaCore : EJBindingBase {
-	NSString *urlToOpen;
+	NSString *currentIndexScript;
+    NSString *urlToOpen;
 	JSObjectRef getTextCallback;
 	NSString *deviceName;
 	EJCoreAudioSession audioSession;

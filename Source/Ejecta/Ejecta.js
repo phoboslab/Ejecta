@@ -52,7 +52,7 @@ window.console = {
 	// Arrays are shortened to the first 32 entries.
 	// To log an Object and traverse all levels, use console.logJSON()
 	_arrayMaxLength: 32,
-	
+
 	_toString: function(obj, deep) {
 		if( deep ) {
 			return JSON.stringify(obj);
@@ -76,7 +76,7 @@ window.console = {
 			return '{'+s+'}';
 		}
 	},
-	
+
 	_toStringFlat: function(obj) {
 		if( typeof(obj) === 'function' ) {
 			return '[Function]';
@@ -88,7 +88,7 @@ window.console = {
 			return obj;
 		}
 	},
-	
+
 	_log: function(level, args, deep) {
 		var s = level + ':';
 		for (var i = 0; i < args.length; i++) {
@@ -187,6 +187,9 @@ window.Event = function (type) {
 };
 
 window.location = { href: 'index' };
+window.location.reload = function(){
+	ejecta.reload();
+};
 
 // Set up a "fake" HTMLElement
 HTMLElement = function( tagName ){
@@ -568,7 +571,7 @@ var gamepadProvider = null;
 var initGamepadProvider = function() {
 	if( gamepadProvider ) { return; }
 	gamepadProvider = new Ejecta.GamepadProvider();
-	
+
 	gamepadProvider.ongamepadconnected = gamepadProvider.ongamepaddisconnected = function(ev) {
 		document.dispatchEvent(ev);
 	};
