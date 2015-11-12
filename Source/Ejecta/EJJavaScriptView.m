@@ -438,11 +438,18 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 	[touchDelegate triggerEvent:@"touchmove" all:event.allTouches changed:touches remaining:event.allTouches];
 }
 
+
+#if __IPHONE_OS_VERSION_MAX_ALLOWED < 90000
+
+// TODO
+
+#else
 -(void)pressesBegan:(NSSet*)presses withEvent:(UIPressesEvent *)event {
 	if( exitOnMenuPress && ((UIPress *)presses.anyObject).type == UIPressTypeMenu ) {
 		return [super pressesBegan:presses withEvent:event];
 	}
 }
+#endif
 
 
 //TODO: Does this belong in this class?
