@@ -48,6 +48,7 @@
 	BOOL hasScreenCanvas;
 
 	BOOL isPaused;
+	BOOL exitOnMenuPress;
 	
 	EJNonRetainingProxy	*proxy;
 
@@ -85,6 +86,7 @@
 @property (nonatomic, assign) BOOL pauseOnEnterBackground;
 @property (nonatomic, assign, getter = isPaused) BOOL isPaused; // Pauses drawing/updating of the JSView
 @property (nonatomic, assign) BOOL hasScreenCanvas;
+@property (nonatomic, assign) BOOL exitOnMenuPress;
 
 @property (nonatomic, readonly) JSGlobalContextRef jsGlobalContext;
 @property (nonatomic, readonly) EJSharedOpenGLContext *openGLContext;

@@ -48,9 +48,9 @@ window.canvas.type = 'canvas';
 window.console = {
 
 	// We try to be sensible of how much data we want to log here. Only the first
-	// level of an Object or Array is parsed. Each subsequent levels are ommited.
+	// level of an Object or Array is parsed. All subsequent levels are ommited.
 	// Arrays are shortened to the first 32 entries.
-	// To log Object and traverse all levels, use console.logJSON()
+	// To log an Object and traverse all levels, use console.logJSON()
 	_arrayMaxLength: 32,
 	
 	_toString: function(obj, deep) {
@@ -560,5 +560,26 @@ eventInit.visibilitychange = eventInit.pagehide = eventInit.pageshow = eventInit
 		document.dispatchEvent(loadEvent);
 	};
 };
+
+
+// Gamepad API
+
+var gamepadProvider = null;
+var initGamepadProvider = function() {
+	if( gamepadProvider ) { return; }
+	gamepadProvider = new Ejecta.GamepadProvider();
+	
+	gamepadProvider.ongamepadconnected = gamepadProvider.ongamepaddisconnected = function(ev) {
+		document.dispatchEvent(ev);
+	};
+};
+
+navigator.getGamepads = function() {
+	initGamepadProvider();
+	return gamepadProvider.getGamepads();
+};
+
+eventInit.gamepadconnected = eventInit.gamepaddisconnected = initGamepadProvider;
+
 
 })(this);

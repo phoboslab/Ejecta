@@ -17,11 +17,11 @@
 	// Optionally set the idle timer disabled, this prevents the device from sleep when
 	// not being interacted with by touch. ie. games with motion control.
 	application.idleTimerDisabled = YES;
-
+	
 	window = [[UIWindow alloc] initWithFrame:UIScreen.mainScreen.bounds];
 	[self loadViewControllerWithScriptAtPath:@"index.js"];
 	
-    [window makeKeyAndVisible];
+	[window makeKeyAndVisible];
     return YES;
 }
 
