@@ -32,6 +32,7 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 @synthesize hasScreenCanvas;
 @synthesize jsGlobalContext;
 @synthesize exitOnMenuPress;
+@synthesize startTime;
 
 @synthesize currentRenderingContext;
 @synthesize openGLContext;
@@ -80,6 +81,7 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
     backgroundQueue.maxConcurrentOperationCount = 1;
     
     timers = [[EJTimerCollection alloc] initWithScriptView:self];
+	startTime = NSDate.timeIntervalSinceReferenceDate;
     
     displayLink = [[CADisplayLink displayLinkWithTarget:proxy selector:@selector(run:)] retain];
     [displayLink setFrameInterval:1];

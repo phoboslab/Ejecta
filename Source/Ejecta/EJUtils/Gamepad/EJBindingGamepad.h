@@ -27,7 +27,6 @@ typedef enum {
 @interface EJBindingGamepad : EJBindingBase {
 	GCController *controller;
 	
-	NSTimeInterval baseTime;
 	NSUInteger index;
 	BOOL connected;
 	

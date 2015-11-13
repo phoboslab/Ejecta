@@ -11,7 +11,6 @@ typedef enum {
 @interface EJBindingEjectaCore : EJBindingBase {
 	NSString *deviceName;
 	EJCoreAudioSession audioSession;
-	NSTimeInterval baseTime;
 }
 
 @property (readwrite, nonatomic) EJCoreAudioSession audioSession;
