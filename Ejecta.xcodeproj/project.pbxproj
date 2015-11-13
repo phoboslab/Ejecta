@@ -136,10 +136,8 @@
 		B6F7149F1BCF126A0082A90F /* EJTexture.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE63C166682700087CF94 /* EJTexture.m */; };
 		B6F714A01BCF126A0082A90F /* EJConvert.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE63E166682700087CF94 /* EJConvert.m */; };
 		B6F714A11BCF126A0082A90F /* EJTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE641166682700087CF94 /* EJTimer.m */; };
-		B6F714A21BCF126A0082A90F /* EJBindingAdBanner.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE646166682700087CF94 /* EJBindingAdBanner.m */; };
 		B6F714A31BCF126A0082A90F /* EJBindingGameCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE648166682700087CF94 /* EJBindingGameCenter.m */; };
 		B6F714A41BCF126A0082A90F /* EJBindingHttpRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE64A166682700087CF94 /* EJBindingHttpRequest.m */; };
-		B6F714A51BCF126A0082A90F /* EJBindingImagePicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 33BE9DE1186817D900E0D16E /* EJBindingImagePicker.m */; };
 		B6F714A61BCF126A0082A90F /* EJBindingLocalStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE64C166682700087CF94 /* EJBindingLocalStorage.m */; };
 		B6F714A71BCF126A0082A90F /* EJBindingTouchInput.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE64E166682700087CF94 /* EJBindingTouchInput.m */; };
 		B6F714A81BCF126A0082A90F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE651166682700087CF94 /* AppDelegate.m */; };
@@ -157,7 +155,6 @@
 		B6F714B41BCF126A0082A90F /* EJImageData.m in Sources */ = {isa = PBXBuildFile; fileRef = B6F114F71676BD40001F1324 /* EJImageData.m */; };
 		B6F714B51BCF126A0082A90F /* EJPath.mm in Sources */ = {isa = PBXBuildFile; fileRef = B6F114F91676BD40001F1324 /* EJPath.mm */; };
 		B6F714B61BCF126A0082A90F /* EJConvertColorRGBA.m in Sources */ = {isa = PBXBuildFile; fileRef = B6F115051676BE18001F1324 /* EJConvertColorRGBA.m */; };
-		B6F714B71BCF126A0082A90F /* EJBindingDeviceMotion.m in Sources */ = {isa = PBXBuildFile; fileRef = B6F115191677F088001F1324 /* EJBindingDeviceMotion.m */; };
 		B6F714B81BCF126A0082A90F /* EJBindingCanvasContextWebGL.m in Sources */ = {isa = PBXBuildFile; fileRef = B6F1154C167A7D17001F1324 /* EJBindingCanvasContextWebGL.m */; };
 		B6F714B91BCF126A0082A90F /* EJCanvasContextWebGL.m in Sources */ = {isa = PBXBuildFile; fileRef = B6F1154F167A7DA1001F1324 /* EJCanvasContextWebGL.m */; };
 		B6F714BA1BCF126A0082A90F /* EJBindingWebGLObjects.m in Sources */ = {isa = PBXBuildFile; fileRef = B6F11555167BD59B001F1324 /* EJBindingWebGLObjects.m */; };
@@ -165,7 +162,6 @@
 		B6F714BC1BCF126A0082A90F /* EJBindingCanvasPattern.m in Sources */ = {isa = PBXBuildFile; fileRef = B664B98A1699F3380093E04E /* EJBindingCanvasPattern.m */; };
 		B6F714BD1BCF126A0082A90F /* EJCanvasContextWebGLTexture.m in Sources */ = {isa = PBXBuildFile; fileRef = B66847581823FEDF00ABCDF9 /* EJCanvasContextWebGLTexture.m */; };
 		B6F714BE1BCF126A0082A90F /* EJCanvasPattern.m in Sources */ = {isa = PBXBuildFile; fileRef = B664B98D1699F49B0093E04E /* EJCanvasPattern.m */; };
-		B6F714BF1BCF126A0082A90F /* EJBindingGeolocation.m in Sources */ = {isa = PBXBuildFile; fileRef = B6D4B280183CDFBB008251EB /* EJBindingGeolocation.m */; };
 		B6F714C01BCF126A0082A90F /* EJCanvasGradient.m in Sources */ = {isa = PBXBuildFile; fileRef = B6A0F4AE16A9D86000477789 /* EJCanvasGradient.m */; };
 		B6F714C11BCF126A0082A90F /* EJBindingCanvasGradient.m in Sources */ = {isa = PBXBuildFile; fileRef = B6A0F4B316AB0B4500477789 /* EJBindingCanvasGradient.m */; };
 		B6F714C21BCF126A0082A90F /* EJBindingKeyInput.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EBC19BD16CECE190036F9F3 /* EJBindingKeyInput.m */; };
@@ -979,10 +975,8 @@
 				B6F7149F1BCF126A0082A90F /* EJTexture.m in Sources */,
 				B6F714A01BCF126A0082A90F /* EJConvert.m in Sources */,
 				B6F714A11BCF126A0082A90F /* EJTimer.m in Sources */,
-				B6F714A21BCF126A0082A90F /* EJBindingAdBanner.m in Sources */,
 				B6F714A31BCF126A0082A90F /* EJBindingGameCenter.m in Sources */,
 				B6F714A41BCF126A0082A90F /* EJBindingHttpRequest.m in Sources */,
-				B6F714A51BCF126A0082A90F /* EJBindingImagePicker.m in Sources */,
 				B6F714A61BCF126A0082A90F /* EJBindingLocalStorage.m in Sources */,
 				B6F714A71BCF126A0082A90F /* EJBindingTouchInput.m in Sources */,
 				B6F714A81BCF126A0082A90F /* AppDelegate.m in Sources */,
@@ -1000,7 +994,6 @@
 				B6F714B41BCF126A0082A90F /* EJImageData.m in Sources */,
 				B6F714B51BCF126A0082A90F /* EJPath.mm in Sources */,
 				B6F714B61BCF126A0082A90F /* EJConvertColorRGBA.m in Sources */,
-				B6F714B71BCF126A0082A90F /* EJBindingDeviceMotion.m in Sources */,
 				B6F714B81BCF126A0082A90F /* EJBindingCanvasContextWebGL.m in Sources */,
 				B6F714B91BCF126A0082A90F /* EJCanvasContextWebGL.m in Sources */,
 				B6F714BA1BCF126A0082A90F /* EJBindingWebGLObjects.m in Sources */,
@@ -1009,7 +1002,6 @@
 				B6F714BD1BCF126A0082A90F /* EJCanvasContextWebGLTexture.m in Sources */,
 				B6F714BE1BCF126A0082A90F /* EJCanvasPattern.m in Sources */,
 				B6B41FA11BF25A7F0075C00F /* EJBindingGamepadButton.m in Sources */,
-				B6F714BF1BCF126A0082A90F /* EJBindingGeolocation.m in Sources */,
 				B6F714C01BCF126A0082A90F /* EJCanvasGradient.m in Sources */,
 				B6F714C11BCF126A0082A90F /* EJBindingCanvasGradient.m in Sources */,
 				B6F714C21BCF126A0082A90F /* EJBindingKeyInput.m in Sources */,
