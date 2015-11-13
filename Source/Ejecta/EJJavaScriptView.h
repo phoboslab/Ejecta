@@ -23,6 +23,10 @@
 - (void)triggerEvent:(NSString *)name all:(NSSet *)all changed:(NSSet *)changed remaining:(NSSet *)remaining;
 @end
 
+@protocol EJPressDelegate
+- (void)triggerEvent:(NSString *)name presses:(NSSet *)presses;
+@end
+
 @protocol EJDeviceMotionDelegate
 - (void)triggerDeviceMotionEvents;
 @end
@@ -65,6 +69,7 @@
 
 	NSObject<EJWindowEventsDelegate> *windowEventsDelegate;
 	NSObject<EJTouchDelegate> *touchDelegate;
+    NSObject<EJPressDelegate> *pressDelegate;
 	NSObject<EJDeviceMotionDelegate> *deviceMotionDelegate;
 	EJCanvasContext<EJPresentable> *screenRenderingContext;
 
@@ -88,6 +93,7 @@
 
 @property (nonatomic, retain) NSObject<EJWindowEventsDelegate> *windowEventsDelegate;
 @property (nonatomic, retain) NSObject<EJTouchDelegate> *touchDelegate;
+@property (nonatomic, retain) NSObject<EJPressDelegate> *pressDelegate;
 @property (nonatomic, retain) NSObject<EJDeviceMotionDelegate> *deviceMotionDelegate;
 
 @property (nonatomic, retain) EJCanvasContext *currentRenderingContext;
