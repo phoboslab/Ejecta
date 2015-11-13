@@ -56,6 +56,7 @@
 	EJClassLoader *classLoader;
 
 	EJTimerCollection *timers;
+	NSTimeInterval startTime;
 	
 	EJSharedOpenGLContext *openGLContext;
 	EJSharedTextureCache *textureCache;
@@ -87,6 +88,7 @@
 @property (nonatomic, assign, getter = isPaused) BOOL isPaused; // Pauses drawing/updating of the JSView
 @property (nonatomic, assign) BOOL hasScreenCanvas;
 @property (nonatomic, assign) BOOL exitOnMenuPress;
+@property (nonatomic, readonly) NSTimeInterval startTime;
 
 @property (nonatomic, readonly) JSGlobalContextRef jsGlobalContext;
 @property (nonatomic, readonly) EJSharedOpenGLContext *openGLContext;

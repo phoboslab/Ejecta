@@ -18,7 +18,6 @@ typedef enum {
 	JSObjectRef getTextCallback;
 	NSString *deviceName;
 	EJCoreAudioSession audioSession;
-	NSTimeInterval baseTime;
 }
 
 @property (readwrite, nonatomic) EJCoreAudioSession audioSession;

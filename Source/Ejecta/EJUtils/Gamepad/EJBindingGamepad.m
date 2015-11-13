@@ -11,7 +11,6 @@
 		connected = YES;
 		
 		controller.playerIndex = index;
-		baseTime = NSDate.timeIntervalSinceReferenceDate;
 	}
 	return self;
 }
@@ -148,8 +147,8 @@ EJ_BIND_GET(connected, ctx) {
 }
 
 EJ_BIND_GET(timestamp, ctx) {
-	NSTimeInterval now = NSDate.timeIntervalSinceReferenceDate;
-	return JSValueMakeNumber(ctx, (now - baseTime) * 1000.0);
+	double time = NSDate.timeIntervalSinceReferenceDate - scriptView.startTime;
+	return JSValueMakeNumber(ctx, time * 1000.0);
 }
 
 EJ_BIND_GET(mapping, ctx) {
