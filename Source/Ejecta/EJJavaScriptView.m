@@ -444,6 +444,12 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 	}
 }
 
+-(void)pressesEnded:(NSSet*)presses withEvent:(UIPressesEvent *)event {
+	if( exitOnMenuPress && ((UIPress *)presses.anyObject).type == UIPressTypeMenu ) {
+		return [super pressesEnded:presses withEvent:event];
+	}
+}
+
 
 //TODO: Does this belong in this class?
 #pragma mark
