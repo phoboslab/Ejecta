@@ -447,9 +447,15 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 
 #else
 -(void)pressesBegan:(NSSet*)presses withEvent:(UIPressesEvent *)event {
-	if( exitOnMenuPress && ((UIPress *)presses.anyObject).type == UIPressTypeMenu ) {
-		return [super pressesBegan:presses withEvent:event];
-	}
+    if( exitOnMenuPress && ((UIPress *)presses.anyObject).type == UIPressTypeMenu ) {
+        return [super pressesBegan:presses withEvent:event];
+    }
+}
+
+-(void)pressesEnded:(NSSet*)presses withEvent:(UIPressesEvent *)event {
+    if( exitOnMenuPress && ((UIPress *)presses.anyObject).type == UIPressTypeMenu ) {
+        return [super pressesEnded:presses withEvent:event];
+    }
 }
 #endif
 
