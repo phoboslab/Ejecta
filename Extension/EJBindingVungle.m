@@ -142,6 +142,15 @@ EJ_BIND_FUNCTION(show, ctx, argc, argv)
      Placement       string
      User        string
      * ExtraInfoDictionary  (don't support)
+     
+     {
+      "videoLength":30,
+      "playTime":30,
+      "completedView":1,
+      "willPresentProductSheet":0,
+      "didDownload":0
+     }
+     
     */
     
     NSMutableDictionary* options = nil;

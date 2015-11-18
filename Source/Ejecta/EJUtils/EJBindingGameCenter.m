@@ -38,8 +38,10 @@ EJ_BIND_FUNCTION( authenticate, ctx, argc, argv ) {
 		JSValueProtect(ctx, callback);
 	}
 	
-	GKLocalPlayer.localPlayer.authenticateHandler = ^(UIViewController *viewController, NSError *error) {
-		authed = !error;
+    GKLocalPlayer *localPlayer = [GKLocalPlayer localPlayer];
+	localPlayer.authenticateHandler = ^(UIViewController *viewController, NSError *error) {
+
+        authed = localPlayer.isAuthenticated; //!error;
 
 		if( authed ) {
 			NSLog(@"GameKit: Authed.");
@@ -89,7 +91,7 @@ EJ_BIND_FUNCTION( softAuthenticate, ctx, argc, argv ) {
 }
 
 
-// reportScore( category, score, [contextNum], cb )
+// reportScore( category, score, [contextNum], callback )
 EJ_BIND_FUNCTION( reportScore, ctx, argc, argv ) {
 	if (argc < 2) {
 		return NULL;
@@ -99,12 +101,13 @@ EJ_BIND_FUNCTION( reportScore, ctx, argc, argv ) {
 	}
 	NSString *category = JSValueToNSString(ctx, argv[0]);
 	int64_t score = JSValueToNumberFast(ctx, argv[1]);
-	uint64_t contextNum = 0;
+	
 	JSObjectRef callback = NULL;
+	uint64_t contextNum = 0;
 	if (argc > 3) {
 		contextNum = JSValueToNumberFast(ctx, argv[2]);
 		if (JSValueIsObject(ctx, argv[3])) {
-			callback = JSValueToObject(ctx, argv[2], NULL);
+			callback = JSValueToObject(ctx, argv[3], NULL);
 		}
 	}
 	else if (argc == 3) {
@@ -140,8 +143,10 @@ EJ_BIND_FUNCTION( showLeaderboard, ctx, argc, argv ) {
 	if( !authed ) { NSLog(@"GameKit Error: Not authed. Can't show leaderboard."); return NULL; }
 	
 	GKGameCenterViewController* vc = [[GKGameCenterViewController alloc] init];
-    vc.viewState = GKGameCenterViewControllerStateLeaderboards;
-	vc.leaderboardIdentifier = JSValueToNSString(ctx, argv[0]);
+	#if !TARGET_OS_TV
+		vc.viewState = GKGameCenterViewControllerStateLeaderboards;
+		vc.leaderboardIdentifier = JSValueToNSString(ctx, argv[0]);
+	#endif
     vc.gameCenterDelegate = self;
     [scriptView.window.rootViewController presentViewController:vc animated:YES completion:nil];
 	viewIsActive = true;
@@ -150,34 +155,33 @@ EJ_BIND_FUNCTION( showLeaderboard, ctx, argc, argv ) {
 }
 
 - (void)reportAchievementWithIdentifier:(NSString *)identifier
-                             percentage:(float)percentage isIncrement:(BOOL)isIncrement
-                                    ctx:(JSContextRef)ctx callback:(JSObjectRef)callback {
-	if (!authed) {
-		NSLog(@"GameKit Error: Not authed. Can't report achievment."); return;
-	}
-
+	percentage:(float)percentage isIncrement:(BOOL)isIncrement
+	ctx:(JSContextRef)ctx callback:(JSObjectRef)callback
+{
+	if( !authed ) { NSLog(@"GameKit Error: Not authed. Can't report achievment."); return; }
+	
 	GKAchievement *achievement = achievements[identifier];
-	if (achievement) {
+	if( achievement ) {		
 		// Already reported with same or higher percentage or already at 100%?
-		if (
+		if(
 		    achievement.completed || achievement.percentComplete == 100.0f ||
-		    (!isIncrement && achievement.percentComplete >= percentage)
-		    ) {
+			(!isIncrement && achievement.percentComplete >= percentage)
+		) {
 			return;
 		}
-
-		if (isIncrement) {
-			percentage = MIN(achievement.percentComplete + percentage, 100.0f);
+		
+		if( isIncrement ) {
+			percentage = MIN( achievement.percentComplete + percentage, 100.0f );
 		}
 	}
 	else {
 		achievement = [[[GKAchievement alloc] initWithIdentifier:identifier] autorelease];
 	}
-
+	
 	achievement.showsCompletionBanner = YES;
 	achievement.percentComplete = percentage;
-
-	if (callback) {
+	
+	if( callback ) {
 		JSValueProtect(ctx, callback);
 	}
 	
@@ -193,13 +197,10 @@ EJ_BIND_FUNCTION( showLeaderboard, ctx, argc, argv ) {
 	}];
 }
 
-// reportAchievement( identifier, percentage )
-EJ_BIND_FUNCTION(reportAchievement, ctx, argc, argv)
-{
-	if (argc < 2) {
-		return NULL;
-	}
-
+// reportAchievement( identifier, percentage, callback )
+EJ_BIND_FUNCTION( reportAchievement, ctx, argc, argv ) {
+	if( argc < 2 ) { return NULL; }
+	
 	NSString *identifier = JSValueToNSString(ctx, argv[0]);
 	float percent = JSValueToNumberFast(ctx, argv[1]);
 	
@@ -212,13 +213,10 @@ EJ_BIND_FUNCTION(reportAchievement, ctx, argc, argv)
 	return NULL;
 }
 
-// reportAchievementAdd( identifier, percentage )
-EJ_BIND_FUNCTION(reportAchievementAdd, ctx, argc, argv)
-{
-	if (argc < 2) {
-		return NULL;
-	}
-
+// reportAchievementAdd( identifier, percentage, callback )
+EJ_BIND_FUNCTION( reportAchievementAdd, ctx, argc, argv ) {
+	if( argc < 2 ) { return NULL; }
+	
 	NSString *identifier = JSValueToNSString(ctx, argv[0]);
 	float percent = JSValueToNumberFast(ctx, argv[1]);
 	
@@ -237,7 +235,9 @@ EJ_BIND_FUNCTION( showAchievements, ctx, argc, argv ) {
 	if( !authed ) { NSLog(@"GameKit Error: Not authed. Can't show achievements."); return NULL; }
 	
 	GKGameCenterViewController* vc = [[GKGameCenterViewController alloc] init];
-    vc.viewState = GKGameCenterViewControllerStateAchievements;
+	#if !TARGET_OS_TV
+		vc.viewState = GKGameCenterViewControllerStateAchievements;
+	#endif
     vc.gameCenterDelegate = self;
     [scriptView.window.rootViewController presentViewController:vc animated:YES completion:nil];
 	viewIsActive = true;
@@ -245,8 +245,7 @@ EJ_BIND_FUNCTION( showAchievements, ctx, argc, argv ) {
 	return NULL;
 }
 
-EJ_BIND_GET(authed, ctx)
-{
+EJ_BIND_GET(authed, ctx) {
 	return JSValueMakeBoolean(ctx, authed);
 }
 
@@ -270,7 +269,7 @@ EJ_BIND_GET(authed, ctx)
 #define GKPlayerToNSDict(player) @{ \
 		@"alias": player.alias, \
 		@"displayName": player.displayName, \
-		@"playerID": player.playerID \
+		@"playerID": player.playerID, \
 	}
 
 // loadFriends( callback(error, players[]){} )

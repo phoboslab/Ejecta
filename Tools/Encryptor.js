@@ -36,7 +36,7 @@ if (!module.parent) {
 
 
 function encrypt(fileName, outputFileName, secretKey, projectPath) {
-
+    secretKey = secretKey || DEFAULT_SECRET_KEY;
     console.log("File : " + fileName, "  Key : " + secretKey);
 
     var orignalBuffer = fs.readFileSync(fileName);
@@ -67,6 +67,7 @@ function encrypt(fileName, outputFileName, secretKey, projectPath) {
 }
 
 function unencrypt(fileName, outputFileName, secretKey) {
+    secretKey = secretKey || DEFAULT_SECRET_KEY;
     var newBuffer = decode(fileName, secretKey);
     fs.writeFileSync(outputFileName, newBuffer);
 }
