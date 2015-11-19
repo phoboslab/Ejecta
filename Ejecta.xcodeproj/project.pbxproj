@@ -20,12 +20,13 @@
 		B607AC33132EA75F00D7C3EA /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B607AC32132EA75F00D7C3EA /* AudioToolbox.framework */; };
 		B607AD0A132EB51000D7C3EA /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B607AD09132EB51000D7C3EA /* OpenGLES.framework */; };
 		B607AD10132EB52400D7C3EA /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B607AD0F132EB52400D7C3EA /* QuartzCore.framework */; };
+		B608CC831BFDDF4600403582 /* Assets-TV.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B608CC821BFDDF4600403582 /* Assets-TV.xcassets */; };
+		B608CC871BFDE43300403582 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B608CC861BFDE43300403582 /* Assets.xcassets */; };
 		B62436681666851E0046B8C7 /* Ejecta.js in Resources */ = {isa = PBXBuildFile; fileRef = B64CE63F166682700087CF94 /* Ejecta.js */; };
-		B624B6A31BD93915004D96A1 /* Images-TV.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B624B6A21BD93915004D96A1 /* Images-TV.xcassets */; };
 		B630048916C1A2390036D8D4 /* EJBindingTextMetrics.m in Sources */ = {isa = PBXBuildFile; fileRef = B630048816C1A1960036D8D4 /* EJBindingTextMetrics.m */; };
 		B630048C16CB098D0036D8D4 /* EJClassLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = B630048B16CB09850036D8D4 /* EJClassLoader.m */; };
 		B637065E1A27BD5600F42B90 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = B637065D1A27BD5600F42B90 /* LaunchScreen.xib */; };
-		B63706601A27C15200F42B90 /* ejecta-logo.png in Resources */ = {isa = PBXBuildFile; fileRef = B637065F1A27C15200F42B90 /* ejecta-logo.png */; };
+		B63706601A27C15200F42B90 /* LaunchScreen-Logo.png in Resources */ = {isa = PBXBuildFile; fileRef = B637065F1A27C15200F42B90 /* LaunchScreen-Logo.png */; };
 		B63D256616E8DE23007E6034 /* SRWebSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = B63D256316E8DE23007E6034 /* SRWebSocket.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		B63D256816E8DF23007E6034 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B63D256716E8DF23007E6034 /* CFNetwork.framework */; };
 		B63D256A16E8DF33007E6034 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B63D256916E8DF33007E6034 /* Security.framework */; };
@@ -53,10 +54,6 @@
 		B64CE67E166682700087CF94 /* EJBindingTouchInput.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE64E166682700087CF94 /* EJBindingTouchInput.m */; };
 		B64CE67F166682700087CF94 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE651166682700087CF94 /* AppDelegate.m */; };
 		B64CE682166682700087CF94 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE661166682700087CF94 /* main.m */; };
-		B64CE695166682B10087CF94 /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = B64CE68A166682B10087CF94 /* Icon-72.png */; };
-		B64CE696166682B10087CF94 /* Icon-72@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B64CE68B166682B10087CF94 /* Icon-72@2x.png */; };
-		B64CE697166682B10087CF94 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = B64CE68C166682B10087CF94 /* Icon.png */; };
-		B64CE698166682B10087CF94 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B64CE68D166682B10087CF94 /* Icon@2x.png */; };
 		B664B98B1699F3380093E04E /* EJBindingCanvasPattern.m in Sources */ = {isa = PBXBuildFile; fileRef = B664B98A1699F3380093E04E /* EJBindingCanvasPattern.m */; };
 		B664B98E1699F49C0093E04E /* EJCanvasPattern.m in Sources */ = {isa = PBXBuildFile; fileRef = B664B98D1699F49B0093E04E /* EJCanvasPattern.m */; };
 		B66847591823FEDF00ABCDF9 /* EJCanvasContextWebGLTexture.m in Sources */ = {isa = PBXBuildFile; fileRef = B66847581823FEDF00ABCDF9 /* EJCanvasContextWebGLTexture.m */; };
@@ -109,16 +106,8 @@
 		B6F629D116F353C800F16BAC /* EJBindingCanvasStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = B6F629D016F353C700F16BAC /* EJBindingCanvasStyle.m */; };
 		B6F714801BCF116E0082A90F /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6F7147F1BCF116E0082A90F /* JavaScriptCore.framework */; };
 		B6F714841BCF126A0082A90F /* App in Resources */ = {isa = PBXBuildFile; fileRef = B68C5AEF132E6CD60015092E /* App */; };
-		B6F714861BCF126A0082A90F /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = B64CE68A166682B10087CF94 /* Icon-72.png */; };
-		B6F714871BCF126A0082A90F /* Icon-72@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B64CE68B166682B10087CF94 /* Icon-72@2x.png */; };
-		B6F714881BCF126A0082A90F /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = B64CE68C166682B10087CF94 /* Icon.png */; };
-		B6F714891BCF126A0082A90F /* ejecta-logo.png in Resources */ = {isa = PBXBuildFile; fileRef = B637065F1A27C15200F42B90 /* ejecta-logo.png */; };
-		B6F7148A1BCF126A0082A90F /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B64CE68D166682B10087CF94 /* Icon@2x.png */; };
+		B6F714891BCF126A0082A90F /* LaunchScreen-Logo.png in Resources */ = {isa = PBXBuildFile; fileRef = B637065F1A27C15200F42B90 /* LaunchScreen-Logo.png */; };
 		B6F7148B1BCF126A0082A90F /* Ejecta.js in Resources */ = {isa = PBXBuildFile; fileRef = B64CE63F166682700087CF94 /* Ejecta.js */; };
-		B6F7148C1BCF126A0082A90F /* Icon-60.png in Resources */ = {isa = PBXBuildFile; fileRef = B99F05BD188C4125002F194D /* Icon-60.png */; };
-		B6F7148D1BCF126A0082A90F /* Icon-60@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B99F05BE188C4125002F194D /* Icon-60@2x.png */; };
-		B6F7148E1BCF126A0082A90F /* Icon-76.png in Resources */ = {isa = PBXBuildFile; fileRef = B99F05BF188C4125002F194D /* Icon-76.png */; };
-		B6F7148F1BCF126A0082A90F /* Icon-76@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B99F05C0188C4125002F194D /* Icon-76@2x.png */; };
 		B6F714911BCF126A0082A90F /* EJBindingTextMetrics.m in Sources */ = {isa = PBXBuildFile; fileRef = B630048816C1A1960036D8D4 /* EJBindingTextMetrics.m */; };
 		B6F714921BCF126A0082A90F /* EJGLProgram2D.m in Sources */ = {isa = PBXBuildFile; fileRef = B64C87A816B80F410097CD5B /* EJGLProgram2D.m */; };
 		B6F714931BCF126A0082A90F /* EJGLProgram2DRadialGradient.m in Sources */ = {isa = PBXBuildFile; fileRef = B64C87AA16B80F4C0097CD5B /* EJGLProgram2DRadialGradient.m */; };
@@ -203,10 +192,6 @@
 		B6F714F01BCF130C0082A90F /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6F714EF1BCF130C0082A90F /* JavaScriptCore.framework */; };
 		B6F9AFC0169F81D400ABD91A /* EJBindingWindowEvents.m in Sources */ = {isa = PBXBuildFile; fileRef = B6F9AFBF169F81D400ABD91A /* EJBindingWindowEvents.m */; };
 		B870BDE916F2E11A00827F01 /* EJBindingWebGLExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = B870BDE816F2E11A00827F01 /* EJBindingWebGLExtensions.m */; };
-		B99F05C1188C4125002F194D /* Icon-60.png in Resources */ = {isa = PBXBuildFile; fileRef = B99F05BD188C4125002F194D /* Icon-60.png */; };
-		B99F05C2188C4125002F194D /* Icon-60@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B99F05BE188C4125002F194D /* Icon-60@2x.png */; };
-		B99F05C3188C4125002F194D /* Icon-76.png in Resources */ = {isa = PBXBuildFile; fileRef = B99F05BF188C4125002F194D /* Icon-76.png */; };
-		B99F05C4188C4125002F194D /* Icon-76@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B99F05C0188C4125002F194D /* Icon-76@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -227,13 +212,14 @@
 		B607AC32132EA75F00D7C3EA /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		B607AD09132EB51000D7C3EA /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		B607AD0F132EB52400D7C3EA /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		B624B6A21BD93915004D96A1 /* Images-TV.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Images-TV.xcassets"; sourceTree = "<group>"; };
+		B608CC821BFDDF4600403582 /* Assets-TV.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Assets-TV.xcassets"; sourceTree = "<group>"; };
+		B608CC861BFDE43300403582 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B630048716C1A1960036D8D4 /* EJBindingTextMetrics.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EJBindingTextMetrics.h; sourceTree = "<group>"; };
 		B630048816C1A1960036D8D4 /* EJBindingTextMetrics.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EJBindingTextMetrics.m; sourceTree = "<group>"; };
 		B630048A16CB097F0036D8D4 /* EJClassLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJClassLoader.h; sourceTree = "<group>"; };
 		B630048B16CB09850036D8D4 /* EJClassLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJClassLoader.m; sourceTree = "<group>"; };
 		B637065D1A27BD5600F42B90 /* LaunchScreen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LaunchScreen.xib; sourceTree = "<group>"; };
-		B637065F1A27C15200F42B90 /* ejecta-logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ejecta-logo.png"; sourceTree = "<group>"; };
+		B637065F1A27C15200F42B90 /* LaunchScreen-Logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "LaunchScreen-Logo.png"; sourceTree = "<group>"; };
 		B63D256116E8DE23007E6034 /* SocketRocket-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SocketRocket-Prefix.pch"; sourceTree = "<group>"; };
 		B63D256216E8DE23007E6034 /* SRWebSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SRWebSocket.h; sourceTree = "<group>"; };
 		B63D256316E8DE23007E6034 /* SRWebSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SRWebSocket.m; sourceTree = "<group>"; };
@@ -292,10 +278,6 @@
 		B64CE651166682700087CF94 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		B64CE661166682700087CF94 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		B64CE689166682B10087CF94 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B64CE68A166682B10087CF94 /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-72.png"; sourceTree = "<group>"; };
-		B64CE68B166682B10087CF94 /* Icon-72@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-72@2x.png"; sourceTree = "<group>"; };
-		B64CE68C166682B10087CF94 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
-		B64CE68D166682B10087CF94 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
 		B659D3121A4F6FE300B9AEF9 /* EJCanvasShaders.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EJCanvasShaders.h; sourceTree = "<group>"; };
 		B664B9891699F3370093E04E /* EJBindingCanvasPattern.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingCanvasPattern.h; sourceTree = "<group>"; };
 		B664B98A1699F3380093E04E /* EJBindingCanvasPattern.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingCanvasPattern.m; sourceTree = "<group>"; };
@@ -391,10 +373,6 @@
 		B6F9AFBF169F81D400ABD91A /* EJBindingWindowEvents.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingWindowEvents.m; sourceTree = "<group>"; };
 		B870BDE716F2E10400827F01 /* EJBindingWebGLExtensions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = EJBindingWebGLExtensions.h; path = WebGL/EJBindingWebGLExtensions.h; sourceTree = "<group>"; };
 		B870BDE816F2E11A00827F01 /* EJBindingWebGLExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EJBindingWebGLExtensions.m; path = WebGL/EJBindingWebGLExtensions.m; sourceTree = "<group>"; };
-		B99F05BD188C4125002F194D /* Icon-60.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-60.png"; sourceTree = "<group>"; };
-		B99F05BE188C4125002F194D /* Icon-60@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-60@2x.png"; sourceTree = "<group>"; };
-		B99F05BF188C4125002F194D /* Icon-76.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-76.png"; sourceTree = "<group>"; };
-		B99F05C0188C4125002F194D /* Icon-76@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-76@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -656,19 +634,12 @@
 		B64CE683166682B10087CF94 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				B637065F1A27C15200F42B90 /* ejecta-logo.png */,
-				B99F05BD188C4125002F194D /* Icon-60.png */,
-				B99F05BE188C4125002F194D /* Icon-60@2x.png */,
-				B99F05BF188C4125002F194D /* Icon-76.png */,
-				B99F05C0188C4125002F194D /* Icon-76@2x.png */,
-				B64CE68A166682B10087CF94 /* Icon-72.png */,
-				B64CE68B166682B10087CF94 /* Icon-72@2x.png */,
-				B64CE68C166682B10087CF94 /* Icon.png */,
-				B64CE68D166682B10087CF94 /* Icon@2x.png */,
+				B608CC861BFDE43300403582 /* Assets.xcassets */,
 				B64CE689166682B10087CF94 /* Info.plist */,
-				B6F714EE1BCF126B0082A90F /* Info-TV.plist */,
-				B624B6A21BD93915004D96A1 /* Images-TV.xcassets */,
 				B637065D1A27BD5600F42B90 /* LaunchScreen.xib */,
+				B637065F1A27C15200F42B90 /* LaunchScreen-Logo.png */,
+				B608CC821BFDDF4600403582 /* Assets-TV.xcassets */,
+				B6F714EE1BCF126B0082A90F /* Info-TV.plist */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -843,16 +814,9 @@
 			files = (
 				B68C5B95132E6CD60015092E /* App in Resources */,
 				B637065E1A27BD5600F42B90 /* LaunchScreen.xib in Resources */,
-				B64CE695166682B10087CF94 /* Icon-72.png in Resources */,
-				B64CE696166682B10087CF94 /* Icon-72@2x.png in Resources */,
-				B64CE697166682B10087CF94 /* Icon.png in Resources */,
-				B63706601A27C15200F42B90 /* ejecta-logo.png in Resources */,
-				B64CE698166682B10087CF94 /* Icon@2x.png in Resources */,
+				B63706601A27C15200F42B90 /* LaunchScreen-Logo.png in Resources */,
 				B62436681666851E0046B8C7 /* Ejecta.js in Resources */,
-				B99F05C1188C4125002F194D /* Icon-60.png in Resources */,
-				B99F05C2188C4125002F194D /* Icon-60@2x.png in Resources */,
-				B99F05C3188C4125002F194D /* Icon-76.png in Resources */,
-				B99F05C4188C4125002F194D /* Icon-76@2x.png in Resources */,
+				B608CC871BFDE43300403582 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -861,17 +825,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				B6F714841BCF126A0082A90F /* App in Resources */,
-				B6F714861BCF126A0082A90F /* Icon-72.png in Resources */,
-				B6F714871BCF126A0082A90F /* Icon-72@2x.png in Resources */,
-				B624B6A31BD93915004D96A1 /* Images-TV.xcassets in Resources */,
-				B6F714881BCF126A0082A90F /* Icon.png in Resources */,
-				B6F714891BCF126A0082A90F /* ejecta-logo.png in Resources */,
-				B6F7148A1BCF126A0082A90F /* Icon@2x.png in Resources */,
+				B6F714891BCF126A0082A90F /* LaunchScreen-Logo.png in Resources */,
 				B6F7148B1BCF126A0082A90F /* Ejecta.js in Resources */,
-				B6F7148C1BCF126A0082A90F /* Icon-60.png in Resources */,
-				B6F7148D1BCF126A0082A90F /* Icon-60@2x.png in Resources */,
-				B6F7148E1BCF126A0082A90F /* Icon-76.png in Resources */,
-				B6F7148F1BCF126A0082A90F /* Icon-76@2x.png in Resources */,
+				B608CC831BFDDF4600403582 /* Assets-TV.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1031,10 +987,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Source/lib/ios",
@@ -1051,7 +1009,7 @@
 					"\"$(SRCROOT)/Source/lib\"",
 				);
 				OTHER_CFLAGS = "-DDEBUG";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.yourcompany.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_BUNDLE_IDENTIFIER = org.phoboslab.ejecta2;
 				PRODUCT_NAME = Ejecta;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
@@ -1063,10 +1021,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Source/lib/ios",
@@ -1079,7 +1039,7 @@
 					"\"$(SRCROOT)\"",
 					"\"$(SRCROOT)/Source/lib\"",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.yourcompany.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_BUNDLE_IDENTIFIER = org.phoboslab.ejecta2;
 				PRODUCT_NAME = Ejecta;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
@@ -1092,6 +1052,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "iPhone Developer";
@@ -1113,7 +1074,7 @@
 					"\"$(SRCROOT)/Source/lib\"",
 				);
 				OTHER_CFLAGS = "-DDEBUG";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.yourcompany.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_BUNDLE_IDENTIFIER = org.phoboslab.ejecta2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SDKROOT = appletvos;
@@ -1126,6 +1087,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "iPhone Developer";
@@ -1143,7 +1105,7 @@
 					"\"$(SRCROOT)\"",
 					"\"$(SRCROOT)/Source/lib\"",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.yourcompany.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_BUNDLE_IDENTIFIER = org.phoboslab.ejecta2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SDKROOT = appletvos;
