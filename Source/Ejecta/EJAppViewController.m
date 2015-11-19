@@ -8,13 +8,13 @@
 - (id)initWithScriptAtPath:(NSString *)pathp {
 	if( self = [super init] ) {
 		path = [pathp retain];
-        if ([[NSBundle mainBundle] infoDictionary][@"UIInterfaceOrientation"])
+        if ([NSBundle.mainBundle infoDictionary][@"UIInterfaceOrientation"])
         {
-            landscapeMode = [[[NSBundle mainBundle] infoDictionary][@"UIInterfaceOrientation"] hasPrefix:@"UIInterfaceOrientationLandscape"];
+            landscapeMode = [NSBundle.mainBundle.infoDictionary[@"UIInterfaceOrientation"] hasPrefix:@"UIInterfaceOrientationLandscape"];
         }
         else
         {
-            landscapeMode = [[[NSBundle mainBundle] infoDictionary][@"UISupportedInterfaceOrientations"][0] hasPrefix:@"UIInterfaceOrientationLandscape"];
+            landscapeMode = [NSBundle.mainBundle.infoDictionary[@"UISupportedInterfaceOrientations"][0] hasPrefix:@"UIInterfaceOrientationLandscape"];
         }
 	}
 	return self;

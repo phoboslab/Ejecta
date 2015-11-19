@@ -11,13 +11,13 @@
 		products = [NSMutableDictionary new];
 		restoredTransactions = [NSMutableArray new];
 		
-		[[SKPaymentQueue defaultQueue] addTransactionObserver:self];
+		[SKPaymentQueue.defaultQueue addTransactionObserver:self];
 	}
 	return self;
 }
 
 - (void)prepareGarbageCollection {
-	[[SKPaymentQueue defaultQueue] removeTransactionObserver:self];
+	[SKPaymentQueue.defaultQueue removeTransactionObserver:self];
 }
 
 - (void)dealloc {
@@ -97,7 +97,7 @@
 		// Restored - safe transaction to send it out once the restore is complete
 		if( transaction.transactionState == SKPaymentTransactionStateRestored ) {
 			[restoredTransactions addObject:transaction];
-			[[SKPaymentQueue defaultQueue] finishTransaction:transaction];
+			[SKPaymentQueue.defaultQueue finishTransaction:transaction];
 		}
 		
 		// Purchased or failed purchases - notify the product
@@ -109,7 +109,7 @@
 			EJBindingIAPProduct *binding = [EJBindingIAPProduct bindingFromJSValue:jsProduct];
 			[binding finishPurchaseWithTransaction:transaction];
 			
-			[[SKPaymentQueue defaultQueue] finishTransaction:transaction];
+			[SKPaymentQueue.defaultQueue finishTransaction:transaction];
 		}
     }
 }
@@ -175,8 +175,7 @@ EJ_BIND_FUNCTION(getProducts, ctx, argc, argv) {
 	
 	// Construct the request and insert it together with the callback into the
 	// productRequestCallbacks dict
-	SKProductsRequest *request = [[SKProductsRequest alloc]
-		initWithProductIdentifiers:[NSSet setWithArray:productIds]];
+	SKProductsRequest *request = [[SKProductsRequest alloc] initWithProductIdentifiers:[NSSet setWithArray:productIds]];
 	request.delegate = self;
 	
 	JSValueProtect(ctx, argv[1]);
@@ -197,7 +196,7 @@ EJ_BIND_FUNCTION(restoreTransactions, ctx, argc, argv) {
 	JSValueProtect(ctx, restoreCallback);
 	JSValueProtect(ctx, jsObject);
 	
-	[[SKPaymentQueue defaultQueue] restoreCompletedTransactions];
+	[SKPaymentQueue.defaultQueue restoreCompletedTransactions];
 	return NULL;
 }
 

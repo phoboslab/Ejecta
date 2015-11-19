@@ -6,7 +6,7 @@
 - (void)createWithJSObject:(JSObjectRef)obj scriptView:(EJJavaScriptView *)view {
 	[super createWithJSObject:obj scriptView:view];
 	interval = 1.0f/60.0f;
-	motionManager = [[CMMotionManager alloc] init];
+	motionManager = [CMMotionManager new];
 	
 	// Has Gyro? (iPhone4 and newer)
 	if( motionManager.isDeviceMotionAvailable ) {

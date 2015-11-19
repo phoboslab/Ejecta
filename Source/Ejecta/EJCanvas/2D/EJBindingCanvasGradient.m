@@ -19,7 +19,7 @@
 	if( !value ) { return NULL; }
 	
 	EJBindingCanvasGradient *binding = (EJBindingCanvasGradient *)JSValueGetPrivate(value);
-	return (binding && [binding isKindOfClass:[EJBindingCanvasGradient class]]) ? binding->gradient : NULL;
+	return (binding && [binding isKindOfClass:EJBindingCanvasGradient.class]) ? binding->gradient : NULL;
 }
 
 - (void)dealloc {

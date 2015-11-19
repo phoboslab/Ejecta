@@ -550,8 +550,8 @@
 			isa = PBXGroup;
 			children = (
 				B64CE618166682700087CF94 /* EJBindingAudio.h */,
-				B64CE619166682700087CF94 /* EJBindingAudio.m */,
 				B64CE613166682700087CF94 /* EJAudioSource.h */,
+				B64CE619166682700087CF94 /* EJBindingAudio.m */,
 				B64CE614166682700087CF94 /* EJAudioSourceAVAudio.h */,
 				B64CE615166682700087CF94 /* EJAudioSourceAVAudio.m */,
 				B64CE616166682700087CF94 /* EJAudioSourceOpenAL.h */,

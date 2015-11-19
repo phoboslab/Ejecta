@@ -53,7 +53,7 @@ const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
 		bufferWidth = width = widthp;
 		bufferHeight = height = heightp;
 		
-		path = [[EJPath alloc] init];
+		path = [EJPath new];
 		
 		fontCache = [[EJFontCache instance] retain];
 		
@@ -69,7 +69,7 @@ const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
 - (void)dealloc {
 	// Make sure this rendering context is the current one, so all
 	// OpenGL objects can be deleted properly.
-	EAGLContext *oldContext = [EAGLContext currentContext];
+	EAGLContext *oldContext = EAGLContext.currentContext;
 	[EAGLContext setCurrentContext:glContext];
 	
 	[fontCache release];
@@ -345,11 +345,11 @@ const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
 	color:(EJColorRGBA)color
 	withTransform:(CGAffineTransform)transform
 {
-	if( [fillable isKindOfClass:[EJCanvasPattern class]] ) {
+	if( [fillable isKindOfClass:EJCanvasPattern.class] ) {
 		EJCanvasPattern *pattern = (EJCanvasPattern *)fillable;
 		[self pushPatternedRectX:x y:y w:w h:h pattern:pattern color:color withTransform:transform];
 	}
-	else if( [fillable isKindOfClass:[EJCanvasGradient class]] ) {
+	else if( [fillable isKindOfClass:EJCanvasGradient.class] ) {
 		EJCanvasGradient *gradient = (EJCanvasGradient *)fillable;
 		[self pushGradientRectX:x y:y w:w h:h gradient:gradient color:color withTransform:transform];
 	}
@@ -685,7 +685,7 @@ const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
 - (void)strokeRectX:(float)x y:(float)y w:(float)w h:(float)h {
 	// strokeRect should not affect the current path, so we create
 	// a new, tempPath instead.
-	EJPath *tempPath = [[EJPath alloc] init];
+	EJPath *tempPath = [EJPath new];
 	tempPath.transform = state->transform;
 	
 	[tempPath moveToX:x y:y];

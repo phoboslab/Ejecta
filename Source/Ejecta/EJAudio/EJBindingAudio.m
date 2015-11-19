@@ -74,7 +74,7 @@
 - (void)backgroundLoad {
 	// Decide whether to load the sound as OpenAL or AVAudioPlayer source
 	NSString *fullPath = [scriptView pathForResource:path];
-	unsigned long long size = [[[NSFileManager defaultManager] attributesOfItemAtPath:fullPath error:nil] fileSize];
+	unsigned long long size = [[NSFileManager.defaultManager attributesOfItemAtPath:fullPath error:nil] fileSize];
 	
 	if( size <= EJ_AUDIO_OPENAL_MAX_SIZE ) {
 		NSLog(@"Loading Sound(OpenAL): %@", path);

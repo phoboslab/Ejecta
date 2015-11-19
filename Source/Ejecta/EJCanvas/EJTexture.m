@@ -117,7 +117,7 @@ typedef struct {
 		}
 		
 		
-		loadCallback = [[NSBlockOperation alloc] init];
+		loadCallback = [NSBlockOperation new];
 		
 		// Load the image file in a background thread
 		[queue addOperationWithBlock:^{
@@ -236,7 +236,7 @@ typedef struct {
 	}
 	
 	if( !textureStorage ) {
-		textureStorage = [[EJTextureStorage alloc] init];
+		textureStorage = [EJTextureStorage new];
 	}
 }
 

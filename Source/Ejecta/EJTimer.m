@@ -8,7 +8,7 @@
 - (id)initWithScriptView:(EJJavaScriptView *)scriptViewp {
 	if (self = [super init]) {
 		scriptView = scriptViewp;
-		timers = [[NSMutableDictionary alloc] init];
+		timers = [NSMutableDictionary new];
 	}
 	return self;
 }

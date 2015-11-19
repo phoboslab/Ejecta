@@ -13,7 +13,7 @@
 }
 
 - (void)prepareGarbageCollection {
-	[[NSNotificationCenter defaultCenter] removeObserver:self];
+	[NSNotificationCenter.defaultCenter removeObserver:self];
 }
 
 - (void)dealloc {
@@ -66,7 +66,7 @@ EJ_BIND_GET(src, ctx) {
 }
 
 EJ_BIND_SET(src, ctx, value) {
-	[[NSNotificationCenter defaultCenter] removeObserver:self];
+	[NSNotificationCenter.defaultCenter removeObserver:self];
 
 	[path release];
 	path = nil;
@@ -88,7 +88,7 @@ EJ_BIND_SET(src, ctx, value) {
 	[controller.view addGestureRecognizer:tapGesture];
 	[tapGesture release];
 	
-	[[NSNotificationCenter defaultCenter] addObserver:self
+	[NSNotificationCenter.defaultCenter addObserver:self
 		selector:@selector(didFinish:)
 		name:AVPlayerItemDidPlayToEndTimeNotification
 		object:controller.player.currentItem];

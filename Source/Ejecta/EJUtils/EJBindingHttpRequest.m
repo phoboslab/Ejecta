@@ -6,7 +6,7 @@
 
 - (id)initWithContext:(JSContextRef)ctxp argc:(size_t)argc argv:(const JSValueRef [])argv {
 	if( self = [super initWithContext:ctxp argc:argc argv:argv] ) {
-		requestHeaders = [[NSMutableDictionary alloc] init];
+		requestHeaders = [NSMutableDictionary new];
 		defaultEncoding = NSUTF8StringEncoding;
 	}
 	return self;
@@ -43,8 +43,8 @@
 	if( !response ) {
 		return 0;
 	}
-	else if( [response isKindOfClass:[NSHTTPURLResponse class]] ) {
-		return ((NSHTTPURLResponse *)response).statusCode;;
+	else if( [response isKindOfClass:NSHTTPURLResponse.class] ) {
+		return ((NSHTTPURLResponse *)response).statusCode;
 	}
 	else {
 		return 200; // assume everything went well for non-HTTP resources
@@ -203,7 +203,7 @@ EJ_BIND_FUNCTION(getAllResponseHeaders, ctx, argc, argv) {
 	if( !response ) {
 		return NULL;
 	}
-	if( ![response isKindOfClass:[NSHTTPURLResponse class]] ) {
+	if( ![response isKindOfClass:NSHTTPURLResponse.class] ) {
 		NSStringToJSValue(ctx, @"");
 	}
 	
@@ -217,7 +217,7 @@ EJ_BIND_FUNCTION(getAllResponseHeaders, ctx, argc, argv) {
 }
 
 EJ_BIND_FUNCTION(getResponseHeader, ctx, argc, argv) {
-	if( argc < 1 || !response || ![response isKindOfClass:[NSHTTPURLResponse class]] ) {
+	if( argc < 1 || !response || ![response isKindOfClass:NSHTTPURLResponse.class] ) {
 		return NULL;
 	}
 	
@@ -289,7 +289,7 @@ EJ_BIND_FUNCTION(send, ctx, argc, argv) {
 	[self triggerEvent:@"loadstart"];
 	
 	state = kEJHttpRequestStateLoading;
-	NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+	NSURLSessionConfiguration *configuration = NSURLSessionConfiguration.defaultSessionConfiguration;
 	
 	session = [[NSURLSession sessionWithConfiguration:configuration
 		delegate:self delegateQueue:NSOperationQueue.mainQueue] retain];

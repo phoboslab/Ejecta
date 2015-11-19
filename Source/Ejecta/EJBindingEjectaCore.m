@@ -173,7 +173,8 @@ EJ_BIND_GET(screenHeight, ctx ) {
 EJ_BIND_GET(userAgent, ctx ) {	
 	return NSStringToJSValue(
 		ctx,
-		[NSString stringWithFormat: @"Ejecta/%@ (%@; OS %@)", EJECTA_VERSION, [self deviceName], [[UIDevice currentDevice] systemVersion]]
+		[NSString stringWithFormat: @"Ejecta/%@ (%@; OS %@)",
+			EJECTA_VERSION, [self deviceName], UIDevice.currentDevice.systemVersion]
 	);
 }
 

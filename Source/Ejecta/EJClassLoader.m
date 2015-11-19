@@ -124,9 +124,9 @@ bool EJConstructorHasInstance(JSContextRef ctx, JSObjectRef constructor, JSValue
 
 - (EJLoadedJSClass *)loadJSClass:(id)class {
 	// Gather all class methods that return C callbacks for this class or it's parents
-	NSMutableArray *methods = [[NSMutableArray alloc] init];
-	NSMutableArray *properties = [[NSMutableArray alloc] init];
-	NSMutableDictionary *constantValues = [[NSMutableDictionary alloc] init];
+	NSMutableArray *methods = [NSMutableArray new];
+	NSMutableArray *properties = [NSMutableArray new];
+	NSMutableDictionary *constantValues = [NSMutableDictionary new];
 		
 	// Traverse this class and all its super classes
 	Class base = EJBindingBase.class;

@@ -5,8 +5,8 @@
 
 - (id)initWithContext:(JSContextRef)ctxp argc:(size_t)argc argv:(const JSValueRef [])argv {
 	if( self = [super initWithContext:ctxp argc:argc argv:argv] ) {
-		eventListeners = [[NSMutableDictionary alloc] init];
-		onCallbacks = [[NSMutableDictionary alloc] init];
+		eventListeners = [NSMutableDictionary new];
+		onCallbacks = [NSMutableDictionary new];
 	}
 	return self;
 }
@@ -35,7 +35,7 @@
 
 - (JSObjectRef)getCallbackWithType:(NSString *)type ctx:(JSContextRef)ctx {
 	NSValue *listener = onCallbacks[type];
-	return listener ? [listener pointerValue] : NULL;
+	return listener ? listener.pointerValue : NULL;
 }
 
 - (void)setCallbackWithType:(NSString *)type ctx:(JSContextRef)ctx callback:(JSValueRef)callbackValue {

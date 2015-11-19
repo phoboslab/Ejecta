@@ -8,7 +8,7 @@ static EJSharedTextureCache *sharedTextureCache;
 
 + (EJSharedTextureCache *)instance {
 	if( !sharedTextureCache ) {
-		sharedTextureCache = [[[EJSharedTextureCache alloc] init] autorelease];
+		sharedTextureCache = [[EJSharedTextureCache new] autorelease];
 	}
     return sharedTextureCache;
 }

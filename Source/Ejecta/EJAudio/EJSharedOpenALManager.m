@@ -6,7 +6,7 @@ static EJSharedOpenALManager *sharedOpenALManager;
 
 + (EJSharedOpenALManager *)instance {
 	if( !sharedOpenALManager ) {
-		sharedOpenALManager = [[[EJSharedOpenALManager alloc] init] autorelease];
+		sharedOpenALManager = [[EJSharedOpenALManager new] autorelease];
 	}
     return sharedOpenALManager;
 }

@@ -18,7 +18,7 @@
 	if( !value ) { return NULL; }
 	
 	EJBindingCanvasPattern *binding = (EJBindingCanvasPattern *)JSValueGetPrivate(value);
-	return (binding && [binding isKindOfClass:[EJBindingCanvasPattern class]]) ? binding->pattern : NULL;
+	return (binding && [binding isKindOfClass:EJBindingCanvasPattern.class]) ? binding->pattern : NULL;
 }
 
 - (void)dealloc {

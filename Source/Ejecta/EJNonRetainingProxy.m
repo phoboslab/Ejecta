@@ -2,7 +2,7 @@
 
 @implementation EJNonRetainingProxy
 + (EJNonRetainingProxy *)proxyWithTarget:(id)target {
-    EJNonRetainingProxy *proxy = [[[self alloc] init] autorelease];
+    EJNonRetainingProxy *proxy = [[self new] autorelease];
     proxy->target = target;
     return proxy;
 }

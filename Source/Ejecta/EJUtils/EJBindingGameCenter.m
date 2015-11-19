@@ -5,7 +5,7 @@
 
 - (id)initWithContext:(JSContextRef)ctx argc:(size_t)argc argv:(const JSValueRef [])argv {
 	if( self = [super initWithContext:ctx argc:argc argv:argv] ) {
-		achievements = [[NSMutableDictionary alloc] init];
+		achievements = [NSMutableDictionary new];
 	}
 	return self;
 }
@@ -122,7 +122,7 @@ EJ_BIND_FUNCTION( showLeaderboard, ctx, argc, argv ) {
 	if( argc < 1 || viewIsActive ) { return NULL; }
 	if( !authed ) { NSLog(@"GameKit Error: Not authed. Can't show leaderboard."); return NULL; }
 	
-	GKGameCenterViewController* vc = [[GKGameCenterViewController alloc] init];
+	GKGameCenterViewController* vc = [GKGameCenterViewController new];
 	#if !TARGET_OS_TV
 		vc.viewState = GKGameCenterViewControllerStateLeaderboards;
 		vc.leaderboardIdentifier = JSValueToNSString(ctx, argv[0]);
@@ -214,7 +214,7 @@ EJ_BIND_FUNCTION( showAchievements, ctx, argc, argv ) {
 	if( viewIsActive ) { return NULL; }
 	if( !authed ) { NSLog(@"GameKit Error: Not authed. Can't show achievements."); return NULL; }
 	
-	GKGameCenterViewController* vc = [[GKGameCenterViewController alloc] init];
+	GKGameCenterViewController* vc = [GKGameCenterViewController new];
 	#if !TARGET_OS_TV
 		vc.viewState = GKGameCenterViewControllerStateAchievements;
 	#endif
@@ -320,7 +320,7 @@ EJ_BIND_FUNCTION( loadScores, ctx, argc, argv ) {
 	JSObjectRef callback = (JSObjectRef)argv[3];
 	JSValueProtect(ctx, callback);
 		
-	GKLeaderboard *request = [[GKLeaderboard alloc] init];
+	GKLeaderboard *request = [GKLeaderboard new];
 	request.playerScope = GKLeaderboardPlayerScopeGlobal;
 	request.timeScope = GKLeaderboardTimeScopeAllTime;
 	request.identifier = category;
