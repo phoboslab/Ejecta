@@ -39,7 +39,7 @@ EJ_BIND_FUNCTION( authenticate, ctx, argc, argv ) {
 	}
 	
 	GKLocalPlayer.localPlayer.authenticateHandler = ^(UIViewController *viewController, NSError *error) {
-		authed = !error;
+		authed = [GKLocalPlayer localPlayer].authenticated;
 
 		if( authed ) {
 			NSLog(@"GameKit: Authed.");
