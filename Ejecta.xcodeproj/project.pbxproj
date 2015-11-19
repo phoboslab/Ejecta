@@ -1009,7 +1009,7 @@
 					"\"$(SRCROOT)/Source/lib\"",
 				);
 				OTHER_CFLAGS = "-DDEBUG";
-				PRODUCT_BUNDLE_IDENTIFIER = org.phoboslab.ejecta2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yourcompany.ejecta;
 				PRODUCT_NAME = Ejecta;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
@@ -1039,7 +1039,7 @@
 					"\"$(SRCROOT)\"",
 					"\"$(SRCROOT)/Source/lib\"",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.phoboslab.ejecta2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yourcompany.ejecta;
 				PRODUCT_NAME = Ejecta;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
@@ -1074,7 +1074,7 @@
 					"\"$(SRCROOT)/Source/lib\"",
 				);
 				OTHER_CFLAGS = "-DDEBUG";
-				PRODUCT_BUNDLE_IDENTIFIER = org.phoboslab.ejecta2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yourcompany.ejecta;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SDKROOT = appletvos;
@@ -1105,7 +1105,7 @@
 					"\"$(SRCROOT)\"",
 					"\"$(SRCROOT)/Source/lib\"",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.phoboslab.ejecta2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yourcompany.ejecta;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SDKROOT = appletvos;
