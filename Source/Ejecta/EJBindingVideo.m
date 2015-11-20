@@ -19,7 +19,7 @@ static const EJVideoScalingMode EJVideoToMPMovieScalingMode[] = {
 }
 
 - (void)prepareGarbageCollection {
-	[[NSNotificationCenter defaultCenter] removeObserver:self];
+	[NSNotificationCenter.defaultCenter removeObserver:self];
 }
 
 - (void)dealloc {
@@ -81,7 +81,7 @@ EJ_BIND_GET(src, ctx) {
 }
 
 EJ_BIND_SET(src, ctx, value) {
-	[[NSNotificationCenter defaultCenter] removeObserver:self];
+	[NSNotificationCenter.defaultCenter removeObserver:self];
 	[player stop];
 	[player.view removeFromSuperview];
 	[player release];
@@ -110,11 +110,11 @@ EJ_BIND_SET(src, ctx, value) {
 	[player.view addGestureRecognizer:tapGesture];
 	[tapGesture release];
 	
-	[[NSNotificationCenter defaultCenter] addObserver:self
+	[NSNotificationCenter.defaultCenter addObserver:self
 		selector:@selector(preparedToPlayChange:)
 		name:MPMediaPlaybackIsPreparedToPlayDidChangeNotification object:player];
 		
-	[[NSNotificationCenter defaultCenter] addObserver:self
+	[NSNotificationCenter.defaultCenter addObserver:self
 		selector:@selector(didFinish:)
 		name:MPMoviePlayerPlaybackDidFinishNotification
 		object:player];

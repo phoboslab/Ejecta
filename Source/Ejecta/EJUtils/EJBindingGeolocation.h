@@ -1,5 +1,3 @@
-#if !TARGET_OS_TV
-
 #import "EJBindingBase.h"
 #import <CoreLocation/CoreLocation.h>
 
@@ -34,5 +32,3 @@ enum {
 }
 
 @end
-
-#endif

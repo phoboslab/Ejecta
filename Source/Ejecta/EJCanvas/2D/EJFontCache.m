@@ -32,7 +32,7 @@ static float kEJFontCacheKeyLineWidthNoneFilled = -1;
 		scale *= 2;
 	}
 	
-	EJFontCacheKey *key = [[EJFontCacheKey alloc] init];
+	EJFontCacheKey *key = [EJFontCacheKey new];
 	key->descriptor = [descriptor retain];
 	key->normalizedContentScale = scale;
 	key->lineWidth = lineWidth;
@@ -51,7 +51,7 @@ static float kEJFontCacheKeyLineWidthNoneFilled = -1;
 }
 
 - (BOOL)isEqual:(id)anObject {
-	if( ![anObject isKindOfClass:[EJFontCacheKey class]] ) {
+	if( ![anObject isKindOfClass:EJFontCacheKey.class] ) {
 		return NO;
 	}
 	
@@ -84,7 +84,7 @@ static EJFontCache *fontCache;
 
 + (EJFontCache *)instance {
 	if( !fontCache ) {
-		fontCache = [[[EJFontCache alloc] init] autorelease];
+		fontCache = [[EJFontCache new] autorelease];
 	}
     return fontCache;
 }
@@ -92,7 +92,7 @@ static EJFontCache *fontCache;
 - (id)init {
 	if( self = [super init] ) {
 		fonts = [NSMutableDictionary new];
-		[[NSNotificationCenter defaultCenter] addObserver:self
+		[NSNotificationCenter.defaultCenter addObserver:self
 			selector:@selector(didReceiveMemoryWarning)
 			name:UIApplicationDidReceiveMemoryWarningNotification
 			object:nil];
@@ -102,7 +102,7 @@ static EJFontCache *fontCache;
 
 - (void)dealloc {
 	fontCache = nil;
-	[[NSNotificationCenter defaultCenter] removeObserver:self];
+	[NSNotificationCenter.defaultCenter removeObserver:self];
 	[fonts release];
 	[super dealloc];
 }

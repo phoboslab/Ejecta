@@ -168,7 +168,7 @@ EJ_BIND_GET(drawingBufferHeight, ctx) {
 EJ_BIND_FUNCTION(getContextAttributes, ctx, argc, argv) {
 	return [EJBindingWebGLContextAttributes createJSObjectWithContext:ctx
 		scriptView:scriptView
-		instance:[[[EJBindingWebGLContextAttributes alloc] init] autorelease]];
+		instance:[[EJBindingWebGLContextAttributes new] autorelease]];
 }
 
 EJ_BIND_FUNCTION(isContextLost, ctx, argc, argv) {
@@ -269,7 +269,7 @@ EJ_BIND_FUNCTION(bindAttribLocation, ctx, argc, argv) {
 	GLuint index = JSValueToNumberFast(ctx, argv[1]);
 	NSString *name = JSValueToNSString(ctx, argv[2]);
 	
-	glBindAttribLocation(program, index, [name UTF8String]);
+	glBindAttribLocation(program, index, name.UTF8String);
 	return NULL;
 }
 
@@ -713,7 +713,7 @@ EJ_BIND_FUNCTION(getAttribLocation, ctx, argc, argv) {
 	GLuint program = [EJBindingWebGLProgram indexFromJSValue:argv[0]];
 	NSString *name = JSValueToNSString(ctx, argv[1]);
 
-	return JSValueMakeNumber(ctx, glGetAttribLocation(program, [name UTF8String]));
+	return JSValueMakeNumber(ctx, glGetAttribLocation(program, name.UTF8String));
 }
 
 EJ_BIND_FUNCTION(getParameter, ctx, argc, argv) {
@@ -1181,7 +1181,7 @@ EJ_BIND_FUNCTION(getUniformLocation, ctx, argc, argv) {
 	GLuint program = [EJBindingWebGLProgram indexFromJSValue:argv[0]];
 	NSString *name = JSValueToNSString(ctx, argv[1]);
 	
-	GLint uniform = glGetUniformLocation(program, [name UTF8String]);
+	GLint uniform = glGetUniformLocation(program, name.UTF8String);
 	if( uniform == -1 ) {
 		return JSValueMakeNull(ctx);
 	}

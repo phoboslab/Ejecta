@@ -70,12 +70,12 @@
 	JSContextRef ctx = scriptView.jsGlobalContext;
 	
 	// String?
-	if( [message isKindOfClass:[NSString class]] ){
+	if( [message isKindOfClass:NSString.class] ){
 		jsMessage = NSStringToJSValue(ctx, message);
 	}
 	
 	// TypedArray
-	else if( [message isKindOfClass:[NSData class]] ) {
+	else if( [message isKindOfClass:NSData.class] ) {
 		NSData *data = (NSData *)message;
 		
 		if( binaryType == kEJWebSocketBinaryTypeArrayBuffer ) {

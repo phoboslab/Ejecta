@@ -21,7 +21,7 @@
 		return NULL;
 	}
 	
-	EJFontDescriptor *descriptor = [[EJFontDescriptor alloc] init];
+	EJFontDescriptor *descriptor = [EJFontDescriptor new];
 	descriptor->name = [name retain];
 	descriptor->size = size;
 	descriptor->hash = [name hash] + (size * 383); // 383 is a 'random' prime, chosen by fair dice roll
@@ -118,7 +118,7 @@ int EJFontGlyphLayoutSortByTextureIndex(const void *a, const void *b) {
 			}
 			
 			textures = [[NSMutableArray alloc] initWithCapacity:1];
-			layoutCache = [[NSCache alloc] init];
+			layoutCache = [NSCache new];
 			layoutCache.countLimit = 128;
 		}
 	}
@@ -211,7 +211,7 @@ int EJFontGlyphLayoutSortByTextureIndex(const void *a, const void *b) {
 		[texture release];	
 	}
 	else {
-		texture = [textures lastObject];
+		texture = textures.lastObject;
 	}
 	
 	glyphInfo->textureIndex = textures.count; // 0 is reserved, index starts at 1

@@ -29,7 +29,7 @@
 	height = screen.height;
 	
 	JSContextRef ctx = scriptView.jsGlobalContext;
-	styleObject = [[EJBindingCanvasStyle alloc] init];
+	styleObject = [EJBindingCanvasStyle new];
 	styleObject.binding = self;
 	[EJBindingCanvasStyle createJSObjectWithContext:scriptView.jsGlobalContext scriptView:scriptView instance:styleObject];
 	JSValueProtect(ctx, styleObject.jsObject);

@@ -57,7 +57,7 @@
 
 - (void)createWithJSObject:(JSObjectRef)obj scriptView:(EJJavaScriptView *)view {
 	[super createWithJSObject:obj scriptView:view];
-    self.inputController = [[[EJKeyInputResponder alloc] init] autorelease];
+    self.inputController = [[EJKeyInputResponder new] autorelease];
     self.inputController.delegate = self;
     self.value = [NSMutableString string];
 }

@@ -14,7 +14,7 @@
 static EJSharedOpenGLContext *sharedOpenGLContext;
 + (EJSharedOpenGLContext *)instance {
 	if( !sharedOpenGLContext ) {
-		sharedOpenGLContext = [[[EJSharedOpenGLContext alloc] init] autorelease];
+		sharedOpenGLContext = [[EJSharedOpenGLContext new] autorelease];
 	}
     return sharedOpenGLContext;
 }

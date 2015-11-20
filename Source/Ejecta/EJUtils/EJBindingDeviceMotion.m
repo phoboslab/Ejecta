@@ -1,5 +1,3 @@
-#if !TARGET_OS_TV
-
 #import "EJBindingDeviceMotion.h"
 #import "EJJavaScriptView.h"
 
@@ -8,7 +6,7 @@
 - (void)createWithJSObject:(JSObjectRef)obj scriptView:(EJJavaScriptView *)view {
 	[super createWithJSObject:obj scriptView:view];
 	interval = 1.0f/60.0f;
-	motionManager = [[CMMotionManager alloc] init];
+	motionManager = [CMMotionManager new];
 	
 	// Has Gyro? (iPhone4 and newer)
 	if( motionManager.isDeviceMotionAvailable ) {
@@ -93,5 +91,3 @@ EJ_BIND_EVENT(devicemotion);
 EJ_BIND_EVENT(acceleration);
 
 @end
-
-#endif

@@ -1,5 +1,3 @@
-#if !TARGET_OS_TV
-
 #import <MobileCoreServices/UTCoreTypes.h> // for media filtering
 #import "EJBindingImagePicker.h"
 #import "EJJavaScriptView.h"
@@ -30,8 +28,8 @@ EJ_BIND_FUNCTION(getPicture, ctx, argc, argv) {
 	
 	// set current options
 	NSString *sourceType = options[@"sourceType"]     ? options[@"sourceType"]                  : @"PhotoLibrary";
-	maxJsWidth           = options[@"maxWidth"]       ? [options[@"maxWidth"] floatValue]       : maxTexSize / [UIScreen mainScreen].scale;
-	maxJsHeight          = options[@"maxHeight"]      ? [options[@"maxHeight"] floatValue]      : maxTexSize / [UIScreen mainScreen].scale;
+	maxJsWidth           = options[@"maxWidth"]       ? [options[@"maxWidth"] floatValue]       : maxTexSize / UIScreen.mainScreen.scale;
+	maxJsHeight          = options[@"maxHeight"]      ? [options[@"maxHeight"] floatValue]      : maxTexSize / UIScreen.mainScreen.scale;
 	float popupX         = options[@"popupX"]         ? [options[@"popupX"] floatValue]         : 0.0f;
 	float popupY         = options[@"popupY"]         ? [options[@"popupY"] floatValue]         : 0.0f;
 	float popupWidth     = options[@"popupWidth"]     ? [options[@"popupWidth"] floatValue]     : 1.0f;
@@ -44,12 +42,12 @@ EJ_BIND_FUNCTION(getPicture, ctx, argc, argv) {
 	}
 	
 	// js picture maximum width and height validation
-	maxJsWidth = MIN(maxJsWidth, maxTexSize / [UIScreen mainScreen].scale);
-	maxJsHeight = MIN(maxJsHeight, maxTexSize / [UIScreen mainScreen].scale);
+	maxJsWidth = MIN(maxJsWidth, maxTexSize / UIScreen.mainScreen.scale);
+	maxJsHeight = MIN(maxJsHeight, maxTexSize / UIScreen.mainScreen.scale);
 	
 	// gl texture maximum width and height
-	maxTexWidth = maxJsWidth * [UIScreen mainScreen].scale;
-	maxTexHeight = maxJsHeight * [UIScreen mainScreen].scale;
+	maxTexWidth = maxJsWidth * UIScreen.mainScreen.scale;
+	maxTexHeight = maxJsHeight * UIScreen.mainScreen.scale;
 	
 	// identify the type of picker we need: full screen or popup
 	if(
@@ -63,7 +61,7 @@ EJ_BIND_FUNCTION(getPicture, ctx, argc, argv) {
 	}
 	
 	// init and alloc
-	picker = [[UIImagePickerController alloc] init];
+	picker = [UIImagePickerController new];
 	picker.delegate = self;
 	if( pickerType == kEJImagePickerTypePopup ) {
 		popover = [[UIPopoverController alloc] initWithContentViewController:picker];
@@ -247,5 +245,3 @@ EJ_BIND_FUNCTION(isSourceTypeAvailable, ctx, argc, argv) {
 }
 
 @end
-
-#endif

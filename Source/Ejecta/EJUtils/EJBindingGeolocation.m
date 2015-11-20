@@ -1,5 +1,3 @@
-#if !TARGET_OS_TV
-
 #import "EJBindingGeolocation.h"
 
 @implementation EJGeolocationCallback
@@ -40,7 +38,7 @@
 
 - (id)initWithContext:(JSContextRef)ctx argc:(size_t)argc argv:(const JSValueRef [])argv {
 	if (self = [super initWithContext:ctx argc:argc argv:argv]) {
-		locationManager = [[CLLocationManager alloc] init];
+		locationManager = [CLLocationManager new];
 		locationManager.delegate = self;
 		locationManager.desiredAccuracy = kCLLocationAccuracyKilometer;
 		
@@ -219,5 +217,3 @@ EJ_BIND_CONST(POSITION_UNAVAILABLE, kEJGeolocationErrorUnavailable);
 EJ_BIND_CONST(TIMEOUT, kEJGeolocationErrorTimeout);
 
 @end
-
-#endif

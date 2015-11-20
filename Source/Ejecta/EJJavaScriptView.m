@@ -84,7 +84,7 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
     self.pauseOnEnterBackground = YES;
     
     // Limit all background operations (image & sound loading) to one thread
-    backgroundQueue = [[NSOperationQueue alloc] init];
+    backgroundQueue = [NSOperationQueue new];
     backgroundQueue.maxConcurrentOperationCount = 1;
     
     timers = [[EJTimerCollection alloc] initWithScriptView:self];
@@ -196,14 +196,14 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 }
 
 - (void)removeObserverForKeyPaths:(NSArray*)keyPaths {
-	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+	NSNotificationCenter *nc = NSNotificationCenter.defaultCenter;
 	for( NSString *name in keyPaths ) {
 		[nc removeObserver:proxy name:name object:nil];
 	}
 }
 
 - (void)observeKeyPaths:(NSArray*)keyPaths selector:(SEL)selector {
-	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+	NSNotificationCenter *nc = NSNotificationCenter.defaultCenter;
 	for( NSString *name in keyPaths ) {
 		[nc addObserver:proxy selector:selector name:name object:nil];
 	}
@@ -377,7 +377,7 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 	if( isPaused ) { return; }
 	
 	[windowEventsDelegate pause];
-	[displayLink removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+	[displayLink removeFromRunLoop:NSRunLoop.currentRunLoop forMode:NSDefaultRunLoopMode];
 	[screenRenderingContext finish];
 	isPaused = true;
 }
@@ -387,7 +387,7 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 	
 	[windowEventsDelegate resume];
 	[EAGLContext setCurrentContext:glCurrentContext];
-	[displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+	[displayLink addToRunLoop:NSRunLoop.currentRunLoop forMode:NSDefaultRunLoopMode];
 	isPaused = false;
 }
 
@@ -447,15 +447,15 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 
 #else
 -(void)pressesBegan:(NSSet*)presses withEvent:(UIPressesEvent *)event {
-    if( exitOnMenuPress && ((UIPress *)presses.anyObject).type == UIPressTypeMenu ) {
-        return [super pressesBegan:presses withEvent:event];
-    }
+	if( exitOnMenuPress && ((UIPress *)presses.anyObject).type == UIPressTypeMenu ) {
+		return [super pressesBegan:presses withEvent:event];
+	}
 }
 
 -(void)pressesEnded:(NSSet*)presses withEvent:(UIPressesEvent *)event {
-    if( exitOnMenuPress && ((UIPress *)presses.anyObject).type == UIPressTypeMenu ) {
-        return [super pressesEnded:presses withEvent:event];
-    }
+	if( exitOnMenuPress && ((UIPress *)presses.anyObject).type == UIPressTypeMenu ) {
+		return [super pressesEnded:presses withEvent:event];
+	}
 }
 #endif
 

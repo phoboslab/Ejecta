@@ -71,7 +71,7 @@ EJ_BIND_GET(description, ctx) {
 }
 
 EJ_BIND_GET(price, ctx) {
-	NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+	NSNumberFormatter *numberFormatter = [NSNumberFormatter new];
 	[numberFormatter setFormatterBehavior:NSNumberFormatterBehavior10_4];
 	[numberFormatter setNumberStyle:NSNumberFormatterCurrencyStyle];
 	[numberFormatter setLocale:product.priceLocale];
@@ -99,7 +99,7 @@ EJ_BIND_FUNCTION(purchase, ctx, argc, argv) {
 	
 	SKMutablePayment *payment = [SKMutablePayment paymentWithProduct:product];
 	payment.quantity = quantity;
-	[[SKPaymentQueue defaultQueue] addPayment:payment];
+	[SKPaymentQueue.defaultQueue addPayment:payment];
 	
 	callback = JSValueToObject(ctx, argv[1], NULL);
 	JSValueProtect(ctx, callback);
