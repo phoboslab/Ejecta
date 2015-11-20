@@ -7,6 +7,7 @@ console.log("ver : " + appUtils.ver);
 console.log("uuid : " + appUtils.uuid);
 console.log("udid : " + appUtils.udid);
 console.log("systemVersion : " + appUtils.systemVersion);
+// <language code>-<region code> , en  zh  ja  fr
 console.log("systemLocal : " + appUtils.systemLocal);
 
 console.log("index.js Exists : " + appUtils.fileExists("index.js"));
