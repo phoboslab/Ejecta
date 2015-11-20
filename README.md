@@ -20,8 +20,10 @@ The REAMDME of original Ejecta : <https://github.com/phoboslab/Ejecta/blob/maste
  - Support `AlertView` (non-block)
  - Support `WebView`
  - Encryption of Resource
- - Chartboost Integration
- - Google AdMob Integration
+ - More Ad SDKs Integration:
+  - Chartboost
+  - Google AdMob
+  - Vungle
  - Some new API/Event/Attribute:
   - `load` event of window
   - `unload` event of window
@@ -35,5 +37,4 @@ The REAMDME of original Ejecta : <https://github.com/phoboslab/Ejecta/blob/maste
   - download file to local folder
   - save image/canvas to local folder
  - Minor improvements
- - Minor bugs fix
 
