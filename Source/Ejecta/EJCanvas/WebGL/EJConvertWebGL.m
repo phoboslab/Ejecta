@@ -9,9 +9,9 @@ TYPE *NAME(JSContextRef ctx, JSValueRef value, GLsizei elementSize, GLsizei *num
 		return NULL; \
 	} \
 	JSObjectRef jsObject = (JSObjectRef)value; \
-	if( JSTypedArrayGetType(ctx, value) == ARRAY_TYPE ) { \
+	if( JSObjectGetTypedArrayType(ctx, jsObject) == ARRAY_TYPE ) { \
 		size_t byteLength; \
-		TYPE *arrayValue = JSTypedArrayGetDataPtr(ctx, value, &byteLength); \
+		TYPE *arrayValue = JSObjectGetTypedArrayDataPtr(ctx, jsObject, &byteLength); \
 		GLsizei count = (GLsizei)(byteLength/sizeof(TYPE)); \
 		if( arrayValue && count && (count % elementSize) == 0 ) { \
 			*numElements = count / elementSize; \

@@ -28,7 +28,7 @@
 		int byteLength = imageData.width * imageData.height * 4;
 		
 		[EJTexture
-			premultiplyPixels:JSTypedArrayGetDataPtr(scriptView.jsGlobalContext, dataArray, NULL)
+			premultiplyPixels:JSObjectGetTypedArrayDataPtr(scriptView.jsGlobalContext, dataArray, NULL)
 			to:imageData.pixels.mutableBytes
 			byteLength:byteLength format:GL_RGBA];
 	}
@@ -45,12 +45,12 @@ EJ_BIND_GET(data, ctx ) {
 		// Copy values from image data into a JSArray and unpremultiply it
 		int byteLength = imageData.width * imageData.height * 4;
 		
-		dataArray = JSTypedArrayMake(ctx, kJSTypedArrayTypeUint8ClampedArray, byteLength);
+		dataArray = JSObjectMakeTypedArray(ctx, kJSTypedArrayTypeUint8ClampedArray, byteLength);
 		JSValueProtect(ctx, dataArray);
 		
 		[EJTexture
 			unPremultiplyPixels:imageData.pixels.bytes
-			to:JSTypedArrayGetDataPtr(ctx, dataArray, NULL)
+			to:JSObjectGetTypedArrayDataPtr(ctx, dataArray, NULL)
 			byteLength:byteLength format:GL_RGBA];
 	}
 	return dataArray;

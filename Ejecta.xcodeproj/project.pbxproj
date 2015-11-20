@@ -63,6 +63,7 @@
 		5C9CF4B11A58416A00AEE55E /* EventKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C9CF4B01A58416A00AEE55E /* EventKit.framework */; };
 		5C9CF4B31A58419100AEE55E /* EventKitUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C9CF4B21A58419100AEE55E /* EventKitUI.framework */; };
 		5CA813FE1B9E244000172B7A /* WebviewBridge.js in Resources */ = {isa = PBXBuildFile; fileRef = 5CA813FD1B9E244000172B7A /* WebviewBridge.js */; };
+		5CAC7BC91BFEF16800438B74 /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CAC7BC81BFEF16800438B74 /* JavaScriptCore.framework */; };
 		5CBFB24C1BF47A7800BF2385 /* EJBindingGamepad.m in Sources */ = {isa = PBXBuildFile; fileRef = 5CBFB2471BF47A7800BF2385 /* EJBindingGamepad.m */; };
 		5CBFB24D1BF47A7800BF2385 /* EJBindingGamepadButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 5CBFB2491BF47A7800BF2385 /* EJBindingGamepadButton.m */; };
 		5CBFB24E1BF47A7800BF2385 /* EJBindingGamepadProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 5CBFB24B1BF47A7800BF2385 /* EJBindingGamepadProvider.m */; };
@@ -84,7 +85,6 @@
 		B63D256816E8DF23007E6034 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B63D256716E8DF23007E6034 /* CFNetwork.framework */; };
 		B63D256A16E8DF33007E6034 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B63D256916E8DF33007E6034 /* Security.framework */; };
 		B63D256D16E8E0EE007E6034 /* EJBindingWebSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = B63D256C16E8DFAB007E6034 /* EJBindingWebSocket.m */; };
-		B6468006188AB3260087F098 /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6468005188AB3260087F098 /* JavaScriptCore.framework */; };
 		B64C87AC16B81BAA0097CD5B /* EJGLProgram2D.m in Sources */ = {isa = PBXBuildFile; fileRef = B64C87A816B80F410097CD5B /* EJGLProgram2D.m */; };
 		B64C87AE16B81BAA0097CD5B /* EJGLProgram2DRadialGradient.m in Sources */ = {isa = PBXBuildFile; fileRef = B64C87AA16B80F4C0097CD5B /* EJGLProgram2DRadialGradient.m */; };
 		B64CE662166682700087CF94 /* EJAppViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE611166682700087CF94 /* EJAppViewController.m */; };
@@ -227,6 +227,7 @@
 		5C9CF4B01A58416A00AEE55E /* EventKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKit.framework; path = System/Library/Frameworks/EventKit.framework; sourceTree = SDKROOT; };
 		5C9CF4B21A58419100AEE55E /* EventKitUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKitUI.framework; path = System/Library/Frameworks/EventKitUI.framework; sourceTree = SDKROOT; };
 		5CA813FD1B9E244000172B7A /* WebviewBridge.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = WebviewBridge.js; sourceTree = "<group>"; };
+		5CAC7BC81BFEF16800438B74 /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = JavaScriptCore.framework; sourceTree = "<group>"; };
 		5CBFB2461BF47A7800BF2385 /* EJBindingGamepad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingGamepad.h; sourceTree = "<group>"; };
 		5CBFB2471BF47A7800BF2385 /* EJBindingGamepad.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingGamepad.m; sourceTree = "<group>"; };
 		5CBFB2481BF47A7800BF2385 /* EJBindingGamepadButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingGamepadButton.h; sourceTree = "<group>"; };
@@ -256,7 +257,6 @@
 		B63D256916E8DF33007E6034 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		B63D256B16E8DFAB007E6034 /* EJBindingWebSocket.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EJBindingWebSocket.h; sourceTree = "<group>"; };
 		B63D256C16E8DFAB007E6034 /* EJBindingWebSocket.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EJBindingWebSocket.m; sourceTree = "<group>"; };
-		B6468005188AB3260087F098 /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = JavaScriptCore.framework; sourceTree = "<group>"; };
 		B64C87A716B80F400097CD5B /* EJGLProgram2D.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EJGLProgram2D.h; sourceTree = "<group>"; };
 		B64C87A816B80F410097CD5B /* EJGLProgram2D.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EJGLProgram2D.m; sourceTree = "<group>"; };
 		B64C87A916B80F450097CD5B /* EJGLProgram2DRadialGradient.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EJGLProgram2DRadialGradient.h; sourceTree = "<group>"; };
@@ -381,6 +381,7 @@
 		B6F463A31636C3FA00FC89C1 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		B6F629CF16F353C600F16BAC /* EJBindingCanvasStyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingCanvasStyle.h; sourceTree = "<group>"; };
 		B6F629D016F353C700F16BAC /* EJBindingCanvasStyle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingCanvasStyle.m; sourceTree = "<group>"; };
+		B6F7147F1BCF116E0082A90F /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Source/lib/ios/JavaScriptCore.framework; sourceTree = "<group>"; };
 		B6F9AFBE169F81D400ABD91A /* EJBindingWindowEvents.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingWindowEvents.h; sourceTree = "<group>"; };
 		B6F9AFBF169F81D400ABD91A /* EJBindingWindowEvents.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingWindowEvents.m; sourceTree = "<group>"; };
 		B870BDE716F2E10400827F01 /* EJBindingWebGLExtensions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = EJBindingWebGLExtensions.h; path = WebGL/EJBindingWebGLExtensions.h; sourceTree = "<group>"; };
@@ -412,6 +413,7 @@
 				5C3B72E41ADAB7D3002A3FB5 /* CoreMedia.framework in Frameworks */,
 				5C9CF4B31A58419100AEE55E /* EventKitUI.framework in Frameworks */,
 				5C9CF4B11A58416A00AEE55E /* EventKit.framework in Frameworks */,
+				5CAC7BC91BFEF16800438B74 /* JavaScriptCore.framework in Frameworks */,
 				5C2514921ADAB0A600761DA8 /* GoogleMobileAds.framework in Frameworks */,
 				5C91E5B118E1C4A800FCF013 /* CoreTelephony.framework in Frameworks */,
 				5C8968DE1BE3387C00AC30E6 /* VungleSDK.framework in Frameworks */,
@@ -439,7 +441,6 @@
 				B607AD10132EB52400D7C3EA /* QuartzCore.framework in Frameworks */,
 				B6CFCCD91332F152001F17AF /* AVFoundation.framework in Frameworks */,
 				B6AC4A061359E7A5003C4982 /* iAd.framework in Frameworks */,
-				B6468006188AB3260087F098 /* JavaScriptCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -603,6 +604,14 @@
 			path = Extension;
 			sourceTree = "<group>";
 		};
+		5CAC7BC71BFEF16800438B74 /* ios */ = {
+			isa = PBXGroup;
+			children = (
+				5CAC7BC81BFEF16800438B74 /* JavaScriptCore.framework */,
+			);
+			path = ios;
+			sourceTree = "<group>";
+		};
 		5CBFB2451BF47A7800BF2385 /* Gamepad */ = {
 			isa = PBXGroup;
 			children = (
@@ -752,7 +761,7 @@
 		B64CE652166682700087CF94 /* lib */ = {
 			isa = PBXGroup;
 			children = (
-				B6468005188AB3260087F098 /* JavaScriptCore.framework */,
+				5CAC7BC71BFEF16800438B74 /* ios */,
 				B63D255C16E8DE23007E6034 /* SocketRocket */,
 			);
 			path = lib;
@@ -1022,10 +1031,11 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"${PROJECT_DIR}/Source/lib",
-					"${PROJECT_DIR}/Extension/lib",
+					"$(PROJECT_DIR)/Source/lib/ios",
+					"$(PROJECT_DIR)/Extension/lib",
 					"$(PROJECT_DIR)/Extension/lib/VungleSDK.embeddedframework",
 				);
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -1037,9 +1047,9 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"${SRCROOT}",
-					"${SRCROOT}/Source/lib",
-					"${SRCROOT}/Extension/lib",
+					"\"$(SRCROOT)\"",
+					"\"$(SRCROOT)/Source/lib\"",
+					"\"$(SRCROOT)/Extension/lib\"",
 				);
 				OTHER_CFLAGS = "-DDEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = "cn.fattyboy.${PRODUCT_NAME}";
@@ -1059,10 +1069,11 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"${PROJECT_DIR}/Source/lib",
-					"${PROJECT_DIR}/Extension/lib",
+					"$(PROJECT_DIR)/Source/lib/ios",
+					"$(PROJECT_DIR)/Extension/lib",
 					"$(PROJECT_DIR)/Extension/lib/VungleSDK.embeddedframework",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -1071,9 +1082,9 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"${SRCROOT}",
-					"${SRCROOT}/Source/lib",
-					"${SRCROOT}/Extension/lib",
+					"\"$(SRCROOT)\"",
+					"\"$(SRCROOT)/Source/lib\"",
+					"\"$(SRCROOT)/Extension/lib\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "cn.fattyboy.${PRODUCT_NAME}";
 				PRODUCT_NAME = Ejecta;
@@ -1096,9 +1107,8 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
-					"${PROJECT_DIR}",
-					"${PROJECT_DIR}/Source/lib",
-					"${PROJECT_DIR}/Extension/lib",
+					"$(PROJECT_DIR)/Source/lib",
+					"$(PROJECT_DIR)/Extension/lib",
 				);
 				INFOPLIST_FILE = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -1120,9 +1130,8 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
-					"${PROJECT_DIR}",
-					"${PROJECT_DIR}/Source/lib",
-					"${PROJECT_DIR}/Extension/lib",
+					"$(PROJECT_DIR)/Source/lib",
+					"$(PROJECT_DIR)/Extension/lib",
 				);
 				INFOPLIST_FILE = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;

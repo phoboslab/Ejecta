@@ -79,8 +79,8 @@
 		NSData *data = (NSData *)message;
 		
 		if( binaryType == kEJWebSocketBinaryTypeArrayBuffer ) {
-			jsMessage = JSTypedArrayMake(ctx, kJSTypedArrayTypeArrayBuffer, data.length);
-			memcpy(JSTypedArrayGetDataPtr(ctx, jsMessage, NULL), data.bytes, data.length);
+			jsMessage = JSObjectMakeTypedArray(ctx, kJSTypedArrayTypeArrayBuffer, data.length);
+			memcpy(JSObjectGetTypedArrayDataPtr(ctx, (JSObjectRef)jsMessage, NULL), data.bytes, data.length);
 		}
 		else if( binaryType == kEJWebSocketBinaryTypeBlob ) {
 			NSLog(@"WebSocket Error: binaryType='blob' is not supported. Use 'arraybuffer' instead.");
@@ -150,7 +150,7 @@ EJ_BIND_FUNCTION(send, ctx, argc, argv) {
 	// Try TypedArray
 	else {
 		size_t byteLength;
-		void *dataPtr = JSTypedArrayGetDataPtr(ctx, argv[0], &byteLength);
+		void *dataPtr = JSObjectGetTypedArrayDataPtr(ctx, (JSObjectRef)argv[0], &byteLength);
 		if( dataPtr && byteLength ) {
 			[socket send:[NSData dataWithBytes:dataPtr length:byteLength]];
 		}

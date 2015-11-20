@@ -263,10 +263,10 @@ EJ_BIND_FUNCTION(send, ctx, argc, argv) {
 	if( argc > 0 ) {
 		if(
 			JSValueIsObject(ctx, argv[0]) &&
-	        JSTypedArrayGetType(ctx, argv[0]) != kJSTypedArrayTypeNone
+			JSObjectGetTypedArrayType(ctx, (JSObjectRef)argv[0]) != kJSTypedArrayTypeNone
 		) {
 			size_t length = 0;
-			void *data = JSTypedArrayGetDataPtr(ctx, argv[0], &length);
+			void *data = JSObjectGetTypedArrayDataPtr(ctx, (JSObjectRef)argv[0], &length);
 			request.HTTPBody = [NSData dataWithBytes:data length:length];
 		}
 		else {
@@ -311,8 +311,8 @@ EJ_BIND_GET(response, ctx) {
 	if( !response || !responseBody ) { return JSValueMakeNull(ctx); }
 	
 	if( type == kEJHttpRequestTypeArrayBuffer ) {
-		JSObjectRef array = JSTypedArrayMake(ctx, kJSTypedArrayTypeArrayBuffer, responseBody.length);
-		memcpy(JSTypedArrayGetDataPtr(ctx, array, NULL), responseBody.bytes, responseBody.length);
+		JSObjectRef array = JSObjectMakeTypedArray(ctx, kJSTypedArrayTypeArrayBuffer, responseBody.length);
+		memcpy(JSObjectGetTypedArrayDataPtr(ctx, array, NULL), responseBody.bytes, responseBody.length);
 		return array;
 	}
 	
