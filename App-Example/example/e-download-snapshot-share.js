@@ -32,7 +32,7 @@ function drawImageFile(imgPath) {
         var h = img.height;
         // Draw it at center of canvas.
         if (typeof context!="undefined") {
-            context.drawImage(img, canvas.width - w >> 1, canvas.height - h >> 1);
+            context.drawImage(img, width - w >> 1, height - h >> 1);
         }
 
         // Take Screenshot.
@@ -51,7 +51,6 @@ function takeScreenshot() {
     var destPath = "${Documents}/snapshot.png";
     // You could also use a offscreen canvas that you created via document.createElement().
 
-    canvas.ignoreClearing = true;
     renderSomething(); // ensure that gl isn't be cleared
 
     appUtils.saveImage(canvas, destPath, function(filePath) {

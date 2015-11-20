@@ -31,3 +31,5 @@ ejecta.include("example/e-vungle.js");
 // ejecta.include("example/e-localNotification.js");
 
 // ejecta.include("example/e-websocket.js");
+
+// ejecta.include("example/e-gamepad.js");
