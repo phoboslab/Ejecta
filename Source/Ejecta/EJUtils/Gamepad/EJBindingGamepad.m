@@ -138,6 +138,18 @@ EJ_BIND_GET(id, ctx) {
 	return NSStringToJSValue(ctx, controller.vendorName);
 }
 
+EJ_BIND_GET(profile, ctx) {
+	if( controller.extendedGamepad ) {
+		return NSStringToJSValue(ctx, @"extendedGamepad");
+	}
+	else if( controller.microGamepad ) {
+		return NSStringToJSValue(ctx, @"microGamepad");
+	}
+	else {
+		return NSStringToJSValue(ctx, @"gamepad");
+	}
+}
+
 EJ_BIND_GET(index, ctx) {
 	return JSValueMakeNumber(ctx, index);
 }
