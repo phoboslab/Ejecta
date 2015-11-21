@@ -142,9 +142,11 @@ EJ_BIND_GET(profile, ctx) {
 	if( controller.extendedGamepad ) {
 		return NSStringToJSValue(ctx, @"extendedGamepad");
 	}
-	else if( controller.microGamepad ) {
-		return NSStringToJSValue(ctx, @"microGamepad");
-	}
+	#if TARGET_OS_TV
+		else if( controller.microGamepad ) {
+			return NSStringToJSValue(ctx, @"microGamepad");
+		}
+	#endif
 	else {
 		return NSStringToJSValue(ctx, @"gamepad");
 	}
