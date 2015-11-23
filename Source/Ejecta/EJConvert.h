@@ -19,8 +19,9 @@ static inline void *JSValueGetPrivate(JSValueRef v) {
 	// undefined) will crash the app. So we check for these first.
 
 	#if __LP64__
-		#define JSValueTagMask (0xffff000000000000ll | 0x2ll)
-		return !((int64_t)v & JSValueTagMask) ? JSObjectGetPrivate((JSObjectRef)v) : NULL;
+		return !((int64_t)v & 0xffff000000000002ll)
+			? JSObjectGetPrivate((JSObjectRef)v)
+			: NULL;
 	#else
 		return JSObjectGetPrivate((JSObjectRef)v);
 	#endif

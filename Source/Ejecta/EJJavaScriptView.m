@@ -2,6 +2,7 @@
 #import "EJTimer.h"
 #import "EJBindingBase.h"
 #import "EJClassLoader.h"
+#import "EJConvertTypedArray.h"
 #import <objc/runtime.h>
 
 
@@ -94,7 +95,10 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
     
     // Attach all native class constructors to 'Ejecta'
     classLoader = [[EJClassLoader alloc] initWithScriptView:self name:@"Ejecta"];
-    
+	
+	// Prepare Typed Array clusterfuck
+	JSContextPrepareTypedArrayAPI(jsGlobalContext);
+	
     
     // Retain the caches here, so even if they're currently unused in JavaScript,
     // they will persist until the last scriptView is released
@@ -456,7 +460,11 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 #pragma mark Timers
 
 - (JSValueRef)createTimer:(JSContextRef)ctxp argc:(size_t)argc argv:(const JSValueRef [])argv repeat:(BOOL)repeat {
-	if( argc != 2 || !JSValueIsObject(ctxp, argv[0]) || !JSValueIsNumber(jsGlobalContext, argv[1]) ) {
+	if(
+		argc != 2 ||
+		!JSValueIsObject(ctxp, argv[0]) ||
+		!JSValueIsNumber(jsGlobalContext, argv[1])
+	) {
 		return NULL;
 	}
 	

@@ -1,5 +1,5 @@
 #import "EJBindingHttpRequest.h"
-#import <JavaScriptCore/JSTypedArray.h>
+#import "EJConvertTypedArray.h"
 #import "EJJavaScriptView.h"
 
 @implementation EJBindingHttpRequest
@@ -265,9 +265,7 @@ EJ_BIND_FUNCTION(send, ctx, argc, argv) {
 			JSValueIsObject(ctx, argv[0]) &&
 			JSObjectGetTypedArrayType(ctx, (JSObjectRef)argv[0]) != kJSTypedArrayTypeNone
 		) {
-			size_t length = 0;
-			void *data = JSObjectGetTypedArrayDataPtr(ctx, (JSObjectRef)argv[0], &length);
-			request.HTTPBody = [NSData dataWithBytes:data length:length];
+			request.HTTPBody = JSObjectGetTypedArrayData(ctx, (JSObjectRef)argv[0]);
 		}
 		else {
 			NSString *requestBody = JSValueToNSString( ctx, argv[0] );
@@ -312,7 +310,7 @@ EJ_BIND_GET(response, ctx) {
 	
 	if( type == kEJHttpRequestTypeArrayBuffer ) {
 		JSObjectRef array = JSObjectMakeTypedArray(ctx, kJSTypedArrayTypeArrayBuffer, responseBody.length);
-		memcpy(JSObjectGetTypedArrayDataPtr(ctx, array, NULL), responseBody.bytes, responseBody.length);
+		JSObjectSetTypedArrayData(ctx, array, responseBody);
 		return array;
 	}
 	

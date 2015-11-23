@@ -1,6 +1,6 @@
 #import "EJBindingImageData.h"
 #import "EJJavaScriptView.h"
-#import <JavaScriptCore/JSTypedArray.h>
+#import "EJConvertTypedArray.h"
 
 @implementation EJBindingImageData
 @synthesize imageData;
@@ -28,7 +28,7 @@
 		int byteLength = imageData.width * imageData.height * 4;
 		
 		[EJTexture
-			premultiplyPixels:JSObjectGetTypedArrayDataPtr(scriptView.jsGlobalContext, dataArray, NULL)
+			premultiplyPixels:JSObjectGetTypedArrayData(scriptView.jsGlobalContext, dataArray).bytes
 			to:imageData.pixels.mutableBytes
 			byteLength:byteLength format:GL_RGBA];
 	}
@@ -48,10 +48,13 @@ EJ_BIND_GET(data, ctx ) {
 		dataArray = JSObjectMakeTypedArray(ctx, kJSTypedArrayTypeUint8ClampedArray, byteLength);
 		JSValueProtect(ctx, dataArray);
 		
+		NSMutableData *unPremultiplied = [NSMutableData dataWithLength:byteLength];
 		[EJTexture
 			unPremultiplyPixels:imageData.pixels.bytes
-			to:JSObjectGetTypedArrayDataPtr(ctx, dataArray, NULL)
+			to:unPremultiplied.mutableBytes
 			byteLength:byteLength format:GL_RGBA];
+		
+		JSObjectSetTypedArrayData(ctx, dataArray, unPremultiplied);
 	}
 	return dataArray;
 }
