@@ -26,25 +26,27 @@
     // showAd();
     function showAd() {
         /* Options  :
-            Incentivized    boolean
-            IncentivizedAlertTitleText      string
-            IncentivizedAlertBodyText       string
-            IncentivizedAlertCloseButtonText        string
-            IncentivizedAlertContinueButtonText     string
-            Orientations        string // portrait / landscape / auto
-            Placement       string
-            User        string
-            * ExtraInfoDictionary  (don't support)
+            incentivized    boolean
+            incentivizedAlertTitleText      string
+            incentivizedAlertBodyText       string
+            incentivizedAlertCloseButtonText        string
+            incentivizedAlertContinueButtonText     string
+            orientations        string // portrait / landscape / auto
+            placement       string
+            user        string
+            beforeShow function
+            afterClose function
+            * extraInfoDictionary  (don't support)
         */
 
         adVungle.show({
-            Incentivized: true,
-            IncentivizedAlertTitleText: "title",
-            IncentivizedAlertBodyText: "body",
-            IncentivizedAlertCloseButtonText: "close-button",
-            IncentivizedAlertContinueButtonText: "continue-button",
-            Orientations: "portrait",
-            Placement: "Placement-A",
+            incentivized: true,
+            incentivizedAlertTitleText: "title",
+            incentivizedAlertBodyText: "body",
+            incentivizedAlertCloseButtonText: "close-button",
+            incentivizedAlertContinueButtonText: "continue-button",
+            orientations: "portrait",
+            placement: "Placement-A",
             // User: "test-user-1",
             beforeShow: function() {
                 console.log("beforeShow");

@@ -133,15 +133,17 @@ EJ_BIND_FUNCTION(show, ctx, argc, argv)
 
     /*
      Options ( VunglePlayAdOptionKey + key ) :
-     Incentivized    boolean
-     IncentivizedAlertTitleText      string
-     IncentivizedAlertBodyText       string
-     IncentivizedAlertCloseButtonText        string
-     IncentivizedAlertContinueButtonText     string
-     Orientations        string
-     Placement       string
-     User        string
-     * ExtraInfoDictionary  (don't support)
+     incentivized    boolean
+     incentivizedAlertTitleText      string
+     incentivizedAlertBodyText       string
+     incentivizedAlertCloseButtonText        string
+     incentivizedAlertContinueButtonText     string
+     orientations        string
+     placement       string
+     user        string
+     * extraInfoDictionary  (don't support)
+     beforeShow function
+     afterClose function
      
      {
       "videoLength":30,
@@ -160,34 +162,32 @@ EJ_BIND_FUNCTION(show, ctx, argc, argv)
         jsOptions = JSValueToObject(ctx, argv[0], NULL);
         NSDictionary *inOptions = (NSDictionary *)JSValueToNSObject(ctx, jsOptions);
         NSEnumerator *keys = [inOptions keyEnumerator];
-        options = [[NSMutableDictionary alloc] init];
-        NSString *prefix = @"VunglePlayAdOptionKey";
+        options = [NSMutableDictionary new];
         id keyId;
         while ((keyId = [keys nextObject])) {
             NSString *key = (NSString *)keyId;
             NSString *value = (NSString *)[inOptions objectForKey:keyId];
-            NSString *fullKey = [prefix stringByAppendingString:key];
-            NSLog(@"key : %@, value: %@", fullKey, value);
-            if ([key isEqualToString:@"Incentivized"]){
-                [options setObject:@([[inOptions objectForKey:keyId] boolValue]) forKey:fullKey];
-            }else if ([key isEqualToString:@"IncentivizedAlertTitleText"]){
-                 [options setObject:value forKey:fullKey];
-            }else if ([key isEqualToString:@"IncentivizedAlertBodyText"]){
-                [options setObject:value forKey:fullKey];
-            }else if ([key isEqualToString:@"IncentivizedAlertCloseButtonText"]){
-                [options setObject:value forKey:fullKey];
-            }else if ([key isEqualToString:@"IncentivizedAlertContinueButtonText"]){
-                [options setObject:value forKey:fullKey];
-            }else if ([key isEqualToString:@"Orientations"]){
+            NSLog(@"key : %@, value: %@", key, value);
+            if ([key isEqualToString:@"incentivized"]){
+                [options setObject:@([[inOptions objectForKey:keyId] boolValue]) forKey:VunglePlayAdOptionKeyIncentivized];
+            }else if ([key isEqualToString:@"incentivizedAlertTitleText"]){
+                 [options setObject:value forKey:VunglePlayAdOptionKeyIncentivizedAlertTitleText];
+            }else if ([key isEqualToString:@"incentivizedAlertBodyText"]){
+                [options setObject:value forKey:VunglePlayAdOptionKeyIncentivizedAlertBodyText];
+            }else if ([key isEqualToString:@"incentivizedAlertCloseButtonText"]){
+                [options setObject:value forKey:VunglePlayAdOptionKeyIncentivizedAlertCloseButtonText];
+            }else if ([key isEqualToString:@"incentivizedAlertContinueButtonText"]){
+                [options setObject:value forKey:VunglePlayAdOptionKeyIncentivizedAlertContinueButtonText];
+            }else if ([key isEqualToString:@"orientations"]){
                 if ([value isEqualToString:@"portrait"]){
-                     [options setObject:@(UIInterfaceOrientationMaskPortrait) forKey:fullKey];
+                     [options setObject:@(UIInterfaceOrientationMaskPortrait) forKey:VunglePlayAdOptionKeyOrientations];
                 }else if ([value isEqualToString:@"landscape"]){
-                    [options setObject:@(UIInterfaceOrientationMaskLandscape) forKey:fullKey];
+                    [options setObject:@(UIInterfaceOrientationMaskLandscape) forKey:VunglePlayAdOptionKeyOrientations];
                 }
-            }else if ([key isEqualToString:@"Placement"]){
-                [options setObject:value forKey:fullKey];
-            }else if ([key isEqualToString:@"User"]){
-                [options setObject:value forKey:fullKey];
+            }else if ([key isEqualToString:@"placement"]){
+                [options setObject:value forKey:VunglePlayAdOptionKeyPlacement];
+            }else if ([key isEqualToString:@"user"]){
+                [options setObject:value forKey:VunglePlayAdOptionKeyUser];
             }else if ([key isEqualToString:@"beforeShow"]){
                 JSStringRef funcName = JSStringCreateWithUTF8CString("beforeShow");
                 JSValueRef jsFunc = JSObjectGetProperty(ctx, jsOptions, funcName, NULL);
