@@ -51,7 +51,7 @@
 // the JSGlobalObject when creating Typed Arrays and when attaching our methods
 // to them.
 
-const char *ConstructorNames[] = {
+const static char *ConstructorNames[] = {
 	[kJSTypedArrayTypeNone] = NULL,
 	[kJSTypedArrayTypeInt8Array] = "Int8Array",
 	[kJSTypedArrayTypeInt16Array] = "Int16Array",
@@ -69,13 +69,13 @@ const char *ConstructorNames[] = {
 // Data from Typed Arrays smaller than CopyInChunksThreshold will be extracted
 // one byte at a time.
 
-const int CopyInChunksThreshold = 32;
+const static int CopyInChunksThreshold = 32;
 
 
 // For large arrays, copy the data in Chunks of 16k elements, so that we don't
 // blow the stack.
 
-const int CopyChunkSize = 0x4000;
+const static int CopyChunkSize = 0x4000;
 
 
 
@@ -114,7 +114,7 @@ static inline JSValueRef MakeInt32(JSContextRef ctx, int32_t number) {
 
 // Shorthand to get a property by name
 
-JSValueRef GetPropertyNamed(JSContextRef ctx, JSObjectRef object, const char *name) {
+static JSValueRef GetPropertyNamed(JSContextRef ctx, JSObjectRef object, const char *name) {
 	JSStringRef jsPropertyName = JSStringCreateWithUTF8CString(name);
 	JSValueRef value = JSObjectGetProperty(ctx, object, jsPropertyName, NULL);
 	JSStringRelease(jsPropertyName);
@@ -124,7 +124,7 @@ JSValueRef GetPropertyNamed(JSContextRef ctx, JSObjectRef object, const char *na
 
 // Shorthand to get the Constructor for the given JSTypedArrayType
 
-JSObjectRef GetConstructor(JSContextRef ctx, JSTypedArrayType type) {
+static JSObjectRef GetConstructor(JSContextRef ctx, JSTypedArrayType type) {
 	if( type <= kJSTypedArrayTypeNone || type > kJSTypedArrayTypeArrayBuffer ) {
 		return NULL;
 	}
@@ -137,7 +137,7 @@ JSObjectRef GetConstructor(JSContextRef ctx, JSTypedArrayType type) {
 
 // Create a typed array view from another typed array or arraybuffer
 
-JSObjectRef GetView(JSContextRef ctx, JSObjectRef object, JSTypedArrayType type, size_t count) {
+static JSObjectRef GetView(JSContextRef ctx, JSObjectRef object, JSTypedArrayType type, size_t count) {
 	JSTypedArrayType currentType = JSObjectGetTypedArrayType(ctx, object);
 	if( currentType == kJSTypedArrayTypeNone ) {
 		return NULL;
@@ -171,7 +171,7 @@ typedef struct {
 	JSObjectRef jsGetCallbackApply;
 } AppendDataCallbackState;
 
-JSValueRef AppendDataCallback(
+static JSValueRef AppendDataCallback(
 	JSContextRef ctx, JSObjectRef function, JSObjectRef thisObject,
 	size_t argc, const JSValueRef argv[], JSValueRef* exception
 ) {
@@ -214,12 +214,12 @@ JSValueRef AppendDataCallback(
 // a plain JSObject where we can store a pointer to the state in the private
 // data.
 
-void FinalizeAppendDataCallbackState(JSObjectRef object) {
+static void FinalizeAppendDataCallbackState(JSObjectRef object) {
 	AppendDataCallbackState *state = JSObjectGetPrivate(object);
 	free(state);
 }
 
-JSObjectRef CreateAppendDataCallbackState(JSContextRef ctx) {
+static JSObjectRef CreateAppendDataCallbackState(JSContextRef ctx) {
 	// Create a JS function that calls the AppendDataCallback
 	JSObjectRef jsAppendDataCallback = JSObjectMakeFunctionWithCallback(ctx, NULL, AppendDataCallback);
 	JSValueProtect(ctx, jsAppendDataCallback);
