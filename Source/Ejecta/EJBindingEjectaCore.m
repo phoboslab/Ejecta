@@ -17,16 +17,21 @@
 	
 	NSString *machine = [NSString stringWithCString:systemInfo.machine encoding:NSUTF8StringEncoding];
 	
-	if( [machine isEqualToString: @"i386"] ||
-	    [machine isEqualToString: @"x86_64"] ) {
-		
-		NSString *deviceType = ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-			? @"iPad"
-			: @"iPhone";
+	if(
+		[machine isEqualToString: @"i386"] ||
+	    [machine isEqualToString: @"x86_64"]
+	) {
+		#if TARGET_OS_TV
+			NSString *deviceType = @"AppleTV";
+		#else
+			NSString *deviceType = (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
+				? @"iPad"
+				: @"iPhone";
+		#endif
 		
 		return [NSString stringWithFormat: @"%@ Simulator", deviceType];
-		
-	} else {
+	}
+	else {
 		return machine;
 	}
 }
