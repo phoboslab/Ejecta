@@ -23,6 +23,16 @@ var gl = canvas.getContext('webgl', {antialias: true, antialiasSamples: 4});
 var ctx = canvas.getContext('2d', {antialias: true, antialiasSamples: 4});
 ```
 
+### 2015-11-27 – Allowed orientation change
+
+Allowed interface orientations should now be set using the "Device Orientation" checkboxes in the Project's General settings. Ejecta now rotates to all allowed orientations automatically. If the window size changes due to a rotation (i.e. when rotating from landscape to portrait or vice versa), the window's `resize` event is fired.
+
+```javascript
+window.addEventListener('resize', function() {
+	// Resize your screen canvas here if needed.
+	console.log('new window size:', window.innerWidth, window.innerHeight);
+});
+```
 
 ### 2015-11-08 - Removed automatic pixel doubling for retina devices
 
