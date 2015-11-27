@@ -33,7 +33,7 @@ typedef enum {
 /*!
 @function
 @abstract           Setup the JSContext for use of the Typed Array functions.
-@param ctx          The execution context to use.
+@param ctx          The execution context to use
 */
 void JSContextPrepareTypedArrayAPI(JSContextRef ctx);
 
@@ -42,7 +42,7 @@ void JSContextPrepareTypedArrayAPI(JSContextRef ctx);
 @abstract           Returns a JavaScript value's Typed Array type
 @param ctx          The execution context to use.
 @param value        The JSObject whose Typed Array type you want to obtain.
-@result             A value of type JSTypedArrayType that identifies value's Typed Array type.
+@result             A value of type JSTypedArrayType that identifies value's Typed Array type
 */
 JSTypedArrayType JSObjectGetTypedArrayType(JSContextRef ctx, JSObjectRef object);
 
@@ -60,8 +60,8 @@ JSObjectRef JSObjectMakeTypedArray(JSContextRef ctx, JSTypedArrayType arrayType,
 @function
 @abstract           Returns a copy of the Typed Array's data
 @param ctx          The execution context to use.
-@param value        The JSObject whose Typed Array data pointer you want to obtain.
-@result             A copy of the Typed Array's data or NULL if the JSObject is not a Typed Array.
+@param value        The JSObject whose Typed Array data you want to obtain.
+@result             A copy of the Typed Array's data or NULL if the JSObject is not a Typed Array
 */
 NSMutableData *JSObjectGetTypedArrayData(JSContextRef ctx, JSObjectRef object);
 
