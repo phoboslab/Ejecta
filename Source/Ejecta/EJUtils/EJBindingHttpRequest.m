@@ -259,8 +259,13 @@ EJ_BIND_FUNCTION(send, ctx, argc, argv) {
 		[request setValue:requestHeaders[header] forHTTPHeaderField:header];
 	}
 	
-	// Set body data (Typed Array or String)
-	if( argc > 0 ) {
+	// Set body data (Typed Array or String). If request is GET or HEAD ignore body data
+	// as per the spec.
+	if(
+		argc > 0 && !JSValueIsNull(ctx, argv[0]) &&
+		![method.lowercaseString isEqualToString:@"get"] &&
+		![method.lowercaseString isEqualToString:@"head"]
+	) {
 		if(
 			JSValueIsObject(ctx, argv[0]) &&
 			JSObjectGetTypedArrayType(ctx, (JSObjectRef)argv[0]) != kJSTypedArrayTypeNone
