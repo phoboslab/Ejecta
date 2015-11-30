@@ -260,7 +260,7 @@ EJ_BIND_FUNCTION(send, ctx, argc, argv) {
 	}
 	
 	// Set body data (Typed Array or String)
-	if( argc > 0 ) {
+	if( argc > 0 && ![[method uppercaseString] isEqualToString:@"GET"] ) {
 		if(
 			JSValueIsObject(ctx, argv[0]) &&
 			JSObjectGetTypedArrayType(ctx, (JSObjectRef)argv[0]) != kJSTypedArrayTypeNone
