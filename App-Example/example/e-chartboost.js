@@ -6,8 +6,7 @@
     var width = window.innerWidth;
     var height = window.innerHeight;
 
-    // var chartboost = new Ejecta.Chartboost("4f21c409cd1cb2fb7000001b", "92e2de2fd7070327bdeb54c15a5295309c6fcd2d");
-    var chartboost = new Ejecta.Chartboost("563399dfc909a662da96644e", "37d6219e4bff1a7ba6033d0e13e82ebb1be53214");
+    var chartboost = new Ejecta.Chartboost("56050a2d04b0165979d18668", "c9da6b2e27e6d6fcc8716ecdf271b616af652726");
 
     //    chartboost.loadInterstitial();
     chartboost.loadRewardedVideo();
