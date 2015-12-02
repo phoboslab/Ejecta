@@ -6,6 +6,7 @@
 //#import <Chartboost/CBInPlay.h>
 //#import <AdSupport/AdSupport.h>
 
+
 #import "EJBindingChartboost.h"
 
 #define ICON_DEFAULT_JPEG_QUALITY 0.9
@@ -273,6 +274,26 @@ EJ_BIND_FUNCTION(inPlayClicked, ctx, argc, argv){
  *
  */
 
+//shouldDisplayInterstitial
+//didDisplayInterstitial
+//didDismissInterstitial
+//didCloseInterstitial
+//didClickInterstitial
+//
+//shouldDisplayRewardedVideo
+//didDisplayRewardedVideo
+//didDismissRewardedVideo
+//didCloseRewardedVideo
+//didClickRewardedVideo
+//didCompleteRewardedVideo
+//willDisplayVideo
+//
+//shouldDisplayMoreApps
+//didDisplayMoreApps
+//didDismissMoreApps
+//didCloseMoreApps
+//didClickMoreApps
+
 - (NSString *)getErrorMessage:(CBLoadError)error {
     NSString *message = nil;
     switch(error){
@@ -453,6 +474,28 @@ EJ_BIND_FUNCTION(inPlayClicked, ctx, argc, argv){
         NSLog(@"Click RewardedVideo at location %@", location);
     #endif
     [self triggerEvent:@"click" properties:(JSEventProperty[]){
+        {"adType", NSStringToJSValue(scriptView.jsGlobalContext, @"RewardedVideo")},
+        {"location", NSStringToJSValue(scriptView.jsGlobalContext, location)},
+        {NULL, NULL}
+    }];
+}
+- (void)didDisplayRewardedVideo:(CBLocation)location {
+#if DEBUG
+    NSLog(@"Did display RewardedVideo");
+#endif
+//    if ([Chartboost isAnyViewVisible]) {
+//        [self triggerEvent:@"display" properties:(JSEventProperty[]){
+//            {"adType", NSStringToJSValue(scriptView.jsGlobalContext, @"RewardedVideo")},
+//            {"location", NSStringToJSValue(scriptView.jsGlobalContext, location)},
+//            {NULL, NULL}
+//        }];
+//    }
+}
+- (void)willDisplayVideo:(CBLocation)location {
+#if DEBUG
+    NSLog(@"Will Display RewardedVideo");
+#endif
+    [self triggerEvent:@"display" properties:(JSEventProperty[]){
         {"adType", NSStringToJSValue(scriptView.jsGlobalContext, @"RewardedVideo")},
         {"location", NSStringToJSValue(scriptView.jsGlobalContext, location)},
         {NULL, NULL}
