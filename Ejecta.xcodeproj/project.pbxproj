@@ -19,7 +19,6 @@
 		5C16A9021C101D8C00698190 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C16A9011C101D8C00698190 /* CoreFoundation.framework */; };
 		5C16A9081C101E5200698190 /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C16A9071C101E5200698190 /* CoreImage.framework */; };
 		5C16A90A1C101E5800698190 /* Twitter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C16A9091C101E5800698190 /* Twitter.framework */; };
-		5C16A90C1C101E6200698190 /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C16A90B1C101E6200698190 /* JavaScriptCore.framework */; };
 		5C16A90E1C10210B00698190 /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C16A90D1C10210B00698190 /* libc++.dylib */; };
 		5C16A9101C10211600698190 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C16A90F1C10211600698190 /* libicucore.dylib */; };
 		5C16A9131C10212E00698190 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C16A9111C10212E00698190 /* libsqlite3.dylib */; };
@@ -169,7 +168,6 @@
 		5C16A9011C101D8C00698190 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		5C16A9071C101E5200698190 /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = SDKROOT; };
 		5C16A9091C101E5800698190 /* Twitter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Twitter.framework; path = System/Library/Frameworks/Twitter.framework; sourceTree = SDKROOT; };
-		5C16A90B1C101E6200698190 /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		5C16A90D1C10210B00698190 /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.4.sdk/usr/lib/libc++.dylib"; sourceTree = DEVELOPER_DIR; };
 		5C16A90F1C10211600698190 /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.4.sdk/usr/lib/libicucore.dylib; sourceTree = DEVELOPER_DIR; };
 		5C16A9111C10212E00698190 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.4.sdk/usr/lib/libsqlite3.dylib; sourceTree = DEVELOPER_DIR; };
@@ -400,7 +398,6 @@
 				5C16A9141C10212E00698190 /* libstdc++.dylib in Frameworks */,
 				5C16A9101C10211600698190 /* libicucore.dylib in Frameworks */,
 				5C16A90E1C10210B00698190 /* libc++.dylib in Frameworks */,
-				5C16A90C1C101E6200698190 /* JavaScriptCore.framework in Frameworks */,
 				5C16A90A1C101E5800698190 /* Twitter.framework in Frameworks */,
 				5C16A9081C101E5200698190 /* CoreImage.framework in Frameworks */,
 				5C16A9021C101D8C00698190 /* CoreFoundation.framework in Frameworks */,
@@ -498,7 +495,6 @@
 				5CBFB24F1BF47AC300BF2385 /* GameController.framework */,
 				B6074FF215F8E41600D987F9 /* GameKit.framework */,
 				B6AC4A051359E7A5003C4982 /* iAd.framework */,
-				5C16A90B1C101E6200698190 /* JavaScriptCore.framework */,
 				B60FA9291702297C00078D20 /* MediaPlayer.framework */,
 				5C91E5AD18E1C45700FCF013 /* MessageUI.framework */,
 				33BE9DE31868183900E0D16E /* MobileCoreServices.framework */,
