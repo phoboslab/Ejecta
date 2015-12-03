@@ -15,6 +15,17 @@
 		3EBC19BE16CECE190036F9F3 /* EJBindingKeyInput.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EBC19BD16CECE190036F9F3 /* EJBindingKeyInput.m */; };
 		3EF00C5916C29360004599A4 /* EJJavaScriptView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3EF00C5816C29360004599A4 /* EJJavaScriptView.m */; };
 		5B7B76761619DB9700691910 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B7B76751619DB9700691910 /* CoreText.framework */; };
+		5C16A8FC1C101C9000698190 /* libxml2.2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C16A8FB1C101C9000698190 /* libxml2.2.tbd */; };
+		5C16A9021C101D8C00698190 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C16A9011C101D8C00698190 /* CoreFoundation.framework */; };
+		5C16A9081C101E5200698190 /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C16A9071C101E5200698190 /* CoreImage.framework */; };
+		5C16A90A1C101E5800698190 /* Twitter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C16A9091C101E5800698190 /* Twitter.framework */; };
+		5C16A90C1C101E6200698190 /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C16A90B1C101E6200698190 /* JavaScriptCore.framework */; };
+		5C16A90E1C10210B00698190 /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C16A90D1C10210B00698190 /* libc++.dylib */; };
+		5C16A9101C10211600698190 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C16A90F1C10211600698190 /* libicucore.dylib */; };
+		5C16A9131C10212E00698190 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C16A9111C10212E00698190 /* libsqlite3.dylib */; };
+		5C16A9141C10212E00698190 /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C16A9121C10212E00698190 /* libstdc++.dylib */; };
+		5C16A9171C10213D00698190 /* libxml2.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C16A9151C10213D00698190 /* libxml2.2.dylib */; };
+		5C16A9181C10213D00698190 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C16A9161C10213D00698190 /* libz.dylib */; };
 		5C2387D818CEFBFD00D0CC1A /* EJBindingTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C2387D718CEFBFD00D0CC1A /* EJBindingTimer.m */; };
 		5C25148F1ADAAF9300761DA8 /* OpenUDID.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C2514891ADAAF9300761DA8 /* OpenUDID.m */; };
 		5C2514921ADAB0A600761DA8 /* GoogleMobileAds.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C2514911ADAB0A600761DA8 /* GoogleMobileAds.framework */; };
@@ -25,16 +36,6 @@
 		5C631C021911446F009AF7F0 /* EJBindingBaseInterceptor.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C631BFE1911446F009AF7F0 /* EJBindingBaseInterceptor.m */; };
 		5C631C031911446F009AF7F0 /* EJInterceptorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C631C011911446F009AF7F0 /* EJInterceptorManager.m */; };
 		5C8968A01BE3284900AC30E6 /* EJBindingVungle.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C89689F1BE3284900AC30E6 /* EJBindingVungle.m */; };
-		5C8968B01BE32B9F00AC30E6 /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C8968AB1BE32B9F00AC30E6 /* libc++.dylib */; };
-		5C8968B11BE32B9F00AC30E6 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C8968AC1BE32B9F00AC30E6 /* libicucore.dylib */; };
-		5C8968B21BE32B9F00AC30E6 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C8968AD1BE32B9F00AC30E6 /* libsqlite3.dylib */; };
-		5C8968B31BE32B9F00AC30E6 /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C8968AE1BE32B9F00AC30E6 /* libstdc++.dylib */; };
-		5C8968B41BE32B9F00AC30E6 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C8968AF1BE32B9F00AC30E6 /* libz.dylib */; };
-		5C8968BA1BE32C5C00AC30E6 /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C8968B51BE32C5C00AC30E6 /* libc++.dylib */; };
-		5C8968BB1BE32C5C00AC30E6 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C8968B61BE32C5C00AC30E6 /* libicucore.dylib */; };
-		5C8968BC1BE32C5C00AC30E6 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C8968B71BE32C5C00AC30E6 /* libsqlite3.dylib */; };
-		5C8968BD1BE32C5C00AC30E6 /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C8968B81BE32C5C00AC30E6 /* libstdc++.dylib */; };
-		5C8968BE1BE32C5C00AC30E6 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C8968B91BE32C5C00AC30E6 /* libz.dylib */; };
 		5C8968C41BE32CAE00AC30E6 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C8968BF1BE32CAE00AC30E6 /* libc++.tbd */; };
 		5C8968C51BE32CAE00AC30E6 /* libicucore.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C8968C01BE32CAE00AC30E6 /* libicucore.tbd */; };
 		5C8968C61BE32CAE00AC30E6 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C8968C11BE32CAE00AC30E6 /* libsqlite3.tbd */; };
@@ -164,6 +165,17 @@
 		3EF00C5716C29360004599A4 /* EJJavaScriptView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJJavaScriptView.h; sourceTree = "<group>"; };
 		3EF00C5816C29360004599A4 /* EJJavaScriptView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJJavaScriptView.m; sourceTree = "<group>"; };
 		5B7B76751619DB9700691910 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
+		5C16A8FB1C101C9000698190 /* libxml2.2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libxml2.2.tbd; path = usr/lib/libxml2.2.tbd; sourceTree = SDKROOT; };
+		5C16A9011C101D8C00698190 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
+		5C16A9071C101E5200698190 /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = SDKROOT; };
+		5C16A9091C101E5800698190 /* Twitter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Twitter.framework; path = System/Library/Frameworks/Twitter.framework; sourceTree = SDKROOT; };
+		5C16A90B1C101E6200698190 /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		5C16A90D1C10210B00698190 /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.4.sdk/usr/lib/libc++.dylib"; sourceTree = DEVELOPER_DIR; };
+		5C16A90F1C10211600698190 /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.4.sdk/usr/lib/libicucore.dylib; sourceTree = DEVELOPER_DIR; };
+		5C16A9111C10212E00698190 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.4.sdk/usr/lib/libsqlite3.dylib; sourceTree = DEVELOPER_DIR; };
+		5C16A9121C10212E00698190 /* libstdc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.dylib"; path = "Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.4.sdk/usr/lib/libstdc++.dylib"; sourceTree = DEVELOPER_DIR; };
+		5C16A9151C10213D00698190 /* libxml2.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.2.dylib; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.4.sdk/usr/lib/libxml2.2.dylib; sourceTree = DEVELOPER_DIR; };
+		5C16A9161C10213D00698190 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.4.sdk/usr/lib/libz.dylib; sourceTree = DEVELOPER_DIR; };
 		5C2387D618CEFBFD00D0CC1A /* EJBindingTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingTimer.h; sourceTree = "<group>"; };
 		5C2387D718CEFBFD00D0CC1A /* EJBindingTimer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingTimer.m; sourceTree = "<group>"; };
 		5C2514881ADAAF9300761DA8 /* OpenUDID.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenUDID.h; sourceTree = "<group>"; };
@@ -182,16 +194,6 @@
 		5C631C011911446F009AF7F0 /* EJInterceptorManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJInterceptorManager.m; sourceTree = "<group>"; };
 		5C89689E1BE3284900AC30E6 /* EJBindingVungle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingVungle.h; sourceTree = "<group>"; };
 		5C89689F1BE3284900AC30E6 /* EJBindingVungle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingVungle.m; sourceTree = "<group>"; };
-		5C8968AB1BE32B9F00AC30E6 /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS7.1.sdk/usr/lib/libc++.dylib"; sourceTree = DEVELOPER_DIR; };
-		5C8968AC1BE32B9F00AC30E6 /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS7.1.sdk/usr/lib/libicucore.dylib; sourceTree = DEVELOPER_DIR; };
-		5C8968AD1BE32B9F00AC30E6 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS7.1.sdk/usr/lib/libsqlite3.dylib; sourceTree = DEVELOPER_DIR; };
-		5C8968AE1BE32B9F00AC30E6 /* libstdc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.dylib"; path = "Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS7.1.sdk/usr/lib/libstdc++.dylib"; sourceTree = DEVELOPER_DIR; };
-		5C8968AF1BE32B9F00AC30E6 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS7.1.sdk/usr/lib/libz.dylib; sourceTree = DEVELOPER_DIR; };
-		5C8968B51BE32C5C00AC30E6 /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.4.sdk/usr/lib/libc++.dylib"; sourceTree = DEVELOPER_DIR; };
-		5C8968B61BE32C5C00AC30E6 /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.4.sdk/usr/lib/libicucore.dylib; sourceTree = DEVELOPER_DIR; };
-		5C8968B71BE32C5C00AC30E6 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.4.sdk/usr/lib/libsqlite3.dylib; sourceTree = DEVELOPER_DIR; };
-		5C8968B81BE32C5C00AC30E6 /* libstdc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.dylib"; path = "Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.4.sdk/usr/lib/libstdc++.dylib"; sourceTree = DEVELOPER_DIR; };
-		5C8968B91BE32C5C00AC30E6 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.4.sdk/usr/lib/libz.dylib; sourceTree = DEVELOPER_DIR; };
 		5C8968BF1BE32CAE00AC30E6 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		5C8968C01BE32CAE00AC30E6 /* libicucore.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libicucore.tbd; path = usr/lib/libicucore.tbd; sourceTree = SDKROOT; };
 		5C8968C11BE32CAE00AC30E6 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
@@ -392,6 +394,17 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5C16A9171C10213D00698190 /* libxml2.2.dylib in Frameworks */,
+				5C16A9181C10213D00698190 /* libz.dylib in Frameworks */,
+				5C16A9131C10212E00698190 /* libsqlite3.dylib in Frameworks */,
+				5C16A9141C10212E00698190 /* libstdc++.dylib in Frameworks */,
+				5C16A9101C10211600698190 /* libicucore.dylib in Frameworks */,
+				5C16A90E1C10210B00698190 /* libc++.dylib in Frameworks */,
+				5C16A90C1C101E6200698190 /* JavaScriptCore.framework in Frameworks */,
+				5C16A90A1C101E5800698190 /* Twitter.framework in Frameworks */,
+				5C16A9081C101E5200698190 /* CoreImage.framework in Frameworks */,
+				5C16A9021C101D8C00698190 /* CoreFoundation.framework in Frameworks */,
+				5C16A8FC1C101C9000698190 /* libxml2.2.tbd in Frameworks */,
 				5CBFB2501BF47AC300BF2385 /* GameController.framework in Frameworks */,
 				5C8968E01BE3390D00AC30E6 /* WebKit.framework in Frameworks */,
 				5C8968C41BE32CAE00AC30E6 /* libc++.tbd in Frameworks */,
@@ -399,16 +412,6 @@
 				5C8968C61BE32CAE00AC30E6 /* libsqlite3.tbd in Frameworks */,
 				5C8968C71BE32CAE00AC30E6 /* libstdc++.tbd in Frameworks */,
 				5C8968C81BE32CAE00AC30E6 /* libz.tbd in Frameworks */,
-				5C8968BA1BE32C5C00AC30E6 /* libc++.dylib in Frameworks */,
-				5C8968BB1BE32C5C00AC30E6 /* libicucore.dylib in Frameworks */,
-				5C8968BC1BE32C5C00AC30E6 /* libsqlite3.dylib in Frameworks */,
-				5C8968BD1BE32C5C00AC30E6 /* libstdc++.dylib in Frameworks */,
-				5C8968BE1BE32C5C00AC30E6 /* libz.dylib in Frameworks */,
-				5C8968B01BE32B9F00AC30E6 /* libc++.dylib in Frameworks */,
-				5C8968B11BE32B9F00AC30E6 /* libicucore.dylib in Frameworks */,
-				5C8968B21BE32B9F00AC30E6 /* libsqlite3.dylib in Frameworks */,
-				5C8968B31BE32B9F00AC30E6 /* libstdc++.dylib in Frameworks */,
-				5C8968B41BE32B9F00AC30E6 /* libz.dylib in Frameworks */,
 				5C3B72E41ADAB7D3002A3FB5 /* CoreMedia.framework in Frameworks */,
 				5C9CF4B31A58419100AEE55E /* EventKitUI.framework in Frameworks */,
 				5C9CF4B11A58416A00AEE55E /* EventKit.framework in Frameworks */,
@@ -470,23 +473,20 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				5CBFB24F1BF47AC300BF2385 /* GameController.framework */,
-				5C8968B51BE32C5C00AC30E6 /* libc++.dylib */,
-				5C8968AB1BE32B9F00AC30E6 /* libc++.dylib */,
-				5C8968B61BE32C5C00AC30E6 /* libicucore.dylib */,
-				5C8968AC1BE32B9F00AC30E6 /* libicucore.dylib */,
-				5C8968B71BE32C5C00AC30E6 /* libsqlite3.dylib */,
-				5C8968AD1BE32B9F00AC30E6 /* libsqlite3.dylib */,
-				5C8968B81BE32C5C00AC30E6 /* libstdc++.dylib */,
-				5C8968AE1BE32B9F00AC30E6 /* libstdc++.dylib */,
-				5C8968B91BE32C5C00AC30E6 /* libz.dylib */,
-				5C8968AF1BE32B9F00AC30E6 /* libz.dylib */,
+				5C16A90D1C10210B00698190 /* libc++.dylib */,
+				5C16A90F1C10211600698190 /* libicucore.dylib */,
+				5C16A9111C10212E00698190 /* libsqlite3.dylib */,
+				5C16A9121C10212E00698190 /* libstdc++.dylib */,
+				5C16A9151C10213D00698190 /* libxml2.2.dylib */,
+				5C16A9161C10213D00698190 /* libz.dylib */,
 				5C8E33FA18C4EF23007206AE /* Accounts.framework */,
 				5C91E5AF18E1C47F00FCF013 /* AdSupport.framework */,
 				B607AC32132EA75F00D7C3EA /* AudioToolbox.framework */,
 				B6CFCCD81332F152001F17AF /* AVFoundation.framework */,
 				B63D256716E8DF23007E6034 /* CFNetwork.framework */,
+				5C16A9011C101D8C00698190 /* CoreFoundation.framework */,
 				288765FC0DF74451002DB57D /* CoreGraphics.framework */,
+				5C16A9071C101E5200698190 /* CoreImage.framework */,
 				B6D4B282183CF43A008251EB /* CoreLocation.framework */,
 				5C3B72E31ADAB7D3002A3FB5 /* CoreMedia.framework */,
 				B6F1151B1677FCF2001F1324 /* CoreMotion.framework */,
@@ -495,8 +495,10 @@
 				5C9CF4B01A58416A00AEE55E /* EventKit.framework */,
 				5C9CF4B21A58419100AEE55E /* EventKitUI.framework */,
 				1D30AB110D05D00D00671497 /* Foundation.framework */,
+				5CBFB24F1BF47AC300BF2385 /* GameController.framework */,
 				B6074FF215F8E41600D987F9 /* GameKit.framework */,
 				B6AC4A051359E7A5003C4982 /* iAd.framework */,
+				5C16A90B1C101E6200698190 /* JavaScriptCore.framework */,
 				B60FA9291702297C00078D20 /* MediaPlayer.framework */,
 				5C91E5AD18E1C45700FCF013 /* MessageUI.framework */,
 				33BE9DE31868183900E0D16E /* MobileCoreServices.framework */,
@@ -507,12 +509,14 @@
 				5C8E33F818C4EF1D007206AE /* Social.framework */,
 				B6D6E09916F7D03C009AB75F /* StoreKit.framework */,
 				B6F463A31636C3FA00FC89C1 /* SystemConfiguration.framework */,
+				5C16A9091C101E5800698190 /* Twitter.framework */,
 				1DF5F4DF0D08C38300B7A737 /* UIKit.framework */,
 				5C8968DF1BE3390D00AC30E6 /* WebKit.framework */,
 				5C8968BF1BE32CAE00AC30E6 /* libc++.tbd */,
 				5C8968C01BE32CAE00AC30E6 /* libicucore.tbd */,
 				5C8968C11BE32CAE00AC30E6 /* libsqlite3.tbd */,
 				5C8968C21BE32CAE00AC30E6 /* libstdc++.tbd */,
+				5C16A8FB1C101C9000698190 /* libxml2.2.tbd */,
 				5C8968C31BE32CAE00AC30E6 /* libz.tbd */,
 			);
 			name = Frameworks;
@@ -1043,7 +1047,7 @@
 				GCC_PREFIX_HEADER = Source/Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = "";
 				INFOPLIST_FILE = Resources/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
@@ -1054,7 +1058,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "cn.fattyboy.${PRODUCT_NAME}";
 				PRODUCT_NAME = Ejecta;
 				PROVISIONING_PROFILE = "";
-				SDKROOT = iphoneos;
+				SDKROOT = iphoneos8.4;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -1078,7 +1082,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Source/Prefix.pch;
 				INFOPLIST_FILE = Resources/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
@@ -1088,7 +1092,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "cn.fattyboy.${PRODUCT_NAME}";
 				PRODUCT_NAME = Ejecta;
 				PROVISIONING_PROFILE = "";
-				SDKROOT = iphoneos;
+				SDKROOT = iphoneos8.4;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
