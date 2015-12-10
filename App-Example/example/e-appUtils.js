@@ -1,6 +1,7 @@
 "use strict";
 
 var appUtils = new Ejecta.AppUtils();
+var resolution = new Ejecta.Resolution();
 
 
 console.log("ver : " + appUtils.ver);
@@ -11,6 +12,8 @@ console.log("systemVersion : " + appUtils.systemVersion);
 console.log("systemLocal : " + appUtils.systemLocal);
 
 console.log("index.js Exists : " + appUtils.fileExists("index.js"));
+
+console.log("dpi", resolution.dpi);
 
 
 appUtils.eval("function abc(){return 'eval >> app ver : ' + appUtils.ver;}");

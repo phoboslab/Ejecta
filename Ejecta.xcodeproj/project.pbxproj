@@ -60,6 +60,7 @@
 		5C91E5B018E1C47F00FCF013 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C91E5AF18E1C47F00FCF013 /* AdSupport.framework */; };
 		5C91E5B118E1C4A800FCF013 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C91E5AA18E1C43A00FCF013 /* CoreTelephony.framework */; };
 		5C91E5B418E1CEFE00FCF013 /* EJBindingAdMobBanner.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C91E5B318E1CEFE00FCF013 /* EJBindingAdMobBanner.m */; };
+		5C9C36541C19A33200ADF446 /* EJBindingResolution.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C9C36531C19A33200ADF446 /* EJBindingResolution.m */; };
 		5C9CF4B11A58416A00AEE55E /* EventKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C9CF4B01A58416A00AEE55E /* EventKit.framework */; };
 		5C9CF4B31A58419100AEE55E /* EventKitUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C9CF4B21A58419100AEE55E /* EventKitUI.framework */; };
 		5CA813FE1B9E244000172B7A /* WebviewBridge.js in Resources */ = {isa = PBXBuildFile; fileRef = 5CA813FD1B9E244000172B7A /* WebviewBridge.js */; };
@@ -224,6 +225,8 @@
 		5C91E5AF18E1C47F00FCF013 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		5C91E5B218E1CEFE00FCF013 /* EJBindingAdMobBanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingAdMobBanner.h; sourceTree = "<group>"; };
 		5C91E5B318E1CEFE00FCF013 /* EJBindingAdMobBanner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingAdMobBanner.m; sourceTree = "<group>"; };
+		5C9C36521C19A33200ADF446 /* EJBindingResolution.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingResolution.h; sourceTree = "<group>"; };
+		5C9C36531C19A33200ADF446 /* EJBindingResolution.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingResolution.m; sourceTree = "<group>"; };
 		5C9CF4B01A58416A00AEE55E /* EventKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKit.framework; path = System/Library/Frameworks/EventKit.framework; sourceTree = SDKROOT; };
 		5C9CF4B21A58419100AEE55E /* EventKitUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKitUI.framework; path = System/Library/Frameworks/EventKitUI.framework; sourceTree = SDKROOT; };
 		5CA813FD1B9E244000172B7A /* WebviewBridge.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = WebviewBridge.js; sourceTree = "<group>"; };
@@ -575,6 +578,8 @@
 		5C8E33FC18C4EF40007206AE /* Extension */ = {
 			isa = PBXGroup;
 			children = (
+				5C9C36521C19A33200ADF446 /* EJBindingResolution.h */,
+				5C9C36531C19A33200ADF446 /* EJBindingResolution.m */,
 				5C2514851ADAAF9300761DA8 /* lib */,
 				5C91E5B218E1CEFE00FCF013 /* EJBindingAdMobBanner.h */,
 				5C91E5B318E1CEFE00FCF013 /* EJBindingAdMobBanner.m */,
@@ -976,6 +981,7 @@
 				B6F114FE1676BD40001F1324 /* EJCanvasContext2DTexture.m in Sources */,
 				B6F114FF1676BD40001F1324 /* EJFont.mm in Sources */,
 				B668475C182419A500ABCDF9 /* EJCanvasContextWebGLScreen.m in Sources */,
+				5C9C36541C19A33200ADF446 /* EJBindingResolution.m in Sources */,
 				B6F115001676BD40001F1324 /* EJImageData.m in Sources */,
 				5CBFB24D1BF47A7800BF2385 /* EJBindingGamepadButton.m in Sources */,
 				5C8E340F18C4EF40007206AE /* EJBindingWebView.m in Sources */,

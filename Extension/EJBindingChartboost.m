@@ -34,7 +34,6 @@
 
     [Chartboost startWithAppId:appId appSignature:appSignature delegate:self];
 
-
 }
 
 - (void)dealloc {
