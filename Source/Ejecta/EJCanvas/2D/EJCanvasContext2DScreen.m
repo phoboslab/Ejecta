@@ -52,7 +52,10 @@
 	bufferHeight = height = newHeight;
 	
 	CGRect frame = self.frame;
-	float contentScale = bufferWidth / frame.size.width;
+
+    float contentScaleX = bufferWidth / frame.size.width;
+    float contentScaleY = bufferHeight / frame.size.height;
+    float contentScale = contentScaleX > contentScaleY ? contentScaleX : contentScaleY;
 	
 	NSLog(
 		@"Creating ScreenCanvas (2D): "
