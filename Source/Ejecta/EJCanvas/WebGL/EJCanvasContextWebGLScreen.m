@@ -90,6 +90,24 @@
 	// Set up the renderbuffer and some initial OpenGL properties
 	[glContext renderbufferStorage:GL_RENDERBUFFER fromDrawable:(CAEAGLLayer *)glview.layer];
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, viewRenderBuffer);
+	
+	if(EJECTA_SYSTEM_VERSION_LESS_THAN(@"9.0")){
+		// Make sure the renderbuffer has the expected size. Print a warning if not.
+        GLint rbWidth, rbHeight;
+        glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &rbWidth);
+        glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &rbHeight);
+        if( rbWidth != bufferWidth || rbHeight != bufferHeight ) {
+	        NSLog(
+		        @"Warning: the internal resolution for the screen Canvas is different from "
+		        "the one requested. This happens due to rounding errors with a non-integer "
+		        "contentScale. Requested: %dx%d, Actual: %dx%d, contentScale: %f",
+		        bufferWidth, bufferHeight, rbWidth, rbHeight, contentScale
+	        );
+	        bufferWidth = rbWidth;
+	        bufferHeight = rbHeight;
+        }
+    }
+	
 
 	[self resizeAuxiliaryBuffers];
 	
