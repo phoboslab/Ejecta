@@ -85,6 +85,17 @@
 	[glContext renderbufferStorage:GL_RENDERBUFFER fromDrawable:(CAEAGLLayer *)glview.layer];
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, viewRenderBuffer);
 	
+    if(EJECTA_SYSTEM_VERSION_LESS_THAN(@"9.0")){
+        GLint rbWidth, rbHeight;
+        glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &rbWidth);
+        glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &rbHeight);
+        NSLog(@"Requested Size: %dx%d, Real Renderbuffer Size: %dx%d", bufferWidth, bufferHeight, rbWidth, rbHeight);
+        
+        bufferWidth = rbWidth;
+        bufferHeight = rbHeight;
+    }
+
+    
 	// Flip the screen - OpenGL has the origin in the bottom left corner. We want the top left.
 	upsideDown = true;
 	
