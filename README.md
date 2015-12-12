@@ -11,7 +11,7 @@ Ejecta is published under the [MIT Open Source License](http://opensource.org/li
 
 ### 2015-12-12 - Use OS provided JavaScriptCore library 
 
-Since https://github.com/phoboslab/Ejecta/commit/08741b4489ff945b117ebee0333c7eb7a6177c2e Ejecta uses the JSC lib provided by iOS and tvOS instead of bundling a custom fork it. This mainly means two things: The resulting binary will be much smaller and Typed Arrays are much slower.
+Since [08741b4](https://github.com/phoboslab/Ejecta/commit/08741b4489ff945b117ebee0333c7eb7a6177c2e) Ejecta uses the JSC lib provided by iOS and tvOS instead of bundling a custom fork it. This mainly means two things: The resulting binary will be much smaller and Typed Arrays are much slower.
 
 This only affects WebGL and the `get/setImageData()` functions for Canvas2D. Some tests indicate that the performance is still good enough for most WebGL games. On 64bit systems it's highly optimized to take about 7ms/Megabyte for reading and about 20ms/Megabyte for writing. It's much slower on 32bit systems, though.
 
