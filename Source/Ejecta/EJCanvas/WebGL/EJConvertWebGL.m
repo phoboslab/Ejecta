@@ -1,6 +1,6 @@
 #import "EJConvertWebGL.h"
 #import "EJConvert.h"
-#import <JavaScriptCore/JSTypedArray.h>
+#import "EJConvertTypedArray.h"
 
 // FIXME: use C++ with a template?
 #define CREATE_JS_VALUE_TO_ARRAY_FUNC(NAME, TYPE, ARRAY_TYPE) \
@@ -10,8 +10,9 @@ TYPE *NAME(JSContextRef ctx, JSValueRef value, GLsizei elementSize, GLsizei *num
 	} \
 	JSObjectRef jsObject = (JSObjectRef)value; \
 	if( JSObjectGetTypedArrayType(ctx, jsObject) == ARRAY_TYPE ) { \
-		size_t byteLength; \
-		TYPE *arrayValue = JSObjectGetTypedArrayDataPtr(ctx, jsObject, &byteLength); \
+		NSMutableData *data = JSObjectGetTypedArrayData(ctx, jsObject); \
+		size_t byteLength = data.length; \
+		TYPE *arrayValue = data.mutableBytes; \
 		GLsizei count = (GLsizei)(byteLength/sizeof(TYPE)); \
 		if( arrayValue && count && (count % elementSize) == 0 ) { \
 			*numElements = count / elementSize; \

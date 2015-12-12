@@ -1,3 +1,12 @@
+# About The typed-array-clusterfuck Branch
+
+This branch of Ejecta uses the JavaScriptCore library provided by the system. This mainly means two things: The resulting binary will be much smaller and Typed Arrays are extremely slow.
+
+On 32bit systems reading/writing large Typed Arrays will be pretty much unusably slow. On 64bit systems it's highly optimized to take about 8ms for reading for 1MB of data and about 20ms for writing. This _may_ be ok for simple WebGL stuff or if you don't use g`et/setImageData()` on the Canvas2D context much.
+
+This branch of Ejecta _may_ be AppStore compatible for tvOS. I'm still waiting on the review, but at least the binary upload didn't fail like with the main branch.
+
+
 # Ejecta
 
 Ejecta is a fast, open source JavaScript, Canvas & Audio implementation for iOS. Think of it as a Browser that can only display a Canvas element.

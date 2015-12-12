@@ -24,9 +24,11 @@ JSValueRef NSStringToJSValue( JSContextRef ctx, NSString *string ) {
 // This functions comes in a 64bit and 32bit flavor, since the NaN-Boxing
 // in JSC works a bit differently on each platforms. For an explanation
 // of the taggging refer to JSC/runtime/JSCJSValue.h
+// The 32bit version just calls the normal JSValueToNumber() function
+// and is thus a lot slower.
 
-#if __LP64__ // arm64 version
-	double JSValueToNumberFast(JSContextRef ctx, JSValueRef v) {
+double JSValueToNumberFast(JSContextRef ctx, JSValueRef v) {
+	#if __LP64__ // arm64 version
 		union {
 			int64_t asInt64;
 			double asDouble;
@@ -50,22 +52,10 @@ JSValueRef NSStringToJSValue( JSContextRef ctx, NSString *string ) {
 		else {
 			return 0; // false, undefined, null, object
 		}
-	}
-#else // armv7 version
-	double JSValueToNumberFast( JSContextRef ctx, JSValueRef v ) {
-		struct {
-			unsigned char cppClassData[4];
-			union {
-				double asDouble;
-				struct { int32_t asInt; int32_t tag; } asBits;
-			} payload;
-		} *decoded = (void *)v;
-		
-		return decoded->payload.asBits.tag < 0xfffffff9
-			? decoded->payload.asDouble
-			: decoded->payload.asBits.asInt;
-	}
-#endif
+	#else // armv7 version
+		return JSValueToNumber(ctx, v, NULL);
+	#endif
+}
 
 void JSValueUnprotectSafe( JSContextRef ctx, JSValueRef v ) {
 	if( ctx && v ) {
