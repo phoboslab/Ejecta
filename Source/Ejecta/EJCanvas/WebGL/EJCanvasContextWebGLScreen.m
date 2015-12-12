@@ -48,11 +48,11 @@
 - (void)resizeToWidth:(short)newWidth height:(short)newHeight {
 	[self flushBuffers];
 	
-	bufferWidth = width = newWidth;
-	bufferHeight = height = newHeight;
+	width = newWidth;
+	height = newHeight;
 	
 	CGRect frame = self.frame;
-	float contentScale = MAX(bufferWidth/frame.size.width, bufferHeight/frame.size.height);
+	float contentScale = MAX(width/frame.size.width, height/frame.size.height);
 	
 	NSLog(
 		@"Creating ScreenCanvas (WebGL): "
