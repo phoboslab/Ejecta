@@ -58,6 +58,16 @@ JSObjectRef JSObjectMakeTypedArray(JSContextRef ctx, JSTypedArrayType arrayType,
 
 /*!
 @function
+@abstract           Creates an empty JavaScript Typed Array with the given NSData
+@param ctx          The execution context to use.
+@param arrayType    A value of type JSTypedArrayType identifying the type of array you want to create
+@param data         The NSData to copy into the Typed Array.
+@result             A JSObjectRef that is a Typed Array or NULL if there was an error
+*/
+JSObjectRef JSObjectMakeTypedArrayWithData(JSContextRef ctx, JSTypedArrayType arrayType, NSData *data);
+
+/*!
+@function
 @abstract           Returns a copy of the Typed Array's data
 @param ctx          The execution context to use.
 @param value        The JSObject whose Typed Array data you want to obtain.

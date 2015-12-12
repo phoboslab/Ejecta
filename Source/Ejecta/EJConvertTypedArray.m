@@ -47,22 +47,25 @@
 
 
 
-// Array Types to constructor names. We need to obtain the Constructors from
-// the JSGlobalObject when creating Typed Arrays and when attaching our methods
-// to them.
+// Array Types to constructor names and element size. We need to obtain the
+// Constructors from the JSGlobalObject when creating Typed Arrays and when
+// attaching our methods to them.
 
-const static char *ConstructorNames[] = {
-	[kJSTypedArrayTypeNone] = NULL,
-	[kJSTypedArrayTypeInt8Array] = "Int8Array",
-	[kJSTypedArrayTypeInt16Array] = "Int16Array",
-	[kJSTypedArrayTypeInt32Array] = "Int32Array",
-	[kJSTypedArrayTypeUint8Array] = "Uint8Array",
-	[kJSTypedArrayTypeUint8ClampedArray] = "Uint8ClampedArray",
-	[kJSTypedArrayTypeUint16Array] = "Uint16Array",
-	[kJSTypedArrayTypeUint32Array] = "Uint32Array",
-	[kJSTypedArrayTypeFloat32Array] = "Float32Array",
-	[kJSTypedArrayTypeFloat64Array] = "Float64Array",
-	[kJSTypedArrayTypeArrayBuffer] = "ArrayBuffer"
+const static struct {
+	const int elementSize;
+	const char * constructorName;
+} TypeInfo[] = {
+	[kJSTypedArrayTypeNone] = {0, NULL},
+	[kJSTypedArrayTypeInt8Array] = {1, "Int8Array"},
+	[kJSTypedArrayTypeInt16Array] = {2, "Int16Array"},
+	[kJSTypedArrayTypeInt32Array] = {4, "Int32Array"},
+	[kJSTypedArrayTypeUint8Array] = {1, "Uint8Array"},
+	[kJSTypedArrayTypeUint8ClampedArray] = {1, "Uint8ClampedArray"},
+	[kJSTypedArrayTypeUint16Array] = {2, "Uint16Array"},
+	[kJSTypedArrayTypeUint32Array] = {4, "Uint32Array"},
+	[kJSTypedArrayTypeFloat32Array] = {4, "Float32Array"},
+	[kJSTypedArrayTypeFloat64Array] = {8, "Float64Array"},
+	[kJSTypedArrayTypeArrayBuffer] = {1, "ArrayBuffer"}
 };
 
 
@@ -129,7 +132,7 @@ static JSObjectRef GetConstructor(JSContextRef ctx, JSTypedArrayType type) {
 		return NULL;
 	}
 	
-	const char *constructorName = ConstructorNames[type];
+	const char *constructorName = TypeInfo[type].constructorName;
 	JSObjectRef global = JSContextGetGlobalObject(ctx);
 	return (JSObjectRef)GetPropertyNamed(ctx, global, constructorName);
 }
@@ -291,6 +294,19 @@ JSObjectRef JSObjectMakeTypedArray(JSContextRef ctx, JSTypedArrayType arrayType,
 	
 	JSValueRef jsNumElements = MakeInt32(ctx, (int)numElements);
 	return JSObjectCallAsConstructor(ctx, jsConstructor, 1, (JSValueRef[]){jsNumElements}, NULL);
+}
+
+
+JSObjectRef JSObjectMakeTypedArrayWithData(JSContextRef ctx, JSTypedArrayType arrayType, NSData *data) {
+	if( arrayType <= kJSTypedArrayTypeNone || arrayType > kJSTypedArrayTypeArrayBuffer ) {
+		return NULL;
+	}
+	
+	size_t numElements = data.length / TypeInfo[arrayType].elementSize;
+	
+	JSObjectRef array = JSObjectMakeTypedArray(ctx, arrayType, numElements);
+	JSObjectSetTypedArrayData(ctx, array, data);
+	return array;
 }
 
 

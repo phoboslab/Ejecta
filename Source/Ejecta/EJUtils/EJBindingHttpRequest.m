@@ -314,9 +314,7 @@ EJ_BIND_GET(response, ctx) {
 	if( !response || !responseBody ) { return JSValueMakeNull(ctx); }
 	
 	if( type == kEJHttpRequestTypeArrayBuffer ) {
-		JSObjectRef array = JSObjectMakeTypedArray(ctx, kJSTypedArrayTypeArrayBuffer, responseBody.length);
-		JSObjectSetTypedArrayData(ctx, array, responseBody);
-		return array;
+		return JSObjectMakeTypedArrayWithData(ctx, kJSTypedArrayTypeArrayBuffer, responseBody);
 	}
 	
 	

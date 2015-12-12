@@ -740,8 +740,7 @@ EJ_BIND_FUNCTION(getParameter, ctx, argc, argv) {
 		case GL_DEPTH_RANGE:
 			data = [[NSMutableData alloc] initWithLength:2 * sizeof(GLfloat)];
 			glGetFloatv(pname, data.mutableBytes);
-			ret = JSObjectMakeTypedArray(ctx, kJSTypedArrayTypeFloat32Array, 2);
-			JSObjectSetTypedArrayData(ctx, (JSObjectRef)ret, data);
+			ret = JSObjectMakeTypedArrayWithData(ctx, kJSTypedArrayTypeFloat32Array, data);
 			[data release];
 			break;
 		
@@ -750,8 +749,7 @@ EJ_BIND_FUNCTION(getParameter, ctx, argc, argv) {
 		case GL_COLOR_CLEAR_VALUE:
 			data = [[NSMutableData alloc] initWithLength:4 * sizeof(GLfloat)];
 			glGetFloatv(pname, data.mutableBytes);
-			ret = JSObjectMakeTypedArray(ctx, kJSTypedArrayTypeFloat32Array, 4);
-			JSObjectSetTypedArrayData(ctx, (JSObjectRef)ret, data);
+			ret = JSObjectMakeTypedArrayWithData(ctx, kJSTypedArrayTypeFloat32Array, data);
 			[data release];
 			break;
 			
@@ -759,8 +757,7 @@ EJ_BIND_FUNCTION(getParameter, ctx, argc, argv) {
 		case GL_MAX_VIEWPORT_DIMS:
 			data = [[NSMutableData alloc] initWithLength:2 * sizeof(GLint)];
 			glGetIntegerv(pname, data.mutableBytes);
-			ret = JSObjectMakeTypedArray(ctx, kJSTypedArrayTypeInt32Array, 2);
-			JSObjectSetTypedArrayData(ctx, (JSObjectRef)ret, data);
+			ret = JSObjectMakeTypedArrayWithData(ctx, kJSTypedArrayTypeInt32Array, data);
 			[data release];
 			break;
 			
@@ -769,8 +766,7 @@ EJ_BIND_FUNCTION(getParameter, ctx, argc, argv) {
 		case GL_VIEWPORT:
 			data = [[NSMutableData alloc] initWithLength:4 * sizeof(GLint)];
 			glGetIntegerv(pname, data.mutableBytes);
-			ret = JSObjectMakeTypedArray(ctx, kJSTypedArrayTypeInt32Array, 4);
-			JSObjectSetTypedArrayData(ctx, (JSObjectRef)ret, data);
+			ret = JSObjectMakeTypedArrayWithData(ctx, kJSTypedArrayTypeInt32Array, data);
 			[data release];
 			break;
 		
@@ -1159,21 +1155,17 @@ EJ_BIND_FUNCTION(getUniform, ctx, argc, argv) {
 	
 	// Float32Array
 	if( type == GL_FLOAT ) {
-		array = JSObjectMakeTypedArray(ctx, kJSTypedArrayTypeFloat32Array, size);
 		NSMutableData *data = [[NSMutableData alloc] initWithLength:size * sizeof(GLfloat)];
 		glGetUniformfv(program, uniform, data.mutableBytes);
-		
-		JSObjectSetTypedArrayData(ctx, array, data);
+		array = JSObjectMakeTypedArrayWithData(ctx, kJSTypedArrayTypeFloat32Array, data);
 		[data release];
 	}
 	
 	// Int32Array
 	else if( type == GL_INT ) {
-		array = JSObjectMakeTypedArray(ctx, kJSTypedArrayTypeInt32Array, size);
 		NSMutableData *data = [[NSMutableData alloc] initWithLength:size * sizeof(GLint)];
 		glGetUniformiv(program, uniform, data.mutableBytes);
-		
-		JSObjectSetTypedArrayData(ctx, array, data);
+		array = JSObjectMakeTypedArrayWithData(ctx, kJSTypedArrayTypeInt32Array, data);
 		[data release];
 	}
 	
@@ -1220,10 +1212,9 @@ EJ_BIND_FUNCTION(getVertexAttrib, ctx, argc, argv) {
 		return [buffers[@(buffer)] pointerValue];
 	}
 	else if( pname == GL_CURRENT_VERTEX_ATTRIB ) {
-		JSObjectRef array = JSObjectMakeTypedArray(ctx, kJSTypedArrayTypeFloat32Array, 4);
 		NSMutableData *data = [[NSMutableData alloc] initWithLength:4 * sizeof(GLfloat)];
 		glGetVertexAttribiv(index, pname, data.mutableBytes);
-		JSObjectSetTypedArrayData(ctx, array, data);
+		JSObjectRef array = JSObjectMakeTypedArrayWithData(ctx, kJSTypedArrayTypeFloat32Array, data);
 		[data release];
 		return array;
 	}

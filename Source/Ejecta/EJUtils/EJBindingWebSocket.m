@@ -79,8 +79,7 @@
 		NSData *data = (NSData *)message;
 		
 		if( binaryType == kEJWebSocketBinaryTypeArrayBuffer ) {
-			jsMessage = JSObjectMakeTypedArray(ctx, kJSTypedArrayTypeArrayBuffer, data.length);
-			JSObjectSetTypedArrayData(ctx, (JSObjectRef)jsMessage, data);
+			jsMessage = JSObjectMakeTypedArrayWithData(ctx, kJSTypedArrayTypeArrayBuffer, data);
 		}
 		else if( binaryType == kEJWebSocketBinaryTypeBlob ) {
 			NSLog(@"WebSocket Error: binaryType='blob' is not supported. Use 'arraybuffer' instead.");
