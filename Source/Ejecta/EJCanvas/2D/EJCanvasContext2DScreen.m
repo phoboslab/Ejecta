@@ -52,8 +52,7 @@
 	height = newHeight;
 	
 	CGRect frame = self.frame;
-
-    float contentScale = MAX(width / frame.size.width , height / frame.size.height);
+	float contentScale = MAX(width/frame.size.width, height/frame.size.height);
 	
 	NSLog(
 		@"Creating ScreenCanvas (2D): "
