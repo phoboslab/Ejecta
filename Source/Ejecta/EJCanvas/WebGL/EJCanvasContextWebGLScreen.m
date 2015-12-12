@@ -52,10 +52,7 @@
 	bufferHeight = height = newHeight;
 	
 	CGRect frame = self.frame;
-
-    float contentScaleX = bufferWidth / frame.size.width;
-    float contentScaleY = bufferHeight / frame.size.height;
-    float contentScale = contentScaleX > contentScaleY ? contentScaleX : contentScaleY;
+	float contentScale = MAX(width/frame.size.width, height/frame.size.height);
 	
 	NSLog(
 		@"Creating ScreenCanvas (WebGL): "
@@ -94,20 +91,13 @@
 	[glContext renderbufferStorage:GL_RENDERBUFFER fromDrawable:(CAEAGLLayer *)glview.layer];
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, viewRenderBuffer);
 	
-	// Make sure the renderbuffer has the expected size. Print a warning if not.
+	// The renderbuffer may be bigger than the requested size; make sure to store the real
+	// renderbuffer size.
 	GLint rbWidth, rbHeight;
 	glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &rbWidth);
 	glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &rbHeight);
-	if( rbWidth != bufferWidth || rbHeight != bufferHeight ) {
-		NSLog(
-			@"Warning: the internal resolution for the screen Canvas is different from "
-			"the one requested. This happens due to rounding errors with a non-integer "
-			"contentScale. Requested: %dx%d, Actual: %dx%d, contentScale: %f",
-			bufferWidth, bufferHeight, rbWidth, rbHeight, contentScale
-		);
-		bufferWidth = rbWidth;
-		bufferHeight = rbHeight;
-	}
+	bufferWidth = rbWidth;
+	bufferHeight = rbHeight;
 	
 
 	[self resizeAuxiliaryBuffers];
