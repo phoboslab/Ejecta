@@ -1,7 +1,6 @@
 #import "EJBindingAppUtils.h"
-#import "OpenUDID.h"
 #import "EJDrawable.h"
-
+#import "EJDeviceUID.h"
 
 @implementation EJBindingAppUtils
 
@@ -152,10 +151,11 @@ EJ_BIND_GET(ver, ctx)
 
 EJ_BIND_GET(udid, ctx)
 {
-	NSString *openUDID = [OpenUDID value];
-	return NSStringToJSValue(ctx, openUDID);
+    
+    NSString* udid = [EJDeviceUID uid];
+    
+    return NSStringToJSValue(ctx, udid);
 }
-
 
 EJ_BIND_GET(uuid, ctx)
 {
