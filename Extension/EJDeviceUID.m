@@ -16,7 +16,7 @@
 #pragma mark - Public methods
 
 + (NSString *)uid {
-    return [[[EJDeviceUID alloc] initWithKey:@"ejectaDeviceUID"] uid];
+    return [[[[EJDeviceUID alloc] initWithKey:@"ejectaDeviceUID"] autorelease] uid];
 }
 
 #pragma mark - Instance methods
@@ -51,7 +51,6 @@
 /*! Persist UID to NSUserDefaults and Keychain, if not yet saved
  */
 - (void)save {
-    NSLog(@"%@",_uidKey);
     if (![EJDeviceUID valueForUserDefaultsKey:_uidKey]) {
         [EJDeviceUID setValue:_uid forUserDefaultsKey:_uidKey];
     }
@@ -67,7 +66,7 @@
  *  param2
  */
 + (NSMutableDictionary *)keychainItemForKey:(NSString *)key service:(NSString *)service {
-    NSMutableDictionary *keychainItem = [[NSMutableDictionary alloc] init];
+    NSMutableDictionary *keychainItem = [[NSMutableDictionary new] autorelease];
     keychainItem[(__bridge id)kSecClass] = (__bridge id)kSecClassGenericPassword;
     keychainItem[(__bridge id)kSecAttrAccessible] = (__bridge id)kSecAttrAccessibleAlways;
     keychainItem[(__bridge id)kSecAttrAccount] = key;
@@ -100,7 +99,7 @@
     if (!data) {
         return nil;
     }
-    return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    return [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
 }
 
 #pragma mark - NSUserDefaults methods
@@ -144,7 +143,7 @@
     CFUUIDRef uuidRef = CFUUIDCreate(kCFAllocatorDefault);
     CFStringRef cfuuid = CFUUIDCreateString(kCFAllocatorDefault, uuidRef);
     CFRelease(uuidRef);
-    NSString *uuid = [((__bridge NSString *) cfuuid) copy];
+    NSString *uuid = [[((__bridge NSString *) cfuuid) copy] autorelease];
     CFRelease(cfuuid);
     return uuid;
 }

@@ -60,6 +60,7 @@
 		5C91E5B018E1C47F00FCF013 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C91E5AF18E1C47F00FCF013 /* AdSupport.framework */; };
 		5C91E5B118E1C4A800FCF013 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C91E5AA18E1C43A00FCF013 /* CoreTelephony.framework */; };
 		5C91E5B418E1CEFE00FCF013 /* EJBindingAdMobBanner.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C91E5B318E1CEFE00FCF013 /* EJBindingAdMobBanner.m */; };
+		5C97590B1C1CA7F4004A6EF0 /* AVKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C97590A1C1CA7F4004A6EF0 /* AVKit.framework */; };
 		5C9C36541C19A33200ADF446 /* EJBindingResolution.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C9C36531C19A33200ADF446 /* EJBindingResolution.m */; };
 		5C9CF4B11A58416A00AEE55E /* EventKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C9CF4B01A58416A00AEE55E /* EventKit.framework */; };
 		5C9CF4B31A58419100AEE55E /* EventKitUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C9CF4B21A58419100AEE55E /* EventKitUI.framework */; };
@@ -225,6 +226,7 @@
 		5C91E5AF18E1C47F00FCF013 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		5C91E5B218E1CEFE00FCF013 /* EJBindingAdMobBanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingAdMobBanner.h; sourceTree = "<group>"; };
 		5C91E5B318E1CEFE00FCF013 /* EJBindingAdMobBanner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingAdMobBanner.m; sourceTree = "<group>"; };
+		5C97590A1C1CA7F4004A6EF0 /* AVKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVKit.framework; path = System/Library/Frameworks/AVKit.framework; sourceTree = SDKROOT; };
 		5C9C36521C19A33200ADF446 /* EJBindingResolution.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingResolution.h; sourceTree = "<group>"; };
 		5C9C36531C19A33200ADF446 /* EJBindingResolution.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingResolution.m; sourceTree = "<group>"; };
 		5C9CF4B01A58416A00AEE55E /* EventKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKit.framework; path = System/Library/Frameworks/EventKit.framework; sourceTree = SDKROOT; };
@@ -395,6 +397,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5C97590B1C1CA7F4004A6EF0 /* AVKit.framework in Frameworks */,
 				5C16A9171C10213D00698190 /* libxml2.2.dylib in Frameworks */,
 				5C16A9181C10213D00698190 /* libz.dylib in Frameworks */,
 				5C16A9131C10212E00698190 /* libsqlite3.dylib in Frameworks */,
@@ -483,6 +486,7 @@
 				5C91E5AF18E1C47F00FCF013 /* AdSupport.framework */,
 				B607AC32132EA75F00D7C3EA /* AudioToolbox.framework */,
 				B6CFCCD81332F152001F17AF /* AVFoundation.framework */,
+				5C97590A1C1CA7F4004A6EF0 /* AVKit.framework */,
 				B63D256716E8DF23007E6034 /* CFNetwork.framework */,
 				5C16A9011C101D8C00698190 /* CoreFoundation.framework */,
 				288765FC0DF74451002DB57D /* CoreGraphics.framework */,
@@ -1024,7 +1028,6 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = BrandAsset;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
@@ -1062,7 +1065,6 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = BrandAsset;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;

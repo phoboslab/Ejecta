@@ -60,18 +60,12 @@
 
 - (void)setApplicationIconBadgeNumber:(NSInteger)badgeNumber {
     UIApplication *application = [UIApplication sharedApplication];
-    
 
-    if(EJECTA_SYSTEM_VERSION_LESS_THAN(@"8.0")) {
+    if ([self checkNotificationType:UIUserNotificationTypeBadge]) {
+//            NSLog(@"badge number changed to %d", badgeNumber);
         application.applicationIconBadgeNumber = badgeNumber;
     } else {
-        if ([self checkNotificationType:UIUserNotificationTypeBadge]) {
-//            NSLog(@"badge number changed to %d", badgeNumber);
-            application.applicationIconBadgeNumber = badgeNumber;
-        } else {
 //            NSLog(@"access denied for UIUserNotificationTypeBadge");
-        }
-
     }
 
 }
