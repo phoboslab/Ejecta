@@ -6,7 +6,7 @@
 - (id)initWithContext:(JSContextRef)ctx argc:(size_t)argc argv:(const JSValueRef [])argv {
 	if( self = [super initWithContext:ctx argc:argc argv:argv] ) {
 		controller = [AVPlayerViewController new];
-		controller.player = [AVPlayer new];
+		controller.player = [[AVPlayer new] autorelease];
 		controller.showsPlaybackControls = NO;
 	}
 	return self;
