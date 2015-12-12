@@ -1,12 +1,3 @@
-# About The typed-array-clusterfuck Branch
-
-This branch of Ejecta uses the JavaScriptCore library provided by the system. This mainly means two things: The resulting binary will be much smaller and Typed Arrays are extremely slow.
-
-On 32bit systems reading/writing large Typed Arrays will be pretty much unusably slow. On 64bit systems it's highly optimized to take about 8ms for reading for 1MB of data and about 20ms for writing. This _may_ be ok for simple WebGL stuff or if you don't use g`et/setImageData()` on the Canvas2D context much.
-
-This branch of Ejecta _may_ be AppStore compatible for tvOS. I'm still waiting on the review, but at least the binary upload didn't fail like with the main branch.
-
-
 # Ejecta
 
 Ejecta is a fast, open source JavaScript, Canvas & Audio implementation for iOS. Think of it as a Browser that can only display a Canvas element.
@@ -17,6 +8,14 @@ Ejecta is published under the [MIT Open Source License](http://opensource.org/li
 
 
 ## Recent Breaking Changes
+
+### 2015-12-12 - Use OS provided JavaScriptCore library 
+
+Since https://github.com/phoboslab/Ejecta/commit/08741b4489ff945b117ebee0333c7eb7a6177c2e Ejecta uses the JSC lib provided by iOS and tvOS instead of bundling a custom fork it. This mainly means two things: The resulting binary will be much smaller and Typed Arrays are much slower.
+
+This only affects WebGL and the `get/setImageData()` functions for Canvas2D. Some tests indicate that the performance is still good enough for most WebGL games. On 64bit systems it's highly optimized to take about 7ms/Megabyte for reading and about 20ms/Megabyte for writing. It's much slower on 32bit systems, though.
+
+More info about this change can be found [in my blog](http://phoboslab.org/log/2015/11/the-absolute-worst-way-to-read-typed-array-data-with-javascriptcore). Please comment on [this Webkit bug](https://bugs.webkit.org/show_bug.cgi?id=120112) if you want to have fast Typed Array support again.
 
 ### 2015-11-27 – Allowed orientation change
 
