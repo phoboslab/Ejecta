@@ -186,10 +186,13 @@ window.Event = function (type) {
 	this.stopPropagation = function () {};
 };
 
-window.location = { href: 'index' };
+window.location = { href: 'index.js' };
 window.location.reload = function() {
 	ejecta.load('index.js');
 }
+
+window.open = function(url) { ej.openURL(url); };
+
 
 // Set up a "fake" HTMLElement
 HTMLElement = function( tagName ){
