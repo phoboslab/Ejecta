@@ -19,7 +19,7 @@ window.innerWidth = ej.screenWidth;
 window.innerHeight = ej.screenHeight;
 
 Object.defineProperty(window, 'orientation', {
-    get: function() {return ej.orientation; }
+	get: function() {return ej.orientation; }
 });
 
 window.screen = {
@@ -109,11 +109,11 @@ window.console = {
 	}
 };
 window.console.debug = function () { window.console._log('DEBUG', arguments); };
-window.console.info =  function () { window.console._log('INFO', arguments); };
-window.console.warn =  function () { window.console._log('WARN', arguments); };
+window.console.info = function () { window.console._log('INFO', arguments); };
+window.console.warn = function () { window.console._log('WARN', arguments); };
 window.console.error = function () { window.console._log('ERROR', arguments); };
-window.console.log =   function () { window.console._log('LOG', arguments); };
-window.console.logJSON =   function () { window.console._log('JSON', arguments, true); };
+window.console.log = function () { window.console._log('LOG', arguments); };
+window.console.logJSON = function () { window.console._log('JSON', arguments, true); };
 
 var consoleTimers = {};
 console.time = function(name) {
@@ -188,7 +188,7 @@ window.Event = function (type) {
 
 window.location = { href: 'index' };
 window.location.reload = function() {
-    ejecta.load('index.js');
+	ejecta.load('index.js');
 }
 
 // Set up a "fake" HTMLElement
