@@ -271,6 +271,7 @@ EJ_BIND_EVENT(canplaythrough);
 EJ_BIND_EVENT(ended);
 
 EJ_BIND_CONST(nodeName, "AUDIO");
+EJ_BIND_CONST(tagName, "AUDIO");
 
 EJ_BIND_CONST(HAVE_NOTHING, kEJAudioHaveNothing);
 EJ_BIND_CONST(HAVE_METADATA, kEJAudioHaveMetadata);

@@ -125,5 +125,6 @@ EJ_BIND_EVENT(load);
 EJ_BIND_EVENT(error);
 
 EJ_BIND_CONST(nodeName, "IMG");
+EJ_BIND_CONST(tagName, "IMG");
 
 @end
