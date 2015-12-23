@@ -122,6 +122,7 @@
 - (void)bindFramebuffer:(GLuint)framebuffer toTarget:(GLuint)target {
 	if( framebuffer == 0 ) {
 		framebuffer = msaaEnabled ? msaaFrameBuffer : viewFrameBuffer;
+		[self bindRenderbuffer:0 toTarget:GL_RENDERBUFFER];
 	}
 	glBindFramebuffer(target, framebuffer);
 	boundFrameBuffer = framebuffer;
