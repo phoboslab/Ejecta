@@ -67,7 +67,6 @@
 		5CA813FE1B9E244000172B7A /* WebviewBridge.js in Resources */ = {isa = PBXBuildFile; fileRef = 5CA813FD1B9E244000172B7A /* WebviewBridge.js */; };
 		5CAC7BC91BFEF16800438B74 /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CAC7BC81BFEF16800438B74 /* JavaScriptCore.framework */; };
 		5CAE53291C2C240C00FA70DD /* LaunchScreen-Logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 5CF2A6821BFEE2FE00B7EA09 /* LaunchScreen-Logo.png */; };
-		5CAE532F1C2C240C00FA70DD /* WebviewBridge.js in Resources */ = {isa = PBXBuildFile; fileRef = 5CA813FD1B9E244000172B7A /* WebviewBridge.js */; };
 		5CAE53301C2C240C00FA70DD /* App in Resources */ = {isa = PBXBuildFile; fileRef = B68C5AEF132E6CD60015092E /* App */; };
 		5CAE53331C2C240C00FA70DD /* Ejecta.js in Resources */ = {isa = PBXBuildFile; fileRef = B64CE63F166682700087CF94 /* Ejecta.js */; };
 		5CAE53361C2C240C00FA70DD /* EJBindingTextMetrics.m in Sources */ = {isa = PBXBuildFile; fileRef = B630048816C1A1960036D8D4 /* EJBindingTextMetrics.m */; };
@@ -1099,7 +1098,6 @@
 			files = (
 				5CAE53C41C2C27D200FA70DD /* Assets-TV.xcassets in Resources */,
 				5CAE53291C2C240C00FA70DD /* LaunchScreen-Logo.png in Resources */,
-				5CAE532F1C2C240C00FA70DD /* WebviewBridge.js in Resources */,
 				5CAE53301C2C240C00FA70DD /* App in Resources */,
 				5CAE53331C2C240C00FA70DD /* Ejecta.js in Resources */,
 			);
