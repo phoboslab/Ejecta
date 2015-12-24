@@ -400,7 +400,9 @@ EJ_BIND_FUNCTION(showGameCenter, ctx, argc, argv)
 	if (gameCenterController) {
 		viewIsActive = true;
 		gameCenterController.gameCenterDelegate = self;
+#if !TARGET_OS_TV
 		gameCenterController.viewState = GKGameCenterViewControllerStateDefault;
+#endif
 		[scriptView.window.rootViewController presentViewController:gameCenterController animated:YES completion:nil];
 	}
 

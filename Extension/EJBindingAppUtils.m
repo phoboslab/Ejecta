@@ -11,12 +11,19 @@
 
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:urlStr]];
     
-    [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue currentQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:configuration];
+    [[session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        
+//        NSLog(@"Download data:%@",data);
+//        NSLog(@"Download response:%@",response);
         
         NSString *errorDesc = NULL;
         if (error) {
             NSLog(@"Download Error:%@",error.description);
         }
+
+
         if (data) {
             [data writeToFile:filePath atomically:YES];
             NSLog(@"File is saved to %@",filePath);
@@ -34,7 +41,11 @@
             [scriptView invokeCallback:callback thisObject:NULL argc:2 argv:params];
             JSValueUnprotectSafe(gctx, callback);
         }
-    }];
+
+
+    }] resume];
+   
+
     
 }
 

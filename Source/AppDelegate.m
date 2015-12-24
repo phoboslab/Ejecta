@@ -47,17 +47,21 @@
 
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
+    #if !TARGET_OS_TV
     [self setApplicationIconBadgeNumber:0];
+    #endif
 }
 
 
+#if !TARGET_OS_TV
 - (BOOL)checkNotificationType:(UIUserNotificationType)type {
     UIUserNotificationSettings *currentSettings = [[UIApplication sharedApplication] currentUserNotificationSettings];
     
     return (currentSettings.types & type);
 }
+#endif
 
-
+#if !TARGET_OS_TV
 - (void)setApplicationIconBadgeNumber:(NSInteger)badgeNumber {
     UIApplication *application = [UIApplication sharedApplication];
 
@@ -69,5 +73,6 @@
     }
 
 }
+#endif
 
 @end
