@@ -12,7 +12,7 @@
 
 #import "EJInterceptorManager.h"
 
-#define EJECTA_VERSION @"1.5"
+#define EJECTA_VERSION @"2.0"
 #define EJECTA_DEFAULT_APP_FOLDER @"App/"
 
 #define EJECTA_BOOT_JS @"../Ejecta.js"
