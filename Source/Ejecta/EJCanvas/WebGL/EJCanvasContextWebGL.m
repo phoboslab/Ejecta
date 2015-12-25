@@ -55,6 +55,8 @@
 	
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthStencilBuffer);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, depthStencilBuffer);
+	
+	needsPresenting = YES;
 }
 
 - (void)create {
@@ -103,6 +105,8 @@
 	GLint boundTextureCube;
 	glGetIntegerv(GL_TEXTURE_BINDING_CUBE_MAP, &boundTextureCube);
 	if( boundTextureCube ) { glBindTexture(GL_TEXTURE_CUBE_MAP, boundTextureCube); }
+	
+	needsPresenting = YES;
 }
 
 - (void)clear {
@@ -118,6 +122,7 @@
 - (void)bindFramebuffer:(GLuint)framebuffer toTarget:(GLuint)target {
 	if( framebuffer == 0 ) {
 		framebuffer = msaaEnabled ? msaaFrameBuffer : viewFrameBuffer;
+		[self bindRenderbuffer:0 toTarget:GL_RENDERBUFFER];
 	}
 	glBindFramebuffer(target, framebuffer);
 	boundFrameBuffer = framebuffer;

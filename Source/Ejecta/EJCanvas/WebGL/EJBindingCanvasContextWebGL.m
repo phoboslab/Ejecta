@@ -287,8 +287,8 @@ EJ_BIND_FUNCTION(bindRenderbuffer, ctx, argc, argv) {
 	if( argc < 2 ) { return NULL; }
 	scriptView.currentRenderingContext = renderingContext;
 	[renderingContext
-		bindRenderbuffer:JSValueToNumberFast(ctx, argv[0])
-		toTarget:[EJBindingWebGLRenderbuffer indexFromJSValue:argv[1]]];
+		bindRenderbuffer:[EJBindingWebGLRenderbuffer indexFromJSValue:argv[1]]
+		toTarget:JSValueToNumberFast(ctx, argv[0])];
 	return NULL;
 }
 
@@ -296,8 +296,8 @@ EJ_BIND_FUNCTION(bindFramebuffer, ctx, argc, argv) {
 	if( argc < 2 ) { return NULL; }
 	scriptView.currentRenderingContext = renderingContext;
 	[renderingContext
-		bindFramebuffer:JSValueToNumberFast(ctx, argv[0])
-		toTarget:[EJBindingWebGLFramebuffer indexFromJSValue:argv[1]]];
+		bindFramebuffer:[EJBindingWebGLFramebuffer indexFromJSValue:argv[1]]
+		toTarget:JSValueToNumberFast(ctx, argv[0])];
 	return NULL;
 }
 
