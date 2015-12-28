@@ -98,7 +98,7 @@ EJ_BIND_GET(appID, ctx)
 
 EJ_BIND_GET(muted, ctx)
 {
-    return NSStringToJSValue(ctx, sdk.muted);
+    return JSValueMakeBoolean(ctx, sdk.muted);
 }
 
 EJ_BIND_SET(muted, ctx, value)
@@ -192,18 +192,16 @@ EJ_BIND_FUNCTION(show, ctx, argc, argv)
                 JSStringRef funcName = JSStringCreateWithUTF8CString("beforeShow");
                 JSValueRef jsFunc = JSObjectGetProperty(ctx, jsOptions, funcName, NULL);
                 JSStringRelease(funcName);
+                
                 hookBeforeShow = JSValueToObject(ctx, jsFunc, NULL);
-                if (hookBeforeShow) {
-                    JSValueProtect(ctx, hookBeforeShow);
-                }
+                JSValueProtect(ctx, hookBeforeShow);
             }else if ([key isEqualToString:@"afterClose"]){
                 JSStringRef funcName = JSStringCreateWithUTF8CString("afterClose");
                 JSValueRef jsFunc = JSObjectGetProperty(ctx, jsOptions, funcName, NULL);
                 JSStringRelease(funcName);
+                
                 hookAfterClose = JSValueToObject(ctx, jsFunc, NULL);
-                if (hookAfterClose) {
-                    JSValueProtect(ctx, hookAfterClose);
-                }
+                JSValueProtect(ctx, hookAfterClose);
             }
         }
     }
