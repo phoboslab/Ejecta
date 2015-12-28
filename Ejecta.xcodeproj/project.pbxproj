@@ -161,7 +161,6 @@
 		5CAE53B81C2C240C00FA70DD /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B607AD0F132EB52400D7C3EA /* QuartzCore.framework */; };
 		5CAE53B91C2C240C00FA70DD /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6CFCCD81332F152001F17AF /* AVFoundation.framework */; };
 		5CAE53C41C2C27D200FA70DD /* Assets-TV.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5CAE53C01C2C25CC00FA70DD /* Assets-TV.xcassets */; };
-		5CAE53C91C2C2C0D00FA70DD /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CAE53C81C2C2C0D00FA70DD /* JavaScriptCore.framework */; };
 		5CAE53CA1C2C2C7300FA70DD /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CAE53C81C2C2C0D00FA70DD /* JavaScriptCore.framework */; };
 		5CAE53CC1C2C314700FA70DD /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CAE53CB1C2C314700FA70DD /* CoreText.framework */; };
 		5CBFB24C1BF47A7800BF2385 /* EJBindingGamepad.m in Sources */ = {isa = PBXBuildFile; fileRef = 5CBFB2471BF47A7800BF2385 /* EJBindingGamepad.m */; };
@@ -532,7 +531,6 @@
 				33BE9DE41868183900E0D16E /* MobileCoreServices.framework in Frameworks */,
 				B6D4B283183CF43A008251EB /* CoreLocation.framework in Frameworks */,
 				B60FA92A1702297C00078D20 /* MediaPlayer.framework in Frameworks */,
-				5CAE53C91C2C2C0D00FA70DD /* JavaScriptCore.framework in Frameworks */,
 				B6D6E09A16F7D03F009AB75F /* StoreKit.framework in Frameworks */,
 				B63D256A16E8DF33007E6034 /* Security.framework in Frameworks */,
 				B63D256816E8DF23007E6034 /* CFNetwork.framework in Frameworks */,
