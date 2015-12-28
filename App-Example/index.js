@@ -18,6 +18,8 @@ ejecta.include("example/e-download-snapshot.js");
 
 // ejecta.include("example/e-download-snapshot-share.js");
 
+//ejecta.include("example/e-appodeal.js");
+
 // ejecta.include("example/e-admob.js");
 
 // ejecta.include("example/e-chartboost.js");
