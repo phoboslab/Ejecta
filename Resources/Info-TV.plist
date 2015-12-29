@@ -40,6 +40,7 @@
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>arm64</string>
+		<string>gamekit</string>
 	</array>
 	<key>UIStatusBarHidden</key>
 	<true/>
