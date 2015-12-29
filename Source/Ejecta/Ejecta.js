@@ -446,14 +446,14 @@ var deviceOrientationEvent = {
 
 eventInit.deviceorientation = eventInit.devicemotion = function() {
 	if( deviceMotion ) { return; }
- 
+
  	if (Ejecta.DeviceMotion){
-    	deviceMotion = new Ejecta.DeviceMotion();
+		deviceMotion = new Ejecta.DeviceMotion();
 	}else if (Ejecta.GamepadMotion) {
-    	deviceMotion = new Ejecta.GamepadMotion();
+		deviceMotion = new Ejecta.GamepadMotion();
 	}
 	if( !deviceMotion ) { return; }
- 
+
 	deviceMotionEvent.interval = deviceMotion.interval;
 
 
