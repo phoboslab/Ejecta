@@ -27,6 +27,9 @@
 		5C16A9181C10213D00698190 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C16A9161C10213D00698190 /* libz.dylib */; };
 		5C2387D818CEFBFD00D0CC1A /* EJBindingTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C2387D718CEFBFD00D0CC1A /* EJBindingTimer.m */; };
 		5C2514921ADAB0A600761DA8 /* GoogleMobileAds.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C2514911ADAB0A600761DA8 /* GoogleMobileAds.framework */; };
+		5C2C25871C32FA92001455E9 /* GameController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C2C25861C32FA92001455E9 /* GameController.framework */; };
+		5C2C258C1C330540001455E9 /* EJBindingGamepadMotion.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C2C258A1C330540001455E9 /* EJBindingGamepadMotion.m */; };
+		5C2C258D1C33080F001455E9 /* EJBindingGamepadMotion.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C2C258A1C330540001455E9 /* EJBindingGamepadMotion.m */; };
 		5C3B72E41ADAB7D3002A3FB5 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C3B72E31ADAB7D3002A3FB5 /* CoreMedia.framework */; };
 		5C3B72E81ADAD976002A3FB5 /* Chartboost.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C3B72E71ADAD976002A3FB5 /* Chartboost.framework */; };
 		5C49BC891ADB6F2C0063D385 /* EJBindingChartboost.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C49BC881ADB6F2C0063D385 /* EJBindingChartboost.m */; };
@@ -143,7 +146,6 @@
 		5CAE538A1C2C240C00FA70DD /* AVKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C97590A1C1CA7F4004A6EF0 /* AVKit.framework */; };
 		5CAE538F1C2C240C00FA70DD /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C16A90F1C10211600698190 /* libicucore.dylib */; };
 		5CAE53901C2C240C00FA70DD /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C16A90D1C10210B00698190 /* libc++.dylib */; };
-		5CAE53951C2C240C00FA70DD /* GameController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CBFB24F1BF47AC300BF2385 /* GameController.framework */; };
 		5CAE539C1C2C240C00FA70DD /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C3B72E31ADAB7D3002A3FB5 /* CoreMedia.framework */; };
 		5CAE53A71C2C240C00FA70DD /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33BE9DE31868183900E0D16E /* MobileCoreServices.framework */; };
 		5CAE53A81C2C240C00FA70DD /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6D4B282183CF43A008251EB /* CoreLocation.framework */; };
@@ -276,6 +278,9 @@
 		5C2387D618CEFBFD00D0CC1A /* EJBindingTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingTimer.h; sourceTree = "<group>"; };
 		5C2387D718CEFBFD00D0CC1A /* EJBindingTimer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingTimer.m; sourceTree = "<group>"; };
 		5C2514911ADAB0A600761DA8 /* GoogleMobileAds.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleMobileAds.framework; sourceTree = "<group>"; };
+		5C2C25861C32FA92001455E9 /* GameController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameController.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS9.1.sdk/System/Library/Frameworks/GameController.framework; sourceTree = DEVELOPER_DIR; };
+		5C2C258A1C330540001455E9 /* EJBindingGamepadMotion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingGamepadMotion.m; sourceTree = "<group>"; };
+		5C2C258B1C330540001455E9 /* EJBindingGamepadMotion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingGamepadMotion.h; sourceTree = "<group>"; };
 		5C3B72E31ADAB7D3002A3FB5 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		5C3B72E71ADAD976002A3FB5 /* Chartboost.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Chartboost.framework; sourceTree = "<group>"; };
 		5C49BC881ADB6F2C0063D385 /* EJBindingChartboost.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingChartboost.m; sourceTree = "<group>"; };
@@ -555,12 +560,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5C2C25871C32FA92001455E9 /* GameController.framework in Frameworks */,
 				5CAE53CC1C2C314700FA70DD /* CoreText.framework in Frameworks */,
 				5CAE53CA1C2C2C7300FA70DD /* JavaScriptCore.framework in Frameworks */,
 				5CAE538A1C2C240C00FA70DD /* AVKit.framework in Frameworks */,
 				5CAE538F1C2C240C00FA70DD /* libicucore.dylib in Frameworks */,
 				5CAE53901C2C240C00FA70DD /* libc++.dylib in Frameworks */,
-				5CAE53951C2C240C00FA70DD /* GameController.framework in Frameworks */,
 				5CAE539C1C2C240C00FA70DD /* CoreMedia.framework in Frameworks */,
 				5CAE53A71C2C240C00FA70DD /* MobileCoreServices.framework in Frameworks */,
 				5CAE53A81C2C240C00FA70DD /* CoreLocation.framework in Frameworks */,
@@ -608,6 +613,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				5C2C25861C32FA92001455E9 /* GameController.framework */,
 				5CAE53CB1C2C314700FA70DD /* CoreText.framework */,
 				5C16A90D1C10210B00698190 /* libc++.dylib */,
 				5C16A90F1C10211600698190 /* libicucore.dylib */,
@@ -756,6 +762,8 @@
 		5CBFB2451BF47A7800BF2385 /* Gamepad */ = {
 			isa = PBXGroup;
 			children = (
+				5C2C258A1C330540001455E9 /* EJBindingGamepadMotion.m */,
+				5C2C258B1C330540001455E9 /* EJBindingGamepadMotion.h */,
 				5CBFB2461BF47A7800BF2385 /* EJBindingGamepad.h */,
 				5CBFB2471BF47A7800BF2385 /* EJBindingGamepad.m */,
 				5CBFB2481BF47A7800BF2385 /* EJBindingGamepadButton.h */,
@@ -1137,6 +1145,7 @@
 				B64CE67B166682700087CF94 /* EJBindingGameCenter.m in Sources */,
 				5C8E340C18C4EF40007206AE /* EJBindingAppUtils.m in Sources */,
 				5C91E5B418E1CEFE00FCF013 /* EJBindingAdMobBanner.m in Sources */,
+				5C2C258C1C330540001455E9 /* EJBindingGamepadMotion.m in Sources */,
 				B64CE67C166682700087CF94 /* EJBindingHttpRequest.m in Sources */,
 				33BE9DE2186817D900E0D16E /* EJBindingImagePicker.m in Sources */,
 				B64CE67D166682700087CF94 /* EJBindingLocalStorage.m in Sources */,
@@ -1201,6 +1210,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5C2C258D1C33080F001455E9 /* EJBindingGamepadMotion.m in Sources */,
 				5CAE53361C2C240C00FA70DD /* EJBindingTextMetrics.m in Sources */,
 				5CAE53371C2C240C00FA70DD /* EJGLProgram2D.m in Sources */,
 				5CAE53381C2C240C00FA70DD /* EJGLProgram2DRadialGradient.m in Sources */,
@@ -1221,6 +1231,7 @@
 				5CAE53491C2C240C00FA70DD /* EJConvert.m in Sources */,
 				5CAE534B1C2C240C00FA70DD /* EJTimer.m in Sources */,
 				5CAE534D1C2C240C00FA70DD /* EJBindingGameCenter.m in Sources */,
+				5CAE535C1C2C240C00FA70DD /* EJBindingGamepad.m in Sources */,
 				5CAE534E1C2C240C00FA70DD /* EJBindingAppUtils.m in Sources */,
 				5CAE53501C2C240C00FA70DD /* EJBindingHttpRequest.m in Sources */,
 				5CAE53521C2C240C00FA70DD /* EJBindingLocalStorage.m in Sources */,
@@ -1233,7 +1244,6 @@
 				5CAE53591C2C240C00FA70DD /* EJBindingCanvasContext2D.m in Sources */,
 				5CAE535A1C2C240C00FA70DD /* EJBindingImageData.m in Sources */,
 				5CAE535B1C2C240C00FA70DD /* EJCanvasContext2D.m in Sources */,
-				5CAE535C1C2C240C00FA70DD /* EJBindingGamepad.m in Sources */,
 				5CAE535D1C2C240C00FA70DD /* EJCanvasContext2DScreen.m in Sources */,
 				5CAE535E1C2C240C00FA70DD /* EJCanvasContext2DTexture.m in Sources */,
 				5CAE535F1C2C240C00FA70DD /* EJFont.mm in Sources */,

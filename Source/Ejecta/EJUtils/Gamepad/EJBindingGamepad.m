@@ -1,5 +1,6 @@
 #import "EJBindingGamepad.h"
 #import "EJBindingGamepadButton.h"
+#import "EJBindingGamepadMotion.h"
 
 @implementation EJBindingGamepad
 @synthesize controller;
@@ -189,6 +190,13 @@ EJ_BIND_GET(axes, ctx) {
 			JSObjectSetPropertyAtIndex(ctx, jsAxes, 1, JSValueMakeNumber(ctx, -gamepad.dpad.yAxis.value), NULL);
 		}
 	#endif
+    
+    if (controller.playerIndex == 0){
+        EJBindingGamepadMotion *motion = [[EJBindingGamepadMotion sharedInstance] retain];
+        [motion triggerEventWithMotion:controller.motion];
+        [motion release];
+    }
+
 	return jsAxes;
 }
 

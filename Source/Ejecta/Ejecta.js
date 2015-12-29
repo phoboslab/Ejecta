@@ -446,10 +446,17 @@ var deviceOrientationEvent = {
 
 eventInit.deviceorientation = eventInit.devicemotion = function() {
 	if( deviceMotion ) { return; }
-	
-	deviceMotion = new Ejecta.DeviceMotion();
+ 
+ 	if (Ejecta.DeviceMotion){
+    	deviceMotion = new Ejecta.DeviceMotion();
+	}else if (Ejecta.GamepadMotion) {
+    	deviceMotion = new Ejecta.GamepadMotion();
+	}
+	if( !deviceMotion ) { return; }
+ 
 	deviceMotionEvent.interval = deviceMotion.interval;
-	
+
+
 	// Callback for Devices that have a Gyro
 	deviceMotion.ondevicemotion = function( agx, agy, agz, ax, ay, az, rx, ry, rz, ox, oy, oz ) {
 		deviceMotionEvent.accelerationIncludingGravity.x = agx;
