@@ -193,8 +193,11 @@ EJ_BIND_GET(axes, ctx) {
     
     if (controller.playerIndex == 0){
         EJBindingGamepadMotion *motion = [[EJBindingGamepadMotion sharedInstance] retain];
-        [motion triggerEventWithMotion:controller.motion];
-        [motion release];
+        // NSLog(@"EJBindingGamepadMotion %@",motion);
+        if (motion){
+            [motion triggerEventWithMotion:controller.motion];
+            [motion release];
+        }
     }
 
 	return jsAxes;
