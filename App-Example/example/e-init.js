@@ -10,7 +10,8 @@ canvas.style.height = window.innerHeight + "px";
 
 var context = canvas.getContext("2d");
 
-console.log("window.orientation = ",window.orientation);
+console.log("window.orientation = ", window.orientation);
+console.log("window.devicePixelRatio = ", window.devicePixelRatio);
 
 function renderSomething() {
     context.fillStyle = "#999999";

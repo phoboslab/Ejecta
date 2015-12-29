@@ -94,5 +94,5 @@ setInterval(function() {
     // to false during gameplay and only set it to true when you're on the Title Screen of
     // your game.
 
-    gamepad.exitOnMenuPress = true;
+    gamepad.exitOnMenuPress = !true;
 }, 16);

@@ -18,7 +18,7 @@ ejecta.include("example/e-appUtils.js");
 
 // ejecta.include("example/e-download.js");
 // ejecta.include("example/e-screenshot.js");
-ejecta.include("example/e-screenshot-share.js");
+// ejecta.include("example/e-screenshot-share.js");
 
 
 // ejecta.include("example/e-appodeal.js");
@@ -37,4 +37,4 @@ ejecta.include("example/e-screenshot-share.js");
 
 // ejecta.include("example/e-websocket.js");
 
-// ejecta.include("example/e-gamepad.js");
+ // ejecta.include("example/e-gamepad.js");
