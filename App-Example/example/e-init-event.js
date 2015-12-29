@@ -20,7 +20,6 @@ window.addEventListener("touchstart", function(event) {
 window.addEventListener("touchmove", function(event) {
     if (TouchInfo.start) {
         var touches = event.changedTouches;
-        console.log("move", touches.length)
         for (var i = 0; i < touches.length; i++) {
             var finger = touches[i];
             if (finger.identifier === TouchInfo.start.id) {
@@ -29,7 +28,7 @@ window.addEventListener("touchmove", function(event) {
                     y: finger.pageY * window.devicePixelRatio,
                     id: finger.identifier
                 };
-                //                console.log("touchmove", TouchInfo.move.x, TouchInfo.move.y);
+//                console.log("touchmove", TouchInfo.move.x, TouchInfo.move.y);
                 break;
             }
         }
