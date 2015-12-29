@@ -60,6 +60,6 @@ window.addEventListener("devicemotion", function(event) {
     var x = event.accelerationIncludingGravity.x;
     var y = event.accelerationIncludingGravity.y;
     var z = event.accelerationIncludingGravity.z;
-    console.log("accelerationIncludingGravity", x, y, z);
+//    console.log("accelerationIncludingGravity", x, y, z);
 });
 
