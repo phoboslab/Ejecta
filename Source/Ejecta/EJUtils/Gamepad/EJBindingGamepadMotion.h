@@ -5,6 +5,7 @@
 @interface EJBindingGamepadMotion : EJBindingEventedBase<EJDeviceMotionDelegate> {
 
     JSValueRef params[12];
+    BOOL motionValid;
     float interval;
 }
 

@@ -20,6 +20,7 @@ static id sharedInstance = nil;
 - (void)createWithJSObject:(JSObjectRef)obj scriptView:(EJJavaScriptView *)view {
     [super createWithJSObject:obj scriptView:view];
     interval = 1.0f/60.0f;
+    motionValid = false;
     scriptView.deviceMotionDelegate = self;
 }
 
@@ -28,6 +29,9 @@ static const float g = 9.80665;
 
 
 - (void)setGamepadMotion:(GCMotion *)motion {
+
+    motionValid = YES;
+    
     JSContextRef ctx = scriptView.jsGlobalContext;
     
     // accelerationIncludingGravity {x, y, z}
@@ -66,8 +70,9 @@ static const float g = 9.80665;
 }
 
 - (void)triggerDeviceMotionEvents {
-    [self triggerEvent:@"devicemotion" argc:12 argv:params];
-
+    if (motionValid){
+        [self triggerEvent:@"devicemotion" argc:12 argv:params];
+    }
 }
 
 
