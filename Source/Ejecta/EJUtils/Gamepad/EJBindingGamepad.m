@@ -230,7 +230,6 @@ EJ_BIND_SET(allowsRotation, ctx, value) {
 }
 
 
-
 @end
 
 
