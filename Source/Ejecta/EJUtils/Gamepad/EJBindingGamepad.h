@@ -29,7 +29,8 @@ typedef enum {
 	
 	NSUInteger index;
 	BOOL connected;
-	
+    BOOL allowsRotation;
+
 	JSObjectRef jsAxes;
 	JSObjectRef jsButtons;
 }
