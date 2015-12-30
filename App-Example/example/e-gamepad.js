@@ -14,10 +14,11 @@ context.fillStyle = '#fff';
 context.strokeStyle = '#fff';
 context.lineWidth = 2;
 
+console.log("canvas size : ", canvas.width, canvas.height)
 
-var scale = width / 1280;
-console.log(scale);
-context.scale(scale, scale);
+// var scale = width / 1280;
+// console.log(scale);
+// context.scale(scale, scale);
 
 var drawButton = function(button, x, y) {
     context.fillRect(x - 24, y + 24 - 48 * button.value, 48, 48 * button.value);
@@ -38,7 +39,8 @@ var drawAnalogStick = function(axisX, axisY, x, y) {
 };
 
 setInterval(function() {
-    context.clearRect(0, 0, width / scale + 2, height / scale + 2);
+    // context.clearRect(0, 0, width / scale + 2, height / scale + 2);
+    context.clearRect(0, 0, width, height);
 
     // Always use 2nd gamepad for this visualization if it's present. On an
     // Apple TV when the TV Remote and a Game Controller is connected, the Remote
@@ -55,8 +57,34 @@ setInterval(function() {
     }
 
     context.fillText('Using Gamepad: #' + gamepad.index + ' (' + gamepad.id + ')', 32, 32);
+    if (TouchInfo.start) {
+        var x = TouchInfo.start.x;
+        var y = TouchInfo.start.y;
+        context.fillText('Start: ' + x + " , " + y, 32, canvas.height - 50 * 4);
+    } else {
+        context.fillText('Start: ', 32, canvas.height - 50 * 4);
+    }
+    if (TouchInfo.move) {
+        var x = TouchInfo.move.x;
+        var y = TouchInfo.move.y;
+        context.fillText('Move: ' + x + " , " + y, 32, canvas.height - 50 * 3);
+    } else {
+        context.fillText('Move: ', 32, canvas.height - 50 * 3);
+    }
+    if (TouchInfo.end) {
+        var x = TouchInfo.end.x;
+        var y = TouchInfo.end.y;
+        context.fillText('End: ' + x + " , " + y, 32, canvas.height - 50 * 2);
+    } else {
+        context.fillText('End: ', 32, canvas.height - 50 * 2);
+    }
+
+    context.fillText('Motion AG : ' + JSON.stringify(AccelerationGravityInfo), 32, canvas.height - 60 * 1);
+    context.fillText('Motion A  : ' + JSON.stringify(AccelerationInfo), 32, canvas.height - 10 * 1);
+
     // console.log('Using Gamepad: #' + gamepad.index + ' (' + gamepad.id + ')');
 
+    context.translate(210, 210);
 
     // Button Mappings according to http://www.w3.org/TR/gamepad/#remapping
 
@@ -80,6 +108,8 @@ setInterval(function() {
     drawAnalogStick(gamepad.axes[0], gamepad.axes[1], 540, 416); // left stick
     drawAnalogStick(gamepad.axes[2], gamepad.axes[3], 736, 416); // right stick
 
+    context.translate(-210, -210);
+
 
     // You can control whether the MENU button exits your game. Apple will reject your
     // App if it does not. For Gamepads, the B button can also act as a MENU button.
@@ -95,4 +125,5 @@ setInterval(function() {
     // your game.
 
     gamepad.exitOnMenuPress = !true;
+
 }, 16);
