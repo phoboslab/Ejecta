@@ -76,7 +76,7 @@
 		mapping[kEJGamepadButtonLeft] = gamepad.dpad.left;
 		mapping[kEJGamepadButtonRight] = gamepad.dpad.right;
 	}
-	#if TARGET_OS_TV 
+	#if TARGET_OS_TV
 		else if( controller.microGamepad ) {
 			GCMicroGamepad *gamepad = controller.microGamepad;
 			gamepad.reportsAbsoluteDpadValues = YES;
@@ -183,7 +183,7 @@ EJ_BIND_GET(axes, ctx) {
 		JSObjectSetPropertyAtIndex(ctx, jsAxes, 2, JSValueMakeNumber(ctx, rightStick.xAxis.value), NULL);
 		JSObjectSetPropertyAtIndex(ctx, jsAxes, 3, JSValueMakeNumber(ctx, -rightStick.yAxis.value), NULL);
 	}
-	#if TARGET_OS_TV 
+	#if TARGET_OS_TV
 		// Provide the Remote's touch pad a axis in addition to the Up/Down/Left/Right buttons
 		else if( controller.microGamepad ) {
 			GCMicroGamepad *gamepad = controller.microGamepad;
