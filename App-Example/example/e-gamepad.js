@@ -56,6 +56,8 @@ setInterval(function() {
         return;
     }
 
+    gamepad.allowsRotation = true;
+
     context.fillText('Using Gamepad: #' + gamepad.index + ' (' + gamepad.id + ')', 32, 32);
     if (TouchInfo.start) {
         var x = TouchInfo.start.x;
