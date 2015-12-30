@@ -233,6 +233,33 @@ EJ_BIND_SET(allowsRotation, ctx, value) {
 }
 
 
+static const float g = 9.80665;
+
+EJ_BIND_GET(motion, ctx) {
+	
+	GCMotion *motion = controller.motion;
+	
+	if (!motion){
+		return JSValueMakeNull(ctx);
+	}
+	
+	NSDictionary *motionData = @{
+		   @"accelerationIncludingGravity": @{
+				   @"x": @((motion.userAcceleration.x + motion.gravity.x) * g),
+				   @"y": @((motion.userAcceleration.y + motion.gravity.y) * g),
+				   @"z": @((motion.userAcceleration.z + motion.gravity.z) * g),
+				   },
+		   
+		   @"acceleration": @{
+				   @"x": @(motion.userAcceleration.x * g),
+				   @"y": @(motion.userAcceleration.y * g),
+				   @"z": @(motion.userAcceleration.z * g),
+				   }
+		   };
+
+	return NSObjectToJSValue(ctx, motionData);
+}
+
 @end
 
 
