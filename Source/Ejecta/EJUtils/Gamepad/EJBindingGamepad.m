@@ -79,6 +79,7 @@
 		else if( controller.microGamepad ) {
 			GCMicroGamepad *gamepad = controller.microGamepad;
 			gamepad.reportsAbsoluteDpadValues = YES;
+			gamepad.allowsRotation = YES;
 			mapping[kEJGamepadButtonA] = gamepad.buttonA;
 			mapping[kEJGamepadButtonX] = gamepad.buttonX;
 			mapping[kEJGamepadButtonUp] = gamepad.dpad.up;
