@@ -80,6 +80,7 @@
 		else if( controller.microGamepad ) {
 			GCMicroGamepad *gamepad = controller.microGamepad;
 			gamepad.reportsAbsoluteDpadValues = YES;
+            gamepad.allowsRotation = YES;
 			mapping[kEJGamepadButtonA] = gamepad.buttonA;
 			mapping[kEJGamepadButtonX] = gamepad.buttonX;
 			mapping[kEJGamepadButtonUp] = gamepad.dpad.up;
@@ -192,11 +193,12 @@ EJ_BIND_GET(axes, ctx) {
 	#endif
     
     if (controller.playerIndex == 0){
-        EJBindingGamepadMotion *motion = [[EJBindingGamepadMotion sharedInstance] retain];
+        EJBindingGamepadMotion *motion = [EJBindingGamepadMotion sharedInstance];
         // NSLog(@"EJBindingGamepadMotion %@",motion);
         if (motion){
-            [motion triggerEventWithMotion:controller.motion];
-            [motion release];
+//            [motion triggerEventWithMotion:controller.motion];
+            [motion setGamepadMotion:controller.motion];
+//            [motion release];
         }
     }
 

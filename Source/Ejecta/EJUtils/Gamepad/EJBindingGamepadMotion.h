@@ -2,14 +2,15 @@
 #import "EJBindingEventedBase.h"
 
 
-@interface EJBindingGamepadMotion : EJBindingEventedBase {
+@interface EJBindingGamepadMotion : EJBindingEventedBase<EJDeviceMotionDelegate> {
 
-	JSValueRef params[12];
+    JSValueRef params[12];
     float interval;
 }
 
 + (id)sharedInstance;
 
-- (void)triggerEventWithMotion:(GCMotion *)motion;
+- (void)triggerDeviceMotionEvents;
+- (void)setGamepadMotion:(GCMotion *)motion;
 
 @end
