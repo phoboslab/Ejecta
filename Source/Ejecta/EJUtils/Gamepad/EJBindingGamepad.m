@@ -12,6 +12,16 @@
 		connected = YES;
 		allowsRotation = YES;
 		controller.playerIndex = index;
+
+		if (index == 0){
+			controller.motion.valueChangedHandler = ^(GCMotion *motion){
+				EJBindingGamepadMotion *gamepadMotion = [EJBindingGamepadMotion sharedInstance];
+				if (gamepadMotion){
+					[gamepadMotion setGamepadMotion:motion];
+				}
+			};
+		}
+
 	}
 	return self;
 }
@@ -191,16 +201,7 @@ EJ_BIND_GET(axes, ctx) {
 			JSObjectSetPropertyAtIndex(ctx, jsAxes, 1, JSValueMakeNumber(ctx, -gamepad.dpad.yAxis.value), NULL);
 		}
 	#endif
-	
-	if (controller.playerIndex == 0){
-		EJBindingGamepadMotion *motion = [EJBindingGamepadMotion sharedInstance];
-		// NSLog(@"EJBindingGamepadMotion %@",motion);
-		if (motion){
-//		[motion triggerEventWithMotion:controller.motion];
-		[motion setGamepadMotion:controller.motion];
-//		[motion release];
-		}
-	}
+
 
 	return jsAxes;
 }
