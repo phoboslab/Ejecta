@@ -9,7 +9,7 @@
 		controller = [controllerp retain];
 		index = indexp;
 		connected = YES;
-	allowsRotation = YES;
+		allowsRotation = YES;
 		controller.playerIndex = index;
 	}
 	return self;
