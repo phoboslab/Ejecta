@@ -10,7 +10,7 @@
 		controller = [controllerp retain];
 		index = indexp;
 		connected = YES;
-        allowsRotation = YES;
+		allowsRotation = YES;
 		controller.playerIndex = index;
 	}
 	return self;
@@ -80,7 +80,7 @@
 		else if( controller.microGamepad ) {
 			GCMicroGamepad *gamepad = controller.microGamepad;
 			gamepad.reportsAbsoluteDpadValues = YES;
-            gamepad.allowsRotation = allowsRotation;
+		gamepad.allowsRotation = allowsRotation;
 			mapping[kEJGamepadButtonA] = gamepad.buttonA;
 			mapping[kEJGamepadButtonX] = gamepad.buttonX;
 			mapping[kEJGamepadButtonUp] = gamepad.dpad.up;
@@ -191,16 +191,16 @@ EJ_BIND_GET(axes, ctx) {
 			JSObjectSetPropertyAtIndex(ctx, jsAxes, 1, JSValueMakeNumber(ctx, -gamepad.dpad.yAxis.value), NULL);
 		}
 	#endif
-    
-    if (controller.playerIndex == 0){
-        EJBindingGamepadMotion *motion = [EJBindingGamepadMotion sharedInstance];
-        // NSLog(@"EJBindingGamepadMotion %@",motion);
-        if (motion){
-//            [motion triggerEventWithMotion:controller.motion];
-            [motion setGamepadMotion:controller.motion];
-//            [motion release];
-        }
-    }
+	
+	if (controller.playerIndex == 0){
+		EJBindingGamepadMotion *motion = [EJBindingGamepadMotion sharedInstance];
+		// NSLog(@"EJBindingGamepadMotion %@",motion);
+		if (motion){
+//		[motion triggerEventWithMotion:controller.motion];
+		[motion setGamepadMotion:controller.motion];
+//		[motion release];
+		}
+	}
 
 	return jsAxes;
 }
@@ -218,21 +218,20 @@ EJ_BIND_SET(exitOnMenuPress, ctx, value) {
 }
 
 EJ_BIND_GET(allowsRotation, ctx) {
-    return JSValueMakeBoolean(ctx, allowsRotation);
+	return JSValueMakeBoolean(ctx, allowsRotation);
 }
 
 EJ_BIND_SET(allowsRotation, ctx, value) {
-    if( controller.microGamepad ) {
-        allowsRotation = JSValueToBoolean(ctx, value);
-        GCMicroGamepad *gamepad = controller.microGamepad;
-        gamepad.allowsRotation = allowsRotation;
-    }
+	#if TARGET_OS_TV
+	if( controller.microGamepad ) {
+		allowsRotation = JSValueToBoolean(ctx, value);
+		GCMicroGamepad *gamepad = controller.microGamepad;
+		gamepad.allowsRotation = allowsRotation;
+	}
+	#endif
 }
 
 
 @end
-
-
-
 
 
