@@ -4,7 +4,8 @@ var appUtils = new Ejecta.AppUtils();
 var resolution = new Ejecta.Resolution();
 
 
-console.log("ver : " + appUtils.ver);
+console.log("version", appUtils.version);
+console.log("build", appUtils.build);
 console.log("uuid : " + appUtils.uuid);
 console.log("udid : " + appUtils.udid);
 console.log("systemVersion : " + appUtils.systemVersion);

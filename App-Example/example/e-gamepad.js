@@ -59,31 +59,34 @@ setInterval(function() {
     gamepad.allowsRotation = true;
 
     context.fillText('Using Gamepad: #' + gamepad.index + ' (' + gamepad.id + ')', 32, 32);
+
+    var tX = 32,
+        tY = canvas.height - 240;
     if (TouchInfo.start) {
         var x = TouchInfo.start.x;
         var y = TouchInfo.start.y;
-        context.fillText('Start: ' + x + " , " + y, 32, canvas.height - 50 * 4);
+        context.fillText('Start: ' + x + " , " + y, tX, tY + 0);
     } else {
-        context.fillText('Start: ', 32, canvas.height - 50 * 4);
+        context.fillText('Start: ', tX, tY + 0);
     }
     if (TouchInfo.move) {
         var x = TouchInfo.move.x;
         var y = TouchInfo.move.y;
-        context.fillText('Move: ' + x + " , " + y, 32, canvas.height - 50 * 3);
+        context.fillText('Move: ' + x + " , " + y, tX, tY + 50);
     } else {
-        context.fillText('Move: ', 32, canvas.height - 50 * 3);
+        context.fillText('Move: ', tX, tY + 50);
     }
     if (TouchInfo.end) {
         var x = TouchInfo.end.x;
         var y = TouchInfo.end.y;
-        context.fillText('End: ' + x + " , " + y, 32, canvas.height - 50 * 2);
+        context.fillText('End: ' + x + " , " + y, tX, tY + 50 * 2);
     } else {
-        context.fillText('End: ', 32, canvas.height - 50 * 2);
+        context.fillText('End: ', tX, tY + 50 * 2);
     }
 
-    context.fillText('Motion AG : ' + JSON.stringify(AccelerationGravityInfo), 32, canvas.height - 60 * 1);
-    context.fillText('Motion A  : ' + JSON.stringify(AccelerationInfo), 32, canvas.height - 10 * 1);
-
+    context.fillText('Motion AG : ' + JSON.stringify(AccelerationGravityInfo), tX, tY + 50 * 3 + 20);
+    context.fillText('Motion A  : ' + JSON.stringify(AccelerationInfo), tX, tY + 50 * 4 + 20);
+    // console.log(JSON.stringify(gamepad.motion));
     // console.log('Using Gamepad: #' + gamepad.index + ' (' + gamepad.id + ')');
 
     context.translate(210, 210);
