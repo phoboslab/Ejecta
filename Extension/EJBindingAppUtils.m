@@ -153,12 +153,17 @@ EJ_BIND_FUNCTION(eval, ctx, argc, argv)
 }
 
 
-EJ_BIND_GET(ver, ctx)
+EJ_BIND_GET(version, ctx)
 {
-    NSString *ver = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
+    NSString *ver = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
     return NSStringToJSValue(ctx, ver);
 }
 
+EJ_BIND_GET(build, ctx)
+{
+	NSString *ver = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
+    return NSStringToJSValue(ctx, ver);
+}
 
 EJ_BIND_GET(udid, ctx)
 {
