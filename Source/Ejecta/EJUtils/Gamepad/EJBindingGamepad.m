@@ -12,8 +12,8 @@
 		connected = YES;
 		allowsRotation = YES;
 		controller.playerIndex = index;
-
-		if (index == 0){
+		
+		if (controller.motion){
 			controller.motion.valueChangedHandler = ^(GCMotion *motion){
 				EJBindingGamepadMotion *gamepadMotion = [EJBindingGamepadMotion sharedInstance];
 				if (gamepadMotion){
