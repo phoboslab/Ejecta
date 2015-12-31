@@ -37,7 +37,7 @@ if (!module.parent) {
 
 function encrypt(fileName, outputFileName, secretKey, projectPath) {
     secretKey = secretKey || DEFAULT_SECRET_KEY;
-    console.log("File : " + fileName, "  Key : " + secretKey);
+    // console.log("File : " + fileName, "  Key : " + secretKey);
 
     var fileBuffer = fs.readFileSync(fileName);
 
@@ -56,14 +56,14 @@ function encrypt(fileName, outputFileName, secretKey, projectPath) {
 
         var baseName = Path.basename(fileName);
         if (fileBuffer.length != decodedBuffer.length) {
-            // console.log("Check failed: " + baseName + " , error length .");
+            console.log("Check failed: " + baseName + " , error length .");
             return false;
         }
         for (var i = 0; i < fileBuffer.length; i++) {
             var b1 = fileBuffer.readInt8(i);
             var b2 = decodedBuffer.readInt8(i);
             if (b1 != b2) {
-                // console.log("Check failed: " + baseName + " , error byte .");
+                console.log("Check failed: " + baseName + " , error byte .");
                 return false;
             }
         }
@@ -177,6 +177,7 @@ function escapeQuote(str) {
 }
 
 exports.encrypt = encrypt;
+exports.defaultSecretKey = DEFAULT_SECRET_KEY;
 exports.unencrypt = unencrypt;
 exports.isEncoded = isEncoded;
 exports.encode = encode;
