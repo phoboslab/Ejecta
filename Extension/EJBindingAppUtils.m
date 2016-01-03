@@ -46,7 +46,39 @@
     }] resume];
    
 
-    
+}
+
+- (NSArray *) getAllFonts {
+	NSInteger indFamily, indFont;
+	NSArray *familyNames = [UIFont familyNames];
+	NSMutableArray *allFontNames = [NSMutableArray new];
+	for (indFamily=0; indFamily<[familyNames count]; ++indFamily)
+	{
+		NSLog(@"Family name: %@", [familyNames objectAtIndex:indFamily]);
+		NSArray *fontNames = [UIFont fontNamesForFamilyName:[familyNames objectAtIndex:indFamily]];
+		for (indFont=0; indFont<[fontNames count]; ++indFont)
+		{
+			NSLog(@"    Font : %@", [fontNames objectAtIndex:indFont]);
+			[allFontNames addObject:[fontNames objectAtIndex:indFont]];
+		}
+	}
+	return [allFontNames autorelease];
+}
+
+- (BOOL) hasFontFamily:(NSString *)familyName {
+	NSArray *fontNames = [UIFont fontNamesForFamilyName:familyName];
+	if (fontNames && [fontNames count]>0){
+		return YES;
+	}
+	return NO;
+}
+
+- (BOOL) hasFont:(NSString *)fontName {
+	UIFont *font = [UIFont fontWithName:fontName size:16.0];
+	if (font){
+		return YES;
+	}
+	return NO;
 }
 
 
@@ -217,6 +249,21 @@ EJ_BIND_FUNCTION(fileExists, ctx, argc, argv ) {
     return JSValueMakeBoolean(ctx, false);
 }
 
+EJ_BIND_FUNCTION(getAllFonts, ctx, argc, argv ) {
+	return  NSObjectToJSValue(ctx, [self getAllFonts]);
+}
+
+EJ_BIND_FUNCTION(hasFontFamily, ctx, argc, argv ) {
+	NSString *familyName = JSValueToNSString(ctx, argv[0]);
+	BOOL exists = [self hasFontFamily:familyName];
+	return JSValueMakeBoolean(ctx,exists);
+}
+
+EJ_BIND_FUNCTION(hasFont, ctx, argc, argv ) {
+	NSString *fontName = JSValueToNSString(ctx, argv[0]);
+	BOOL exists = [self hasFont:fontName];
+	return JSValueMakeBoolean(ctx,exists);
+}
 
 
 @end

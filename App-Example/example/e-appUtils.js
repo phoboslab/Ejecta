@@ -16,6 +16,11 @@ console.log("index.js Exists : " + appUtils.fileExists("index.js"));
 
 console.log("dpi", resolution.dpi);
 
+//var fonts = appUtils.getAllFonts();
+var hasPingFang = appUtils.hasFontFamily("PingFang SC");
+var hasPingFangLight = appUtils.hasFont("PingFangSC-Light");
+console.log("hasPingFang", hasPingFang, hasPingFangLight);
+
 
 appUtils.eval("function abc(){return 'eval >> app ver : ' + appUtils.ver;}");
 console.log(abc());

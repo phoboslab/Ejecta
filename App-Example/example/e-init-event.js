@@ -74,8 +74,11 @@ window.addEventListener("devicemotion", function(event) {
     AccelerationGravityInfo.y = event.accelerationIncludingGravity.y.toFixed(3);
     AccelerationGravityInfo.z = event.accelerationIncludingGravity.z.toFixed(3);
 
-    AccelerationInfo.x = event.acceleration.x.toFixed(3);
-    AccelerationInfo.y = event.acceleration.y.toFixed(3);
-    AccelerationInfo.z = event.acceleration.z.toFixed(3);
-    //    console.log("accelerationIncludingGravity", x, y, z);
+	if (event.acceleration){
+		AccelerationInfo.x = event.acceleration.x.toFixed(3);
+		AccelerationInfo.y = event.acceleration.y.toFixed(3);
+		AccelerationInfo.z = event.acceleration.z.toFixed(3);
+	}
+
+    //  console.log("accelerationIncludingGravity", x, y, z);
 });
