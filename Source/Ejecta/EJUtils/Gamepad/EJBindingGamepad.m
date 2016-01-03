@@ -14,12 +14,10 @@
 		controller.playerIndex = index;
 		
 		if (controller.motion){
-			controller.motion.valueChangedHandler = ^(GCMotion *motion){
-				EJBindingGamepadMotion *gamepadMotion = [EJBindingGamepadMotion sharedInstance];
-				if (gamepadMotion){
-					[gamepadMotion setGamepadMotion:motion];
-				}
-			};
+			EJBindingGamepadMotion *gamepadMotion = [EJBindingGamepadMotion sharedInstance];
+			if (gamepadMotion){
+				[gamepadMotion connect:controller];
+			}
 		}
 
 	}
@@ -130,6 +128,10 @@
 }
 
 - (void)disconnect {
+	EJBindingGamepadMotion *gamepadMotion = [EJBindingGamepadMotion sharedInstance];
+	if (gamepadMotion){
+		[gamepadMotion disconnect:controller];
+	}
 	connected = NO;
 	JSValueUnprotectSafe(scriptView.jsGlobalContext, jsObject);
 }

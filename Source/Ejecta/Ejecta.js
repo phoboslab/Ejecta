@@ -422,6 +422,7 @@ eventInit.touchstart = eventInit.touchend = eventInit.touchmove = function() {
 // DeviceMotion and DeviceOrientation events
 
 var deviceMotion = null;
+var gamepadMotion = null;
 var deviceMotionEvent = {
 	type: 'devicemotion',
 	target: window.canvas,
@@ -445,24 +446,27 @@ var deviceOrientationEvent = {
 };
 
 eventInit.deviceorientation = eventInit.devicemotion = function() {
-	if( deviceMotion ) { return; }
+	// if( deviceMotion ) { return; }
 
- 	if (Ejecta.DeviceMotion){
+ 	if (!deviceMotion && Ejecta.DeviceMotion){
 		deviceMotion = new Ejecta.DeviceMotion();
-	}else if (Ejecta.GamepadMotion) {
-		deviceMotion = new Ejecta.GamepadMotion();
 	}
-	if( !deviceMotion ) { return; }
+ 	if (!gamepadMotion && Ejecta.GamepadMotion) {
+		gamepadMotion = new Ejecta.GamepadMotion();
+	}
 
-	deviceMotionEvent.interval = deviceMotion.interval;
+ 	deviceMotionEvent.interval = (deviceMotion || gamepadMotion).interval;
+
+	if( !deviceMotion ) { deviceMotion = {} }
+	if( !gamepadMotion ) { gamepadMotion = {} }
 
 
 	// Callback for Devices that have a Gyro
-	deviceMotion.ondevicemotion = function( agx, agy, agz, ax, ay, az, rx, ry, rz, ox, oy, oz ) {
+	deviceMotion.ondevicemotion = gamepadMotion.ondevicemotion = function( agx, agy, agz, ax, ay, az, rx, ry, rz, ox, oy, oz ) {
 		deviceMotionEvent.accelerationIncludingGravity.x = agx;
 		deviceMotionEvent.accelerationIncludingGravity.y = agy;
 		deviceMotionEvent.accelerationIncludingGravity.z = agz;
-	
+
 		deviceMotionEvent.acceleration.x = ax;
 		deviceMotionEvent.acceleration.y = ay;
 		deviceMotionEvent.acceleration.z = az;
@@ -482,7 +486,7 @@ eventInit.deviceorientation = eventInit.devicemotion = function() {
 	};
 	
 	// Callback for Devices that only have an accelerometer
-	deviceMotion.onacceleration = function( agx, agy, agz ) {
+	deviceMotion.onacceleration = gamepadMotion.onacceleration = function( agx, agy, agz ) {
 		deviceMotionEvent.accelerationIncludingGravity.x = agx;
 		deviceMotionEvent.accelerationIncludingGravity.y = agy;
 		deviceMotionEvent.accelerationIncludingGravity.z = agz;

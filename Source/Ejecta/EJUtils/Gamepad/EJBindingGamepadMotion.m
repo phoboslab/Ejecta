@@ -21,7 +21,6 @@ static id sharedInstance = nil;
     [super createWithJSObject:obj scriptView:view];
     interval = 1.0f/60.0f;
     motionValid = false;
-    scriptView.deviceMotionDelegate = self;
 }
 
 
@@ -67,6 +66,27 @@ static const float g = 9.80665;
     params[10] = JSValueMakeNumber(ctx, 0);
     params[11] = JSValueMakeNumber(ctx, 0);
 #endif
+
+}
+
+- (void)connect:(GCController *)controllerp {
+	if (!controller){
+		controller = controllerp;
+		controller.motion.valueChangedHandler = ^(GCMotion *motion){
+			[self setGamepadMotion:motion];
+		};
+		prevDeviceMotionDelegate = scriptView.deviceMotionDelegate;
+		scriptView.deviceMotionDelegate = self;
+	}
+}
+
+- (void)disconnect:(GCController *)controllerp {
+	if (controller == controllerp){
+		scriptView.deviceMotionDelegate = prevDeviceMotionDelegate;
+		prevDeviceMotionDelegate = nil;
+		controller.motion.valueChangedHandler = nil;
+		controller = nil;
+	}
 }
 
 - (void)triggerDeviceMotionEvents {
