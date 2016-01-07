@@ -2,15 +2,15 @@
 #import <Chartboost/Chartboost.h>
 #import <Chartboost/CBInPlay.h>
 //#import <Chartboost/CBNewsfeed.h>
-#import "EJBindingEventedBase.h"
+#import "EJBindingAdBase.h"
 
 
 
-@interface EJBindingChartboost : EJBindingEventedBase <ChartboostDelegate>
+@interface EJBindingChartboost : EJBindingAdBase <ChartboostDelegate>
 {
     NSString *appId;
     NSString *appSignature;
-    NSMutableDictionary *inPlays;
+
 }
 
 @end

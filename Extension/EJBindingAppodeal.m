@@ -23,8 +23,8 @@
                      @"video": @(AppodealShowStyleSkippableVideo),
                      @"videoorinterstitial": @(AppodealShowStyleVideoOrInterstitial),
                      @"bannertop": @(AppodealShowStyleBannerTop),
-                     @"bannertop": @(AppodealShowStyleBannerCenter),
-                     @"bannertop": @(AppodealShowStyleBannerBottom),
+                     @"bannercenter": @(AppodealShowStyleBannerCenter),
+                     @"bannerbottom": @(AppodealShowStyleBannerBottom),
                      @"rewardedvideo": @(AppodealShowStyleRewardedVideo)
                     };
 

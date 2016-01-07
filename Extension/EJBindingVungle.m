@@ -13,10 +13,6 @@
             return self;
 		}
         
-        loading = false;
-        hookBeforeShow = nil;
-        hookAfterClose = nil;
-        
         sdk = [VungleSDK sharedSDK];
         
         [[NSOperationQueue mainQueue] addOperationWithBlock:^{
@@ -36,34 +32,22 @@
 - (void)dealloc {
 	[sdk setDelegate:nil];
 	[sdk release];
-
-    if (hookBeforeShow) {
-        JSValueUnprotect(scriptView.jsGlobalContext, hookBeforeShow);
-        hookBeforeShow = nil;
-    }
-
-    if (hookAfterClose) {
-        JSValueUnprotect(scriptView.jsGlobalContext, hookAfterClose);
-        hookAfterClose = nil;
-    }
-    
+	
 	[super dealloc];
 }
 
 -(void)vungleSDKwillShowAd {
     NSLog(@"vungleSDKwillShowAd");
-    if (hookBeforeShow) {
-        [scriptView invokeCallback: hookBeforeShow thisObject: NULL argc: 0 argv: NULL];
-        JSValueUnprotect(scriptView.jsGlobalContext, hookBeforeShow);
-        hookBeforeShow = nil;
-    }
-    [self triggerEvent:@"beforeShow"];
+
+    [self triggerEvent:@"video_onDisplay"];
 }
 
 - (void)vungleSDKwillCloseAdWithViewInfo:(NSDictionary *)viewInfo willPresentProductSheet:(BOOL)willPresentProductSheet {
     NSLog(@"vungleSDKwillCloseAdWithViewInfo %d", willPresentProductSheet);
 
 //    "playTime":15,"didDownload":false,"videoLength":15,"completedView":true
+	
+	BOOL completed = [[viewInfo objectForKey:@"completedView"] boolValue];
 
     JSValueRef jsViewInfo = NSObjectToJSValue(scriptView.jsGlobalContext,
                                                @{
@@ -74,21 +58,21 @@
                                                  @"willPresentProductSheet": @(willPresentProductSheet)
                                                 });
     JSValueRef params[] = { jsViewInfo };
+	
+	if (completed){
+		[self triggerEvent:@"video_onFinish" argc:1 argv:params];
+	}else{
+		[self triggerEvent:@"video_onClose" argc:1 argv:params];
+	}
 
-    if (hookAfterClose) {
-        [scriptView invokeCallback: hookAfterClose thisObject: NULL argc: 1 argv: params];
-        JSValueUnprotect(scriptView.jsGlobalContext, hookAfterClose);
-        hookAfterClose = nil;
-    }
-    
-    [self triggerEvent:@"close" argc:1 argv:params];
 }
 
 - (void)vungleSDKwillCloseProductSheet:(id)productSheet {
     NSLog(@"vungleSDKwillCloseProductSheet");
-    [self triggerEvent:@"closeProductSheet"];
+    [self triggerEvent:@"video_onBack"];
 }
 
+//////////////////////////////////////////////
 
 EJ_BIND_GET(appID, ctx)
 {
@@ -107,137 +91,102 @@ EJ_BIND_SET(muted, ctx, value)
 }
 
 
-EJ_BIND_GET(isReady, ctx)
+EJ_BIND_GET(debug, ctx)
 {
-    return JSValueMakeBoolean(ctx, sdk.isAdPlayable);
+	return JSValueMakeBoolean(ctx, debug);
 }
 
-EJ_BIND_FUNCTION(setLoggingEnabled, ctx, argc, argv)
+EJ_BIND_SET(debug, ctx, value)
 {
-    [sdk setLoggingEnabled:JSValueToBoolean(ctx, argv[0])];
-    return NULL;
-}
-
-EJ_BIND_FUNCTION(show, ctx, argc, argv)
-{
-
-    if (hookBeforeShow) {
-        JSValueUnprotect(scriptView.jsGlobalContext, hookBeforeShow);
-        hookBeforeShow = nil;
-    }
-    
-    if (hookAfterClose) {
-        JSValueUnprotect(scriptView.jsGlobalContext, hookAfterClose);
-        hookAfterClose = nil;
-    }
-
-    /*
-     Options ( VunglePlayAdOptionKey + key ) :
-     incentivized    boolean
-     incentivizedAlertTitleText      string
-     incentivizedAlertBodyText       string
-     incentivizedAlertCloseButtonText        string
-     incentivizedAlertContinueButtonText     string
-     orientations        string
-     placement       string
-     user        string
-     * extraInfoDictionary  (don't support)
-     beforeShow function
-     afterClose function
-     
-     {
-      "videoLength":30,
-      "playTime":30,
-      "completedView":1,
-      "willPresentProductSheet":0,
-      "didDownload":0
-     }
-     
-    */
-    
-    NSMutableDictionary* options = nil;
-    
-    JSObjectRef jsOptions;
-    if (argc > 0){
-        jsOptions = JSValueToObject(ctx, argv[0], NULL);
-        NSDictionary *inOptions = (NSDictionary *)JSValueToNSObject(ctx, jsOptions);
-        NSEnumerator *keys = [inOptions keyEnumerator];
-        options = [NSMutableDictionary new];
-        id keyId;
-        while ((keyId = [keys nextObject])) {
-            NSString *key = (NSString *)keyId;
-            NSString *value = (NSString *)[inOptions objectForKey:keyId];
-            NSLog(@"key : %@, value: %@", key, value);
-            if ([key isEqualToString:@"incentivized"]){
-                [options setObject:@([[inOptions objectForKey:keyId] boolValue]) forKey:VunglePlayAdOptionKeyIncentivized];
-            }else if ([key isEqualToString:@"incentivizedAlertTitleText"]){
-                 [options setObject:value forKey:VunglePlayAdOptionKeyIncentivizedAlertTitleText];
-            }else if ([key isEqualToString:@"incentivizedAlertBodyText"]){
-                [options setObject:value forKey:VunglePlayAdOptionKeyIncentivizedAlertBodyText];
-            }else if ([key isEqualToString:@"incentivizedAlertCloseButtonText"]){
-                [options setObject:value forKey:VunglePlayAdOptionKeyIncentivizedAlertCloseButtonText];
-            }else if ([key isEqualToString:@"incentivizedAlertContinueButtonText"]){
-                [options setObject:value forKey:VunglePlayAdOptionKeyIncentivizedAlertContinueButtonText];
-            }else if ([key isEqualToString:@"orientations"]){
-                if ([value isEqualToString:@"portrait"]){
-                     [options setObject:@(UIInterfaceOrientationMaskPortrait) forKey:VunglePlayAdOptionKeyOrientations];
-                }else if ([value isEqualToString:@"landscape"]){
-                    [options setObject:@(UIInterfaceOrientationMaskLandscape) forKey:VunglePlayAdOptionKeyOrientations];
-                }
-            }else if ([key isEqualToString:@"placement"]){
-                [options setObject:value forKey:VunglePlayAdOptionKeyPlacement];
-            }else if ([key isEqualToString:@"user"]){
-                [options setObject:value forKey:VunglePlayAdOptionKeyUser];
-            }else if ([key isEqualToString:@"beforeShow"]){
-                JSStringRef funcName = JSStringCreateWithUTF8CString("beforeShow");
-                JSValueRef jsFunc = JSObjectGetProperty(ctx, jsOptions, funcName, NULL);
-                JSStringRelease(funcName);
-                
-                hookBeforeShow = JSValueToObject(ctx, jsFunc, NULL);
-                JSValueProtect(ctx, hookBeforeShow);
-            }else if ([key isEqualToString:@"afterClose"]){
-                JSStringRef funcName = JSStringCreateWithUTF8CString("afterClose");
-                JSValueRef jsFunc = JSObjectGetProperty(ctx, jsOptions, funcName, NULL);
-                JSStringRelease(funcName);
-                
-                hookAfterClose = JSValueToObject(ctx, jsFunc, NULL);
-                JSValueProtect(ctx, hookAfterClose);
-            }
-        }
-    }
-
-    if (hookBeforeShow) {
-        [scriptView invokeCallback: hookBeforeShow thisObject: NULL argc: 0 argv: NULL];
-        JSValueUnprotect(scriptView.jsGlobalContext, hookBeforeShow);
-        hookBeforeShow = nil;
-    }
-    
-    NSError *error;
-
-    if (options){
-        [sdk playAd:scriptView.window.rootViewController withOptions:options error:&error];
-        [options release];
-    }else{
-        [sdk playAd:scriptView.window.rootViewController error:&error];
-    }
-
-
-    if (error) {
-        NSLog(@"Error encountered playing ad: %@", error);
-        [self triggerEvent:@"error"];
-        return scriptView->jsFalse;
-    }
-    
-    return scriptView->jsTrue;
-
+	debug = JSValueToBoolean(ctx, value);
+	[sdk setLoggingEnabled:debug];
 }
 
 
 
-EJ_BIND_EVENT(beforeShow);
-EJ_BIND_EVENT(close);
-EJ_BIND_EVENT(closeProductSheet);
-EJ_BIND_EVENT(error);
+-(BOOL)callShow:(NSString *)type options:(NSDictionary *)options ctx:(JSContextRef)ctx argc:(size_t)argc argv:(const JSValueRef[])argv {
+	
+	/*
+	 Options ( VunglePlayAdOptionKey + key ) :
+	 incentivized    boolean
+	 incentivizedAlertTitleText      string
+	 incentivizedAlertBodyText       string
+	 incentivizedAlertCloseButtonText        string
+	 incentivizedAlertContinueButtonText     string
+	 orientations        string
+	 placement       string
+	 user        string
+	 * extraInfoDictionary  (don't support)
+	 {
+	 "videoLength":30,
+	 "playTime":30,
+	 "completedView":1,
+	 "willPresentProductSheet":0,
+	 "didDownload":0
+	 }
+	 
+	 */
+	
+//	if ([type isEqualToString:@"rewardedVideo"]){
+//		[options setValue:@(YES) forKey:@"incentivized"];
+//	}
+	
+	NSError *error;
+	
+	if (options){
+		NSMutableDictionary *sdkOptions = [NSMutableDictionary new];
+		
+		NSEnumerator *keys = [options keyEnumerator];
+
+		id keyId;
+		while ((keyId = [keys nextObject])) {
+			NSString *key = (NSString *)keyId;
+			NSString *value = (NSString *)[options objectForKey:keyId];
+			NSLog(@"key : %@, value: %@", key, value);
+			if ([key isEqualToString:@"incentivized"]){
+				[sdkOptions setObject:@([[options objectForKey:keyId] boolValue]) forKey:VunglePlayAdOptionKeyIncentivized];
+			}else if ([key isEqualToString:@"incentivizedAlertTitleText"]){
+				[sdkOptions setObject:value forKey:VunglePlayAdOptionKeyIncentivizedAlertTitleText];
+			}else if ([key isEqualToString:@"incentivizedAlertBodyText"]){
+				[sdkOptions setObject:value forKey:VunglePlayAdOptionKeyIncentivizedAlertBodyText];
+			}else if ([key isEqualToString:@"incentivizedAlertCloseButtonText"]){
+				[sdkOptions setObject:value forKey:VunglePlayAdOptionKeyIncentivizedAlertCloseButtonText];
+			}else if ([key isEqualToString:@"incentivizedAlertContinueButtonText"]){
+				[sdkOptions setObject:value forKey:VunglePlayAdOptionKeyIncentivizedAlertContinueButtonText];
+			}else if ([key isEqualToString:@"orientations"]){
+				if ([value isEqualToString:@"portrait"]){
+					[sdkOptions setObject:@(UIInterfaceOrientationMaskPortrait) forKey:VunglePlayAdOptionKeyOrientations];
+				}else if ([value isEqualToString:@"landscape"]){
+					[sdkOptions setObject:@(UIInterfaceOrientationMaskLandscape) forKey:VunglePlayAdOptionKeyOrientations];
+				}
+			}else if ([key isEqualToString:@"placement"]){
+				[sdkOptions setObject:value forKey:VunglePlayAdOptionKeyPlacement];
+			}else if ([key isEqualToString:@"user"]){
+				[sdkOptions setObject:value forKey:VunglePlayAdOptionKeyUser];
+			}
+		}
+		[sdk playAd:scriptView.window.rootViewController withOptions:sdkOptions error:&error];
+		[sdkOptions release];
+
+	}else{
+		[sdk playAd:scriptView.window.rootViewController error:&error];
+	}
+	
+	if (error) {
+		NSLog(@"Error encountered playing ad: %@", error);
+		[self triggerEvent:@"error"];
+		return false;
+	}
+	
+	return true;
+	
+}
+
+-(BOOL)callIsReady:(NSString *)type options:(NSDictionary *)options ctx:(JSContextRef)ctx argc:(size_t)argc argv:(const JSValueRef[])argv {
+	
+	return sdk.isAdPlayable;
+
+}
 
 
 @end

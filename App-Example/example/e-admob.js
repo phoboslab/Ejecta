@@ -6,61 +6,30 @@
     var width = window.innerWidth;
     var height = window.innerHeight;
 
-    var adBanner = new Ejecta.AdMobBanner("a15318cc08698ce");
-    adBanner.type = "banner";
-    // adBanner.type = height > 640 ? "fullbanner" : "banner";
-    adBanner.x = 0;
-    adBanner.y = 0;
-    adBanner.onload = function() {
-        adBanner.loading = false;
-        console.log("loaded adBanner", adBanner.type, adBanner.x, adBanner.y, adBanner.width, adBanner.height);
+    var adMob = new Ejecta.AdMob("a15318cc08698ce");
 
-        // let banner be at center of screen in the horizontal direction.
-        adBanner.x = (width - adBanner.width) >> 1;
-        // let banner be at bottom of screen.
-        adBanner.y = height - adBanner.height;
+    adMob.load("banner", {
+        onLoad: function() {
+            console.log("banner loaded");
+            if (adMob.isReady("banner")){
+                adMob.show("banner");
+            };
+        }
+    });
 
-        adBanner.show();
-    };
+    adMob.load("interstitial", {
+        onLoad: function() {
+            console.log("interstitial loaded");
+            if (adMob.isReady("interstitial")){
+                adMob.show("interstitial", {
+                    onDisplay: function(){
+                        console.log("interstitial onDisplay")
+                    }
+                });
+            };
+        }
+    });
 
-    adBanner.onclose = function() {
-        console.log("close adBanner");
-        setTimeout(function() {
-            console.log("auto load adBanner again");
-            adBanner.load();
-        }, 2000)
-    };
-
-    adBanner.onclick = function() {
-        console.log("click adBanner")
-    };
-
-    // setTimeout(function() {
-    adBanner.load();
-    // }, 500);
-
-    ///////////////////////////////
-
-    var adPage = new Ejecta.AdMobPage("a15318cc08698ce");
-    adPage.onload = function() {
-        adPage.loading = false;
-        console.log("loaded adPage");
-        adPage.show();
-    }
-    adPage.onclose = function() {
-        console.log("close adPage")
-        setTimeout(function() {
-            console.log("auto load adPage again");
-            adPage.load();
-        }, 1000)
-    }
-    adPage.onclick = function() {
-        console.log("click adPage")
-    }
-
-    console.log("start");
-    //    setTimeout(function() {
-    adPage.load();
-    //    }, 500);
+    console.log("AdMob Test.");
 
 }());

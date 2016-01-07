@@ -7,17 +7,11 @@
 
     // var adVungle = new Ejecta.Vungle("phoena");
     var adVungle = new Ejecta.Vungle("5632ff9e2969297047000010");
-    adVungle.setLoggingEnabled(true);
+    adVungle.debug = true;
 
-    //    adVungle.addEventListener("close", function(info) {
-    //        console.log(JSON.stringify(info));
-    //    });
-    adVungle.addEventListener("closeProductSheet", function() {
-        console.log("closeProductSheet");
-    });
     var id = setInterval(function() {
-        console.log("adVungle.isReady", adVungle.isReady);
-        if (adVungle.isReady) {
+        console.log("adVungle.isReady", adVungle.isReady("video"));
+        if (adVungle.isReady("video")) {
             showAd();
             clearInterval(id);
         }
@@ -39,20 +33,23 @@
             * extraInfoDictionary  (don't support)
         */
 
-        adVungle.show({
+        adVungle.show("video", {
             incentivized: true,
             incentivizedAlertTitleText: "title",
             incentivizedAlertBodyText: "body",
             incentivizedAlertCloseButtonText: "close-button",
             incentivizedAlertContinueButtonText: "continue-button",
-            orientations: "portrait",
+            orientations: "landscape",
             placement: "Placement-A",
             // User: "test-user-1",
-            beforeShow: function() {
-                console.log("beforeShow");
+            onDisplay: function() {
+                console.log("onDisplay");
             },
-            afterClose: function(info) {
-                console.log("afterClose", JSON.stringify(info));
+            onClose: function(info) {
+                console.log("onClose", JSON.stringify(info));
+            },
+            onFinish: function(info) {
+                console.log("onFinish", JSON.stringify(info));
             },
         });
     }

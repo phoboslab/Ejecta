@@ -51,7 +51,7 @@
 - (NSArray *) getAllFonts {
 	NSInteger indFamily, indFont;
 	NSArray *familyNames = [UIFont familyNames];
-	NSMutableArray *allFontNames = [NSMutableArray new];
+	NSMutableArray *allFontNames = [[NSMutableArray new] autorelease];
 	for (indFamily=0; indFamily<[familyNames count]; ++indFamily)
 	{
 		NSLog(@"Family name: %@", [familyNames objectAtIndex:indFamily]);
@@ -62,7 +62,7 @@
 			[allFontNames addObject:[fontNames objectAtIndex:indFont]];
 		}
 	}
-	return [allFontNames autorelease];
+	return allFontNames;
 }
 
 - (BOOL) hasFontFamily:(NSString *)familyName {

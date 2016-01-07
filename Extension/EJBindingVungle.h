@@ -1,17 +1,14 @@
 #import <VungleSDK/VungleSDK.h>
 
-#import "EJBindingEventedBase.h"
+#import "EJBindingAdBase.h"
 
 
-@interface EJBindingVungle : EJBindingEventedBase <VungleSDKDelegate>
+@interface EJBindingVungle : EJBindingAdBase <VungleSDKDelegate>
 {
 
 	NSString *appID;
     VungleSDK* sdk;
-    BOOL loading;
-    
-    JSObjectRef hookBeforeShow;
-    JSObjectRef hookAfterClose;
+
 }
 
 @end
