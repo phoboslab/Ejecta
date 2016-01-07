@@ -33,23 +33,39 @@
             * extraInfoDictionary  (don't support)
         */
 
+        // adVungle.show("video", {
+        //     orientations: "landscape",
+        //     placement: "Placement-A",
+        //     // user: "test-user-1",
+        //     onDisplay: function() {
+        //         console.log("video onDisplay");
+        //     },
+        //     onClose: function(info) {
+        //         console.log("video onClose", JSON.stringify(info));
+        //     },
+        //     onFinish: function(info) {
+        //         console.log("video onFinish", JSON.stringify(info));
+        //     },
+        // });
+
         adVungle.show("video", {
             incentivized: true,
             incentivizedAlertTitleText: "title",
             incentivizedAlertBodyText: "body",
             incentivizedAlertCloseButtonText: "close-button",
             incentivizedAlertContinueButtonText: "continue-button",
+
             orientations: "landscape",
             placement: "Placement-A",
-            // User: "test-user-1",
+            // user: "test-user-1",
             onDisplay: function() {
-                console.log("onDisplay");
+                console.log("rewardedVideo onDisplay");
             },
             onClose: function(info) {
-                console.log("onClose", JSON.stringify(info));
+                console.log("rewardedVideo onClose", JSON.stringify(info));
             },
             onFinish: function(info) {
-                console.log("onFinish", JSON.stringify(info));
+                console.log("rewardedVideo onFinish", JSON.stringify(info));
             },
         });
     }

@@ -127,13 +127,15 @@ EJ_BIND_SET(debug, ctx, value)
 	 
 	 */
 	
-//	if ([type isEqualToString:@"rewardedVideo"]){
-//		[options setValue:@(YES) forKey:@"incentivized"];
-//	}
 	
 	NSError *error;
 	
 	if (options){
+
+//		if ([type isEqualToString:@"rewardedVideo"]){
+//			[options setValue:@(YES) forKey:@"incentivized"];
+//		}
+		
 		NSMutableDictionary *sdkOptions = [NSMutableDictionary new];
 		
 		NSEnumerator *keys = [options keyEnumerator];
