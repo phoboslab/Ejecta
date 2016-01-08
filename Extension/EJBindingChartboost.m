@@ -109,7 +109,7 @@
     #if DEBUG
         NSLog(@"Cache Interstitial at location %@", location);
     #endif
-    [self triggerEvent:@"interstitial_onLoad" properties:(JSEventProperty[]){
+    [self triggerEventOnce:@"interstitial_onLoad" properties:(JSEventProperty[]){
         {"adType", NSStringToJSValue(scriptView.jsGlobalContext, @"Interstitial")},
         {"location", NSStringToJSValue(scriptView.jsGlobalContext, location)},
         {NULL, NULL}
@@ -119,7 +119,7 @@
     #if DEBUG
         NSLog(@"Close Interstitial at location %@", location);
     #endif
-    [self triggerEvent:@"interstitial_onClose" properties:(JSEventProperty[]){
+    [self triggerEventOnce:@"interstitial_onClose" properties:(JSEventProperty[]){
         {"adType", NSStringToJSValue(scriptView.jsGlobalContext, @"Interstitial")},
 //        {"location", NSStringToJSValue(scriptView.jsGlobalContext, location)},
         {NULL, NULL}
@@ -129,7 +129,7 @@
     #if DEBUG
         NSLog(@"Click Interstitial at location %@", location);
     #endif
-    [self triggerEvent:@"interstitial_onClick" properties:(JSEventProperty[]){
+    [self triggerEventOnce:@"interstitial_onClick" properties:(JSEventProperty[]){
         {"adType", NSStringToJSValue(scriptView.jsGlobalContext, @"Interstitial")},
         {"location", NSStringToJSValue(scriptView.jsGlobalContext, location)},
         {NULL, NULL}
@@ -140,7 +140,7 @@
         NSLog(@"Did display Interstitial");
     #endif
     if ([Chartboost isAnyViewVisible]) {
-        [self triggerEvent:@"interstitial_onDisplay" properties:(JSEventProperty[]){
+        [self triggerEventOnce:@"interstitial_onDisplay" properties:(JSEventProperty[]){
             {"adType", NSStringToJSValue(scriptView.jsGlobalContext, @"Interstitial")},
             {"location", NSStringToJSValue(scriptView.jsGlobalContext, location)},
             {NULL, NULL}
@@ -152,7 +152,7 @@
     #if DEBUG
         NSLog(@"Faild to load Interstitial: %@", message);
     #endif
-    [self triggerEvent:@"interstitial_onFail" properties:(JSEventProperty[]){
+    [self triggerEventOnce:@"interstitial_onFail" properties:(JSEventProperty[]){
         {"adType", NSStringToJSValue(scriptView.jsGlobalContext, @"Interstitial")},
 //        {"location", NSStringToJSValue(scriptView.jsGlobalContext, location)},
         {"message",NSStringToJSValue(scriptView.jsGlobalContext, message)},
@@ -168,7 +168,7 @@
     #if DEBUG
         NSLog(@"Cache MoreApps at location %@", location);
     #endif
-    [self triggerEvent:@"moreApps_onLoad" properties:(JSEventProperty[]){
+    [self triggerEventOnce:@"moreApps_onLoad" properties:(JSEventProperty[]){
         {"adType", NSStringToJSValue(scriptView.jsGlobalContext, @"MoreApps")},
         {"location", NSStringToJSValue(scriptView.jsGlobalContext, location)},
         {NULL, NULL}
@@ -178,7 +178,7 @@
     #if DEBUG
         NSLog(@"Close MoreApps at location %@", location);
     #endif
-    [self triggerEvent:@"moreApps_onClose" properties:(JSEventProperty[]){
+    [self triggerEventOnce:@"moreApps_onClose" properties:(JSEventProperty[]){
         {"adType", NSStringToJSValue(scriptView.jsGlobalContext, @"MoreApps")},
         {"location", NSStringToJSValue(scriptView.jsGlobalContext, location)},
         {NULL, NULL}
@@ -188,7 +188,7 @@
     #if DEBUG
         NSLog(@"Click MoreApps at location %@", location);
     #endif
-    [self triggerEvent:@"moreApps_onClick" properties:(JSEventProperty[]){
+    [self triggerEventOnce:@"moreApps_onClick" properties:(JSEventProperty[]){
         {"adType", NSStringToJSValue(scriptView.jsGlobalContext, @"MoreApps")},
         {"location", NSStringToJSValue(scriptView.jsGlobalContext, location)},
         {NULL, NULL}
@@ -199,7 +199,7 @@
     #if DEBUG
         NSLog(@"Faild to load MoreApps: %@", message);
     #endif
-    [self triggerEvent:@"moreApps_onFail" properties:(JSEventProperty[]){
+    [self triggerEventOnce:@"moreApps_onFail" properties:(JSEventProperty[]){
         {"adType", NSStringToJSValue(scriptView.jsGlobalContext, @"MoreApps")},
 //        {"location", NSStringToJSValue(scriptView.jsGlobalContext, location)},
         {"message",NSStringToJSValue(scriptView.jsGlobalContext, message)},
@@ -213,7 +213,7 @@
     #if DEBUG
         NSLog(@"Cache RewardedVideo at location %@", location);
     #endif
-    [self triggerEvent:@"rewardedVideo_onLoad" properties:(JSEventProperty[]){
+    [self triggerEventOnce:@"rewardedVideo_onLoad" properties:(JSEventProperty[]){
         {"adType", NSStringToJSValue(scriptView.jsGlobalContext, @"RewardedVideo")},
         {"location", NSStringToJSValue(scriptView.jsGlobalContext, location)},
         {NULL, NULL}
@@ -223,7 +223,7 @@
     #if DEBUG
         NSLog(@"Close RewardedVideo at location %@", location);
     #endif
-    [self triggerEvent:@"rewardedVideo_onClose" properties:(JSEventProperty[]){
+    [self triggerEventOnce:@"rewardedVideo_onClose" properties:(JSEventProperty[]){
         {"adType", NSStringToJSValue(scriptView.jsGlobalContext, @"RewardedVideo")},
 //        {"location", NSStringToJSValue(scriptView.jsGlobalContext, location)},
         {NULL, NULL}
@@ -233,7 +233,7 @@
     #if DEBUG
         NSLog(@"Click RewardedVideo at location %@", location);
     #endif
-    [self triggerEvent:@"rewardedVideo_onClick" properties:(JSEventProperty[]){
+    [self triggerEventOnce:@"rewardedVideo_onClick" properties:(JSEventProperty[]){
         {"adType", NSStringToJSValue(scriptView.jsGlobalContext, @"RewardedVideo")},
         {"location", NSStringToJSValue(scriptView.jsGlobalContext, location)},
         {NULL, NULL}
@@ -245,7 +245,7 @@
     NSLog(@"Did display RewardedVideo");
 #endif
 //    if ([Chartboost isAnyViewVisible]) {
-//        [self triggerEvent:@"rewardedVideo_onDisplay" properties:(JSEventProperty[]){
+//        [self triggerEventOnce:@"rewardedVideo_onDisplay" properties:(JSEventProperty[]){
 //            {"adType", NSStringToJSValue(scriptView.jsGlobalContext, @"RewardedVideo")},
 //            {"location", NSStringToJSValue(scriptView.jsGlobalContext, location)},
 //            {NULL, NULL}
@@ -257,7 +257,7 @@
 #if DEBUG
     NSLog(@"Will Display RewardedVideo");
 #endif
-    [self triggerEvent:@"rewardedVideo_onDisplay" properties:(JSEventProperty[]){
+    [self triggerEventOnce:@"rewardedVideo_onDisplay" properties:(JSEventProperty[]){
         {"adType", NSStringToJSValue(scriptView.jsGlobalContext, @"RewardedVideo")},
         {"location", NSStringToJSValue(scriptView.jsGlobalContext, location)},
         {NULL, NULL}
@@ -267,7 +267,7 @@
     #if DEBUG
         NSLog(@"completed RewardedVideo view at location %@ with reward amount %d", location, reward);
     #endif
-    [self triggerEvent:@"rewardedVideo_onFinish" properties:(JSEventProperty[]){
+    [self triggerEventOnce:@"rewardedVideo_onFinish" properties:(JSEventProperty[]){
         {"adType", NSStringToJSValue(scriptView.jsGlobalContext, @"RewardedVideo")},
         {"location", NSStringToJSValue(scriptView.jsGlobalContext, location)},
         {"reward", JSValueMakeNumber(scriptView.jsGlobalContext, reward)},
@@ -279,7 +279,7 @@
     #if DEBUG
         NSLog(@"Faild to load RewardedVideo: %@", message);
     #endif
-    [self triggerEvent:@"rewardedVideo_onFail" properties:(JSEventProperty[]){
+    [self triggerEventOnce:@"rewardedVideo_onFail" properties:(JSEventProperty[]){
         {"adType", NSStringToJSValue(scriptView.jsGlobalContext, @"RewardedVideo")},
         {"location", NSStringToJSValue(scriptView.jsGlobalContext, location)},
         {"message",NSStringToJSValue(scriptView.jsGlobalContext, message)},

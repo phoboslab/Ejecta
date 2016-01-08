@@ -18,6 +18,29 @@
 }
 
 
+- (void)triggerEventOnce:(NSString *)type argc:(int)argc argv:(JSValueRef[])argv {
+
+	[self triggerEvent:type argc:argc argv:argv];
+
+	JSContextRef ctx = scriptView.jsGlobalContext;
+	NSValue *callbackValue = onCallbacks[type];
+	JSValueUnprotectSafe(ctx, callbackValue.pointerValue);
+
+}
+
+- (void)triggerEventOnce:(NSString *)type {
+	[self triggerEventOnce:type properties:nil];
+}
+
+- (void)triggerEventOnce:(NSString *)type properties:(JSEventProperty[])properties {
+	[self triggerEvent:type properties:properties];
+	
+	JSContextRef ctx = scriptView.jsGlobalContext;
+	NSValue *callbackValue = onCallbacks[type];
+	JSValueUnprotectSafe(ctx, callbackValue.pointerValue);
+}
+
+
 -(NSDictionary *)getOptions:(NSString *)type ctx:(JSContextRef)ctx jsOptions:(JSObjectRef)jsOptions {
 	
 	NSMutableDictionary* options = [[NSMutableDictionary new] autorelease];
@@ -173,8 +196,8 @@ EJ_BIND_FUNCTION(load, ctx, argc, argv)
 	return NULL;
 }
 
-EJ_BIND_EVENT(load);
-EJ_BIND_EVENT(error);
+// EJ_BIND_EVENT(load);
+// EJ_BIND_EVENT(error);
 
 
 //////////////////////////////////

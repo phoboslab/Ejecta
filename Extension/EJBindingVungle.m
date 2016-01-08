@@ -39,7 +39,7 @@
 -(void)vungleSDKwillShowAd {
     NSLog(@"vungleSDKwillShowAd");
 
-    [self triggerEvent:@"video_onDisplay"];
+    [self triggerEventOnce:@"video_onDisplay"];
 }
 
 - (void)vungleSDKwillCloseAdWithViewInfo:(NSDictionary *)viewInfo willPresentProductSheet:(BOOL)willPresentProductSheet {
@@ -60,16 +60,16 @@
     JSValueRef params[] = { jsViewInfo };
 	
 	if (completed){
-		[self triggerEvent:@"video_onFinish" argc:1 argv:params];
+		[self triggerEventOnce:@"video_onFinish" argc:1 argv:params];
 	}else{
-		[self triggerEvent:@"video_onClose" argc:1 argv:params];
+		[self triggerEventOnce:@"video_onClose" argc:1 argv:params];
 	}
 
 }
 
 - (void)vungleSDKwillCloseProductSheet:(id)productSheet {
     NSLog(@"vungleSDKwillCloseProductSheet");
-    [self triggerEvent:@"video_onBack"];
+    [self triggerEventOnce:@"video_onBack"];
 }
 
 //////////////////////////////////////////////
@@ -101,6 +101,44 @@ EJ_BIND_SET(debug, ctx, value)
 	debug = JSValueToBoolean(ctx, value);
 	[sdk setLoggingEnabled:debug];
 }
+
+
+//EJ_BIND_FUNCTION(show, ctx, argc, argv)
+//{
+//	
+//	if (argc < 1){
+//		return NULL;
+//	}
+//	
+//	NSString *type = JSValueToNSString(ctx, argv[0]);
+//	NSDictionary* options = nil;
+//	
+//	BOOL rewarded = false;
+//	
+//	if ([type isEqualToString:@"rewardedVideo"]){
+//		type = @"video";
+//		rewarded = true;
+//	}
+//	
+//	if (argc > 1){
+//		JSObjectRef jsOptions = JSValueToObject(ctx, argv[1], NULL);
+//		options = [self getOptions:type ctx:ctx jsOptions:jsOptions];
+//		if (rewarded){
+//			[options setValue:@(YES) forKey:@"incentivized"];
+//		}
+//	}else if (rewarded){
+//		options = [NSDictionary dictionaryWithObject:@(YES) forKey:@"incentivized"];
+//	};
+//	
+//	BOOL ok = [self callShow:type options:options ctx:ctx argc:argc argv:argv];
+//	
+//	return ok ? scriptView->jsTrue : scriptView->jsFalse;
+//}
+
+
+
+//////////////////////////////////////
+//////////////////////////////////////
 
 
 
@@ -176,7 +214,7 @@ EJ_BIND_SET(debug, ctx, value)
 	
 	if (error) {
 		NSLog(@"Error encountered playing ad: %@", error);
-		[self triggerEvent:@"error"];
+		[self triggerEventOnce:@"error"];
 		return false;
 	}
 	

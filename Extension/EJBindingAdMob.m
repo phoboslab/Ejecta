@@ -127,23 +127,23 @@
 	bannerLoading = false;
 	isBannerReady = true;
 	NSLog(@"Received banner AD successfully");
-	[self triggerEvent:@"banner_onLoad"];
+	[self triggerEventOnce:@"banner_onLoad"];
 }
 
 - (void)adView:(GADBannerView *)view didFailToReceiveAdWithError:(GADRequestError *)error {
 	bannerLoading = false;
 	isBannerReady = false;
 	NSLog(@"Failed to receive banner AD with error: %@", [error localizedFailureReason]);
-	[self triggerEvent:@"banner_onFail"];
+	[self triggerEventOnce:@"banner_onFail"];
 }
 
 - (void)adViewDidDismissScreen:(GADBannerView *)adView {
 	isBannerReady = NO;
-	[self triggerEvent:@"banner_onClose"];
+	[self triggerEventOnce:@"banner_onClose"];
 }
 
 - (void)adViewWillLeaveApplication:(GADBannerView *)adView {
-	[self triggerEvent:@"banner_onClick"];
+	[self triggerEventOnce:@"banner_onClick"];
 }
 
 ///////////////////////////////////////
@@ -178,18 +178,18 @@
 - (void)interstitialDidReceiveAd:(GADInterstitial *)interstitial {
     interstitialLoading = false;
 	NSLog(@"Received interstitial AD successfully");
-	[self triggerEvent:@"interstitial_onLoad"];
+	[self triggerEventOnce:@"interstitial_onLoad"];
 }
 
 - (void)interstitial:(GADInterstitial *)interstitial didFailToReceiveAdWithError:(GADRequestError *)error {
     interstitialLoading = false;
 	NSLog(@"Failed to receive interstitial AD with error: %@", [error localizedFailureReason]);
-    [self triggerEvent:@"interstitial_onFail"];
+    [self triggerEventOnce:@"interstitial_onFail"];
 }
 
 
 - (void)interstitialWillPresentScreen:(GADInterstitial *)ad {
-	[self triggerEvent:@"interstitial_onDisplay"];
+	[self triggerEventOnce:@"interstitial_onDisplay"];
 }
 
 
@@ -198,11 +198,11 @@
 }
 
 - (void)interstitialDidDismissScreen:(GADInterstitial *)ad {
-	[self triggerEvent:@"interstitial_onClose"];
+	[self triggerEventOnce:@"interstitial_onClose"];
 }
 
 - (void)interstitialWillLeaveApplication:(GADInterstitial *)ad {
-	[self triggerEvent:@"interstitial_onClick"];
+	[self triggerEventOnce:@"interstitial_onClick"];
 }
 
 
