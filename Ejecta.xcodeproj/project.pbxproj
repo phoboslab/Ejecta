@@ -32,13 +32,10 @@
 		5C2C258D1C33080F001455E9 /* EJBindingGamepadMotion.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C2C258A1C330540001455E9 /* EJBindingGamepadMotion.m */; };
 		5C3B72E41ADAB7D3002A3FB5 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C3B72E31ADAB7D3002A3FB5 /* CoreMedia.framework */; };
 		5C3B72E81ADAD976002A3FB5 /* Chartboost.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C3B72E71ADAD976002A3FB5 /* Chartboost.framework */; };
-		5C41C1281C3B07E200544CE7 /* EJBindingAdBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C41C1271C3B07E200544CE7 /* EJBindingAdBase.m */; };
-		5C49BC891ADB6F2C0063D385 /* EJBindingChartboost.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C49BC881ADB6F2C0063D385 /* EJBindingChartboost.m */; };
 		5C4D006F1C1C2642003D718B /* EJDeviceUID.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C4D006D1C1C2642003D718B /* EJDeviceUID.m */; };
 		5C631BFB19110679009AF7F0 /* EJBindingDecryptorXOR.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C631BFA19110679009AF7F0 /* EJBindingDecryptorXOR.m */; };
 		5C631C021911446F009AF7F0 /* EJBindingBaseInterceptor.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C631BFE1911446F009AF7F0 /* EJBindingBaseInterceptor.m */; };
 		5C631C031911446F009AF7F0 /* EJInterceptorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C631C011911446F009AF7F0 /* EJInterceptorManager.m */; };
-		5C8968A01BE3284900AC30E6 /* EJBindingVungle.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C89689F1BE3284900AC30E6 /* EJBindingVungle.m */; };
 		5C8968C41BE32CAE00AC30E6 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C8968BF1BE32CAE00AC30E6 /* libc++.tbd */; };
 		5C8968C51BE32CAE00AC30E6 /* libicucore.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C8968C01BE32CAE00AC30E6 /* libicucore.tbd */; };
 		5C8968C61BE32CAE00AC30E6 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C8968C11BE32CAE00AC30E6 /* libsqlite3.tbd */; };
@@ -59,7 +56,6 @@
 		5C8E340D18C4EF40007206AE /* EJBindingLocalNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C8E340218C4EF40007206AE /* EJBindingLocalNotification.m */; };
 		5C8E340E18C4EF40007206AE /* EJBindingSocial.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C8E340418C4EF40007206AE /* EJBindingSocial.m */; };
 		5C8E340F18C4EF40007206AE /* EJBindingWebView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C8E340618C4EF40007206AE /* EJBindingWebView.m */; };
-		5C91E59C18E1AD9B00FCF013 /* EJBindingAdMob.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C91E59B18E1AD9B00FCF013 /* EJBindingAdMob.m */; };
 		5C91E5AE18E1C45700FCF013 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C91E5AD18E1C45700FCF013 /* MessageUI.framework */; };
 		5C91E5B018E1C47F00FCF013 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C91E5AF18E1C47F00FCF013 /* AdSupport.framework */; };
 		5C91E5B118E1C4A800FCF013 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C91E5AA18E1C43A00FCF013 /* CoreTelephony.framework */; };
@@ -171,6 +167,15 @@
 		5CBFB2501BF47AC300BF2385 /* GameController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CBFB24F1BF47AC300BF2385 /* GameController.framework */; };
 		5CF2A6831BFEE2FE00B7EA09 /* LaunchScreen-Logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 5CF2A6821BFEE2FE00B7EA09 /* LaunchScreen-Logo.png */; };
 		5CF2A6851BFEE6D700B7EA09 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5CF2A6841BFEE6D700B7EA09 /* Assets.xcassets */; };
+		5CF6ABB11C3FED0C009C3CF4 /* AdColony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CF6ABAD1C3FED0C009C3CF4 /* AdColony.framework */; };
+		5CF6ABB21C3FED0C009C3CF4 /* UnityAds.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 5CF6ABAF1C3FED0C009C3CF4 /* UnityAds.bundle */; };
+		5CF6ABB31C3FED0C009C3CF4 /* UnityAds.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CF6ABB01C3FED0C009C3CF4 /* UnityAds.framework */; };
+		5CF6ABC11C3FED37009C3CF4 /* EJBindingAdBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 5CF6ABB61C3FED37009C3CF4 /* EJBindingAdBase.m */; };
+		5CF6ABC21C3FED37009C3CF4 /* EJBindingAdColony.m in Sources */ = {isa = PBXBuildFile; fileRef = 5CF6ABB81C3FED37009C3CF4 /* EJBindingAdColony.m */; };
+		5CF6ABC31C3FED37009C3CF4 /* EJBindingAdMob.m in Sources */ = {isa = PBXBuildFile; fileRef = 5CF6ABBA1C3FED37009C3CF4 /* EJBindingAdMob.m */; };
+		5CF6ABC41C3FED37009C3CF4 /* EJBindingChartboost.m in Sources */ = {isa = PBXBuildFile; fileRef = 5CF6ABBC1C3FED37009C3CF4 /* EJBindingChartboost.m */; };
+		5CF6ABC51C3FED37009C3CF4 /* EJBindingUnityAds.m in Sources */ = {isa = PBXBuildFile; fileRef = 5CF6ABBE1C3FED37009C3CF4 /* EJBindingUnityAds.m */; };
+		5CF6ABC61C3FED37009C3CF4 /* EJBindingVungle.m in Sources */ = {isa = PBXBuildFile; fileRef = 5CF6ABC01C3FED37009C3CF4 /* EJBindingVungle.m */; };
 		B6074FF315F8E41700D987F9 /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6074FF215F8E41600D987F9 /* GameKit.framework */; };
 		B607AB67132EA6C300D7C3EA /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B607AB66132EA6C300D7C3EA /* OpenAL.framework */; };
 		B607AC33132EA75F00D7C3EA /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B607AC32132EA75F00D7C3EA /* AudioToolbox.framework */; };
@@ -283,10 +288,6 @@
 		5C2C258B1C330540001455E9 /* EJBindingGamepadMotion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingGamepadMotion.h; sourceTree = "<group>"; };
 		5C3B72E31ADAB7D3002A3FB5 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		5C3B72E71ADAD976002A3FB5 /* Chartboost.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Chartboost.framework; sourceTree = "<group>"; };
-		5C41C1261C3B07E200544CE7 /* EJBindingAdBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingAdBase.h; sourceTree = "<group>"; };
-		5C41C1271C3B07E200544CE7 /* EJBindingAdBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingAdBase.m; sourceTree = "<group>"; };
-		5C49BC881ADB6F2C0063D385 /* EJBindingChartboost.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingChartboost.m; sourceTree = "<group>"; };
-		5C49BC8A1ADB6F690063D385 /* EJBindingChartboost.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EJBindingChartboost.h; sourceTree = "<group>"; };
 		5C4D006D1C1C2642003D718B /* EJDeviceUID.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJDeviceUID.m; sourceTree = "<group>"; };
 		5C4D006E1C1C2642003D718B /* EJDeviceUID.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJDeviceUID.h; sourceTree = "<group>"; };
 		5C631BF919110679009AF7F0 /* EJBindingDecryptorXOR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingDecryptorXOR.h; sourceTree = "<group>"; };
@@ -296,8 +297,6 @@
 		5C631BFF1911446F009AF7F0 /* EJInterceptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJInterceptor.h; sourceTree = "<group>"; };
 		5C631C001911446F009AF7F0 /* EJInterceptorManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJInterceptorManager.h; sourceTree = "<group>"; };
 		5C631C011911446F009AF7F0 /* EJInterceptorManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJInterceptorManager.m; sourceTree = "<group>"; };
-		5C89689E1BE3284900AC30E6 /* EJBindingVungle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingVungle.h; sourceTree = "<group>"; };
-		5C89689F1BE3284900AC30E6 /* EJBindingVungle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingVungle.m; sourceTree = "<group>"; };
 		5C8968BF1BE32CAE00AC30E6 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		5C8968C01BE32CAE00AC30E6 /* libicucore.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libicucore.tbd; path = usr/lib/libicucore.tbd; sourceTree = SDKROOT; };
 		5C8968C11BE32CAE00AC30E6 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
@@ -323,8 +322,6 @@
 		5C8E340418C4EF40007206AE /* EJBindingSocial.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingSocial.m; sourceTree = "<group>"; };
 		5C8E340518C4EF40007206AE /* EJBindingWebView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingWebView.h; sourceTree = "<group>"; };
 		5C8E340618C4EF40007206AE /* EJBindingWebView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingWebView.m; sourceTree = "<group>"; };
-		5C91E59A18E1AD9B00FCF013 /* EJBindingAdMob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingAdMob.h; sourceTree = "<group>"; };
-		5C91E59B18E1AD9B00FCF013 /* EJBindingAdMob.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingAdMob.m; sourceTree = "<group>"; };
 		5C91E5AA18E1C43A00FCF013 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 		5C91E5AD18E1C45700FCF013 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		5C91E5AF18E1C47F00FCF013 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
@@ -349,6 +346,21 @@
 		5CBFB24F1BF47AC300BF2385 /* GameController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameController.framework; path = System/Library/Frameworks/GameController.framework; sourceTree = SDKROOT; };
 		5CF2A6821BFEE2FE00B7EA09 /* LaunchScreen-Logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "LaunchScreen-Logo.png"; sourceTree = "<group>"; };
 		5CF2A6841BFEE6D700B7EA09 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		5CF6ABAD1C3FED0C009C3CF4 /* AdColony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AdColony.framework; sourceTree = "<group>"; };
+		5CF6ABAF1C3FED0C009C3CF4 /* UnityAds.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = UnityAds.bundle; sourceTree = "<group>"; };
+		5CF6ABB01C3FED0C009C3CF4 /* UnityAds.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = UnityAds.framework; sourceTree = "<group>"; };
+		5CF6ABB51C3FED37009C3CF4 /* EJBindingAdBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingAdBase.h; sourceTree = "<group>"; };
+		5CF6ABB61C3FED37009C3CF4 /* EJBindingAdBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingAdBase.m; sourceTree = "<group>"; };
+		5CF6ABB71C3FED37009C3CF4 /* EJBindingAdColony.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingAdColony.h; sourceTree = "<group>"; };
+		5CF6ABB81C3FED37009C3CF4 /* EJBindingAdColony.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingAdColony.m; sourceTree = "<group>"; };
+		5CF6ABB91C3FED37009C3CF4 /* EJBindingAdMob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingAdMob.h; sourceTree = "<group>"; };
+		5CF6ABBA1C3FED37009C3CF4 /* EJBindingAdMob.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingAdMob.m; sourceTree = "<group>"; };
+		5CF6ABBB1C3FED37009C3CF4 /* EJBindingChartboost.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingChartboost.h; sourceTree = "<group>"; };
+		5CF6ABBC1C3FED37009C3CF4 /* EJBindingChartboost.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingChartboost.m; sourceTree = "<group>"; };
+		5CF6ABBD1C3FED37009C3CF4 /* EJBindingUnityAds.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingUnityAds.h; sourceTree = "<group>"; };
+		5CF6ABBE1C3FED37009C3CF4 /* EJBindingUnityAds.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingUnityAds.m; sourceTree = "<group>"; };
+		5CF6ABBF1C3FED37009C3CF4 /* EJBindingVungle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingVungle.h; sourceTree = "<group>"; };
+		5CF6ABC01C3FED37009C3CF4 /* EJBindingVungle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingVungle.m; sourceTree = "<group>"; };
 		B6074FF215F8E41600D987F9 /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
 		B607AB66132EA6C300D7C3EA /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
 		B607AC32132EA75F00D7C3EA /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
@@ -518,6 +530,7 @@
 				5CBFB2501BF47AC300BF2385 /* GameController.framework in Frameworks */,
 				5C8968E01BE3390D00AC30E6 /* WebKit.framework in Frameworks */,
 				5C8968C41BE32CAE00AC30E6 /* libc++.tbd in Frameworks */,
+				5CF6ABB31C3FED0C009C3CF4 /* UnityAds.framework in Frameworks */,
 				5C8968C51BE32CAE00AC30E6 /* libicucore.tbd in Frameworks */,
 				5C8968C61BE32CAE00AC30E6 /* libsqlite3.tbd in Frameworks */,
 				5C8968C71BE32CAE00AC30E6 /* libstdc++.tbd in Frameworks */,
@@ -533,6 +546,7 @@
 				5C91E5AE18E1C45700FCF013 /* MessageUI.framework in Frameworks */,
 				5C8E33FB18C4EF23007206AE /* Accounts.framework in Frameworks */,
 				5C8E33F918C4EF1D007206AE /* Social.framework in Frameworks */,
+				5CF6ABB11C3FED0C009C3CF4 /* AdColony.framework in Frameworks */,
 				33BE9DE41868183900E0D16E /* MobileCoreServices.framework in Frameworks */,
 				B6D4B283183CF43A008251EB /* CoreLocation.framework in Frameworks */,
 				B60FA92A1702297C00078D20 /* MediaPlayer.framework in Frameworks */,
@@ -667,6 +681,8 @@
 		5C2514851ADAAF9300761DA8 /* lib */ = {
 			isa = PBXGroup;
 			children = (
+				5CF6ABAD1C3FED0C009C3CF4 /* AdColony.framework */,
+				5CF6ABAE1C3FED0C009C3CF4 /* UnityAds */,
 				5C8968CF1BE3387C00AC30E6 /* VungleSDK.embeddedframework */,
 				5C3B72E71ADAD976002A3FB5 /* Chartboost.framework */,
 				5C2514911ADAB0A600761DA8 /* GoogleMobileAds.framework */,
@@ -711,17 +727,12 @@
 		5C8E33FC18C4EF40007206AE /* Extension */ = {
 			isa = PBXGroup;
 			children = (
+				5CF6ABB41C3FED37009C3CF4 /* ad */,
 				5C2514851ADAAF9300761DA8 /* lib */,
-				5C41C1261C3B07E200544CE7 /* EJBindingAdBase.h */,
-				5C41C1271C3B07E200544CE7 /* EJBindingAdBase.m */,
-				5C91E59A18E1AD9B00FCF013 /* EJBindingAdMob.h */,
-				5C91E59B18E1AD9B00FCF013 /* EJBindingAdMob.m */,
 				5C8E33FD18C4EF40007206AE /* EJBindingAlertView.h */,
 				5C8E33FE18C4EF40007206AE /* EJBindingAlertView.m */,
 				5C8E33FF18C4EF40007206AE /* EJBindingAppUtils.h */,
 				5C8E340018C4EF40007206AE /* EJBindingAppUtils.m */,
-				5C49BC8A1ADB6F690063D385 /* EJBindingChartboost.h */,
-				5C49BC881ADB6F2C0063D385 /* EJBindingChartboost.m */,
 				5C631BF919110679009AF7F0 /* EJBindingDecryptorXOR.h */,
 				5C631BFA19110679009AF7F0 /* EJBindingDecryptorXOR.m */,
 				5C8E340118C4EF40007206AE /* EJBindingLocalNotification.h */,
@@ -732,8 +743,6 @@
 				5C8E340418C4EF40007206AE /* EJBindingSocial.m */,
 				5C2387D618CEFBFD00D0CC1A /* EJBindingTimer.h */,
 				5C2387D718CEFBFD00D0CC1A /* EJBindingTimer.m */,
-				5C89689E1BE3284900AC30E6 /* EJBindingVungle.h */,
-				5C89689F1BE3284900AC30E6 /* EJBindingVungle.m */,
 				5C8E340518C4EF40007206AE /* EJBindingWebView.h */,
 				5C8E340618C4EF40007206AE /* EJBindingWebView.m */,
 				5C4D006E1C1C2642003D718B /* EJDeviceUID.h */,
@@ -772,6 +781,34 @@
 				5CBFB24B1BF47A7800BF2385 /* EJBindingGamepadProvider.m */,
 			);
 			path = Gamepad;
+			sourceTree = "<group>";
+		};
+		5CF6ABAE1C3FED0C009C3CF4 /* UnityAds */ = {
+			isa = PBXGroup;
+			children = (
+				5CF6ABAF1C3FED0C009C3CF4 /* UnityAds.bundle */,
+				5CF6ABB01C3FED0C009C3CF4 /* UnityAds.framework */,
+			);
+			path = UnityAds;
+			sourceTree = "<group>";
+		};
+		5CF6ABB41C3FED37009C3CF4 /* ad */ = {
+			isa = PBXGroup;
+			children = (
+				5CF6ABB51C3FED37009C3CF4 /* EJBindingAdBase.h */,
+				5CF6ABB61C3FED37009C3CF4 /* EJBindingAdBase.m */,
+				5CF6ABB71C3FED37009C3CF4 /* EJBindingAdColony.h */,
+				5CF6ABB81C3FED37009C3CF4 /* EJBindingAdColony.m */,
+				5CF6ABB91C3FED37009C3CF4 /* EJBindingAdMob.h */,
+				5CF6ABBA1C3FED37009C3CF4 /* EJBindingAdMob.m */,
+				5CF6ABBB1C3FED37009C3CF4 /* EJBindingChartboost.h */,
+				5CF6ABBC1C3FED37009C3CF4 /* EJBindingChartboost.m */,
+				5CF6ABBD1C3FED37009C3CF4 /* EJBindingUnityAds.h */,
+				5CF6ABBE1C3FED37009C3CF4 /* EJBindingUnityAds.m */,
+				5CF6ABBF1C3FED37009C3CF4 /* EJBindingVungle.h */,
+				5CF6ABC01C3FED37009C3CF4 /* EJBindingVungle.m */,
+			);
+			path = ad;
 			sourceTree = "<group>";
 		};
 		B63D255C16E8DE23007E6034 /* SocketRocket */ = {
@@ -1089,6 +1126,7 @@
 				5CF2A6831BFEE2FE00B7EA09 /* LaunchScreen-Logo.png in Resources */,
 				5C8968D91BE3387C00AC30E6 /* vg_close.png in Resources */,
 				5C8968D81BE3387C00AC30E6 /* __vungle.db in Resources */,
+				5CF6ABB21C3FED0C009C3CF4 /* UnityAds.bundle in Resources */,
 				5C8968DB1BE3387C00AC30E6 /* vg_mute_off.png in Resources */,
 				5C8968DA1BE3387C00AC30E6 /* vg_cta.png in Resources */,
 				5CF2A6851BFEE6D700B7EA09 /* Assets.xcassets in Resources */,
@@ -1128,6 +1166,7 @@
 				B64CE664166682700087CF94 /* EJAudioSourceOpenAL.m in Sources */,
 				B64CE665166682700087CF94 /* EJBindingAudio.m in Sources */,
 				B64CE666166682700087CF94 /* EJOpenALBuffer.m in Sources */,
+				5CF6ABC51C3FED37009C3CF4 /* EJBindingUnityAds.m in Sources */,
 				B64CE667166682700087CF94 /* EJSharedOpenALManager.m in Sources */,
 				B64CE668166682700087CF94 /* EJBindingBase.m in Sources */,
 				B64CE669166682700087CF94 /* EJBindingEjectaCore.m in Sources */,
@@ -1135,8 +1174,9 @@
 				B64CE66B166682700087CF94 /* EAGLView.m in Sources */,
 				B64CE66D166682700087CF94 /* EJBindingImage.m in Sources */,
 				5C8E340B18C4EF40007206AE /* EJBindingAlertView.m in Sources */,
+				5CF6ABC61C3FED37009C3CF4 /* EJBindingVungle.m in Sources */,
 				B64CE675166682700087CF94 /* EJTexture.m in Sources */,
-				5C49BC891ADB6F2C0063D385 /* EJBindingChartboost.m in Sources */,
+				5CF6ABC21C3FED37009C3CF4 /* EJBindingAdColony.m in Sources */,
 				5C631C021911446F009AF7F0 /* EJBindingBaseInterceptor.m in Sources */,
 				B64CE676166682700087CF94 /* EJConvert.m in Sources */,
 				5C8E340E18C4EF40007206AE /* EJBindingSocial.m in Sources */,
@@ -1145,8 +1185,9 @@
 				B64CE67B166682700087CF94 /* EJBindingGameCenter.m in Sources */,
 				5C8E340C18C4EF40007206AE /* EJBindingAppUtils.m in Sources */,
 				5C2C258C1C330540001455E9 /* EJBindingGamepadMotion.m in Sources */,
+				5CF6ABC41C3FED37009C3CF4 /* EJBindingChartboost.m in Sources */,
 				B64CE67C166682700087CF94 /* EJBindingHttpRequest.m in Sources */,
-				5C41C1281C3B07E200544CE7 /* EJBindingAdBase.m in Sources */,
+				5CF6ABC11C3FED37009C3CF4 /* EJBindingAdBase.m in Sources */,
 				33BE9DE2186817D900E0D16E /* EJBindingImagePicker.m in Sources */,
 				B64CE67D166682700087CF94 /* EJBindingLocalStorage.m in Sources */,
 				B64CE67E166682700087CF94 /* EJBindingTouchInput.m in Sources */,
@@ -1189,10 +1230,10 @@
 				B630048C16CB098D0036D8D4 /* EJClassLoader.m in Sources */,
 				B699669816CC4E6E006B9456 /* EJTextureStorage.m in Sources */,
 				B699669B16CC55F5006B9456 /* EJSharedTextureCache.m in Sources */,
-				5C91E59C18E1AD9B00FCF013 /* EJBindingAdMob.m in Sources */,
 				5CBFB24E1BF47A7800BF2385 /* EJBindingGamepadProvider.m in Sources */,
 				B699669E16CC579E006B9456 /* EJSharedOpenGLContext.m in Sources */,
 				B6E02BC016D4110D00616925 /* EJNonRetainingProxy.m in Sources */,
+				5CF6ABC31C3FED37009C3CF4 /* EJBindingAdMob.m in Sources */,
 				B63D256616E8DE23007E6034 /* SRWebSocket.m in Sources */,
 				B63D256D16E8E0EE007E6034 /* EJBindingWebSocket.m in Sources */,
 				B6F629D116F353C800F16BAC /* EJBindingCanvasStyle.m in Sources */,
@@ -1202,7 +1243,6 @@
 				B6D6E0A616F7E81B009AB75F /* EJBindingIAPProduct.m in Sources */,
 				B60FA92817021E0900078D20 /* EJBindingVideo.m in Sources */,
 				5C8E340D18C4EF40007206AE /* EJBindingLocalNotification.m in Sources */,
-				5C8968A01BE3284900AC30E6 /* EJBindingVungle.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1303,6 +1343,7 @@
 					"$(PROJECT_DIR)/Extension/lib",
 					"$(PROJECT_DIR)/Extension/lib/VungleSDK.embeddedframework",
 					"$(PROJECT_DIR)/Source/lib/tvos",
+					"$(PROJECT_DIR)/Extension/lib/UnityAds",
 				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -1341,6 +1382,7 @@
 					"$(PROJECT_DIR)/Extension/lib",
 					"$(PROJECT_DIR)/Extension/lib/VungleSDK.embeddedframework",
 					"$(PROJECT_DIR)/Source/lib/tvos",
+					"$(PROJECT_DIR)/Extension/lib/UnityAds",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Source/Prefix.pch;
