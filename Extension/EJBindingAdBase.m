@@ -25,6 +25,7 @@
 	JSContextRef ctx = scriptView.jsGlobalContext;
 	NSValue *callbackValue = onCallbacks[type];
 	JSValueUnprotectSafe(ctx, callbackValue.pointerValue);
+	[onCallbacks removeObjectForKey:type];
 
 }
 
@@ -38,6 +39,7 @@
 	JSContextRef ctx = scriptView.jsGlobalContext;
 	NSValue *callbackValue = onCallbacks[type];
 	JSValueUnprotectSafe(ctx, callbackValue.pointerValue);
+	[onCallbacks removeObjectForKey:type];
 }
 
 
