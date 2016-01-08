@@ -16,10 +16,10 @@
 
     var id = setInterval(function() {
         console.log("adColony.isReady", adColony.isReady("video", {
-            zone: "vz31b549794672442889"
+            zone: "vzc1be88f0d438475c84"
         }));
         if (adColony.isReady("video", {
-                zone: "vz31b549794672442889"
+                zone: "vzc1be88f0d438475c84"
             })) {
             showAd();
             clearInterval(id);
@@ -29,7 +29,7 @@
     // showAd();
     function showAd() {
         adColony.show("video", {
-            zone: "vz31b549794672442889",
+            zone: "vzc1be88f0d438475c84",
 
             onDisplay: function() {
                 console.log("video onDisplay");
