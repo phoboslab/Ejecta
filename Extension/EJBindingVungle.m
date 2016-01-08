@@ -228,5 +228,9 @@ EJ_BIND_SET(debug, ctx, value)
 
 }
 
+-(BOOL)callLoadAd:(NSString *)type options:(NSDictionary *)options ctx:(JSContextRef)ctx argc:(size_t)argc argv:(const JSValueRef[])argv {
+
+	return true;
+}
 
 @end

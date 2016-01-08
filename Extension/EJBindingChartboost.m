@@ -371,5 +371,25 @@ EJ_BIND_SET(autoLoad, ctx, value)
 	
 }
 
+-(BOOL)callLoadAd:(NSString *)type options:(NSDictionary *)options ctx:(JSContextRef)ctx argc:(size_t)argc argv:(const JSValueRef[])argv {
+	
+	NSString *location = CBLocationDefault;
+	
+	if ([options objectForKey:@"location"]) {
+		location = [options objectForKey:@"location"];
+	}
+	
+	if ([type isEqualToString:@"interstitial"]){
+		[Chartboost cacheInterstitial:location];
+	}else if ([type isEqualToString:@"moreApps"]){
+		[Chartboost cacheMoreApps:location];
+	}else if ([type isEqualToString:@"rewardedVideo"]){
+		[Chartboost cacheRewardedVideo:location];
+	}else{
+		return false;
+	}
+	
+	return true;
+}
 
 @end
