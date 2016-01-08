@@ -61,10 +61,11 @@
 	
 	if (completed){
 		[self triggerEventOnce:@"video_onFinish" argc:1 argv:params];
-	}else{
-		[self triggerEventOnce:@"video_onClose" argc:1 argv:params];
 	}
-
+	[[NSOperationQueue mainQueue] addOperationWithBlock:^{
+		[self triggerEventOnce:@"video_onClose" argc:1 argv:params];
+	}];
+	
 }
 
 - (void)vungleSDKwillCloseProductSheet:(id)productSheet {
