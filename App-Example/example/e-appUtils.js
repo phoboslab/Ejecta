@@ -22,5 +22,5 @@ var hasPingFangLight = appUtils.hasFont("PingFangSC-Light");
 console.log("hasPingFang", hasPingFang, hasPingFangLight);
 
 
-appUtils.eval("function abc(){return 'eval >> app ver : ' + appUtils.ver;}");
+appUtils.eval("function abc(){return 'eval >> app version : ' + appUtils.version;}");
 console.log(abc());
