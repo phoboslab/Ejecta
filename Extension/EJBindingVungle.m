@@ -48,22 +48,22 @@
 //    "playTime":15,"didDownload":false,"videoLength":15,"completedView":true
 	
 	BOOL completed = [[viewInfo objectForKey:@"completedView"] boolValue];
-
-    JSValueRef jsViewInfo = NSObjectToJSValue(scriptView.jsGlobalContext,
-                                               @{
-                                                 @"playTime": [viewInfo objectForKey:@"playTime"],
-                                                 @"videoLength": [viewInfo objectForKey:@"videoLength"],
-                                                 @"completedView": [viewInfo objectForKey:@"completedView"],
-                                                 @"didDownload": [viewInfo objectForKey:@"didDownload"],
-                                                 @"willPresentProductSheet": @(willPresentProductSheet)
-                                                });
-    JSValueRef params[] = { jsViewInfo };
 	
+	JSValueRef jsViewInfo = NSObjectToJSValue(scriptView.jsGlobalContext,@{
+								   @"playTime": [viewInfo objectForKey:@"playTime"],
+								   @"videoLength": [viewInfo objectForKey:@"videoLength"],
+								   @"completedView": [viewInfo objectForKey:@"completedView"],
+								   @"didDownload": [viewInfo objectForKey:@"didDownload"],
+								   @"willPresentProductSheet": @(willPresentProductSheet)
+							   });
+
 	if (completed){
-		[self triggerEventOnce:@"video_onFinish" argc:1 argv:params];
+		JSValueRef jsParams[] = { jsViewInfo };
+		[self triggerEventOnce:@"video_onFinish" argc:1 argv:jsParams];
 	}
 	[[NSOperationQueue mainQueue] addOperationWithBlock:^{
-		[self triggerEventOnce:@"video_onClose" argc:1 argv:params];
+		JSValueRef jsParams[] = { jsViewInfo };
+		[self triggerEventOnce:@"video_onClose" argc:1 argv:jsParams];
 	}];
 	
 }
