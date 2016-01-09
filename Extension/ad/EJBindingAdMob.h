@@ -33,7 +33,7 @@ typedef enum {
 {
 	GADInterstitial *interstitial;
 	GADBannerView *banner;
-	NSString *appId;
+	NSString *adUnitId;
 
 	double bannerX;
 	double bannerY;

@@ -12,7 +12,7 @@
 @protocol GADCustomEventInterstitial;
 
 /// Call back to this delegate in your custom event. You must call
-/// customEventInterstitial:didReceiveAd: when there is an ad to show, or
+/// customEventInterstitialDidReceiveAd: when there is an ad to show, or
 /// customEventInterstitial:didFailAd: when there is no ad to show. Otherwise, if enough time passed
 /// (several seconds) after the SDK called the requestInterstitialAdWithParameter: method of your
 /// custom event, the mediation SDK will consider the request timed out, and move on to the next ad
@@ -33,8 +33,8 @@
 /// server.
 - (void)customEventInterstitialWasClicked:(id<GADCustomEventInterstitial>)customEvent;
 
-/// When you call any of the the following methods, the call will be propagated back to the
-/// GADInterstitialDelegate that you implemented and passed to GADInterstitial.
+// When you call any of the following methods, the call will be propagated back to the
+// GADInterstitialDelegate that you implemented and passed to GADInterstitial.
 
 /// Your Custom Event should call this when the interstitial is being displayed.
 - (void)customEventInterstitialWillPresent:(id<GADCustomEventInterstitial>)customEvent;

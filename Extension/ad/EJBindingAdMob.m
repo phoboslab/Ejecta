@@ -6,10 +6,10 @@
 - (id)initWithContext:(JSContextRef)ctx argc:(size_t)argc argv:(const JSValueRef[])argv {
 	if (self = [super initWithContext:ctx argc:argc argv:argv]) {
 		if (argc > 0) {
-			appId = [JSValueToNSString(ctx, argv[0]) retain];
+			adUnitId = [JSValueToNSString(ctx, argv[0]) retain];
 		}
 		else {
-			NSLog(@"Error: Must set adUnitID");
+			NSLog(@"Error: Must set adUnitId");
 		}
         
         interstitialLoading = false;
@@ -36,7 +36,7 @@
 		banner.delegate = nil;
 		[banner release];
 	}
-	[appId release];
+	[adUnitId release];
 	[super dealloc];
 }
 
@@ -46,7 +46,7 @@
 - (void)initBannerWithView:(EJJavaScriptView *)view {
 	
 	banner = [[GADBannerView alloc] initWithFrame:CGRectZero];
-	banner.adUnitID = appId;
+	banner.adUnitID = adUnitId;
 	banner.delegate = self;
 	banner.hidden = YES;
 	banner.rootViewController = scriptView.window.rootViewController;
@@ -125,25 +125,27 @@
 
 // We've received an ad successfully.
 - (void)adViewDidReceiveAd:(GADBannerView *)adView {
+	NSLog(@"adMob adViewDidReceiveAd");
 	bannerLoading = false;
 	isBannerReady = true;
-	NSLog(@"Received banner AD successfully");
 	[self triggerEventOnce:@"banner_onLoad"];
 }
 
 - (void)adView:(GADBannerView *)view didFailToReceiveAdWithError:(GADRequestError *)error {
+	NSLog(@"adMob didFailToReceiveAdWithError");
 	bannerLoading = false;
 	isBannerReady = false;
-	NSLog(@"Failed to receive banner AD with error: %@", [error localizedFailureReason]);
 	[self triggerEventOnce:@"banner_onFail"];
 }
 
 - (void)adViewDidDismissScreen:(GADBannerView *)adView {
+	NSLog(@"adMob adViewDidDismissScreen");
 	isBannerReady = NO;
 	[self triggerEventOnce:@"banner_onClose"];
 }
 
 - (void)adViewWillLeaveApplication:(GADBannerView *)adView {
+	NSLog(@"adMob adViewWillLeaveApplication");
 	[self triggerEventOnce:@"banner_onClick"];
 }
 
@@ -155,21 +157,22 @@
 	
 	// Create a new GADInterstitial each time.  A GADInterstitial will only show one request in its
 	// lifetime. The property will release the old one and set the new one.
-	interstitial = [[GADInterstitial alloc] initWithAdUnitID:appId];
+	interstitial = [[GADInterstitial alloc] initWithAdUnitID:adUnitId];
 	interstitial.delegate = self;
 	
 	
 	GADRequest *request = [GADRequest request];
 	// Make the request for a test ad. Put in an identifier for the simulator as well as any devices
 	// you want to receive test ads.
-	request.testDevices = @[
-							// TODO: Add your device/simulator test identifiers here. Your device identifier is printed to
-							// the console when the app is launched.
-							kGADSimulatorID,
-							@"7ab1b64b7d167bd4b5ef38c58f925092",
-							@"270a3ec13074818800317013ce006923",
-							@"7eafba728afe41b98d10310ffa9e6e66"
-							];
+//	request.testDevices = @[
+//							// TODO: Add your device/simulator test identifiers here. Your device identifier is printed to
+//							// the console when the app is launched.
+//							kGADSimulatorID,
+//							@"7ab1b64b7d167bd4b5ef38c58f925092",
+//							@"270a3ec13074818800317013ce006923",
+//							@"7eafba728afe41b98d10310ffa9e6e66"
+//							];
+
 	[interstitial loadRequest:request];
 }
 
@@ -177,32 +180,36 @@
 
 
 - (void)interstitialDidReceiveAd:(GADInterstitial *)interstitial {
-    interstitialLoading = false;
-	NSLog(@"Received interstitial AD successfully");
+	NSLog(@"adMob interstitialDidReceiveAd");
+	interstitialLoading = false;
 	[self triggerEventOnce:@"interstitial_onLoad"];
 }
 
 - (void)interstitial:(GADInterstitial *)interstitial didFailToReceiveAdWithError:(GADRequestError *)error {
-    interstitialLoading = false;
+	NSLog(@"adMob didFailToReceiveAdWithError");
 	NSLog(@"Failed to receive interstitial AD with error: %@", [error localizedFailureReason]);
+    interstitialLoading = false;
     [self triggerEventOnce:@"interstitial_onFail"];
 }
 
 
 - (void)interstitialWillPresentScreen:(GADInterstitial *)ad {
+	NSLog(@"adMob interstitialWillPresentScreen");
 	[self triggerEventOnce:@"interstitial_onDisplay"];
 }
 
 
 - (void)interstitialWillDismissScreen:(GADInterstitial *)ad {
-
+	NSLog(@"adMob interstitialWillDismissScreen");
 }
 
 - (void)interstitialDidDismissScreen:(GADInterstitial *)ad {
+	NSLog(@"adMob interstitialDidDismissScreen");
 	[self triggerEventOnce:@"interstitial_onClose"];
 }
 
 - (void)interstitialWillLeaveApplication:(GADInterstitial *)ad {
+	NSLog(@"adMob interstitialWillLeaveApplication");
 	[self triggerEventOnce:@"interstitial_onClick"];
 }
 
@@ -211,9 +218,9 @@
 
 
 
-EJ_BIND_GET(appId, ctx)
+EJ_BIND_GET(adUnitId, ctx)
 {
-	return NSStringToJSValue(ctx, appId);
+	return NSStringToJSValue(ctx, adUnitId);
 }
 
 EJ_BIND_GET(bannerX, ctx)

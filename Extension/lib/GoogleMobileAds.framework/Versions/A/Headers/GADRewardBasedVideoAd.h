@@ -12,23 +12,28 @@
 
 @protocol GADRewardBasedVideoAdDelegate;
 
+/// The GADRewardBasedVideoAd class is used for requesting and presenting a reward based video ad.
+/// This class isn't thread safe.
 @interface GADRewardBasedVideoAd : NSObject
 
 /// Delegate for receiving video notifications.
 @property(nonatomic, weak) id<GADRewardBasedVideoAdDelegate> delegate;
 
 /// Indicates if the receiver is ready to be presented full screen.
-@property(nonatomic, readonly, assign, getter=isReady) BOOL ready;
+@property(nonatomic, readonly, getter=isReady) BOOL ready;
 
-/// Singleton instance.
+/// Returns the shared GADRewardBasedVideoAd instance.
 + (GADRewardBasedVideoAd *)sharedInstance;
 
-/// Initiate the request to fetch the reward based video ad.
+/// Initiates the request to fetch the reward based video ad. The |request| object supplies ad
+/// targeting information and must not be nil. The adUnitID is the ad unit id used for fetching an
+/// ad and must not be nil. The userID is any unique identifier used for identifying the user
+/// interacting with the application and can be nil.
 - (void)loadRequest:(GADRequest *)request
        withAdUnitID:(NSString *)adUnitID
              userID:(NSString *)userID;
 
-/// Present the reward based video ad with provided view controller.
+/// Presents the reward based video ad with the provided view controller.
 - (void)presentFromRootViewController:(UIViewController *)viewController;
 
 @end

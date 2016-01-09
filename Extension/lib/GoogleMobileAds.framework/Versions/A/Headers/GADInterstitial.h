@@ -30,12 +30,10 @@
 @property(nonatomic, readonly, copy) NSString *adUnitID;
 
 /// Optional delegate object that receives state change notifications from this GADInterstitalAd.
-/// Remember to nil this property before deallocating the delegate.
 @property(nonatomic, weak) id<GADInterstitialDelegate> delegate;
 
 /// Optional delegate object that receives in-app purchase notifications from this ad. Required for
 /// the custom in-app purchase flow, but ignored when using the default in-app purchase flow.
-/// Remember to nil this property before deallocating the delegate.
 @property(nonatomic, weak) id<GADInAppPurchaseDelegate> inAppPurchaseDelegate;
 
 #pragma mark Making an Ad Request

@@ -14,8 +14,10 @@
 //! Project version string for GoogleMobileAds.
 FOUNDATION_EXPORT const unsigned char GoogleMobileAdsVersionString[];
 
+// Header files.
 #import <GoogleMobileAds/GoogleMobileAdsDefines.h>
 
+#import <GoogleMobileAds/GADAdDelegate.h>
 #import <GoogleMobileAds/GADAdNetworkExtras.h>
 #import <GoogleMobileAds/GADAdSize.h>
 #import <GoogleMobileAds/GADBannerView.h>

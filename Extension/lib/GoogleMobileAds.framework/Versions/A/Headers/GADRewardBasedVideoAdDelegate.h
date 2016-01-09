@@ -36,6 +36,6 @@
 
 /// Tells the delegate that the reward based video ad has failed to load.
 - (void)rewardBasedVideoAd:(GADRewardBasedVideoAd *)rewardBasedVideoAd
-    didFailToLoadwithError:(NSError *)error;
+    didFailToLoadWithError:(NSError *)error;
 
 @end
