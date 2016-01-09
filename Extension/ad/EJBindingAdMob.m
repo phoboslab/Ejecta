@@ -30,11 +30,13 @@
 	if(interstitial){
 		interstitial.delegate = nil;
 		[interstitial release];
+		interstitial = nil;
 	}
 	if(banner){
 		banner.rootViewController = nil;
 		banner.delegate = nil;
 		[banner release];
+		banner = nil;
 	}
 	[adUnitId release];
 	[super dealloc];
@@ -115,9 +117,9 @@
 	// you want to receive test ads.
 	request.testDevices = @[
 							kGADSimulatorID,
-							@"7ab1b64b7d167bd4b5ef38c58f925092",
-							@"270a3ec13074818800317013ce006923",
-							@"7eafba728afe41b98d10310ffa9e6e66"
+							@"_7ab1b64b7d167bd4b5ef38c58f925092",
+							@"_270a3ec13074818800317013ce006923",
+							@"_7eafba728afe41b98d10310ffa9e6e66"
 							];
 	
 	[banner loadRequest:request];
@@ -132,7 +134,7 @@
 }
 
 - (void)adView:(GADBannerView *)view didFailToReceiveAdWithError:(GADRequestError *)error {
-	NSLog(@"adMob didFailToReceiveAdWithError");
+	NSLog(@"adMob interstitialDidFailToReceiveAdWithError: %@", [error localizedDescription]);
 	bannerLoading = false;
 	isBannerReady = false;
 	[self triggerEventOnce:@"banner_onFail"];
@@ -140,7 +142,8 @@
 
 - (void)adViewDidDismissScreen:(GADBannerView *)adView {
 	NSLog(@"adMob adViewDidDismissScreen");
-	isBannerReady = NO;
+	bannerLoading = false;
+	isBannerReady = false;
 	[self triggerEventOnce:@"banner_onClose"];
 }
 
@@ -152,8 +155,13 @@
 ///////////////////////////////////////
 
 
-- (void)initAndLoadInterstitial {
+- (void)createAndLoadInterstitial {
 	interstitialLoading = true;
+	
+	if(interstitial){
+		interstitial.delegate = nil;
+		[interstitial release];
+	}
 	
 	// Create a new GADInterstitial each time.  A GADInterstitial will only show one request in its
 	// lifetime. The property will release the old one and set the new one.
@@ -164,14 +172,14 @@
 	GADRequest *request = [GADRequest request];
 	// Make the request for a test ad. Put in an identifier for the simulator as well as any devices
 	// you want to receive test ads.
-//	request.testDevices = @[
-//							// TODO: Add your device/simulator test identifiers here. Your device identifier is printed to
-//							// the console when the app is launched.
-//							kGADSimulatorID,
-//							@"7ab1b64b7d167bd4b5ef38c58f925092",
-//							@"270a3ec13074818800317013ce006923",
-//							@"7eafba728afe41b98d10310ffa9e6e66"
-//							];
+	request.testDevices = @[
+							// TODO: Add your device/simulator test identifiers here. Your device identifier is printed to
+							// the console when the app is launched.
+							kGADSimulatorID,
+							@"_7ab1b64b7d167bd4b5ef38c58f925092",
+							@"_270a3ec13074818800317013ce006923",
+							@"_7eafba728afe41b98d10310ffa9e6e66"
+							];
 
 	[interstitial loadRequest:request];
 }
@@ -304,7 +312,7 @@ EJ_BIND_ENUM(type, self.bannerType,
 		}
 		dispatch_after(dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC * 0.25),
 			   dispatch_get_main_queue(), ^{
-				   [self initAndLoadInterstitial];
+				   [self createAndLoadInterstitial];
 			   });
 	}
 
@@ -315,8 +323,8 @@ EJ_BIND_ENUM(type, self.bannerType,
 -(BOOL)callShow:(NSString *)type options:(NSDictionary *)options ctx:(JSContextRef)ctx argc:(size_t)argc argv:(const JSValueRef[])argv {
 	
 	if ([type isEqualToString:@"banner"]){
-		[scriptView bringSubviewToFront:banner];
 		banner.hidden = NO;
+		[scriptView bringSubviewToFront:banner];
 		return true;
 	}else{
 		if (interstitial.isReady) {
@@ -334,7 +342,7 @@ EJ_BIND_ENUM(type, self.bannerType,
 	if ([type isEqualToString:@"banner"]){
 		return isBannerReady;
 	}
-	return interstitial.isReady;
+	return interstitial && interstitial.isReady;
 	
 }
 

@@ -54,7 +54,7 @@
 	while ((keyId = [keys nextObject])) {
 		NSString *key = (NSString *)keyId;
 		NSString *value = (NSString *)[inOptions objectForKey:keyId];
-		NSLog(@"key : %@, value: %@", key, value);
+//		NSLog(@"key : %@, value: %@", key, value);
 		JSStringRef jsKey = JSStringCreateWithUTF8CString([key UTF8String]);
 		JSValueRef jsValue = JSObjectGetProperty(ctx, jsOptions, jsKey, NULL);
 		
