@@ -11,6 +11,7 @@
 		index = indexp;
 		connected = YES;
 		allowsRotation = YES;
+		reportsAbsoluteDpadValues = YES;
 		controller.playerIndex = index;
 		
 		if (controller.motion){
@@ -87,8 +88,8 @@
 	#if TARGET_OS_TV
 		else if( controller.microGamepad ) {
 			GCMicroGamepad *gamepad = controller.microGamepad;
-			gamepad.reportsAbsoluteDpadValues = YES;
-		gamepad.allowsRotation = allowsRotation;
+			gamepad.allowsRotation = allowsRotation;
+			gamepad.reportsAbsoluteDpadValues = reportsAbsoluteDpadValues;
 			mapping[kEJGamepadButtonA] = gamepad.buttonA;
 			mapping[kEJGamepadButtonX] = gamepad.buttonX;
 			mapping[kEJGamepadButtonUp] = gamepad.dpad.up;
@@ -220,19 +221,34 @@ EJ_BIND_SET(exitOnMenuPress, ctx, value) {
 	scriptView.exitOnMenuPress = JSValueToBoolean(ctx, value);
 }
 
+
+#if TARGET_OS_TV
+
 EJ_BIND_GET(allowsRotation, ctx) {
 	return JSValueMakeBoolean(ctx, allowsRotation);
 }
 
 EJ_BIND_SET(allowsRotation, ctx, value) {
-	#if TARGET_OS_TV
 	if( controller.microGamepad ) {
 		allowsRotation = JSValueToBoolean(ctx, value);
 		GCMicroGamepad *gamepad = controller.microGamepad;
 		gamepad.allowsRotation = allowsRotation;
 	}
-	#endif
 }
+
+EJ_BIND_GET(reportsAbsoluteDpadValues, ctx) {
+	return JSValueMakeBoolean(ctx, reportsAbsoluteDpadValues);
+}
+
+EJ_BIND_SET(reportsAbsoluteDpadValues, ctx, value) {
+	if( controller.microGamepad ) {
+		reportsAbsoluteDpadValues = JSValueToBoolean(ctx, value);
+		GCMicroGamepad *gamepad = controller.microGamepad;
+		gamepad.reportsAbsoluteDpadValues = reportsAbsoluteDpadValues;
+	}
+}
+
+#endif
 
 
 static const float g = 9.80665;
