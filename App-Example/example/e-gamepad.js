@@ -22,7 +22,7 @@ console.log("canvas size : ", canvas.width, canvas.height)
 var drawButton = function(button, x, y) {
     context.fillRect(x - 24, y + 24 - 48 * button.value, 48, 48 * button.value);
 
-    context.strokeStyle = button.pressed ?'#a30' : '#222';
+    context.strokeStyle = button.pressed ? '#a30' : '#222';
     context.strokeRect(x - 24, y - 24, 48, 48);
     context.strokeStyle = '#222';
 };
@@ -44,34 +44,46 @@ setInterval(function() {
     context.fillStyle = '#222222';
 
     var tX = 32,
-        tY = canvas.height - 240;
+        tY = canvas.height - 300;
+    var x = null,
+        y = null;
     if (TouchInfo.start) {
-        var x = TouchInfo.start.x;
-        var y = TouchInfo.start.y;
+        x = TouchInfo.start.x;
+        y = TouchInfo.start.y;
         context.fillText('Start: ' + x + " , " + y, tX, tY + 0);
     } else {
         context.fillText('Start: ', tX, tY + 0);
     }
     if (TouchInfo.move) {
-        var x = TouchInfo.move.x;
-        var y = TouchInfo.move.y;
+        x = TouchInfo.move.x;
+        y = TouchInfo.move.y;
         context.fillText('Move: ' + x + " , " + y, tX, tY + 50);
     } else {
         context.fillText('Move: ', tX, tY + 50);
     }
     if (TouchInfo.end) {
-        var x = TouchInfo.end.x;
-        var y = TouchInfo.end.y;
-        context.fillText('End: ' + x + " , " + y, tX, tY + 50 * 2);
+        var endX = TouchInfo.end.x;
+        var endY = TouchInfo.end.y;
+        context.fillText('End: ' + endX + " , " + endY, tX, tY + 50 * 2);
     } else {
         context.fillText('End: ', tX, tY + 50 * 2);
     }
 
-    context.fillText('Motion AG : ' + JSON.stringify(AccelerationGravityInfo), tX, tY + 50 * 3 + 20);
-    context.fillText('Motion A  : ' + JSON.stringify(AccelerationInfo), tX, tY + 50 * 4 + 20);
+    context.fillText('Motion AG : ' + JSON.stringify(AccelerationGravityInfo), tX, tY + 50 * 3 + 30);
+    context.fillText('Motion A  : ' + JSON.stringify(AccelerationInfo), tX, tY + 50 * 4 + 30);
     // console.log(JSON.stringify(gamepad.motion));
     // console.log('Using Gamepad: #' + gamepad.index + ' (' + gamepad.id + ')');
 
+    context.fillStyle = "rgba(100,150,255,0.4)";
+    context.beginPath();
+    if (x !== null && y !== null) {
+        context.arc(x, y, 40, 0, 2 * Math.PI);
+    } else {
+        context.arc(width / 2, height / 2, 40, 0, 2 * Math.PI);
+    }
+    context.closePath();
+    context.fill();
+    context.fillStyle = '#222222';
 
     var gamepads = navigator.getGamepads();
 
