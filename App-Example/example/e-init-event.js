@@ -58,6 +58,8 @@ window.addEventListener("touchend", function(event) {
     }
 });
 
+
+
 var AccelerationGravityInfo = {
     x: 0,
     y: 0,
@@ -68,17 +70,40 @@ var AccelerationInfo = {
     y: 0,
     z: 0,
 };
+var GravityInfo = {
+    x: 0,
+    y: 0,
+    z: 0,
+};
 
 window.addEventListener("devicemotion", function(event) {
-    AccelerationGravityInfo.x = event.accelerationIncludingGravity.x.toFixed(3);
-    AccelerationGravityInfo.y = event.accelerationIncludingGravity.y.toFixed(3);
-    AccelerationGravityInfo.z = event.accelerationIncludingGravity.z.toFixed(3);
+    AccelerationGravityInfo.x = event.accelerationIncludingGravity.x;
+    AccelerationGravityInfo.y = event.accelerationIncludingGravity.y;
+    AccelerationGravityInfo.z = event.accelerationIncludingGravity.z;
 
-	if (event.acceleration){
-		AccelerationInfo.x = event.acceleration.x.toFixed(3);
-		AccelerationInfo.y = event.acceleration.y.toFixed(3);
-		AccelerationInfo.z = event.acceleration.z.toFixed(3);
-	}
+    if (event.acceleration) {
+        AccelerationInfo.x = event.acceleration.x;
+        AccelerationInfo.y = event.acceleration.y;
+        AccelerationInfo.z = event.acceleration.z;
 
-    //  console.log("accelerationIncludingGravity", x, y, z);
+        GravityInfo.x = AccelerationGravityInfo.x - AccelerationInfo.x;
+        GravityInfo.y = AccelerationGravityInfo.y - AccelerationInfo.y;
+        GravityInfo.z = AccelerationGravityInfo.z - AccelerationInfo.z;
+    }
+
+    if (AccelerationGravityInfo.x) {
+        AccelerationGravityInfo.x = AccelerationGravityInfo.x.toFixed(3);
+        AccelerationGravityInfo.y = AccelerationGravityInfo.y.toFixed(3);
+        AccelerationGravityInfo.z = AccelerationGravityInfo.z.toFixed(3);
+    }
+    if (AccelerationInfo.x) {
+        AccelerationInfo.x = AccelerationInfo.x.toFixed(3);
+        AccelerationInfo.y = AccelerationInfo.y.toFixed(3);
+        AccelerationInfo.z = AccelerationInfo.z.toFixed(3);
+    }
+    if (GravityInfo.x) {
+        GravityInfo.x = GravityInfo.x.toFixed(3);
+        GravityInfo.y = GravityInfo.y.toFixed(3);
+        GravityInfo.z = GravityInfo.z.toFixed(3);
+    }
 });
