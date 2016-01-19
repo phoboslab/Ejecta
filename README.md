@@ -24,6 +24,8 @@ The REAMDME of original Ejecta : <https://github.com/phoboslab/Ejecta/blob/maste
   - Chartboost
   - Google AdMob
   - Vungle
+  - UnityAds
+  - AdColony
  - Some new API/Event/Attribute:
   - `load` event of window
   - `unload` event of window
@@ -31,10 +33,13 @@ The REAMDME of original Ejecta : <https://github.com/phoboslab/Ejecta/blob/maste
   - get udid & uuid
   - get system local (= preferredLanguages)
   - get system version
-  - get app version ( = CFBundleVersion)
+  - get app version ( = CFBundleShortVersionString)
+  - get app build ( = CFBundleVersion)
   - check file exists (use `fileExists`)
   - add "eval" function
   - download file to local folder
   - save image/canvas to local folder
+  - some functions about Font
+ - Improve Gamepad
  - Minor improvements
 
