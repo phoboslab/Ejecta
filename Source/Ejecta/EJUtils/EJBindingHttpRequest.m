@@ -285,10 +285,8 @@ EJ_BIND_FUNCTION(send, ctx, argc, argv) {
 	
 	NSLog(@"XHR: %@ %@", method, url);
 	
-	dispatch_semaphore_t syncSem;
 	if( !async ) {
 		NSLog(@"XHR Warning: synchronous requests are depricated. Use asynchronous requests, please.");
-		syncSem = dispatch_semaphore_create(0);
 	}
 	
 	[self triggerEvent:@"loadstart"];
@@ -296,7 +294,8 @@ EJ_BIND_FUNCTION(send, ctx, argc, argv) {
 	state = kEJHttpRequestStateLoading;
 
 	if( !async ) {
-		session = [NSURLSession sharedSession];
+		dispatch_semaphore_t syncSem = dispatch_semaphore_create(0);
+		session = [[NSURLSession sharedSession] retain];
 		[[session dataTaskWithRequest:request
 				completionHandler:^(NSData *data, NSURLResponse *responsep, NSError *error) {
 					state = kEJHttpRequestStateDone;
