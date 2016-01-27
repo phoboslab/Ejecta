@@ -283,27 +283,67 @@ EJ_BIND_FUNCTION(send, ctx, argc, argv) {
 	if( timeout ) {
 		NSTimeInterval timeoutSeconds = (float)timeout/1000.0f;
 		[request setTimeoutInterval:timeoutSeconds];
-	}	
+	}
 	
 	NSLog(@"XHR: %@ %@", method, url);
 	
+	dispatch_semaphore_t syncSem;
 	if( !async ) {
-		NSLog(@"XHR: Warning, synchronous requests are not supported. The request will run asynchronously.");
+		// NSLog(@"XHR: Warning, synchronous requests are not supported. The request will run asynchronously.");
+		NSLog(@"XHR Warning: synchronous requests are depricated. Use asynchronous requests, please.");
+		syncSem = dispatch_semaphore_create(0);
 	}
 	
 	[self triggerEvent:@"loadstart"];
 	
 	state = kEJHttpRequestStateLoading;
-	NSURLSessionConfiguration *configuration = NSURLSessionConfiguration.defaultSessionConfiguration;
-	
-	session = [[NSURLSession sessionWithConfiguration:configuration
-		delegate:self delegateQueue:NSOperationQueue.mainQueue] retain];
-	[[session dataTaskWithRequest:request] resume];
-	[request release];
-	
-	// Protect this request object from garbage collection, as its callback functions
-	// may be the only thing holding on to it
-	JSValueProtect(scriptView.jsGlobalContext, jsObject);
+
+	if( !async ) {
+		session = [NSURLSession sharedSession];
+		[[session dataTaskWithRequest:request
+				completionHandler:^(NSData *data, NSURLResponse *responsep, NSError *error) {
+					state = kEJHttpRequestStateDone;
+					[response release];
+					if (error == NULL){
+						response = (NSHTTPURLResponse *)[responsep retain];
+						if( !responseBody ) {
+							responseBody = [[NSMutableData alloc] initWithCapacity:1024 * 10]; // 10kb
+						}
+						[responseBody appendData:data];
+					}else{
+						if( error.code == kCFURLErrorTimedOut ) {
+							[self triggerEvent:@"timeout"];
+						}
+						else {
+							[self triggerEvent:@"error"];
+						}
+					}
+					[self triggerEvent:@"loadend"];
+					[session release];
+					session = NULL;
+					
+					dispatch_semaphore_signal(syncSem);
+				}] resume];
+		
+		dispatch_semaphore_wait(syncSem, DISPATCH_TIME_FOREVER);
+		[request release];
+
+	}else{
+
+		NSURLSessionConfiguration *configuration = NSURLSessionConfiguration.defaultSessionConfiguration;
+		
+		session = [[NSURLSession sessionWithConfiguration:configuration
+			delegate:self delegateQueue:NSOperationQueue.mainQueue] retain];
+		[[session dataTaskWithRequest:request] resume];
+		[request release];
+		
+		// Protect this request object from garbage collection, as its callback functions
+		// may be the only thing holding on to it
+		JSValueProtect(scriptView.jsGlobalContext, jsObject);
+
+	}
+
+
 	
 	return NULL;
 }
