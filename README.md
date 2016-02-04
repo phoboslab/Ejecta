@@ -1,6 +1,6 @@
 # Ejecta
 
-Ejecta is a fast, open source JavaScript, Canvas & Audio implementation for iOS. Think of it as a Browser that can only display a Canvas element.
+Ejecta is a fast, open source JavaScript, Canvas & Audio implementation for iOS (iPhone, iPod Touch, iPad) and tvOS (Apple TV). Think of it as a Browser that can only display a Canvas element.
 
 More info & Documentation: http://impactjs.com/ejecta
 
