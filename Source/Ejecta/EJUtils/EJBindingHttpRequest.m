@@ -287,61 +287,39 @@ EJ_BIND_FUNCTION(send, ctx, argc, argv) {
 	
 	NSLog(@"XHR: %@ %@", method, url);
 	
-	if( !async ) {
-		NSLog(@"XHR Warning: synchronous requests are depricated. Use asynchronous requests, please.");
-	}
-	
 	[self triggerEvent:@"loadstart"];
-	
 	state = kEJHttpRequestStateLoading;
-
-	if( !async ) {
-		dispatch_semaphore_t syncSem = dispatch_semaphore_create(0);
-		session = [[NSURLSession sharedSession] retain];
-		[[session dataTaskWithRequest:request
-				completionHandler:^(NSData *data, NSURLResponse *responsep, NSError *error) {
-					state = kEJHttpRequestStateDone;
-					[response release];
-					if (error == NULL){
-						response = (NSHTTPURLResponse *)[responsep retain];
-						if( !responseBody ) {
-							responseBody = [[NSMutableData alloc] initWithCapacity:1024 * 10]; // 10kb
-						}
-						[responseBody appendData:data];
-					}else{
-						if( error.code == kCFURLErrorTimedOut ) {
-							[self triggerEvent:@"timeout"];
-						}
-						else {
-							[self triggerEvent:@"error"];
-						}
-					}
-					[self triggerEvent:@"loadend"];
-					[session release];
-					session = NULL;
-					
-					dispatch_semaphore_signal(syncSem);
-				}] resume];
-		
-		dispatch_semaphore_wait(syncSem, DISPATCH_TIME_FOREVER);
-		[request release];
-
-	}else{
-
-		NSURLSessionConfiguration *configuration = NSURLSessionConfiguration.defaultSessionConfiguration;
-		
-		session = [[NSURLSession sessionWithConfiguration:configuration
+	
+	if( async ) {
+		session = [[NSURLSession sessionWithConfiguration:NSURLSessionConfiguration.defaultSessionConfiguration
 			delegate:self delegateQueue:NSOperationQueue.mainQueue] retain];
 		[[session dataTaskWithRequest:request] resume];
-		[request release];
-		
-		// Protect this request object from garbage collection, as its callback functions
-		// may be the only thing holding on to it
-		JSValueProtect(scriptView.jsGlobalContext, jsObject);
-
 	}
-
-
+	else {
+		// For synchronous requests use a semaphore to block the thread until the request is finished
+		dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+		
+		session = [NSURLSession.sharedSession retain];
+		NSURLSessionTask *task = [session dataTaskWithRequest:request
+			completionHandler:^(NSData *data, NSURLResponse *res, NSError *error) {
+				if (data) {
+					responseBody = [[NSMutableData alloc] initWithData:data];
+				}
+				dispatch_semaphore_signal(semaphore);
+			}];
+		[task resume];
+		
+		dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+		
+		
+		[self URLSession:session task:task didCompleteWithError:task.error];
+	}
+	
+	[request release];
+	
+	// Protect this request object from garbage collection, as its callback functions
+	// may be the only thing holding on to it
+	JSValueProtect(scriptView.jsGlobalContext, jsObject);
 	
 	return NULL;
 }
