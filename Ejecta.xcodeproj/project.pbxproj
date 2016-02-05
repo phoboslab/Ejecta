@@ -227,7 +227,6 @@
 		B63D256916E8DF33007E6034 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		B63D256B16E8DFAB007E6034 /* EJBindingWebSocket.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EJBindingWebSocket.h; sourceTree = "<group>"; };
 		B63D256C16E8DFAB007E6034 /* EJBindingWebSocket.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EJBindingWebSocket.m; sourceTree = "<group>"; };
-		B6468005188AB3260087F098 /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = JavaScriptCore.framework; sourceTree = "<group>"; };
 		B64C87A716B80F400097CD5B /* EJGLProgram2D.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EJGLProgram2D.h; sourceTree = "<group>"; };
 		B64C87A816B80F410097CD5B /* EJGLProgram2D.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EJGLProgram2D.m; sourceTree = "<group>"; };
 		B64C87A916B80F450097CD5B /* EJGLProgram2DRadialGradient.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EJGLProgram2DRadialGradient.h; sourceTree = "<group>"; };
@@ -621,7 +620,6 @@
 		B64CE652166682700087CF94 /* lib */ = {
 			isa = PBXGroup;
 			children = (
-				B6468005188AB3260087F098 /* JavaScriptCore.framework */,
 				B63D255C16E8DE23007E6034 /* SocketRocket */,
 			);
 			path = lib;
