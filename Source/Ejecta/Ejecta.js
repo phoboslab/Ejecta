@@ -257,7 +257,7 @@ HTMLElement.prototype.removeEventListener = function(event, method){
 
 // The document object
 window.document = {
-	readystate: 'complete',
+	readyState: 'complete',
 	documentElement: window,
 	location: window.location,
 	visibilityState: 'visible',
