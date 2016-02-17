@@ -37,4 +37,10 @@
 
 #undef EJ_BIND_PX_STYLE
 
+EJ_BIND_ENUM(imageRendering, binding.imageRendering,
+	"auto",			// kEJCanvasImageRenderingAuto,
+	"crisp-edges",	// kEJCanvasImageRenderingCrispEdges,
+	"pixelated"		// kEJCanvasImageRenderingPixelated
+);
+
 @end
