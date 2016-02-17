@@ -393,6 +393,7 @@ var touchInput = null;
 var touchEvent = {
 	type: 'touchstart',
 	target: window.canvas,
+	currentTarget: window.canvas,
 	touches: null,
 	targetTouches: null,
 	changedTouches: null,
@@ -425,6 +426,7 @@ var deviceMotion = null;
 var deviceMotionEvent = {
 	type: 'devicemotion',
 	target: window.canvas,
+	currentTarget: window.canvas,
 	interval: 16,
 	acceleration: {x: 0, y: 0, z: 0},
 	accelerationIncludingGravity: {x: 0, y: 0, z: 0},
@@ -436,6 +438,7 @@ var deviceMotionEvent = {
 var deviceOrientationEvent = {
 	type: 'deviceorientation',
 	target: window.canvas,
+	currentTarget: window.canvas,
 	alpha: null,
 	beta: null,
 	gamma: null,
@@ -496,6 +499,7 @@ var windowEvents = null;
 var lifecycleEvent = {
 	type: 'pagehide',
 	target: window.document,
+	currentTarget: window.document,
 	preventDefault: function(){},
 	stopPropagation: function(){}
 };
@@ -503,6 +507,7 @@ var lifecycleEvent = {
 var resizeEvent = {
 	type: 'resize',
 	target: window,
+	currentTarget: window,
 	preventDefault: function(){},
 	stopPropagation: function(){}
 };
@@ -510,6 +515,7 @@ var resizeEvent = {
 var visibilityEvent = {
 	type: 'visibilitychange',
 	target: window.document,
+	currentTarget: window.document,
 	preventDefault: function(){},
 	stopPropagation: function(){}
 };
