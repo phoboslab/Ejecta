@@ -40,7 +40,7 @@ typedef struct {
 	NSMutableDictionary *onCallbacks; // for on* setters
 }
 
-- (JSObjectRef)getCallbackWithType:(NSString *)type ctx:(JSContextRef)ctx;
+- (JSValueRef)getCallbackWithType:(NSString *)type ctx:(JSContextRef)ctx;
 - (void)setCallbackWithType:(NSString *)type ctx:(JSContextRef)ctx callback:(JSValueRef)callback;
 - (void)triggerEvent:(NSString *)type argc:(int)argc argv:(JSValueRef[])argv;
 - (void)triggerEvent:(NSString *)type properties:(JSEventProperty[])properties;

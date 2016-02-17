@@ -4,6 +4,7 @@
 
 @implementation EJCanvasContextWebGLScreen
 @synthesize style;
+@synthesize view = glview;
 
 - (void)dealloc {
 	[glview removeFromSuperview];

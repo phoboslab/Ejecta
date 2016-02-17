@@ -16,6 +16,12 @@ typedef enum {
 	kEJCanvasContextModeWebGL
 } EJCanvasContextMode;
 
+typedef enum {
+	kEJCanvasImageRenderingAuto,
+	kEJCanvasImageRenderingCrispEdges,
+	kEJCanvasImageRenderingPixelated
+} EJCanvasImageRendering;
+
 @interface EJBindingCanvas : EJBindingEventedBase <EJDrawable> {
 	JSObjectRef jsCanvasContext;
 	EJCanvasContext *renderingContext;
@@ -23,11 +29,13 @@ typedef enum {
 	short width, height;
 	
 	EJBindingCanvasStyle *styleObject;
+	EJCanvasImageRendering imageRendering;
 	CGRect style;
 	
 	BOOL isScreenCanvas;
 }
 
+@property (nonatomic) EJCanvasImageRendering imageRendering;
 @property (nonatomic) float styleLeft;
 @property (nonatomic) float styleTop;
 @property (nonatomic) float styleWidth;

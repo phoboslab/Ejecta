@@ -4,6 +4,7 @@
 
 @implementation EJCanvasContext2DScreen
 @synthesize style;
+@synthesize view = glview;
 
 - (void)dealloc {
 	[glview removeFromSuperview];
