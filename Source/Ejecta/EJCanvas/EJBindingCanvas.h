@@ -1,4 +1,4 @@
-#import "EJBindingEventedBase.h"
+#import "EJBindingBase.h"
 #import "EJTexture.h"
 #import "EJDrawable.h"
 #import "EJCanvasContext.h"
@@ -22,7 +22,7 @@ typedef enum {
 	kEJCanvasImageRenderingPixelated
 } EJCanvasImageRendering;
 
-@interface EJBindingCanvas : EJBindingEventedBase <EJDrawable> {
+@interface EJBindingCanvas : EJBindingBase <EJDrawable> {
 	JSObjectRef jsCanvasContext;
 	EJCanvasContext *renderingContext;
 	EJCanvasContextMode contextMode;
