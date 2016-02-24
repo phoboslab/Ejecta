@@ -331,6 +331,9 @@ EJ_BIND_GET(currentTime, ctx) {
 EJ_BIND_SET(currentTime, ctx, value) {
 	[self load];
 	source.currentTime = JSValueToNumberFast(ctx, value);
+	if( source.currentTime < source.duration ) {
+		ended = false;
+	}
 }
 
 EJ_BIND_GET(src, ctx) {
