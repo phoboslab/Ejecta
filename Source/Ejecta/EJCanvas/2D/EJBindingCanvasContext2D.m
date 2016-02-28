@@ -29,7 +29,9 @@
 EJ_BIND_ENUM(globalCompositeOperation, renderingContext.globalCompositeOperation,
 	"source-over",		// kEJCompositeOperationSourceOver
 	"lighter",			// kEJCompositeOperationLighter
+	"lighten",			// kEJCompositeOperationLighten
 	"darker",			// kEJCompositeOperationDarker
+	"darken",			// kEJCompositeOperationDarken
 	"destination-out",	// kEJCompositeOperationDestinationOut
 	"destination-over",	// kEJCompositeOperationDestinationOver
 	"source-atop",		// kEJCompositeOperationSourceAtop
