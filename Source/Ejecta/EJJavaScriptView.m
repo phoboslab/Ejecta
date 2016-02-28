@@ -362,6 +362,11 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 - (void)run:(CADisplayLink *)sender {
 	if(isPaused) { return; }
 	
+	// Check for lost gl context before invoking any JS calls
+	if( glCurrentContext && EAGLContext.currentContext != glCurrentContext ) {
+		EAGLContext.currentContext = glCurrentContext;
+	}
+	
 	// We rather poll for device motion updates at the beginning of each frame instead of
 	// spamming out updates that will never be seen.
 	[deviceMotionDelegate triggerDeviceMotionEvents];
