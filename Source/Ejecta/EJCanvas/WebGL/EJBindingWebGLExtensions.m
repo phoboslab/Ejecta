@@ -8,7 +8,8 @@ const EJWebGLExtensionName EJWebGLExtensions[] = {
 	{"OES_texture_half_float", "GL_OES_texture_half_float"},
 	{"OES_texture_half_float_linear", "GL_OES_texture_half_float_linear"},
 	{"OES_standard_derivatives", "GL_OES_standard_derivatives"},
-	{"OES_vertex_array_object", "GL_OES_vertex_array_object"}
+	{"OES_vertex_array_object", "GL_OES_vertex_array_object"},
+	{"ANGLE_instanced_arrays", "EXT_instanced_arrays"}
 };
 
 const int EJWebGLExtensionsCount = sizeof(EJWebGLExtensions) / sizeof(EJWebGLExtensionName);
@@ -102,7 +103,34 @@ EJ_BIND_FUNCTION(bindVertexArrayOES, ctx, argc, argv) {
 	return NULL;
 }
 
-// Constants
 EJ_BIND_CONST_GL(VERTEX_ARRAY_BINDING_OES);
 
 @end
+
+
+
+@implementation EJBindingWebGLExtensionANGLE_instanced_arrays
+
+EJ_BIND_FUNCTION(drawArraysInstancedANGLE, ctx, argc, argv) {
+	EJ_UNPACK_ARGV(GLenum mode, GLint first, GLsizei count, GLsizei instanceCount);
+	glDrawArraysInstancedEXT(mode, first, count, instanceCount);
+	return NULL;
+}
+
+EJ_BIND_FUNCTION(drawElementsInstancedANGLE, ctx, argc, argv) {
+	EJ_UNPACK_ARGV(GLenum mode, GLsizei count, GLenum type, GLint indices, GLsizei instanceCount);
+	glDrawElementsInstancedEXT(mode, count, type, EJ_BUFFER_OFFSET(indices), instanceCount);
+	return NULL;
+}
+
+EJ_BIND_FUNCTION(vertexAttribDivisorANGLE, ctx, argc, argv) {
+	EJ_UNPACK_ARGV(GLuint index, GLuint divisor);
+	glVertexAttribDivisorEXT(index, divisor);
+	return NULL;
+}
+
+EJ_BIND_CONST(VERTEX_ATTRIB_ARRAY_DIVISOR_ANGLE, GL_VERTEX_ATTRIB_ARRAY_DIVISOR_EXT);
+
+@end
+
+
