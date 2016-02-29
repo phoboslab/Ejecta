@@ -204,17 +204,21 @@ HTMLElement = function( tagName ){
 HTMLElement.prototype.appendChild = function( element ) {
 	this.children.push( element );
 	
-	// If the child is a script element, begin to load it
+	// If the child is a script element, begin to load it or execute it
 	if( element.tagName && element.tagName.toLowerCase() == 'script' ) {
-		ej.setTimeout( function(){
-			ej.include( element.src );
-			if( element.onload ) {
-				element.onload({
-					type: 'load',
-					currentTarget: element
-				});
-			}
-		}, 1);
+		if ( element.src ) {
+			ej.setTimeout( function(){
+				ej.include( element.src );
+				if( element.onload ) {
+					element.onload({
+						type: 'load',
+						currentTarget: element
+					});
+				}
+			}, 1);
+		} else if( element.text ) {
+			window.eval( element.text );
+		}
 	}
 };
 

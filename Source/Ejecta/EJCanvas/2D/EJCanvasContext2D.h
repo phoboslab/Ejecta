@@ -42,6 +42,7 @@ typedef enum {
 typedef enum {
 	kEJCompositeOperationSourceOver,
 	kEJCompositeOperationLighter,
+	kEJCompositeOperationLighten,
 	kEJCompositeOperationDarker,
 	kEJCompositeOperationDarken,
 	kEJCompositeOperationDestinationOut,

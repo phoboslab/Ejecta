@@ -218,7 +218,7 @@ EJ_BIND_FUNCTION(getExtension, ctx, argc, argv) {
 	}
 	
 	if( !extensionAvialable ) {
-		return NULL;
+		return JSValueMakeNull(ctx);
 	}
 	
 	// Construct the extension binding and return it
@@ -232,7 +232,7 @@ EJ_BIND_FUNCTION(getExtension, ctx, argc, argv) {
 		JSValueProtect(ctx, jsExtension);
 		return jsExtension;
 	}
-	return NULL;
+	return JSValueMakeNull(ctx);
 }
 
 EJ_BIND_FUNCTION(activeTexture, ctx, argc, argv) {

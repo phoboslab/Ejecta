@@ -10,6 +10,7 @@
 const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
 	[kEJCompositeOperationSourceOver] = {GL_ONE, GL_ONE_MINUS_SRC_ALPHA, 1},
 	[kEJCompositeOperationLighter] = {GL_ONE, GL_ONE_MINUS_SRC_ALPHA, 0},
+	[kEJCompositeOperationLighten] = {GL_ONE, GL_ONE_MINUS_SRC_ALPHA, 0},
 	[kEJCompositeOperationDarker] = {GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA, 1},
 	[kEJCompositeOperationDarken] = {GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA, 1},
 	[kEJCompositeOperationDestinationOut] = {GL_ZERO, GL_ONE_MINUS_SRC_ALPHA, 1},
@@ -534,18 +535,6 @@ const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
 }
 
 - (void)setGlobalCompositeOperation:(EJCompositeOperation)op {
-	// Same composite operation or switching between SourceOver <> Lighter? We don't
-	// have to flush and set the blend mode then, but we still need to update the state,
-	// as the alphaFactor may be different.
-	if(
-		op == state->globalCompositeOperation ||
-		(op == kEJCompositeOperationLighter && state->globalCompositeOperation == kEJCompositeOperationSourceOver) ||
-		(op == kEJCompositeOperationSourceOver && state->globalCompositeOperation == kEJCompositeOperationLighter)
-	) {
-		state->globalCompositeOperation = op;
-		return;
-	}
-	
 	[self flushBuffers];
 	glBlendFunc( EJCompositeOperationFuncs[op].source, EJCompositeOperationFuncs[op].destination );
 	state->globalCompositeOperation = op;
