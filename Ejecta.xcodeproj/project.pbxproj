@@ -1298,6 +1298,11 @@
 					};
 					5CAE53271C2C240C00FA70DD = {
 						DevelopmentTeam = VGH3FADBFA;
+						SystemCapabilities = {
+							com.apple.GameControllers.appletvos = {
+								enabled = 1;
+							};
+						};
 					};
 					5CF6ABC71C402FCD009C3CF4 = {
 						DevelopmentTeam = VGH3FADBFA;
