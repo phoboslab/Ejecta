@@ -28,6 +28,7 @@
                             @"iPad3,4", @"iPad3,5", @"iPad3,6",              // iPad 4
                             @"iPad4,1", @"iPad4,2", @"iPad4,3",              // iPad Air
                             @"iPad5,3", @"iPad5,4",                          // iPad Air 2
+                            @"iPad6,3", @"iPad6,4",                          // iPad Air 2
                             ],
                     @"dotsPerCentimeter":  @104.0f,
                     @"dotsPerInch":       @264.0f},
@@ -83,6 +84,7 @@
                             @"iPhone5,1", @"iPhone5,2",                      // iPhone 5
                             @"iPhone5,3", @"iPhone5,4",                      // iPhone 5C
                             @"iPhone6,1", @"iPhone6,2",                      // iPhone 5S
+                            @"iPhone8,4",                                    // iPhone SE
                             ],
                     @"dotsPerCentimeter":  @128.0f,
                     @"dotsPerInch":       @326.0f},
@@ -141,6 +143,7 @@
 EJ_BIND_GET(dpi, ctx) {
     return JSValueMakeNumber(ctx, dotsPerInch);
 }
+
 EJ_BIND_GET(dpc, ctx) {
     return JSValueMakeNumber(ctx, dotsPerCentimeter);
 }
