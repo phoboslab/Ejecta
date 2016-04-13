@@ -27,11 +27,8 @@
 
 /// Initiates the request to fetch the reward based video ad. The |request| object supplies ad
 /// targeting information and must not be nil. The adUnitID is the ad unit id used for fetching an
-/// ad and must not be nil. The userID is any unique identifier used for identifying the user
-/// interacting with the application and can be nil.
-- (void)loadRequest:(GADRequest *)request
-       withAdUnitID:(NSString *)adUnitID
-             userID:(NSString *)userID;
+/// ad and must not be nil.
+- (void)loadRequest:(GADRequest *)request withAdUnitID:(NSString *)adUnitID;
 
 /// Presents the reward based video ad with the provided view controller.
 - (void)presentFromRootViewController:(UIViewController *)viewController;

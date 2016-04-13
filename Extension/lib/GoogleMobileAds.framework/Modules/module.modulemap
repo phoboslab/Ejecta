@@ -13,6 +13,7 @@ framework module GoogleMobileAds {
   link framework "EventKit"
   link framework "EventKitUI"
   link framework "Foundation"
+  link framework "MediaPlayer"
   link framework "MessageUI"
   link framework "StoreKit"
   link framework "SystemConfiguration"
@@ -33,6 +34,8 @@ framework module GoogleMobileAds {
   header "GADInterstitial.h"
   header "GADInterstitialDelegate.h"
   header "GADMobileAds.h"
+  header "GADNativeExpressAdView.h"
+  header "GADNativeExpressAdViewDelegate.h"
   header "GADRequest.h"
   header "GADRequestError.h"
 
@@ -73,6 +76,7 @@ framework module GoogleMobileAds {
   header "GADMediatedNativeAppInstallAd.h"
   header "GADMediatedNativeContentAd.h"
 
+  header "GADDynamicHeightSearchRequest.h"
   header "GADSearchBannerView.h"
   header "GADSearchRequest.h"
 

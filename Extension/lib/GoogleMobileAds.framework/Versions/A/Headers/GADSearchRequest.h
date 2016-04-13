@@ -42,16 +42,16 @@ typedef NS_ENUM(NSUInteger, GADSearchCallButtonColor) {
 @property(nonatomic, copy) NSString *customChannels;
 @property(nonatomic, assign) GADSearchCallButtonColor callButtonColor;
 
-// A solid background color for rendering the ad. The background of the ad
-// can either be a solid color, or a gradient, which can be specified through
-// setBackgroundGradientFrom:toColor: method. If both solid and gradient
-// background is requested, only the latter is considered.
+/// A solid background color for rendering the ad. The background of the ad
+/// can either be a solid color, or a gradient, which can be specified through
+/// setBackgroundGradientFrom:toColor: method. If both solid and gradient
+/// background is requested, only the latter is considered.
 - (void)setBackgroundSolid:(UIColor *)color;
 
-// A linear gradient background color for rendering the ad. The background of
-// the ad can either be a linear gradient, or a solid color, which can be
-// specified through setBackgroundSolid method. If both solid and gradient
-// background is requested, only the latter is considered.
+/// A linear gradient background color for rendering the ad. The background of
+/// the ad can either be a linear gradient, or a solid color, which can be
+/// specified through setBackgroundSolid method. If both solid and gradient
+/// background is requested, only the latter is considered.
 - (void)setBackgroundGradientFrom:(UIColor *)from toColor:(UIColor *)toColor;
 
 @end

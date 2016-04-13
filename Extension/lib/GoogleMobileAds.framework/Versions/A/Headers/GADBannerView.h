@@ -38,12 +38,12 @@
 
 #pragma mark Initialization
 
-/// Initializes a GADBannerView and sets it to the specified size, and specifies its placement
-/// within its superview bounds. Returns nil if |adSize| is an invalid ad size.
+/// Initializes and returns a banner view with the specified ad size and origin relative to the
+/// banner's superview.
 - (instancetype)initWithAdSize:(GADAdSize)adSize origin:(CGPoint)origin;
 
-/// Initializes a GADBannerView and sets it to the specified size, and specifies its placement at
-/// the top left of its superview. Returns nil if |adSize| is an invalid ad size.
+/// Initializes and returns a banner view with the specified ad size placed at its superview's
+/// origin.
 - (instancetype)initWithAdSize:(GADAdSize)adSize;
 
 #pragma mark Pre-Request

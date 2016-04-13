@@ -30,6 +30,16 @@
                              options:(NSArray *)options
                   rootViewController:(UIViewController *)rootViewController;
 
+/// Indicates if the custom event handles user clicks. Return YES if the custom event should handle
+/// user clicks. In this case Google Mobile Ads SDK doesn't track user click and the custom event
+/// should notify the click to Google Mobile Ads SDK using method
+/// + [GADMediatedNativeAdNotificationSource mediatedNativeAdDidRecordClick:]. Return NO if the
+/// custom event doesn't handles user clicks. In this case Google Mobile Ads SDK does tracks user
+/// clicks and the custom event is notified about the user clicks using method
+/// - [GADMediatedNativeAdDelegate
+/// mediatedNativeAd:didRecordClickOnAssetWithName:view:viewController:].
+- (BOOL)handlesUserClicks;
+
 /// The delegate object, used for receiving custom native ad load request progress.
 @property(nonatomic, weak) id<GADCustomEventNativeAdDelegate> delegate;
 
