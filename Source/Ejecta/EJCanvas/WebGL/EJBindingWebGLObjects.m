@@ -20,11 +20,11 @@
 	[super dealloc];
 }
 
-+ (GLuint)indexFromJSValue:(JSValueRef)value {
++ (GLint)indexFromJSValue:(JSValueRef)value {
 	if( !value ) { return 0; }
 	
 	EJBindingWebGLObject *binding = (EJBindingWebGLObject *)JSValueGetPrivate(value);
-	return (binding && [binding isKindOfClass:[self class]]) ? binding->index : 0;
+	return (binding && [binding isKindOfClass:[self class]]) ? binding->index : -1;
 }
 
 + (EJBindingWebGLObject *)webGLObjectFromJSValue:(JSValueRef)value {
