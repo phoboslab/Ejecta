@@ -1,5 +1,8 @@
 #import "EJCanvasContext.h"
 
+#define EJ_WEBGL_DEFAULT_FRAMEBUFFER -1
+#define EJ_WEBGL_DEFAULT_RENDERBUFFER -1
+
 @class EJJavaScriptView;
 @interface EJCanvasContextWebGL : EJCanvasContext {
 	GLuint viewFrameBuffer, viewRenderBuffer;
@@ -13,8 +16,8 @@
 
 - (id)initWithScriptView:(EJJavaScriptView *)scriptView width:(short)width height:(short)height;
 - (void)resizeAuxiliaryBuffers;
-- (void)bindFramebuffer:(GLuint)framebuffer toTarget:(GLuint)target;
-- (void)bindRenderbuffer:(GLuint)framebuffer toTarget:(GLuint)target;
+- (void)bindFramebuffer:(GLint)framebuffer toTarget:(GLuint)target;
+- (void)bindRenderbuffer:(GLint)renderbuffer toTarget:(GLuint)target;
 - (void)create;
 - (void)prepare;
 - (void)clear;

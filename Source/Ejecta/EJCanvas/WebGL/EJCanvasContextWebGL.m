@@ -119,17 +119,17 @@
 	glClearColor(c[0], c[1], c[2], c[3]);
 }
 
-- (void)bindFramebuffer:(GLuint)framebuffer toTarget:(GLuint)target {
-	if( framebuffer == 0 ) {
+- (void)bindFramebuffer:(GLint)framebuffer toTarget:(GLuint)target {
+	if( framebuffer == EJ_WEBGL_DEFAULT_FRAMEBUFFER ) {
 		framebuffer = msaaEnabled ? msaaFrameBuffer : viewFrameBuffer;
-		[self bindRenderbuffer:0 toTarget:GL_RENDERBUFFER];
+		[self bindRenderbuffer:EJ_WEBGL_DEFAULT_RENDERBUFFER toTarget:GL_RENDERBUFFER];
 	}
 	glBindFramebuffer(target, framebuffer);
 	boundFrameBuffer = framebuffer;
 }
 
-- (void)bindRenderbuffer:(GLuint)renderbuffer toTarget:(GLuint)target {
-	if( renderbuffer == 0 ) {
+- (void)bindRenderbuffer:(GLint)renderbuffer toTarget:(GLuint)target {
+	if( renderbuffer == EJ_WEBGL_DEFAULT_RENDERBUFFER ) {
 		renderbuffer = msaaEnabled ? msaaRenderBuffer : viewRenderBuffer;
 	}
 	glBindRenderbuffer(target, renderbuffer);

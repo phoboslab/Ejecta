@@ -31,7 +31,7 @@ typedef enum {
 	BOOL connected;
 	BOOL allowsRotation;
 	BOOL reportsAbsoluteDpadValues;
-
+	
 	JSObjectRef jsAxes;
 	JSObjectRef jsButtons;
 }
