@@ -45,3 +45,6 @@ extern const int EJWebGLExtensionsCount;
 @interface EJBindingWebGLExtensionANGLE_instanced_arrays : EJBindingWebGLExtension
 @end;
 
+@interface EJBindingWebGLExtensionOES_element_index_uint : EJBindingWebGLExtension
+@end;
+

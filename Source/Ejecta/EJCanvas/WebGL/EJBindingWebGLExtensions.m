@@ -9,7 +9,8 @@ const EJWebGLExtensionName EJWebGLExtensions[] = {
 	{"OES_texture_half_float_linear", "GL_OES_texture_half_float_linear"},
 	{"OES_standard_derivatives", "GL_OES_standard_derivatives"},
 	{"OES_vertex_array_object", "GL_OES_vertex_array_object"},
-	{"ANGLE_instanced_arrays", "EXT_instanced_arrays"}
+	{"ANGLE_instanced_arrays", "EXT_instanced_arrays"},
+	{"OES_element_index_uint", "GL_OES_element_index_uint"}
 };
 
 const int EJWebGLExtensionsCount = sizeof(EJWebGLExtensions) / sizeof(EJWebGLExtensionName);
@@ -131,6 +132,9 @@ EJ_BIND_FUNCTION(vertexAttribDivisorANGLE, ctx, argc, argv) {
 
 EJ_BIND_CONST(VERTEX_ATTRIB_ARRAY_DIVISOR_ANGLE, GL_VERTEX_ATTRIB_ARRAY_DIVISOR_EXT);
 
+@end
+
+@implementation EJBindingWebGLExtensionOES_element_index_uint
 @end
 
 
