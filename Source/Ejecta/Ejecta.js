@@ -455,21 +455,24 @@ var deviceOrientationEvent = {
 eventInit.deviceorientation = eventInit.devicemotion = function() {
 	// if( deviceMotion ) { return; }
 
- 	if (!deviceMotion && Ejecta.DeviceMotion){
-		deviceMotion = new Ejecta.DeviceMotion();
+	var interval = 0;
+
+	if (!deviceMotion && Ejecta.DeviceMotion) {
+	    deviceMotion = new Ejecta.DeviceMotion();
+	    interval = deviceMotion.interval;
 	}
- 	if (!gamepadMotion && Ejecta.GamepadMotion) {
-		gamepadMotion = new Ejecta.GamepadMotion();
+	if (!gamepadMotion && Ejecta.GamepadMotion) {
+	    gamepadMotion = new Ejecta.GamepadMotion();
+	    interval = interval || gamepadMotion.interval;
 	}
 
- 	deviceMotionEvent.interval = (deviceMotion || gamepadMotion).interval;
+	var _deviceMotion = deviceMotion || {};
+	var _gamepadMotion = gamepadMotion || {};
 
-	if( !deviceMotion ) { deviceMotion = {} }
-	if( !gamepadMotion ) { gamepadMotion = {} }
-
+	deviceMotionEvent.interval = interval || deviceMotionEvent.interval;
 
 	// Callback for Devices that have a Gyro
-	deviceMotion.ondevicemotion = gamepadMotion.ondevicemotion = function( agx, agy, agz, ax, ay, az, rx, ry, rz, ox, oy, oz ) {
+	_deviceMotion.ondevicemotion = _gamepadMotion.ondevicemotion = function( agx, agy, agz, ax, ay, az, rx, ry, rz, ox, oy, oz ) {
 		deviceMotionEvent.accelerationIncludingGravity.x = agx;
 		deviceMotionEvent.accelerationIncludingGravity.y = agy;
 		deviceMotionEvent.accelerationIncludingGravity.z = agz;
@@ -493,7 +496,7 @@ eventInit.deviceorientation = eventInit.devicemotion = function() {
 	};
 	
 	// Callback for Devices that only have an accelerometer
-	deviceMotion.onacceleration = gamepadMotion.onacceleration = function( agx, agy, agz ) {
+	_deviceMotion.onacceleration = _gamepadMotion.onacceleration = function( agx, agy, agz ) {
 		deviceMotionEvent.accelerationIncludingGravity.x = agx;
 		deviceMotionEvent.accelerationIncludingGravity.y = agy;
 		deviceMotionEvent.accelerationIncludingGravity.z = agz;
