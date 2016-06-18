@@ -12,6 +12,7 @@ double JSValueToNumberFast( JSContextRef ctx, JSValueRef v );
 void JSValueUnprotectSafe( JSContextRef ctx, JSValueRef v );
 JSValueRef NSObjectToJSValue( JSContextRef ctx, NSObject *obj );
 NSObject *JSValueToNSObject( JSContextRef ctx, JSValueRef value );
+void *JSValueGetTypedArrayPtr( JSContextRef ctx, JSValueRef value, size_t *length );
 
 static inline void *JSValueGetPrivate(JSValueRef v) {
 	// On 64bit systems we can not safely call JSObjectGetPrivate with any

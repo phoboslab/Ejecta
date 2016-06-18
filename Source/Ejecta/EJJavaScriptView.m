@@ -2,7 +2,6 @@
 #import "EJTimer.h"
 #import "EJBindingBase.h"
 #import "EJClassLoader.h"
-#import "EJConvertTypedArray.h"
 #import <objc/runtime.h>
 
 
@@ -94,9 +93,6 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
     
     // Attach all native class constructors to 'Ejecta'
     classLoader = [[EJClassLoader alloc] initWithScriptView:self name:@"Ejecta"];
-	
-	// Prepare Typed Array clusterfuck
-	JSContextPrepareTypedArrayAPI(jsGlobalContext);
 	
     
     // Retain the caches here, so even if they're currently unused in JavaScript,

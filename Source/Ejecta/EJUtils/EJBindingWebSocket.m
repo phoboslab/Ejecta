@@ -1,5 +1,4 @@
 #import "EJBindingWebSocket.h"
-#import "EJConvertTypedArray.h"
 
 @implementation EJBindingWebSocket
 
@@ -79,7 +78,9 @@
 		NSData *data = (NSData *)message;
 		
 		if( binaryType == kEJWebSocketBinaryTypeArrayBuffer ) {
-			jsMessage = JSObjectMakeTypedArrayWithData(ctx, kJSTypedArrayTypeArrayBuffer, data);
+			JSObjectRef array = JSObjectMakeTypedArray(ctx, kJSTypedArrayTypeUint8Array, data.length, NULL);
+			memcpy(JSObjectGetTypedArrayBytesPtr(ctx, array, NULL), data.bytes, data.length);
+			jsMessage = JSObjectGetTypedArrayBuffer(ctx, array, NULL);
 		}
 		else if( binaryType == kEJWebSocketBinaryTypeBlob ) {
 			NSLog(@"WebSocket Error: binaryType='blob' is not supported. Use 'arraybuffer' instead.");
@@ -148,9 +149,10 @@ EJ_BIND_FUNCTION(send, ctx, argc, argv) {
 	
 	// Try TypedArray
 	else if( JSValueIsObject(ctx, argv[0]) ) {
-		NSData *data = JSObjectGetTypedArrayData(ctx, (JSObjectRef)argv[0]);
+		size_t length = 0;
+		void *data = JSValueGetTypedArrayPtr(ctx, argv[0], &length);
 		if( data ) {
-			[socket send:data];
+			[socket send:[NSData dataWithBytes:data length:length]];
 		}
 		else {
 			NSLog(@"WebSocket Error: Can't send message that is neither String, ArrayBuffer or ArrayBufferView.");

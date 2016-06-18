@@ -1,5 +1,4 @@
 #import "EJBindingHttpRequest.h"
-#import "EJConvertTypedArray.h"
 #import "EJJavaScriptView.h"
 
 @implementation EJBindingHttpRequest
@@ -268,9 +267,11 @@ EJ_BIND_FUNCTION(send, ctx, argc, argv) {
 	) {
 		if(
 			JSValueIsObject(ctx, argv[0]) &&
-			JSObjectGetTypedArrayType(ctx, (JSObjectRef)argv[0]) != kJSTypedArrayTypeNone
+			JSValueGetTypedArrayType(ctx, argv[0], NULL) != kJSTypedArrayTypeNone
 		) {
-			request.HTTPBody = JSObjectGetTypedArrayData(ctx, (JSObjectRef)argv[0]);
+			size_t length = 0;
+			void *data = JSValueGetTypedArrayPtr(ctx, argv[0], &length);
+			request.HTTPBody = [NSData dataWithBytes:data length:length];
 		}
 		else {
 			NSString *requestBody = JSValueToNSString( ctx, argv[0] );
@@ -330,7 +331,9 @@ EJ_BIND_GET(response, ctx) {
 	if( !response || !responseBody ) { return JSValueMakeNull(ctx); }
 	
 	if( type == kEJHttpRequestTypeArrayBuffer ) {
-		return JSObjectMakeTypedArrayWithData(ctx, kJSTypedArrayTypeArrayBuffer, responseBody);
+		JSObjectRef array = JSObjectMakeTypedArray(ctx, kJSTypedArrayTypeUint8Array, responseBody.length, NULL);
+		memcpy(JSObjectGetTypedArrayBytesPtr(ctx, array, NULL), responseBody.bytes, responseBody.length);
+		return JSObjectGetTypedArrayBuffer(ctx, array, NULL);
 	}
 	
 	

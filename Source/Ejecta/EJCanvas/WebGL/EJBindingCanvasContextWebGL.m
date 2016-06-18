@@ -6,9 +6,6 @@
 #import "EJConvertWebGL.h"
 #import "EJJavaScriptView.h"
 
-#import "EJConvertTypedArray.h"
-
-
 @implementation EJBindingCanvasContextWebGL
 @synthesize renderingContext;
 
@@ -364,11 +361,11 @@ EJ_BIND_FUNCTION(bufferData, ctx, argc, argv) {
 		GLintptr psize = JSValueToNumberFast(ctx, argv[1]);
 		glBufferData(target, psize, NULL, usage);
 	}
-	else if( JSValueIsObject(ctx, argv[1]) ) {
-		NSData *data = JSObjectGetTypedArrayData(ctx, (JSObjectRef)argv[1]);
-		if( data ) {
-			const GLvoid *buffer = data.bytes;
-			glBufferData(target, data.length, buffer, usage);
+	else {
+		size_t byteLength = 0;
+		const GLvoid *buffer = JSValueGetTypedArrayPtr(ctx, argv[1], &byteLength);
+		if( buffer ) {
+			glBufferData(target, byteLength, buffer, usage);
 		}
 	}
 	
@@ -383,11 +380,12 @@ EJ_BIND_FUNCTION(bufferSubData, ctx, argc, argv) {
 	GLenum target = JSValueToNumberFast(ctx, argv[0]);
 	GLintptr offset = JSValueToNumberFast(ctx, argv[1]);
 	
-	NSData *data = JSObjectGetTypedArrayData(ctx, (JSObjectRef)argv[2]);
-	if( data ) {
-		const GLvoid *buffer = data.bytes;
-		glBufferSubData(target, offset, data.length, buffer);
+	size_t byteLength = 0;
+	const GLvoid *buffer = JSValueGetTypedArrayPtr(ctx, argv[2], &byteLength);
+	if( buffer ) {
+		glBufferSubData(target, offset, byteLength, buffer);
 	}
+	
 	return NULL;
 }
 
@@ -726,48 +724,39 @@ EJ_BIND_FUNCTION(getParameter, ctx, argc, argv) {
 	int intbuffer[4];
 	float floatvalue;
 	JSValueRef arrayArgs[4];
-	NSMutableData *data;
 	
 	switch( pname ) {
 		// Float32Array (with 0 elements)
 		case GL_COMPRESSED_TEXTURE_FORMATS:
-			ret = JSObjectMakeTypedArray(ctx, kJSTypedArrayTypeFloat32Array, 0);
+			ret = JSObjectMakeTypedArray(ctx, kJSTypedArrayTypeFloat32Array, 0, NULL);
 			break;
 			
 		// Float32Array (with 2 elements) 
 		case GL_ALIASED_LINE_WIDTH_RANGE:
 		case GL_ALIASED_POINT_SIZE_RANGE:
 		case GL_DEPTH_RANGE:
-			data = [[NSMutableData alloc] initWithLength:2 * sizeof(GLfloat)];
-			glGetFloatv(pname, data.mutableBytes);
-			ret = JSObjectMakeTypedArrayWithData(ctx, kJSTypedArrayTypeFloat32Array, data);
-			[data release];
+			ret = JSObjectMakeTypedArray(ctx, kJSTypedArrayTypeFloat32Array, sizeof(GLfloat) * 2, NULL);
+			glGetFloatv(pname, JSObjectGetTypedArrayBytesPtr(ctx, (JSObjectRef)ret, NULL));
 			break;
 		
 		// Float32Array (with 4 values)
 		case GL_BLEND_COLOR:
 		case GL_COLOR_CLEAR_VALUE:
-			data = [[NSMutableData alloc] initWithLength:4 * sizeof(GLfloat)];
-			glGetFloatv(pname, data.mutableBytes);
-			ret = JSObjectMakeTypedArrayWithData(ctx, kJSTypedArrayTypeFloat32Array, data);
-			[data release];
+			ret = JSObjectMakeTypedArray(ctx, kJSTypedArrayTypeFloat32Array, sizeof(GLfloat) * 4, NULL);
+			glGetFloatv(pname, JSObjectGetTypedArrayBytesPtr(ctx, (JSObjectRef)ret, NULL));
 			break;
 			
 		// Int32Array (with 2 values)
 		case GL_MAX_VIEWPORT_DIMS:
-			data = [[NSMutableData alloc] initWithLength:2 * sizeof(GLint)];
-			glGetIntegerv(pname, data.mutableBytes);
-			ret = JSObjectMakeTypedArrayWithData(ctx, kJSTypedArrayTypeInt32Array, data);
-			[data release];
+			ret = JSObjectMakeTypedArray(ctx, kJSTypedArrayTypeInt32Array, sizeof(GLint) * 2, NULL);
+			glGetFloatv(pname, JSObjectGetTypedArrayBytesPtr(ctx, (JSObjectRef)ret, NULL));
 			break;
 			
 		// Int32Array (with 4 values)
 		case GL_SCISSOR_BOX:
 		case GL_VIEWPORT:
-			data = [[NSMutableData alloc] initWithLength:4 * sizeof(GLint)];
-			glGetIntegerv(pname, data.mutableBytes);
-			ret = JSObjectMakeTypedArrayWithData(ctx, kJSTypedArrayTypeInt32Array, data);
-			[data release];
+			ret = JSObjectMakeTypedArray(ctx, kJSTypedArrayTypeInt32Array, sizeof(GLint) * 4, NULL);
+			glGetFloatv(pname, JSObjectGetTypedArrayBytesPtr(ctx, (JSObjectRef)ret, NULL));
 			break;
 		
 		// boolean[] (with 4 values)
@@ -1155,18 +1144,14 @@ EJ_BIND_FUNCTION(getUniform, ctx, argc, argv) {
 	
 	// Float32Array
 	if( type == GL_FLOAT ) {
-		NSMutableData *data = [[NSMutableData alloc] initWithLength:size * sizeof(GLfloat)];
-		glGetUniformfv(program, uniform, data.mutableBytes);
-		array = JSObjectMakeTypedArrayWithData(ctx, kJSTypedArrayTypeFloat32Array, data);
-		[data release];
+		array = JSObjectMakeTypedArray(ctx, kJSTypedArrayTypeFloat32Array, sizeof(GLfloat) * size, NULL);
+		glGetUniformfv(program, uniform, JSObjectGetTypedArrayBytesPtr(ctx, array, NULL));
 	}
 	
 	// Int32Array
 	else if( type == GL_INT ) {
-		NSMutableData *data = [[NSMutableData alloc] initWithLength:size * sizeof(GLint)];
-		glGetUniformiv(program, uniform, data.mutableBytes);
-		array = JSObjectMakeTypedArrayWithData(ctx, kJSTypedArrayTypeInt32Array, data);
-		[data release];
+		array = JSObjectMakeTypedArray(ctx, kJSTypedArrayTypeInt32Array, sizeof(GLint) * size, NULL);
+		glGetUniformfv(program, uniform, JSObjectGetTypedArrayBytesPtr(ctx, array, NULL));
 	}
 	
 	// boolean[]
@@ -1212,10 +1197,8 @@ EJ_BIND_FUNCTION(getVertexAttrib, ctx, argc, argv) {
 		return [buffers[@(buffer)] pointerValue];
 	}
 	else if( pname == GL_CURRENT_VERTEX_ATTRIB ) {
-		NSMutableData *data = [[NSMutableData alloc] initWithLength:4 * sizeof(GLfloat)];
-		glGetVertexAttribiv(index, pname, data.mutableBytes);
-		JSObjectRef array = JSObjectMakeTypedArrayWithData(ctx, kJSTypedArrayTypeFloat32Array, data);
-		[data release];
+		JSObjectRef array = JSObjectMakeTypedArray(ctx, kJSTypedArrayTypeFloat32Array, sizeof(GLfloat) * 4, NULL);
+		glGetVertexAttribiv(index, pname, JSObjectGetTypedArrayBytesPtr(ctx, array, NULL));
 		return array;
 	}
 	else {
@@ -1307,19 +1290,21 @@ EJ_BIND_FUNCTION(readPixels, ctx, argc, argv) {
 	if( argc < 7 || !JSValueIsObject(ctx, argv[6]) ) { return NULL; }
 	EJ_UNPACK_ARGV(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type);
 	
-	JSTypedArrayType arrayType = JSObjectGetTypedArrayType(ctx, (JSObjectRef)argv[6]);
+	JSTypedArrayType arrayType = JSValueGetTypedArrayType(ctx, argv[6], NULL);
 	if( !EJ_ARRAY_MATCHES_TYPE(arrayType, type) ) {
+		return NULL;
+	}
+	
+	GLuint bytesPerPixel = EJGetBytesPerPixel(type, format);
+	size_t arrayLength = JSObjectGetTypedArrayByteLength(ctx, (JSObjectRef)argv[6], NULL);
+	if (width * height * bytesPerPixel > arrayLength) {
 		return NULL;
 	}
 	
 	scriptView.currentRenderingContext = renderingContext;
 	
-	GLuint bytesPerPixel = EJGetBytesPerPixel(type, format);
-	NSMutableData *data = [[NSMutableData alloc] initWithLength:width*height*bytesPerPixel];
-	glReadPixels(x, y, width, height, format, type, data.mutableBytes);
-	JSObjectSetTypedArrayData(ctx, (JSObjectRef)argv[6], data);
-	[data release];
-	
+	void *arrayData = JSObjectGetTypedArrayBytesPtr(ctx, (JSObjectRef)argv[6], NULL);
+	glReadPixels(x, y, width, height, format, type, arrayData);
 	return NULL;
 }
 
@@ -1469,14 +1454,14 @@ EJ_BIND_FUNCTION(texImage2D, ctx, argc, argv) {
 			free(nulled);
 		}
 		else if( JSValueIsObject(ctx, argv[8]) ) {
-			JSTypedArrayType arrayType = JSObjectGetTypedArrayType(ctx, (JSObjectRef)argv[8]);
+			JSTypedArrayType arrayType = JSValueGetTypedArrayType(ctx, argv[8], NULL);
 			if( border == 0 && EJ_ARRAY_MATCHES_TYPE(arrayType, type) ) {
 				int bytesPerPixel = EJGetBytesPerPixel(type, format);
 				
-				NSMutableData *data = JSObjectGetTypedArrayData(ctx, (JSObjectRef)argv[8]);
-				void *pixels = data.mutableBytes;
+				size_t pixelLength = 0;
+				void *pixels = JSValueGetTypedArrayPtr(ctx, argv[8], &pixelLength);
 				
-				if( bytesPerPixel && data.length >= width * height * bytesPerPixel ) {
+				if( bytesPerPixel && pixelLength >= width * height * bytesPerPixel ) {
 					if( unpackFlipY ) {
 						[EJTexture flipPixelsY:pixels bytesPerRow:(width * bytesPerPixel) rows:height];
 					}
@@ -1601,14 +1586,14 @@ EJ_BIND_FUNCTION(texSubImage2D, ctx, argc, argv) {
 			free(nulled);
 		}
 		else if( JSValueIsObject(ctx, argv[8]) ) {
-			JSTypedArrayType arrayType = JSObjectGetTypedArrayType(ctx, (JSObjectRef)argv[8]);
+			JSTypedArrayType arrayType = JSValueGetTypedArrayType(ctx, argv[8], NULL);
 			if( EJ_ARRAY_MATCHES_TYPE(arrayType, type) ) {
 				int bytesPerPixel = EJGetBytesPerPixel(type, format);
 				
-				NSMutableData *data = JSObjectGetTypedArrayData(ctx, (JSObjectRef)argv[8]);
-				void *pixels = data.mutableBytes;
+				size_t pixelLength = 0;
+				void *pixels = JSValueGetTypedArrayPtr(ctx, argv[8], &pixelLength);
 				
-				if( bytesPerPixel && data.length >= width * height * bytesPerPixel ) {
+				if( bytesPerPixel && pixelLength >= width * height * bytesPerPixel ) {
 					if( unpackFlipY ) {
 						[EJTexture flipPixelsY:pixels bytesPerRow:(width * bytesPerPixel) rows:height];
 					}
