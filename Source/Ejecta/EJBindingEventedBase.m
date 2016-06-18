@@ -159,6 +159,10 @@ EJ_BIND_FUNCTION(removeEventListener, ctx, argc, argv) {
 	event->jsTarget = target;
 	event->type = [type retain];
 	
+	JSValueRef jsTimestamp = JSValueMakeNumber(ctx, NSProcessInfo.processInfo.systemUptime * 1000.0);
+	JSValueProtect(ctx, jsTimestamp);
+	event->jsTimestamp = jsTimestamp;	
+	
 	JSObjectRef jsEvent = [self createJSObjectWithContext:ctx scriptView:scriptView instance:event];
 	[event release];
 	return jsEvent;
@@ -167,6 +171,7 @@ EJ_BIND_FUNCTION(removeEventListener, ctx, argc, argv) {
 - (void)dealloc {
 	[type release];
 	JSValueUnprotectSafe(scriptView.jsGlobalContext, jsTarget);
+	JSValueUnprotectSafe(scriptView.jsGlobalContext, jsTimestamp);
 	
 	[super dealloc];
 }
@@ -174,6 +179,7 @@ EJ_BIND_FUNCTION(removeEventListener, ctx, argc, argv) {
 EJ_BIND_GET(target, ctx) { return jsTarget; }
 EJ_BIND_GET(currentTarget, ctx) { return jsTarget; }
 EJ_BIND_GET(type, ctx) { return NSStringToJSValue(ctx, type); }
+EJ_BIND_GET(timestamp, ctx) { return jsTimestamp; }
 
 EJ_BIND_FUNCTION(preventDefault, ctx, argc, argv){ return NULL; }
 EJ_BIND_FUNCTION(stopPropagation, ctx, argc, argv){ return NULL; }

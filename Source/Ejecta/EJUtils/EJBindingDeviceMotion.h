@@ -4,7 +4,7 @@
 
 @interface EJBindingDeviceMotion : EJBindingEventedBase<EJDeviceMotionDelegate> {
 	CMMotionManager *motionManager;
-	JSValueRef params[12];
+	JSValueRef params[13];
 	float interval;
 }
 

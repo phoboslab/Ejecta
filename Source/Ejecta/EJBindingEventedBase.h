@@ -52,6 +52,7 @@ typedef struct {
 @interface EJBindingEvent : EJBindingBase {
 	NSString *type;
 	JSObjectRef jsTarget;
+	JSValueRef jsTimestamp;
 }
 
 + (JSObjectRef)createJSObjectWithContext:(JSContextRef)ctx

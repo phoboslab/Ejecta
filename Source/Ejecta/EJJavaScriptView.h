@@ -20,7 +20,8 @@
 
 
 @protocol EJTouchDelegate
-- (void)triggerEvent:(NSString *)name all:(NSSet *)all changed:(NSSet *)changed remaining:(NSSet *)remaining;
+- (void)triggerEvent:(NSString *)name timestamp:(NSTimeInterval)timestamp
+	all:(NSSet *)all changed:(NSSet *)changed remaining:(NSSet *)remaining;
 @end
 
 @protocol EJDeviceMotionDelegate
@@ -52,7 +53,6 @@
 	EJClassLoader *classLoader;
 
 	EJTimerCollection *timers;
-	NSTimeInterval startTime;
 	
 	EJSharedOpenGLContext *openGLContext;
 	EJSharedTextureCache *textureCache;
