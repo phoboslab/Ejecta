@@ -295,12 +295,9 @@ typedef std::vector<subpath_t> path_t;
 	else if( antiClockwise && startAngle <= endAngle ) {
 		startAngle += 2 * M_PI;
 	}
-
-	float span = antiClockwise
-		? (startAngle - endAngle) *-1
-		: (endAngle - startAngle);
 	
 	// Calculate the number of steps, based on the radius, scaling and the span
+	float span = endAngle - startAngle;
 	float size = radius * CGAffineTransformGetScale(transform) * 5;
 	float maxSteps = EJ_PATH_MAX_STEPS_FOR_CIRCLE * fabsf(span)/(2 * M_PI);
 	int steps = MAX(EJ_PATH_MIN_STEPS_FOR_CIRCLE, (size / (200+size)) * maxSteps);
