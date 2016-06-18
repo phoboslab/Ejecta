@@ -60,7 +60,9 @@ static const float radToDeg = (180/M_PI);
 	params[10] = JSValueMakeNumber(ctx, motion.attitude.pitch * radToDeg);
 	params[11] = JSValueMakeNumber(ctx, motion.attitude.roll * radToDeg);
 	
-	[self triggerEvent:@"devicemotion" argc:12 argv:params];
+	params[12] = JSValueMakeNumber(ctx, motion.timestamp * 1000.0);
+	
+	[self triggerEvent:@"devicemotion" argc:13 argv:params];
 }
 
 - (void)triggerEventWithAccelerometerData:(CMAccelerometerData *)accel {
@@ -71,7 +73,9 @@ static const float radToDeg = (180/M_PI);
 	params[1] = JSValueMakeNumber(ctx, accel.acceleration.y * g);
 	params[2] = JSValueMakeNumber(ctx, accel.acceleration.z * g);
 	
-	[self triggerEvent:@"acceleration" argc:3 argv:params];
+	params[3] = JSValueMakeNumber(ctx, accel.timestamp * 1000.0);
+	
+	[self triggerEvent:@"acceleration" argc:4 argv:params];
 }
 
 - (void)triggerDeviceMotionEvents {

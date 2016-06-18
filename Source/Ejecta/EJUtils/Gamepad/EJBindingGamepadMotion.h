@@ -4,7 +4,7 @@
 
 @interface EJBindingGamepadMotion : EJBindingEventedBase<EJDeviceMotionDelegate> {
 
-    JSValueRef params[12];
+    JSValueRef params[13];
 	NSObject<EJDeviceMotionDelegate> *prevDeviceMotionDelegate;
 	GCController *controller;
     BOOL motionValid;

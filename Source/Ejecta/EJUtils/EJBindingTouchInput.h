@@ -13,6 +13,7 @@
 	NSUInteger touchesInPool;
 }
 
-- (void)triggerEvent:(NSString *)name all:(NSSet *)all changed:(NSSet *)changed remaining:(NSSet *)remaining;
+- (void)triggerEvent:(NSString *)name timestamp:(NSTimeInterval)timestamp
+	all:(NSSet *)all changed:(NSSet *)changed remaining:(NSSet *)remaining;
 
 @end

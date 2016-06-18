@@ -1,7 +1,8 @@
-// This file is always executed before the App's index.js. It sets up most
-// of Ejecta's functionality and emulates some DOM objects.
-
-// Feel free to add more HTML/DOM stuff if you need it.
+// This file is always executed before the App's index.js. It sets up most of
+// Ejecta's functionality. It initializes some global properties, such as window
+// dimensions and the userAgent, provides global functions such as setInterval()
+// and setTimeout() and the console object, emulates a tiny bit of DOM
+// functionality and sets up handlers for Touch events and others.
 
 
 // Make 'window' the global scope
@@ -140,7 +141,8 @@ window.require = function( name ) {
 		var exports = {};
 		var module = { id: id, uri: id + '.js', exports: exports };
 		window.ejecta.requireModule( id, module, exports );
-		// Some modules override module.exports, so use the module.exports reference only after loading the module
+		// Some modules override module.exports, so use the module.exports
+		// reference only after loading the module
 		loadedModules[id] = module.exports;
 	}
 	
@@ -175,11 +177,13 @@ window.Event = function (type) {
 	this.cancelBubble = false;
 	this.cancelable = false;
 	this.target = null;
+	this.timestamp = ej.performanceNow();
 	
 	this.initEvent = function (type, bubbles, cancelable) {
 		this.type = type;
 		this.cancelBubble = bubbles;
 		this.cancelable = cancelable;
+		this.timestamp = ej.performanceNow();
 	};
 
 	this.preventDefault = function () {};
@@ -401,15 +405,17 @@ var touchEvent = {
 	touches: null,
 	targetTouches: null,
 	changedTouches: null,
+	timestamp: 0,
 	preventDefault: function(){},
 	stopPropagation: function(){}
 };
 
-var dispatchTouchEvent = function( type, all, changed ) {
+var dispatchTouchEvent = function( type, all, changed, timestamp ) {
 	touchEvent.touches = all;
 	touchEvent.targetTouches = all;
 	touchEvent.changedTouches = changed;
 	touchEvent.type = type;
+	touchEvent.timestamp = timestamp;
 	
 	document.dispatchEvent( touchEvent );
 };
@@ -417,9 +423,9 @@ eventInit.touchstart = eventInit.touchend = eventInit.touchmove = function() {
 	if( touchInput ) { return; }
 
 	touchInput = new Ejecta.TouchInput(window.canvas);
-	touchInput.ontouchstart = function( all, changed ){ dispatchTouchEvent( 'touchstart', all, changed ); };
-	touchInput.ontouchend = function( all, changed ){ dispatchTouchEvent( 'touchend', all, changed ); };
-	touchInput.ontouchmove = function( all, changed ){ dispatchTouchEvent( 'touchmove', all, changed ); };
+	touchInput.ontouchstart = dispatchTouchEvent.bind(window, 'touchstart');
+	touchInput.ontouchend = dispatchTouchEvent.bind(window, 'touchend');
+	touchInput.ontouchmove = dispatchTouchEvent.bind(window, 'touchmove');
 };
 
 
@@ -436,6 +442,7 @@ var deviceMotionEvent = {
 	acceleration: {x: 0, y: 0, z: 0},
 	accelerationIncludingGravity: {x: 0, y: 0, z: 0},
 	rotationRate: {alpha: 0, beta: 0, gamma: 0},
+	timestamp: 0,
 	preventDefault: function(){},
 	stopPropagation: function(){}
 };
@@ -448,6 +455,7 @@ var deviceOrientationEvent = {
 	beta: null,
 	gamma: null,
 	absolute: true,
+	timestamp: 0,
 	preventDefault: function(){},
 	stopPropagation: function(){}
 };
@@ -472,7 +480,7 @@ eventInit.deviceorientation = eventInit.devicemotion = function() {
 	deviceMotionEvent.interval = interval || deviceMotionEvent.interval;
 
 	// Callback for Devices that have a Gyro
-	_deviceMotion.ondevicemotion = _gamepadMotion.ondevicemotion = function( agx, agy, agz, ax, ay, az, rx, ry, rz, ox, oy, oz ) {
+	_deviceMotion.ondevicemotion = _gamepadMotion.ondevicemotion = function( agx, agy, agz, ax, ay, az, rx, ry, rz, ox, oy, oz, timestamp ) {
 		deviceMotionEvent.accelerationIncludingGravity.x = agx;
 		deviceMotionEvent.accelerationIncludingGravity.y = agy;
 		deviceMotionEvent.accelerationIncludingGravity.z = agz;
@@ -485,24 +493,30 @@ eventInit.deviceorientation = eventInit.devicemotion = function() {
 		deviceMotionEvent.rotationRate.beta = ry;
 		deviceMotionEvent.rotationRate.gamma = rz;
 
+		deviceMotionEvent.timestamp = timestamp;
+
 		document.dispatchEvent( deviceMotionEvent );
 
 
 		deviceOrientationEvent.alpha = ox;
 		deviceOrientationEvent.beta = oy;
 		deviceOrientationEvent.gamma = oz;
+		
+		deviceOrientationEvent.timestamp = timestamp;
 
 		document.dispatchEvent( deviceOrientationEvent );
 	};
 	
 	// Callback for Devices that only have an accelerometer
-	_deviceMotion.onacceleration = _gamepadMotion.onacceleration = function( agx, agy, agz ) {
+	_deviceMotion.onacceleration = _gamepadMotion.onacceleration = function( agx, agy, agz, timestamp ) {
 		deviceMotionEvent.accelerationIncludingGravity.x = agx;
 		deviceMotionEvent.accelerationIncludingGravity.y = agy;
 		deviceMotionEvent.accelerationIncludingGravity.z = agz;
 	
 		deviceMotionEvent.acceleration = null;
 		deviceMotionEvent.rotationRate = null;
+
+		deviceMotionEvent.timestamp = timestamp;
 	
 		document.dispatchEvent( deviceMotionEvent );
 	};
@@ -518,6 +532,7 @@ var lifecycleEvent = {
 	type: 'pagehide',
 	target: window.document,
 	currentTarget: window.document,
+	timestamp: 0,
 	preventDefault: function(){},
 	stopPropagation: function(){}
 };
@@ -526,6 +541,7 @@ var resizeEvent = {
 	type: 'resize',
 	target: window,
 	currentTarget: window,
+	timestamp: 0,
 	preventDefault: function(){},
 	stopPropagation: function(){}
 };
@@ -534,6 +550,7 @@ var visibilityEvent = {
 	type: 'visibilitychange',
 	target: window.document,
 	currentTarget: window.document,
+	timestamp: 0,
 	preventDefault: function(){},
 	stopPropagation: function(){}
 };
@@ -562,6 +579,7 @@ eventInit.visibilitychange = eventInit.pagehide = eventInit.pageshow = eventInit
 	windowEvents.onpagehide = function() {
 		document.hidden = true;
 		document.visibilityState = 'hidden';
+		visibilityEvent.timestamp = ej.performanceNow();
 		document.dispatchEvent( visibilityEvent );
 	
 		lifecycleEvent.type = 'pagehide';
@@ -571,6 +589,7 @@ eventInit.visibilitychange = eventInit.pagehide = eventInit.pageshow = eventInit
 	windowEvents.onpageshow = function() {
 		document.hidden = false;
 		document.visibilityState = 'visible';
+		visibilityEvent.timestamp = ej.performanceNow();
 		document.dispatchEvent( visibilityEvent );
 	
 		lifecycleEvent.type = 'pageshow';
@@ -580,6 +599,7 @@ eventInit.visibilitychange = eventInit.pagehide = eventInit.pageshow = eventInit
 	windowEvents.onresize = function() {
 		window.innerWidth = ej.screenWidth;
 		window.innerHeight = ej.screenHeight;
+		resizeEvent.timestamp = ej.performanceNow();
 		document.dispatchEvent(resizeEvent);
 	};
 

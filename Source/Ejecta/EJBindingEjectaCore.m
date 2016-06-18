@@ -159,7 +159,7 @@ EJ_BIND_FUNCTION(clearInterval, ctx, argc, argv ) {
 }
 
 EJ_BIND_FUNCTION(performanceNow, ctx, argc, argv ) {
-	double time = NSDate.timeIntervalSinceReferenceDate - scriptView.startTime;
+	double time = NSProcessInfo.processInfo.systemUptime;
 	return JSValueMakeNumber(ctx, time * 1000.0);
 }
 

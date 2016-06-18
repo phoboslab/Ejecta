@@ -176,7 +176,7 @@ EJ_BIND_GET(connected, ctx) {
 }
 
 EJ_BIND_GET(timestamp, ctx) {
-	double time = NSDate.timeIntervalSinceReferenceDate - scriptView.startTime;
+	double time = NSProcessInfo.processInfo.systemUptime;
 	return JSValueMakeNumber(ctx, time * 1000.0);
 }
 

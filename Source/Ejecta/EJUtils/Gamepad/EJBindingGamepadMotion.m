@@ -66,6 +66,8 @@ static const float g = 9.80665;
     params[10] = JSValueMakeNumber(ctx, 0);
     params[11] = JSValueMakeNumber(ctx, 0);
 #endif
+	
+	params[12] = JSValueMakeNumber(ctx, NSProcessInfo.processInfo.systemUptime * 1000.0);
 
 }
 
@@ -91,7 +93,7 @@ static const float g = 9.80665;
 
 - (void)triggerDeviceMotionEvents {
     if (motionValid){
-        [self triggerEvent:@"devicemotion" argc:12 argv:params];
+        [self triggerEvent:@"devicemotion" argc:13 argv:params];
     }
 }
 
