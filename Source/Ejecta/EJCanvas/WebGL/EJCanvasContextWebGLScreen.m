@@ -118,8 +118,8 @@
 	
 	
 	// Reset to the previously bound frame and renderbuffers
-	[self bindFramebuffer:previousFrameBuffer toTarget:GL_FRAMEBUFFER];
-	[self bindRenderbuffer:previousRenderBuffer toTarget:GL_RENDERBUFFER];
+  glBindFramebuffer(previousFrameBuffer, GL_FRAMEBUFFER);
+  glBindRenderbuffer(previousRenderBuffer, GL_RENDERBUFFER);
 }
 
 - (void)finish {
@@ -140,6 +140,7 @@
 		glBindFramebuffer(GL_FRAMEBUFFER, msaaFrameBuffer);
 	}
 	else {
+		glBindRenderbuffer(GL_RENDERBUFFER, viewRenderBuffer);
 		[glContext presentRenderbuffer:GL_RENDERBUFFER];
 	}
 	

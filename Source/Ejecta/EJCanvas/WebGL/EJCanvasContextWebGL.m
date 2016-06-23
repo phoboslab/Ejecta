@@ -69,6 +69,9 @@
 	glGenFramebuffers(1, &viewFrameBuffer);	
 	glGenRenderbuffers(1, &viewRenderBuffer);
 	glGenRenderbuffers(1, &depthStencilBuffer);
+  
+  boundFrameBuffer = EJ_WEBGL_DEFAULT_FRAMEBUFFER;
+  boundRenderBuffer = EJ_WEBGL_DEFAULT_RENDERBUFFER;
 	
 	[self resizeToWidth:width height:height];
 }
@@ -94,8 +97,8 @@
 
 - (void)prepare {
 	// Bind to the frame/render buffer last bound on this context
-	glBindFramebuffer(GL_FRAMEBUFFER, boundFrameBuffer);
-	glBindRenderbuffer(GL_RENDERBUFFER, boundRenderBuffer);
+  [self bindFramebuffer:boundFrameBuffer toTarget:GL_FRAMEBUFFER];
+  [self bindRenderbuffer:boundRenderBuffer toTarget:GL_RENDERBUFFER];
 	
 	// Re-bind textures; they may have been changed in a different context
 	GLint boundTexture2D;
@@ -120,11 +123,12 @@
 }
 
 - (void)bindFramebuffer:(GLint)framebuffer toTarget:(GLuint)target {
+	GLint remappedFramebuffer = framebuffer;
 	if( framebuffer == EJ_WEBGL_DEFAULT_FRAMEBUFFER ) {
-		framebuffer = msaaEnabled ? msaaFrameBuffer : viewFrameBuffer;
+		remappedFramebuffer = msaaEnabled ? msaaFrameBuffer : viewFrameBuffer;
 		[self bindRenderbuffer:EJ_WEBGL_DEFAULT_RENDERBUFFER toTarget:GL_RENDERBUFFER];
-	}
-	glBindFramebuffer(target, framebuffer);
+  }
+	glBindFramebuffer(target, remappedFramebuffer);
 	boundFrameBuffer = framebuffer;
 }
 
