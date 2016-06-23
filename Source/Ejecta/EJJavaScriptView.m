@@ -57,6 +57,7 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 }
 
 -(void)awakeFromNib {
+	[super awakeFromNib];
     [self setupWithAppFolder:EJECTA_DEFAULT_APP_FOLDER];
 }
 
@@ -83,7 +84,7 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
     timers = [[EJTimerCollection alloc] initWithScriptView:self];
     
     displayLink = [[CADisplayLink displayLinkWithTarget:proxy selector:@selector(run:)] retain];
-    [displayLink setFrameInterval:1];
+	displayLink.preferredFramesPerSecond = 60;
     [displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
     
     // Create the global JS context in its own group, so it can be released properly
@@ -209,7 +210,7 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 - (NSString *)pathForResource:(NSString *)path {
 	char specialPathName[16];
 	if( sscanf(path.UTF8String, "${%15[^}]", specialPathName) ) {
-		NSString *searchPath;
+		NSString *searchPath = nil;
 		if( strcmp(specialPathName, "Documents") == 0 ) {
 			searchPath = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
 		}

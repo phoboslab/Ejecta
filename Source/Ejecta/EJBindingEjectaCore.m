@@ -47,10 +47,11 @@ EJ_BIND_FUNCTION(load, ctx, argc, argv ) {
 	if( argc < 1 ) return NULL;
 	
 	NSObject<UIApplicationDelegate> *app = UIApplication.sharedApplication.delegate;
-	if( [app respondsToSelector:@selector(loadViewControllerWithScriptAtPath:)] ) {
+	SEL loadViewControllerWithScriptAtPath = sel_registerName("loadViewControllerWithScriptAtPath:");
+	if( [app respondsToSelector:loadViewControllerWithScriptAtPath] ) {
 		// Queue up the loading till the next frame; the script view may be in the
 		// midst of a timer update
-		[app performSelectorOnMainThread:@selector(loadViewControllerWithScriptAtPath:)
+		[app performSelectorOnMainThread:loadViewControllerWithScriptAtPath
 			withObject:JSValueToNSString(ctx, argv[0]) waitUntilDone:NO];
 	}
 	else {
@@ -93,7 +94,8 @@ EJ_BIND_FUNCTION(openURL, ctx, argc, argv ) {
 		
 		UIAlertAction *ok = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
 			handler:^(UIAlertAction * action) {
-				[UIApplication.sharedApplication openURL:[NSURL URLWithString:url]];
+				[UIApplication.sharedApplication openURL:[NSURL URLWithString:url]
+					options:@{} completionHandler:^(BOOL success) {}];
 			}];
 		UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel
 			handler:^(UIAlertAction * action) {}];
@@ -104,7 +106,8 @@ EJ_BIND_FUNCTION(openURL, ctx, argc, argv ) {
 		[self.scriptView.window.rootViewController presentViewController:alert animated:YES completion:nil];
 	}
 	else {
-		[UIApplication.sharedApplication openURL:[NSURL URLWithString: url]];
+		[UIApplication.sharedApplication openURL:[NSURL URLWithString:url]
+					options:@{} completionHandler:^(BOOL success) {}];
 	}
 	return NULL;
 }
