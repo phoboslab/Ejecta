@@ -9,6 +9,14 @@ Ejecta is published under the [MIT Open Source License](http://opensource.org/li
 
 ## Recent Breaking Changes
 
+### 2016-06-23 - Typed Arrays are fast again!
+
+The JSC version that comes with iOS 10 provides a new API to read and write Typed Arrays in native code. The workaround from previous versions is not needed anymore
+
+### 2016-06-23 - Removed iAds
+
+Apple will discontinue its own iAd Network on June 30. The iAd-Banner API has been removed from Ejecta.
+
 ### 2015-12-12 - Use OS provided JavaScriptCore library 
 
 Since [08741b4](https://github.com/phoboslab/Ejecta/commit/08741b4489ff945b117ebee0333c7eb7a6177c2e) Ejecta uses the JSC lib provided by iOS and tvOS instead of bundling a custom fork of it. This mainly means two things: The resulting binary will be much smaller and reading/writing of Typed Arrays is much slower.
