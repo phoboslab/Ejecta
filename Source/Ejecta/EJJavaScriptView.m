@@ -64,6 +64,7 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 }
 
 -(void)awakeFromNib {
+	[super awakeFromNib];
     [self setupWithAppFolder:EJECTA_DEFAULT_APP_FOLDER];
 }
 
@@ -108,7 +109,7 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 
     // Attach all native class constructors to 'Ejecta'
     classLoader = [[EJClassLoader alloc] initWithScriptView:self name:@"Ejecta"];
-    
+	
     
     // Retain the caches here, so even if they're currently unused in JavaScript,
     // they will persist until the last scriptView is released

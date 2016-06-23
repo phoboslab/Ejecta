@@ -80,10 +80,19 @@
 		glview.layer.contentsScale = contentScale;
 	}
 	
+	// Get the previously bound frame- and renderbuffers. If none are
+	// bound yet use the default buffers.
 	GLint previousFrameBuffer;
-	GLint previousRenderBuffer;
 	glGetIntegerv( GL_FRAMEBUFFER_BINDING, &previousFrameBuffer );
+	if (!previousFrameBuffer) {
+		previousFrameBuffer = EJ_WEBGL_DEFAULT_FRAMEBUFFER;
+	}
+	
+	GLint previousRenderBuffer;
 	glGetIntegerv( GL_RENDERBUFFER_BINDING, &previousRenderBuffer );
+	if (!previousRenderBuffer) {
+		previousRenderBuffer = EJ_WEBGL_DEFAULT_RENDERBUFFER;
+	}
 	
 	glBindFramebuffer(GL_FRAMEBUFFER, viewFrameBuffer);
 	glBindRenderbuffer(GL_RENDERBUFFER, viewRenderBuffer);

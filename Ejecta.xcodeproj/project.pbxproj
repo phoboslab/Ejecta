@@ -205,7 +205,6 @@
 		5CF6ABEC1C402FCD009C3CF4 /* EJConvert.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE63E166682700087CF94 /* EJConvert.m */; };
 		5CF6ABED1C402FCD009C3CF4 /* EJBindingSocial.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C8E340418C4EF40007206AE /* EJBindingSocial.m */; };
 		5CF6ABEE1C402FCD009C3CF4 /* EJTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE641166682700087CF94 /* EJTimer.m */; };
-		5CF6ABEF1C402FCD009C3CF4 /* EJBindingAdBanner.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE646166682700087CF94 /* EJBindingAdBanner.m */; };
 		5CF6ABF01C402FCD009C3CF4 /* EJBindingGameCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE648166682700087CF94 /* EJBindingGameCenter.m */; };
 		5CF6ABF11C402FCD009C3CF4 /* EJBindingAppUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C8E340018C4EF40007206AE /* EJBindingAppUtils.m */; };
 		5CF6ABF21C402FCD009C3CF4 /* EJBindingGamepadMotion.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C2C258A1C330540001455E9 /* EJBindingGamepadMotion.m */; };
@@ -341,7 +340,6 @@
 		B64CE675166682700087CF94 /* EJTexture.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE63C166682700087CF94 /* EJTexture.m */; };
 		B64CE676166682700087CF94 /* EJConvert.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE63E166682700087CF94 /* EJConvert.m */; };
 		B64CE678166682700087CF94 /* EJTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE641166682700087CF94 /* EJTimer.m */; };
-		B64CE67A166682700087CF94 /* EJBindingAdBanner.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE646166682700087CF94 /* EJBindingAdBanner.m */; };
 		B64CE67B166682700087CF94 /* EJBindingGameCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE648166682700087CF94 /* EJBindingGameCenter.m */; };
 		B64CE67C166682700087CF94 /* EJBindingHttpRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE64A166682700087CF94 /* EJBindingHttpRequest.m */; };
 		B64CE67D166682700087CF94 /* EJBindingLocalStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE64C166682700087CF94 /* EJBindingLocalStorage.m */; };
@@ -551,8 +549,6 @@
 		B64CE63F166682700087CF94 /* Ejecta.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = Ejecta.js; sourceTree = "<group>"; };
 		B64CE640166682700087CF94 /* EJTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJTimer.h; sourceTree = "<group>"; };
 		B64CE641166682700087CF94 /* EJTimer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJTimer.m; sourceTree = "<group>"; };
-		B64CE645166682700087CF94 /* EJBindingAdBanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingAdBanner.h; sourceTree = "<group>"; };
-		B64CE646166682700087CF94 /* EJBindingAdBanner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = EJBindingAdBanner.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		B64CE647166682700087CF94 /* EJBindingGameCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingGameCenter.h; sourceTree = "<group>"; };
 		B64CE648166682700087CF94 /* EJBindingGameCenter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingGameCenter.m; sourceTree = "<group>"; };
 		B64CE649166682700087CF94 /* EJBindingHttpRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingHttpRequest.h; sourceTree = "<group>"; };
@@ -1120,8 +1116,6 @@
 				3EBC19BD16CECE190036F9F3 /* EJBindingKeyInput.m */,
 				B6F115181677F086001F1324 /* EJBindingDeviceMotion.h */,
 				B6F115191677F088001F1324 /* EJBindingDeviceMotion.m */,
-				B64CE645166682700087CF94 /* EJBindingAdBanner.h */,
-				B64CE646166682700087CF94 /* EJBindingAdBanner.m */,
 				B64CE647166682700087CF94 /* EJBindingGameCenter.h */,
 				B64CE648166682700087CF94 /* EJBindingGameCenter.m */,
 				B64CE649166682700087CF94 /* EJBindingHttpRequest.h */,
@@ -1419,7 +1413,6 @@
 				B64CE676166682700087CF94 /* EJConvert.m in Sources */,
 				5C8E340E18C4EF40007206AE /* EJBindingSocial.m in Sources */,
 				B64CE678166682700087CF94 /* EJTimer.m in Sources */,
-				B64CE67A166682700087CF94 /* EJBindingAdBanner.m in Sources */,
 				B64CE67B166682700087CF94 /* EJBindingGameCenter.m in Sources */,
 				5C8E340C18C4EF40007206AE /* EJBindingAppUtils.m in Sources */,
 				5C2C258C1C330540001455E9 /* EJBindingGamepadMotion.m in Sources */,
@@ -1588,7 +1581,6 @@
 				5CF6ABEC1C402FCD009C3CF4 /* EJConvert.m in Sources */,
 				5CF6ABED1C402FCD009C3CF4 /* EJBindingSocial.m in Sources */,
 				5CF6ABEE1C402FCD009C3CF4 /* EJTimer.m in Sources */,
-				5CF6ABEF1C402FCD009C3CF4 /* EJBindingAdBanner.m in Sources */,
 				5CF6ABF01C402FCD009C3CF4 /* EJBindingGameCenter.m in Sources */,
 				5CF6ABF11C402FCD009C3CF4 /* EJBindingAppUtils.m in Sources */,
 				5CF6ABF21C402FCD009C3CF4 /* EJBindingGamepadMotion.m in Sources */,
