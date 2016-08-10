@@ -48,6 +48,9 @@
 #error SocketRocket must be compiled with ARC enabled
 #endif
 
+#include <netinet/tcp.h>    // for TCP_NODELAY
+#import <arpa/inet.h>       // for IPPROTO_TCP
+
 
 typedef enum  {
     SROpCodeTextFrame = 0x1,
@@ -574,6 +577,39 @@ static __strong NSData *CRLFCRLF;
     _inputStream.delegate = self;
     _outputStream.delegate = self;
 }
+
+- (void)disableNaglesAlgorithmForStream:(NSStream *)stream {
+	
+	CFDataRef socketData = NULL;
+	
+	// Get socket data
+	if ([stream isKindOfClass:[NSOutputStream class]]) {
+		socketData = CFWriteStreamCopyProperty((__bridge CFWriteStreamRef)((NSOutputStream *)stream), kCFStreamPropertySocketNativeHandle);
+	} else if ([stream isKindOfClass:[NSInputStream class]]) {
+		socketData = CFReadStreamCopyProperty((__bridge CFReadStreamRef)((NSInputStream *)stream), kCFStreamPropertySocketNativeHandle);
+	}
+	
+
+	// get a handle to the native socket
+	CFSocketNativeHandle *rawsock = (CFSocketNativeHandle *)CFDataGetBytePtr(socketData);
+	// Disable Nagle's algorythm
+	static const int kOne = 1;
+	int err = setsockopt(rawsock, IPPROTO_TCP, TCP_NODELAY, &kOne, sizeof(kOne));
+	if (socketData) {
+		CFRelease(socketData);
+	}
+
+
+	// Debug info
+	BOOL isInput = [stream isKindOfClass:[NSInputStream class]];
+	NSString * streamType = isInput ? @"INPUT" : @"OUTPUT";
+	if (err < 0) {
+		NSLog(@"Could Not Disable Nagle for %@ stream", streamType);
+	} else {
+		NSLog(@"Nagle Is Disabled for %@ stream", streamType);
+	}
+}
+
 
 - (void)openConnection;
 {
@@ -1412,6 +1448,9 @@ static const size_t SRFrameHeaderOverhead = 32;
         switch (eventCode) {
             case NSStreamEventOpenCompleted: {
                 SRFastLog(@"NSStreamEventOpenCompleted %@", aStream);
+				
+				[self disableNaglesAlgorithmForStream:aStream];
+
                 if (self.readyState >= SR_CLOSING) {
                     return;
                 }
