@@ -1,7 +1,7 @@
 /*
  * CBMoreAppsBadge.h
  * Chartboost
- * 6.4.2
+ * 6.4.7
  *
  * Copyright 2011 Chartboost. All rights reserved.
  */

@@ -126,7 +126,6 @@ NS_ASSUME_NONNULL_BEGIN
  */
 + (void)configureWithAppID:(NSString *)appID zoneIDs:(NSArray *)zoneIDs delegate:(nullable id<AdColonyDelegate>)del logging:(BOOL)log;
 
-
 /** @name Playing Video Ads */
 
 /**
