@@ -35,6 +35,10 @@
 		5C365FE61CBEE51E00E01DD3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5C365FE21CBEE50800E01DD3 /* Assets.xcassets */; };
 		5C3B72E41ADAB7D3002A3FB5 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C3B72E31ADAB7D3002A3FB5 /* CoreMedia.framework */; };
 		5C3B72E81ADAD976002A3FB5 /* Chartboost.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C3B72E71ADAD976002A3FB5 /* Chartboost.framework */; };
+		5C4214EF1D5DBEEE003243A7 /* SafariServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C4214EE1D5DBEEE003243A7 /* SafariServices.framework */; };
+		5C4214F11D5DC1A1003243A7 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C4214F01D5DC1A1003243A7 /* CoreBluetooth.framework */; };
+		5C4214F31D5DC22F003243A7 /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C4214F21D5DC22F003243A7 /* GLKit.framework */; };
+		5C4214F51D5DC367003243A7 /* UnityAds.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C4214F41D5DC367003243A7 /* UnityAds.framework */; };
 		5C4D006F1C1C2642003D718B /* EJDeviceUID.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C4D006D1C1C2642003D718B /* EJDeviceUID.m */; };
 		5C631BFB19110679009AF7F0 /* EJBindingDecryptorXOR.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C631BFA19110679009AF7F0 /* EJBindingDecryptorXOR.m */; };
 		5C631C021911446F009AF7F0 /* EJBindingBaseInterceptor.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C631BFE1911446F009AF7F0 /* EJBindingBaseInterceptor.m */; };
@@ -170,8 +174,6 @@
 		5CF2A6831BFEE2FE00B7EA09 /* LaunchScreen-Logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 5CF2A6821BFEE2FE00B7EA09 /* LaunchScreen-Logo.png */; };
 		5CF2A6851BFEE6D700B7EA09 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5CF2A6841BFEE6D700B7EA09 /* Assets.xcassets */; };
 		5CF6ABB11C3FED0C009C3CF4 /* AdColony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CF6ABAD1C3FED0C009C3CF4 /* AdColony.framework */; };
-		5CF6ABB21C3FED0C009C3CF4 /* UnityAds.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 5CF6ABAF1C3FED0C009C3CF4 /* UnityAds.bundle */; };
-		5CF6ABB31C3FED0C009C3CF4 /* UnityAds.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CF6ABB01C3FED0C009C3CF4 /* UnityAds.framework */; };
 		5CF6ABC11C3FED37009C3CF4 /* EJBindingAdBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 5CF6ABB61C3FED37009C3CF4 /* EJBindingAdBase.m */; };
 		5CF6ABC21C3FED37009C3CF4 /* EJBindingAdColony.m in Sources */ = {isa = PBXBuildFile; fileRef = 5CF6ABB81C3FED37009C3CF4 /* EJBindingAdColony.m */; };
 		5CF6ABC31C3FED37009C3CF4 /* EJBindingAdMob.m in Sources */ = {isa = PBXBuildFile; fileRef = 5CF6ABBA1C3FED37009C3CF4 /* EJBindingAdMob.m */; };
@@ -358,7 +360,6 @@
 		B699669E16CC579E006B9456 /* EJSharedOpenGLContext.m in Sources */ = {isa = PBXBuildFile; fileRef = B699669D16CC579B006B9456 /* EJSharedOpenGLContext.m */; };
 		B6A0F4AF16A9D86100477789 /* EJCanvasGradient.m in Sources */ = {isa = PBXBuildFile; fileRef = B6A0F4AE16A9D86000477789 /* EJCanvasGradient.m */; };
 		B6A0F4B416AB0B4600477789 /* EJBindingCanvasGradient.m in Sources */ = {isa = PBXBuildFile; fileRef = B6A0F4B316AB0B4500477789 /* EJBindingCanvasGradient.m */; };
-		B6AC4A061359E7A5003C4982 /* iAd.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6AC4A051359E7A5003C4982 /* iAd.framework */; };
 		B6CFCCD91332F152001F17AF /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6CFCCD81332F152001F17AF /* AVFoundation.framework */; };
 		B6D4B281183CDFBB008251EB /* EJBindingGeolocation.m in Sources */ = {isa = PBXBuildFile; fileRef = B6D4B280183CDFBB008251EB /* EJBindingGeolocation.m */; };
 		B6D4B283183CF43A008251EB /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6D4B282183CF43A008251EB /* CoreLocation.framework */; };
@@ -422,6 +423,10 @@
 		5C365FE31CBEE50800E01DD3 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5C3B72E31ADAB7D3002A3FB5 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		5C3B72E71ADAD976002A3FB5 /* Chartboost.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Chartboost.framework; sourceTree = "<group>"; };
+		5C4214EE1D5DBEEE003243A7 /* SafariServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SafariServices.framework; path = System/Library/Frameworks/SafariServices.framework; sourceTree = SDKROOT; };
+		5C4214F01D5DC1A1003243A7 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
+		5C4214F21D5DC22F003243A7 /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
+		5C4214F41D5DC367003243A7 /* UnityAds.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = UnityAds.framework; sourceTree = "<group>"; };
 		5C4D006D1C1C2642003D718B /* EJDeviceUID.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJDeviceUID.m; sourceTree = "<group>"; };
 		5C4D006E1C1C2642003D718B /* EJDeviceUID.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJDeviceUID.h; sourceTree = "<group>"; };
 		5C631BF919110679009AF7F0 /* EJBindingDecryptorXOR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingDecryptorXOR.h; sourceTree = "<group>"; };
@@ -479,8 +484,6 @@
 		5CF2A6821BFEE2FE00B7EA09 /* LaunchScreen-Logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "LaunchScreen-Logo.png"; sourceTree = "<group>"; };
 		5CF2A6841BFEE6D700B7EA09 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5CF6ABAD1C3FED0C009C3CF4 /* AdColony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AdColony.framework; sourceTree = "<group>"; };
-		5CF6ABAF1C3FED0C009C3CF4 /* UnityAds.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = UnityAds.bundle; sourceTree = "<group>"; };
-		5CF6ABB01C3FED0C009C3CF4 /* UnityAds.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = UnityAds.framework; sourceTree = "<group>"; };
 		5CF6ABB51C3FED37009C3CF4 /* EJBindingAdBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingAdBase.h; sourceTree = "<group>"; };
 		5CF6ABB61C3FED37009C3CF4 /* EJBindingAdBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingAdBase.m; sourceTree = "<group>"; };
 		5CF6ABB71C3FED37009C3CF4 /* EJBindingAdColony.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingAdColony.h; sourceTree = "<group>"; };
@@ -647,6 +650,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5C4214F31D5DC22F003243A7 /* GLKit.framework in Frameworks */,
+				5C4214F11D5DC1A1003243A7 /* CoreBluetooth.framework in Frameworks */,
+				5C4214EF1D5DBEEE003243A7 /* SafariServices.framework in Frameworks */,
 				5C97590B1C1CA7F4004A6EF0 /* AVKit.framework in Frameworks */,
 				5C16A9171C10213D00698190 /* libxml2.2.dylib in Frameworks */,
 				5C16A9181C10213D00698190 /* libz.dylib in Frameworks */,
@@ -661,7 +667,7 @@
 				5CBFB2501BF47AC300BF2385 /* GameController.framework in Frameworks */,
 				5C8968E01BE3390D00AC30E6 /* WebKit.framework in Frameworks */,
 				5C8968C41BE32CAE00AC30E6 /* libc++.tbd in Frameworks */,
-				5CF6ABB31C3FED0C009C3CF4 /* UnityAds.framework in Frameworks */,
+				5C4214F51D5DC367003243A7 /* UnityAds.framework in Frameworks */,
 				5C8968C51BE32CAE00AC30E6 /* libicucore.tbd in Frameworks */,
 				5C8968C61BE32CAE00AC30E6 /* libsqlite3.tbd in Frameworks */,
 				5C8968C71BE32CAE00AC30E6 /* libstdc++.tbd in Frameworks */,
@@ -697,7 +703,6 @@
 				B607AD0A132EB51000D7C3EA /* OpenGLES.framework in Frameworks */,
 				B607AD10132EB52400D7C3EA /* QuartzCore.framework in Frameworks */,
 				B6CFCCD91332F152001F17AF /* AVFoundation.framework in Frameworks */,
-				B6AC4A061359E7A5003C4982 /* iAd.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -812,6 +817,9 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				5C4214F21D5DC22F003243A7 /* GLKit.framework */,
+				5C4214F01D5DC1A1003243A7 /* CoreBluetooth.framework */,
+				5C4214EE1D5DBEEE003243A7 /* SafariServices.framework */,
 				5C2C25861C32FA92001455E9 /* GameController.framework */,
 				5CAE53CB1C2C314700FA70DD /* CoreText.framework */,
 				5C16A90D1C10210B00698190 /* libc++.dylib */,
@@ -866,8 +874,8 @@
 		5C2514851ADAAF9300761DA8 /* lib */ = {
 			isa = PBXGroup;
 			children = (
+				5C4214F41D5DC367003243A7 /* UnityAds.framework */,
 				5CF6ABAD1C3FED0C009C3CF4 /* AdColony.framework */,
-				5CF6ABAE1C3FED0C009C3CF4 /* UnityAds */,
 				5C8968CF1BE3387C00AC30E6 /* VungleSDK.embeddedframework */,
 				5C3B72E71ADAD976002A3FB5 /* Chartboost.framework */,
 				5C2514911ADAB0A600761DA8 /* GoogleMobileAds.framework */,
@@ -975,15 +983,6 @@
 				5CBFB24B1BF47A7800BF2385 /* EJBindingGamepadProvider.m */,
 			);
 			path = Gamepad;
-			sourceTree = "<group>";
-		};
-		5CF6ABAE1C3FED0C009C3CF4 /* UnityAds */ = {
-			isa = PBXGroup;
-			children = (
-				5CF6ABAF1C3FED0C009C3CF4 /* UnityAds.bundle */,
-				5CF6ABB01C3FED0C009C3CF4 /* UnityAds.framework */,
-			);
-			path = UnityAds;
 			sourceTree = "<group>";
 		};
 		5CF6ABB41C3FED37009C3CF4 /* ad */ = {
@@ -1343,7 +1342,6 @@
 				5CF2A6831BFEE2FE00B7EA09 /* LaunchScreen-Logo.png in Resources */,
 				5C8968D91BE3387C00AC30E6 /* vg_close.png in Resources */,
 				5C8968D81BE3387C00AC30E6 /* __vungle.db in Resources */,
-				5CF6ABB21C3FED0C009C3CF4 /* UnityAds.bundle in Resources */,
 				5C365FE41CBEE50800E01DD3 /* Assets.xcassets in Resources */,
 				5C8968DB1BE3387C00AC30E6 /* vg_mute_off.png in Resources */,
 				5C8968DA1BE3387C00AC30E6 /* vg_cta.png in Resources */,
@@ -1660,7 +1658,6 @@
 					"$(PROJECT_DIR)/Extension/lib",
 					"$(PROJECT_DIR)/Extension/lib/VungleSDK.embeddedframework",
 					"$(PROJECT_DIR)/Source/lib/tvos",
-					"$(PROJECT_DIR)/Extension/lib/UnityAds",
 				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -1699,7 +1696,6 @@
 					"$(PROJECT_DIR)/Extension/lib",
 					"$(PROJECT_DIR)/Extension/lib/VungleSDK.embeddedframework",
 					"$(PROJECT_DIR)/Source/lib/tvos",
-					"$(PROJECT_DIR)/Extension/lib/UnityAds",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Source/Prefix.pch;
@@ -1810,7 +1806,6 @@
 					"$(PROJECT_DIR)/Extension/lib",
 					"$(PROJECT_DIR)/Extension/lib/VungleSDK.embeddedframework",
 					"$(PROJECT_DIR)/Source/lib/tvos",
-					"$(PROJECT_DIR)/Extension/lib/UnityAds",
 				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -1849,7 +1844,6 @@
 					"$(PROJECT_DIR)/Extension/lib",
 					"$(PROJECT_DIR)/Extension/lib/VungleSDK.embeddedframework",
 					"$(PROJECT_DIR)/Source/lib/tvos",
-					"$(PROJECT_DIR)/Extension/lib/UnityAds",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Source/Prefix.pch;

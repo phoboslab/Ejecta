@@ -12,12 +12,13 @@
 			NSLog(@"Error: Must set appID");
             return self;
 		}
-        
-        [[UnityAds sharedInstance] startWithGameId:appId];
-        
+		
         [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-			[[UnityAds sharedInstance] setDelegate:self];
+			[UnityAds initialize:appId delegate:self];
         }];
+		
+
+//		[UnityAds show:self placementId:self.incentivizedPlacementId];
 
 	}
 
@@ -29,62 +30,72 @@
 }
 
 - (void)dealloc {
-	[[UnityAds sharedInstance] setDelegate:nil];
-	[[UnityAds sharedInstance] setViewController:nil];
 	[appId release];
 	[super dealloc];
 }
 
-- (void)unityAdsVideoCompleted:(NSString *)rewardItemKey skipped:(BOOL)skipped {
-	NSLog(@"unityAdsVideoCompleted");
+
+- (void)unityAdsReady:(NSString *)placementId {
+	NSLog(@"UADS Ready");
 	
-	if (rewardItemKey){
-		if (!skipped){
-			JSValueRef jsViewInfo = NSObjectToJSValue(scriptView.jsGlobalContext,@{
-								   @"rewardItemKey": rewardItemKey
-							   });
-			JSValueRef jsParams[] = { jsViewInfo };
+	JSValueRef jsViewInfo = NSObjectToJSValue(scriptView.jsGlobalContext,@{
+																		   @"placementId": placementId
+																		   });
+	JSValueRef jsParams[] = { jsViewInfo };
+	[self triggerEventOnce:@"video_onReady" argc:1 argv:jsParams];
+}
+
+- (void)unityAdsDidError:(UnityAdsError)error withMessage:(NSString *)message {
+	NSLog(@"UnityAds ERROR: %ld - %@",(long)error, message);
+
+	JSValueRef jsViewInfo = NSObjectToJSValue(scriptView.jsGlobalContext,@{
+																		   @"message": message
+																		   });
+	JSValueRef jsParams[] = { jsViewInfo };
+	[self triggerEventOnce:@"video_onFail" argc:1 argv:jsParams];
+}
+
+- (void)unityAdsDidStart:(NSString *)placementId {
+	NSLog(@"UADS Start");
+	
+	JSValueRef jsViewInfo = NSObjectToJSValue(scriptView.jsGlobalContext,@{
+																		   @"placementId": placementId
+																		   });
+	JSValueRef jsParams[] = { jsViewInfo };
+	[self triggerEventOnce:@"video_onDisplay" argc:1 argv:jsParams];
+}
+
+- (void)unityAdsDidFinish:(NSString *)placementId withFinishState:(UnityAdsFinishState)state {
+	
+	JSValueRef jsViewInfo = NSObjectToJSValue(scriptView.jsGlobalContext,@{
+																		   @"placementId": placementId
+																		   });
+	JSValueRef jsParams[] = { jsViewInfo };
+	
+	NSString *stateString = @"UNKNOWN";
+	switch (state) {
+		case kUnityAdsFinishStateError:
+			stateString = @"ERROR";
+			[self triggerEventOnce:@"video_onError" argc:1 argv:jsParams];
+			break;
+		case kUnityAdsFinishStateSkipped:
+			stateString = @"SKIPPED";
+			[self triggerEventOnce:@"video_onSkip" argc:1 argv:jsParams];
+			break;
+		case kUnityAdsFinishStateCompleted:
+			stateString = @"COMPLETED";
 			[self triggerEventOnce:@"video_onFinish" argc:1 argv:jsParams];
-		}
-	}else{
-		if (!skipped){
-			[self triggerEventOnce:@"video_onFinish"];
-		}
+			break;
+		default:
+			break;
 	}
-
-//	[[NSOperationQueue mainQueue] addOperationWithBlock:^{
-//		JSValueRef jsParams[] = { jsViewInfo };
-//		[self triggerEventOnce:@"video_onClose" argc:1 argv:jsParams];
-//	}];
-}
-
-- (void)unityAdsWillShow {
-	NSLog(@"unityAdsWillShow");
-	
-	[self triggerEventOnce:@"video_onDisplay"];
-	
-}
-
-- (void)unityAdsDidHide {
-	NSLog(@"unityAdsDidHide");
-	
-	[self triggerEventOnce:@"video_onClose"];
-}
-
-//- (void)unityAdsWillLeaveApplication;
-//- (void)unityAdsVideoStarted;
-//- (void)unityAdsFetchCompleted;
-
-- (void)unityAdsFetchFailed {
-	NSLog(@"unityAdsFetchFailed");
-	
-	[self triggerEventOnce:@"video_onFail"];
+	NSLog(@"UnityAds FINISH: %@ - %@", stateString, placementId);
 }
 
 
+//////////////////////////////////////
+//////////////////////////////////////
 
-
-//////////////////////////////////////////////
 
 EJ_BIND_GET(appId, ctx)
 {
@@ -94,13 +105,13 @@ EJ_BIND_GET(appId, ctx)
 
 EJ_BIND_GET(debug, ctx)
 {
-	return [[UnityAds sharedInstance] isDebugMode];
+	return [UnityAds getDebugMode];
 }
 
 EJ_BIND_SET(debug, ctx, value)
 {
 	debug = JSValueToBoolean(ctx, value);
-	[[UnityAds sharedInstance] setDebugMode:debug];
+	[UnityAds setDebugMode:debug];
 }
 
 
@@ -120,15 +131,11 @@ EJ_BIND_SET(debug, ctx, value)
 		zone = [options objectForKey:@"zone"];
 	}
 	
-	[[UnityAds sharedInstance] setZone:zone];
-	
-	[[UnityAds sharedInstance] setViewController:scriptView.window.rootViewController];
-	
-	if ([[UnityAds sharedInstance] canShow]){
-		[[UnityAds sharedInstance] show:options];
+	if ([UnityAds isReady:zone]){
+		[UnityAds show:scriptView.window.rootViewController placementId:zone];
 		return true;
 	}
-	
+
 	return false;
 }
 
@@ -140,9 +147,7 @@ EJ_BIND_SET(debug, ctx, value)
 		zone = [options objectForKey:@"zone"];
 	}
 	
-	[[UnityAds sharedInstance] setZone:zone];
-	
-	return [[UnityAds sharedInstance] canShowZone:zone];
+	return [UnityAds isReady:zone];
 }
 
 -(BOOL)callLoadAd:(NSString *)type options:(NSDictionary *)options ctx:(JSContextRef)ctx argc:(size_t)argc argv:(const JSValueRef[])argv {
@@ -152,7 +157,6 @@ EJ_BIND_SET(debug, ctx, value)
 
 -(void)callHide:(NSString *)type options:(NSDictionary *)options ctx:(JSContextRef)ctx argc:(size_t)argc argv:(const JSValueRef[])argv {
 	
-	[[UnityAds sharedInstance] hide];
 
 }
 
