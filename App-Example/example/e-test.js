@@ -7,7 +7,7 @@ if (async) {
         }
     }
 }
-xhr.open("GET", "http://baidu.com", async);
+xhr.open("GET", "http://www.apple.com", async);
 xhr.send();
 console.log("=======");
 console.log(async, "\n", xhr.responseText);
