@@ -5,13 +5,14 @@
 //  Copyright 2012 Google Inc. All rights reserved.
 //
 
+#import <GoogleMobileAds/DFPCustomRenderedBannerViewDelegate.h>
+#import <GoogleMobileAds/GADAdSizeDelegate.h>
+#import <GoogleMobileAds/GADAppEventDelegate.h>
 #import <GoogleMobileAds/GADBannerView.h>
 #import <GoogleMobileAds/GADCorrelator.h>
 #import <GoogleMobileAds/GoogleMobileAdsDefines.h>
 
-@protocol DFPCustomRenderedBannerViewDelegate;
-@protocol GADAdSizeDelegate;
-@protocol GADAppEventDelegate;
+GAD_ASSUME_NONNULL_BEGIN
 
 /// The view that displays DoubleClick For Publishers banner ads.
 @interface DFPBannerView : GADBannerView
@@ -21,13 +22,13 @@
 /// for targeting and statistics.
 ///
 /// Example DFP ad unit ID: @"/6499/example/banner"
-@property(nonatomic, copy) NSString *adUnitID;
+@property(nonatomic, copy, GAD_NULLABLE) NSString *adUnitID;
 
 /// Optional delegate that is notified when creatives send app events.
-@property(nonatomic, weak) IBOutlet id<GADAppEventDelegate> appEventDelegate;
+@property(nonatomic, weak, GAD_NULLABLE) IBOutlet id<GADAppEventDelegate> appEventDelegate;
 
 /// Optional delegate that is notified when creatives cause the banner to change size.
-@property(nonatomic, weak) IBOutlet id<GADAdSizeDelegate> adSizeDelegate;
+@property(nonatomic, weak, GAD_NULLABLE) IBOutlet id<GADAdSizeDelegate> adSizeDelegate;
 
 /// Optional array of NSValue encoded GADAdSize structs, specifying all valid sizes that are
 /// appropriate for this slot. Never create your own GADAdSize directly. Use one of the predefined
@@ -37,6 +38,7 @@
 /// \see setValidAdSizesWithSizes:
 ///
 /// Example:
+///
 ///   \code
 ///   NSArray *validSizes = @[
 ///     NSValueFromGADAdSize(kGADAdSizeBanner),
@@ -45,17 +47,17 @@
 ///
 ///   bannerView.validAdSizes = validSizes;
 ///   \endcode
-@property(nonatomic, copy) NSArray *validAdSizes;
+@property(nonatomic, copy, GAD_NULLABLE) NSArray *validAdSizes;
 
 /// Correlator object for correlating this object to other ad objects.
-@property(nonatomic, strong) GADCorrelator *correlator;
+@property(nonatomic, strong, GAD_NULLABLE) GADCorrelator *correlator;
 
 /// Indicates that the publisher will record impressions manually when the ad becomes visible to the
 /// user.
 @property(nonatomic, assign) BOOL enableManualImpressions;
 
 /// Optional delegate object for custom rendered ads.
-@property(nonatomic, weak)
+@property(nonatomic, weak, GAD_NULLABLE)
     IBOutlet id<DFPCustomRenderedBannerViewDelegate> customRenderedBannerViewDelegate;
 
 /// If you've set enableManualImpressions to YES, call this method when the ad is visible.
@@ -70,6 +72,7 @@
 /// of GADAdSize pointers.
 ///
 /// Example:
+///
 ///   \code
 ///   GADAdSize size1 = kGADAdSizeBanner;
 ///   GADAdSize size2 = kGADAdSizeLargeBanner;
@@ -79,3 +82,5 @@
                                  GAD_DEPRECATED_MSG_ATTRIBUTE("Use validAdSizes property.");
 
 @end
+
+GAD_ASSUME_NONNULL_END

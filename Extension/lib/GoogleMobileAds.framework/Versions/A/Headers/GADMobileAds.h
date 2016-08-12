@@ -12,6 +12,9 @@
 /// Returns the shared GADMobileAds instance.
 + (GADMobileAds *)sharedInstance;
 
+/// Configures the SDK using the settings associated with the given application ID.
++ (void)configureWithApplicationID:(NSString *)applicationID;
+
 /// Disables automated in app purchase (IAP) reporting. Must be called before any IAP transaction is
 /// initiated. IAP reporting is used to track IAP ad conversions. Do not disable reporting if you
 /// use IAP ads.

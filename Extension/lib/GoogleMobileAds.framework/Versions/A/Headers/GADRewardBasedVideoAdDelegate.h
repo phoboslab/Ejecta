@@ -15,16 +15,20 @@
 
 @optional
 
-/// Tells the delegate that the reward based video ad has been received.
+/// Tells the delegate that the reward based video ad failed to load.
+- (void)rewardBasedVideoAd:(GADRewardBasedVideoAd *)rewardBasedVideoAd
+    didFailToLoadWithError:(NSError *)error;
+
+/// Tells the delegate that a reward based video ad was received.
 - (void)rewardBasedVideoAdDidReceiveAd:(GADRewardBasedVideoAd *)rewardBasedVideoAd;
 
-/// Tells the delegate that the reward based video ad is opened.
+/// Tells the delegate that the reward based video ad opened.
 - (void)rewardBasedVideoAdDidOpen:(GADRewardBasedVideoAd *)rewardBasedVideoAd;
 
-/// Tells the delegate that the reward based video ad has started playing.
+/// Tells the delegate that the reward based video ad started playing.
 - (void)rewardBasedVideoAdDidStartPlaying:(GADRewardBasedVideoAd *)rewardBasedVideoAd;
 
-/// Tells the delegate that the reward based video ad is closed.
+/// Tells the delegate that the reward based video ad closed.
 - (void)rewardBasedVideoAdDidClose:(GADRewardBasedVideoAd *)rewardBasedVideoAd;
 
 /// Tells the delegate that the reward based video ad will leave the application.
@@ -33,9 +37,5 @@
 /// Tells the delegate that the reward based video ad has rewarded the user.
 - (void)rewardBasedVideoAd:(GADRewardBasedVideoAd *)rewardBasedVideoAd
     didRewardUserWithReward:(GADAdReward *)reward;
-
-/// Tells the delegate that the reward based video ad has failed to load.
-- (void)rewardBasedVideoAd:(GADRewardBasedVideoAd *)rewardBasedVideoAd
-    didFailToLoadWithError:(NSError *)error;
 
 @end

@@ -8,12 +8,13 @@
 #import <CoreGraphics/CoreGraphics.h>
 #import <Foundation/Foundation.h>
 
+#import <GoogleMobileAds/GADAdNetworkExtras.h>
 #import <GoogleMobileAds/GoogleMobileAdsDefines.h>
+
+GAD_ASSUME_NONNULL_BEGIN
 
 /// Add this constant to the testDevices property's array to receive test ads on the simulator.
 GAD_EXTERN const id kGADSimulatorID;
-
-@protocol GADAdNetworkExtras;
 
 /// Genders to help deliver more relevant ads.
 typedef NS_ENUM(NSInteger, GADGender) {
@@ -39,7 +40,7 @@ typedef NS_ENUM(NSInteger, GADGender) {
 - (void)registerAdNetworkExtras:(id<GADAdNetworkExtras>)extras;
 
 /// Returns the network extras defined for an ad network.
-- (id<GADAdNetworkExtras>)adNetworkExtrasFor:(Class<GADAdNetworkExtras>)aClass;
+- (id<GADAdNetworkExtras> GAD_NULLABLE_TYPE)adNetworkExtrasFor:(Class<GADAdNetworkExtras>)aClass;
 
 /// Removes the extras for an ad network. |aClass| is the class which represents that network's
 /// extras type.
@@ -53,7 +54,7 @@ typedef NS_ENUM(NSInteger, GADGender) {
 #pragma mark Testing
 
 /// Test ads will be returned for devices with device IDs specified in this array.
-@property(nonatomic, copy) NSArray *testDevices;
+@property(nonatomic, copy, GAD_NULLABLE) NSArray *testDevices;
 
 #pragma mark User Information
 
@@ -61,7 +62,7 @@ typedef NS_ENUM(NSInteger, GADGender) {
 @property(nonatomic, assign) GADGender gender;
 
 /// Provide the user's birthday to increase ad relevancy.
-@property(nonatomic, copy) NSDate *birthday;
+@property(nonatomic, copy, GAD_NULLABLE) NSDate *birthday;
 
 /// The user's current location may be used to deliver more relevant ads. However do not use Core
 /// Location just for advertising, make sure it is used for more beneficial reasons as well. It is
@@ -93,11 +94,11 @@ typedef NS_ENUM(NSInteger, GADGender) {
 
 /// Array of keyword strings. Keywords are words or phrases describing the current user activity
 /// such as @"Sports Scores" or @"Football". Set this property to nil to clear the keywords.
-@property(nonatomic, copy) NSArray *keywords;
+@property(nonatomic, copy, GAD_NULLABLE) NSArray *keywords;
 
 /// URL string for a webpage whose content matches the app content. This webpage content is used for
 /// targeting purposes.
-@property(nonatomic, copy) NSString *contentURL;
+@property(nonatomic, copy, GAD_NULLABLE) NSString *contentURL;
 
 #pragma mark Request Agent Information
 
@@ -105,7 +106,7 @@ typedef NS_ENUM(NSInteger, GADGender) {
 /// Ads SDK should set this property to denote the platform from which the ad request originated.
 /// For example, a third party ad network called "CoolAds network" that is mediating requests to the
 /// Mobile Ads SDK should set this property as "CoolAds".
-@property(nonatomic, copy) NSString *requestAgent;
+@property(nonatomic, copy, GAD_NULLABLE) NSString *requestAgent;
 
 #pragma mark Deprecated Methods
 
@@ -118,7 +119,9 @@ typedef NS_ENUM(NSInteger, GADGender) {
 /// When Core Location isn't available but the user's location is known supplying it here may
 /// deliver more relevant ads. It can be any free-form text such as @"Champs-Elysees Paris" or
 /// @"94041 US".
-- (void)setLocationWithDescription:(NSString *)locationDescription
+- (void)setLocationWithDescription:(NSString *GAD_NULLABLE_TYPE)locationDescription
     GAD_DEPRECATED_MSG_ATTRIBUTE(" use setLocationWithLatitude:longitude:accuracy:.");
 
 @end
+
+GAD_ASSUME_NONNULL_END

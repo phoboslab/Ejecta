@@ -5,6 +5,10 @@
 //  Copyright 2015 Google Inc. All rights reserved.
 //
 
+#import <GoogleMobileAds/GoogleMobileAdsDefines.h>
+
+GAD_ASSUME_NONNULL_BEGIN
+
 #pragma mark - Audio Control Notifications
 
 /// Delegate methods common to multiple ad types.
@@ -20,3 +24,5 @@
 - (BOOL)ad:(id)ad shouldChangeAudioSessionToCategory:(NSString *)audioSessionCategory;
 
 @end
+
+GAD_ASSUME_NONNULL_END

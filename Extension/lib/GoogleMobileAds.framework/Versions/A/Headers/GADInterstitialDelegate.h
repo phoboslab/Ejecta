@@ -36,6 +36,9 @@
 /// Store from a link on the interstitial).
 - (void)interstitialWillPresentScreen:(GADInterstitial *)ad;
 
+/// Called when |ad| fails to present.
+- (void)interstitialDidFailToPresentScreen:(GADInterstitial *)ad;
+
 /// Called before the interstitial is to be animated off the screen.
 - (void)interstitialWillDismissScreen:(GADInterstitial *)ad;
 

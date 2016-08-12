@@ -22,10 +22,11 @@
 
 /// Called by mediation when your custom event is scheduled to be executed. Report execution results
 /// to the delegate.
-/// \param adSize the size of the ad as configured in the mediation UI for the mediation placement.
-/// \param serverParameter parameter configured in the mediation UI.
-/// \param serverLabel label configured in the mediation UI.
-/// \param request contains ad request information.
+///
+/// \param adSize The size of the ad as configured in the mediation UI for the mediation placement.
+/// \param serverParameter Parameter configured in the mediation UI.
+/// \param serverLabel Label configured in the mediation UI.
+/// \param request Contains ad request information.
 - (void)requestBannerAd:(GADAdSize)adSize
               parameter:(NSString *)serverParameter
                   label:(NSString *)serverLabel

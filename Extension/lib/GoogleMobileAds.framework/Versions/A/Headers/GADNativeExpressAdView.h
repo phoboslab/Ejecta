@@ -10,10 +10,8 @@
 #import <GoogleMobileAds/GADAdSize.h>
 #import <GoogleMobileAds/GADNativeExpressAdViewDelegate.h>
 #import <GoogleMobileAds/GADRequest.h>
-
-#ifndef IBInspectable
-#define IBInspectable
-#endif
+#import <GoogleMobileAds/GADVideoController.h>
+#import <GoogleMobileAds/GoogleMobileAdsDefines.h>
 
 /// The view that displays native ads. A minimum implementation to get an ad from within a
 /// UIViewController class is:
@@ -31,7 +29,6 @@
 ///   // Request an ad without any additional targeting information.
 ///   [adView loadRequest:[GADRequest request]];
 ///   \endcode
-///
 @interface GADNativeExpressAdView : UIView
 
 #pragma mark - Initialization
@@ -43,6 +40,9 @@
 /// Returns an initialized GADNativeExpressAdView instance set to |adSize| and positioned at the top
 /// left of its superview. Returns nil if |adSize| is an invalid ad size.
 - (instancetype)initWithAdSize:(GADAdSize)adSize;
+
+/// Video controller for controlling video rendered by this native express ad view.
+@property(nonatomic, strong, readonly) GADVideoController *videoController;
 
 #pragma mark - Pre-Request
 
@@ -68,14 +68,20 @@
 /// GADNativeExpressAdView. Typically this is a UIViewController.
 @property(nonatomic, weak) IBOutlet id<GADNativeExpressAdViewDelegate> delegate;
 
+/// A Boolean value that determines whether autoloading of ads in the receiver is enabled. If
+/// enabled, you do not need to call the loadRequest: method to load ads.
+@property(nonatomic, assign, getter=isAutoloadEnabled) IBInspectable BOOL autoloadEnabled;
+
+/// Sets options that configure ad loading.
+///
+/// \param adOptions An array of GADAdLoaderOptions objects. The array is deep copied and option
+/// objects cannot be modified after calling this method.
+- (void)setAdOptions:(NSArray *)adOptions;
+
 #pragma mark - Making an Ad Request
 
 /// Makes an ad request. The request object supplies targeting information.
 - (void)loadRequest:(GADRequest *)request;
-
-/// A Boolean value that determines whether autoloading of ads in the receiver is enabled. If
-/// enabled, you do not need to call the loadRequest: method to load ads.
-@property(nonatomic, assign, getter=isAutoloadEnabled) IBInspectable BOOL autoloadEnabled;
 
 #pragma mark - Mediation
 

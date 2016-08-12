@@ -13,6 +13,8 @@
 #import <GoogleMobileAds/GADRequestError.h>
 #import <GoogleMobileAds/GoogleMobileAdsDefines.h>
 
+GAD_ASSUME_NONNULL_BEGIN
+
 /// An interstitial ad. This is a full-screen advertisement shown at natural transition points in
 /// your application such as between game levels or news stories.
 @interface GADInterstitial : NSObject
@@ -27,14 +29,14 @@
 #pragma mark Pre-Request
 
 /// Required value passed in with initWithAdUnitID:.
-@property(nonatomic, readonly, copy) NSString *adUnitID;
+@property(nonatomic, readonly, copy, GAD_NULLABLE) NSString *adUnitID;
 
 /// Optional delegate object that receives state change notifications from this GADInterstitalAd.
-@property(nonatomic, weak) id<GADInterstitialDelegate> delegate;
+@property(nonatomic, weak, GAD_NULLABLE) id<GADInterstitialDelegate> delegate;
 
 /// Optional delegate object that receives in-app purchase notifications from this ad. Required for
 /// the custom in-app purchase flow, but ignored when using the default in-app purchase flow.
-@property(nonatomic, weak) id<GADInAppPurchaseDelegate> inAppPurchaseDelegate;
+@property(nonatomic, weak, GAD_NULLABLE) id<GADInAppPurchaseDelegate> inAppPurchaseDelegate;
 
 #pragma mark Making an Ad Request
 
@@ -44,7 +46,7 @@
 /// This is best to do several seconds before the interstitial is needed to preload its content.
 /// Then when transitioning between view controllers show the interstital with
 /// presentFromViewController.
-- (void)loadRequest:(GADRequest *)request;
+- (void)loadRequest:(GADRequest *GAD_NULLABLE_TYPE)request;
 
 #pragma mark Post-Request
 
@@ -60,7 +62,7 @@
 /// request is in progress or if the latest ad request failed. For both standard and mediated Google
 /// AdMob ads, this method returns @"GADMAdapterGoogleAdMobAds". For ads fetched via mediation
 /// custom events, this method returns @"GADMAdapterCustomEvents".
-@property(nonatomic, readonly, copy) NSString *adNetworkClassName;
+@property(nonatomic, readonly, copy, GAD_NULLABLE) NSString *adNetworkClassName;
 
 /// Presents the interstitial ad which takes over the entire screen until the user dismisses it.
 /// This has no effect unless isReady returns YES and/or the delegate's interstitialDidReceiveAd:
@@ -78,7 +80,9 @@
 - (instancetype)init GAD_DEPRECATED_MSG_ATTRIBUTE("Use initWithAdUnitID:.");
 
 /// Deprecated setter, use initWithAdUnitID: instead.
-- (void)setAdUnitID:(NSString *)adUnitID
+- (void)setAdUnitID:(NSString *GAD_NULLABLE_TYPE)adUnitID
     GAD_DEPRECATED_MSG_ATTRIBUTE("Use initWithAdUnitID: instead of setting the ad unit ID.");
 
 @end
+
+GAD_ASSUME_NONNULL_END

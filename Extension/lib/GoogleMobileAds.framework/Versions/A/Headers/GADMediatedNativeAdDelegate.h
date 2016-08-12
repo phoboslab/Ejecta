@@ -27,10 +27,15 @@
 
 /// Tells the delegate that the mediated native ad has recorded a user click on the asset named
 /// |assetName|. Full screen actions should be presented from |viewController|. This method is
-/// called only if - [GADMAdNetworkAdapter handlesUserClicks] returns NO.
+/// called only if -[GADMAdNetworkAdapter handlesUserClicks] returns NO.
 - (void)mediatedNativeAd:(id<GADMediatedNativeAd>)mediatedNativeAd
     didRecordClickOnAssetWithName:(NSString *)assetName
                              view:(UIView *)view
                    viewController:(UIViewController *)viewController;
+
+/// Tells the delegate that the mediated native ad has untracked |view|. This method is called
+/// when the mediatedNativeAd is no longer rendered in the provided view and the delegate should
+/// stop tracking the view's impressions and clicks.
+- (void)mediatedNativeAd:(id<GADMediatedNativeAd>)mediatedNativeAd didUntrackView:(UIView *)view;
 
 @end

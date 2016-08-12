@@ -7,6 +7,10 @@
 
 #import <Foundation/Foundation.h>
 
+#import <GoogleMobileAds/GoogleMobileAdsDefines.h>
+
+GAD_ASSUME_NONNULL_BEGIN
+
 @interface GADAdReward : NSObject
 
 /// Type of the reward.
@@ -21,3 +25,5 @@
                       rewardAmount:(NSDecimalNumber *)rewardAmount NS_DESIGNATED_INITIALIZER;
 
 @end
+
+GAD_ASSUME_NONNULL_END
