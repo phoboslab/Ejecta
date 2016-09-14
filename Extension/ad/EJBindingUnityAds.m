@@ -105,7 +105,7 @@ EJ_BIND_GET(appId, ctx)
 
 EJ_BIND_GET(debug, ctx)
 {
-	return [UnityAds getDebugMode];
+	return JSValueMakeBoolean(ctx, [UnityAds getDebugMode]);
 }
 
 EJ_BIND_SET(debug, ctx, value)

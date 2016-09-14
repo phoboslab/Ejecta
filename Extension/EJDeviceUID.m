@@ -30,6 +30,12 @@
     return self;
 }
 
+- (void)dealloc {
+    [_uid release];
+    [_uidKey release];
+    [super dealloc];
+}
+
 /*! Returns the Device UID.
  The UID is obtained in a chain of fallbacks:
  - Keychain

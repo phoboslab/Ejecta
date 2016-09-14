@@ -35,6 +35,11 @@
 	return self;
 }
 
+- (void)dealloc {
+    [_accountStore release];
+    [super dealloc];
+}
+
 - (BOOL)addMultipartData:(NSString *)imgSrc request:(SLRequest *)request dataName:(NSString *)dataName {
     imgSrc = [scriptView pathForResource:imgSrc];
 	UIImage *img = [UIImage imageNamed:imgSrc];
