@@ -24,7 +24,7 @@
 - (id)initWithKey:(NSString *)key {
     self = [super init];
     if (self) {
-        _uidKey = key;
+        _uidKey = [key retain];
         _uid = nil;
     }
     return self;
