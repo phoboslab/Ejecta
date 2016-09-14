@@ -16,10 +16,10 @@ ejecta.include("example/e-init-event.js");
 
 ejecta.include("example/e-appUtils.js");
 
-// ejecta.include("example/e-test.js");
+ejecta.include("example/e-test.js");
 
 // ejecta.include("example/e-ajax.js");
-ejecta.include("example/e-websocket.js");
+// ejecta.include("example/e-websocket.js");
 
 // ejecta.include("example/e-download.js");
 // ejecta.include("example/e-screenshot.js");
@@ -31,6 +31,7 @@ ejecta.include("example/e-websocket.js");
 // ejecta.include("example/ad/e-vungle.js");
 // ejecta.include("example/ad/e-unityads.js");
 // ejecta.include("example/ad/e-adcolony.js");
+
 
 // ejecta.include("example/e-encrypt.js");
 
