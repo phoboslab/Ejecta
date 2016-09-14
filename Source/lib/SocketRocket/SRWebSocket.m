@@ -594,7 +594,7 @@ static __strong NSData *CRLFCRLF;
 	CFSocketNativeHandle *rawsock = (CFSocketNativeHandle *)CFDataGetBytePtr(socketData);
 	// Disable Nagle's algorythm
 	static const int kOne = 1;
-	int err = setsockopt(rawsock, IPPROTO_TCP, TCP_NODELAY, &kOne, sizeof(kOne));
+	int err = setsockopt(*rawsock, IPPROTO_TCP, TCP_NODELAY, &kOne, sizeof(kOne));
 	if (socketData) {
 		CFRelease(socketData);
 	}
