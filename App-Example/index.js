@@ -16,7 +16,11 @@ ejecta.include("example/e-init-event.js");
 
 ejecta.include("example/e-appUtils.js");
 
-ejecta.include("example/e-test.js");
+// ejecta.include("example/e-test.js");
+
+// ejecta.include("example/e-ajax.js");
+ejecta.include("example/e-websocket.js");
+
 // ejecta.include("example/e-download.js");
 // ejecta.include("example/e-screenshot.js");
 // ejecta.include("example/e-screenshot-share.js");
@@ -35,7 +39,5 @@ ejecta.include("example/e-test.js");
 // ejecta.include("example/e-webView.js");
 
 // ejecta.include("example/e-localNotification.js");
-
-// ejecta.include("example/e-websocket.js");
 
 // ejecta.include("example/e-gamepad.js");

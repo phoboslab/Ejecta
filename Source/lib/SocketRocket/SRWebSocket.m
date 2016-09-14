@@ -1448,6 +1448,7 @@ static const size_t SRFrameHeaderOverhead = 32;
         switch (eventCode) {
             case NSStreamEventOpenCompleted: {
                 SRFastLog(@"NSStreamEventOpenCompleted %@", aStream);
+                NSLog(@"EventOpenCompleted readyState %ld", (long)self.readyState);
 				
 				[self disableNaglesAlgorithmForStream:aStream];
 

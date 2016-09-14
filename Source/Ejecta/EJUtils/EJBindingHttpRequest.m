@@ -285,7 +285,7 @@ EJ_BIND_FUNCTION(send, ctx, argc, argv) {
 		[request setTimeoutInterval:timeoutSeconds];
 	}
 	
-	NSLog(@"XHR: %@ %@", method, url);
+	NSLog(@"XHR: %@ %@ %d", method, url, async);
 	
 	[self triggerEvent:@"loadstart"];
 	state = kEJHttpRequestStateLoading;
