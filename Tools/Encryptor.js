@@ -179,7 +179,7 @@ if (typeof module !== "undefined" && module) {
         var argsStart = 2;
 
         (function() {
-            var fileName = argv ? argv[argsStart++] || null;
+            var fileName = argv ? argv[argsStart++] : null;
             if (fileName) {
                 var outputFileName = argv[argsStart++];
                 var secretKey = argv[argsStart++] || DEFAULT_SECRET_KEY;
