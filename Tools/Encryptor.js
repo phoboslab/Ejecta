@@ -165,7 +165,10 @@ function escapeQuote(str) {
 
 if (typeof module !== "undefined" && module) {
 
+    var hasExports = false;
+
     if (typeof exports !== "undefined" && exports) {
+        hasExports = true;
         exports.encrypt = encrypt;
         exports.defaultSecretKey = DEFAULT_SECRET_KEY;
         exports.unencrypt = unencrypt;
@@ -185,7 +188,7 @@ if (typeof module !== "undefined" && module) {
                 var secretKey = argv[argsStart++] || DEFAULT_SECRET_KEY;
                 var projectPath = argv[argsStart++] || PROJECT_PATH;
                 encrypt(fileName, outputFileName, secretKey, projectPath);
-            } else {
+            } else if (hasExports) {
                 console.log(" *** No fileName *** ");
             }
         })();
