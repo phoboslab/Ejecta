@@ -21,20 +21,6 @@ var PROJECT_PATH = $path.normalize(__dirname + "/../");
 
 var check = true;
 
-if (!module.parent) {
-    var argv = process.argv;
-    var argsStart = 2;
-
-    (function() {
-        var fileName = argv[argsStart++];
-        var outputFileName = argv[argsStart++];
-        var secretKey = argv[argsStart++] || DEFAULT_SECRET_KEY;
-        var projectPath = argv[argsStart++] || PROJECT_PATH;
-        encrypt(fileName, outputFileName, secretKey, projectPath);
-    })();
-}
-
-
 function encrypt(fileName, outputFileName, secretKey, projectPath) {
     secretKey = secretKey || DEFAULT_SECRET_KEY;
     // console.log("File : " + fileName, "  Key : " + secretKey);
@@ -176,9 +162,30 @@ function escapeQuote(str) {
     return str.replace(/(")/g, '\\$1');
 }
 
-exports.encrypt = encrypt;
-exports.defaultSecretKey = DEFAULT_SECRET_KEY;
-exports.unencrypt = unencrypt;
-exports.isEncoded = isEncoded;
-exports.encode = encode;
-exports.decode = decode;
+
+if (typeof module !== "undefined" && module) {
+
+    exports.encrypt = encrypt;
+    exports.defaultSecretKey = DEFAULT_SECRET_KEY;
+    exports.unencrypt = unencrypt;
+    exports.isEncoded = isEncoded;
+    exports.encode = encode;
+    exports.decode = decode;
+
+    if (!module.parent) {
+        var argv = process.argv;
+        var argsStart = 2;
+
+        (function() {
+            var fileName = argv[argsStart++];
+            if (fileName) {
+                var outputFileName = argv[argsStart++];
+                var secretKey = argv[argsStart++] || DEFAULT_SECRET_KEY;
+                var projectPath = argv[argsStart++] || PROJECT_PATH;
+                encrypt(fileName, outputFileName, secretKey, projectPath);
+            }else{
+                console.log(" *** No fileName *** ");
+            }
+        })();
+    }
+}
