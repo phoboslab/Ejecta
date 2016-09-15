@@ -183,7 +183,7 @@ if (typeof module !== "undefined" && module) {
                 var secretKey = argv[argsStart++] || DEFAULT_SECRET_KEY;
                 var projectPath = argv[argsStart++] || PROJECT_PATH;
                 encrypt(fileName, outputFileName, secretKey, projectPath);
-            }else{
+            } else {
                 console.log(" *** No fileName *** ");
             }
         })();
