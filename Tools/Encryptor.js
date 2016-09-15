@@ -5,8 +5,8 @@
 
 "use strict";
 
-var fs = require('fs');
-var Path = require('path');
+var $fs = require('fs');
+var $path = require('path');
 
 
 var KEY_VAR_NAME = "EJ_SECRET_KEY";
@@ -17,7 +17,7 @@ var SECRET_HEADER = "=S=";
 var DEFAULT_SECRET_KEY = "SecretKey (Don't include Breakline)";
 
 var NATIVE_ENCRYPTOR = "Extension/EJBindingDecryptorXOR.h";
-var PROJECT_PATH = Path.normalize(__dirname + "/../");
+var PROJECT_PATH = $path.normalize(__dirname + "/../");
 
 var check = true;
 
@@ -39,7 +39,7 @@ function encrypt(fileName, outputFileName, secretKey, projectPath) {
     secretKey = secretKey || DEFAULT_SECRET_KEY;
     // console.log("File : " + fileName, "  Key : " + secretKey);
 
-    var fileBuffer = fs.readFileSync(fileName);
+    var fileBuffer = $fs.readFileSync(fileName);
 
     if (isEncoded(fileBuffer)) {
         console.log("Encoded, skip.")
@@ -47,14 +47,14 @@ function encrypt(fileName, outputFileName, secretKey, projectPath) {
     }
 
     var newBuffer = encode(fileBuffer, secretKey);
-    fs.writeFileSync(outputFileName, newBuffer);
+    $fs.writeFileSync(outputFileName, newBuffer);
 
     updateSecretInfo(secretKey, projectPath);
 
     if (check) {
         var decodedBuffer = decode(outputFileName, secretKey);
 
-        var baseName = Path.basename(fileName);
+        var baseName = $path.basename(fileName);
         if (fileBuffer.length != decodedBuffer.length) {
             console.log("Check failed: " + baseName + " , error length .");
             return false;
@@ -75,7 +75,7 @@ function encrypt(fileName, outputFileName, secretKey, projectPath) {
 function unencrypt(fileName, outputFileName, secretKey) {
     secretKey = secretKey || DEFAULT_SECRET_KEY;
     var newBuffer = decode(fileName, secretKey);
-    fs.writeFileSync(outputFileName, newBuffer);
+    $fs.writeFileSync(outputFileName, newBuffer);
 }
 
 function isEncoded(fileBuffer) {
@@ -97,7 +97,7 @@ function encode(file, secretKey) {
 
     var fileBuffer;
     if (typeof file == "string") {
-        fileBuffer = fs.readFileSync(file);
+        fileBuffer = $fs.readFileSync(file);
     } else {
         fileBuffer = file;
     }
@@ -130,7 +130,7 @@ function decode(file, secretKey) {
 
     var fileBuffer;
     if (typeof file == "string") {
-        fileBuffer = fs.readFileSync(file);
+        fileBuffer = $fs.readFileSync(file);
     } else {
         fileBuffer = file;
     }
@@ -157,18 +157,18 @@ function decode(file, secretKey) {
 }
 
 function updateSecretInfo(secretKey, projectPath) {
-    var nativeFile = Path.normalize((projectPath || PROJECT_PATH) + "/" + NATIVE_ENCRYPTOR);
-    if (!fs.existsSync(nativeFile)) {
+    var nativeFile = $path.normalize((projectPath || PROJECT_PATH) + "/" + NATIVE_ENCRYPTOR);
+    if (!$fs.existsSync(nativeFile)) {
         return null;
     }
-    var fileBuffer = fs.readFileSync(nativeFile, "utf8");
+    var fileBuffer = $fs.readFileSync(nativeFile, "utf8");
     var content = fileBuffer.toString();
     var key = '@"' + escapeQuote(secretKey || DEFAULT_SECRET_KEY) + '"';
     var reg = new RegExp("(\\#define[\\s]+" + KEY_VAR_NAME + "[\\s]+)[^\\n]+", "gm");
     content = content.replace(reg, '$1' + key);
 
     var newBuffer = new Buffer(content);
-    fs.writeFileSync(nativeFile, newBuffer, "utf8");
+    $fs.writeFileSync(nativeFile, newBuffer, "utf8");
     return content;
 }
 
