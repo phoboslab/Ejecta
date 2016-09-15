@@ -165,19 +165,21 @@ function escapeQuote(str) {
 
 if (typeof module !== "undefined" && module) {
 
-    exports.encrypt = encrypt;
-    exports.defaultSecretKey = DEFAULT_SECRET_KEY;
-    exports.unencrypt = unencrypt;
-    exports.isEncoded = isEncoded;
-    exports.encode = encode;
-    exports.decode = decode;
+    if (typeof exports !== "undefined" && exports) {
+        exports.encrypt = encrypt;
+        exports.defaultSecretKey = DEFAULT_SECRET_KEY;
+        exports.unencrypt = unencrypt;
+        exports.isEncoded = isEncoded;
+        exports.encode = encode;
+        exports.decode = decode;
+    }
 
     if (!module.parent) {
         var argv = process.argv;
         var argsStart = 2;
 
         (function() {
-            var fileName = argv[argsStart++];
+            var fileName = argv ? argv[argsStart++] || null;
             if (fileName) {
                 var outputFileName = argv[argsStart++];
                 var secretKey = argv[argsStart++] || DEFAULT_SECRET_KEY;
