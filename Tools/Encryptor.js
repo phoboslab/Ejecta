@@ -27,7 +27,7 @@ function encrypt(fileName, outputFileName, secretKey, projectPath) {
 
     var fileBuffer = $fs.readFileSync(fileName);
 
-    if (isEncoded(fileBuffer)) {
+    if (checkEncoded(fileBuffer)) {
         console.log("Encoded, skip.")
         return true;
     }
@@ -64,7 +64,7 @@ function unencrypt(fileName, outputFileName, secretKey) {
     $fs.writeFileSync(outputFileName, newBuffer);
 }
 
-function isEncoded(fileBuffer) {
+function checkEncoded(fileBuffer) {
     var encoded = true;
 
     var headBuffer = new Buffer(SECRET_HEADER, "utf8");
@@ -77,6 +77,11 @@ function isEncoded(fileBuffer) {
         }
     }
     return encoded;
+}
+
+function isEncodedFile(fileName) {
+    var fileBuffer = $fs.readFileSync(fileName);
+    return checkEncoded(fileBuffer);
 }
 
 function encode(file, secretKey) {
@@ -172,7 +177,7 @@ if (typeof module !== "undefined" && module) {
         exports.encrypt = encrypt;
         exports.defaultSecretKey = DEFAULT_SECRET_KEY;
         exports.unencrypt = unencrypt;
-        exports.isEncoded = isEncoded;
+        exports.checkEncoded = checkEncoded;
         exports.encode = encode;
         exports.decode = decode;
     }
