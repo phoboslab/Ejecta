@@ -58,11 +58,17 @@ function encrypt(fileName, outputFileName, secretKey, projectPath) {
     return true;
 }
 
-function unencrypt(fileName, outputFileName, secretKey) {
+function unencryptBuffer(fileName, secretKey) {
     secretKey = secretKey || DEFAULT_SECRET_KEY;
     var newBuffer = decode(fileName, secretKey);
+    return newBuffer;
+}
+
+function unencrypt(fileName, outputFileName, secretKey) {
+    var newBuffer = unencryptBuffer(fileName, secretKey);
     $fs.writeFileSync(outputFileName, newBuffer);
 }
+
 
 function checkEncoded(fileBuffer) {
     var encoded = true;
