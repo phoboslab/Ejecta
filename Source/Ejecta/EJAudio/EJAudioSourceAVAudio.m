@@ -1,5 +1,5 @@
 #import "EJAudioSourceAVAudio.h"
-
+#import "EJJavaScriptView.h"
 
 @implementation EJAudioSourceAVAudio
 
@@ -8,7 +8,8 @@
 - (id)initWithPath:(NSString *)pathp {
 	if( self = [super init] ) {
 		path = [pathp retain];
-		player = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:path] error:nil];
+        NSMutableData *data = [EJJavaScriptView loadMutableDataFromURL:path];
+        player = [[AVAudioPlayer alloc] initWithData:data error:nil];
 		player.delegate = self;
 	}
 	return self;
