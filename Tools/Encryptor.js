@@ -16,19 +16,27 @@ var HEADER_VAR_NAME = "EJ_SECRET_HEADER";
 var SECRET_HEADER = "=S=";
 var DEFAULT_SECRET_KEY = "SecretKey (Don't include Breakline)";
 
+var DEFAULT_MIN_FILE_SIZE = 0;
+
 var NATIVE_ENCRYPTOR = "Extension/EJBindingDecryptorXOR.h";
 var PROJECT_PATH = $path.normalize(__dirname + "/../");
 
 var check = true;
 
-function encrypt(fileName, outputFileName, secretKey, projectPath) {
+function encrypt(fileName, outputFileName, secretKey, minFileSize, projectPath) {
     secretKey = secretKey || DEFAULT_SECRET_KEY;
+    minFileSize = minFileSize || minFileSize === 0 ? minFileSize : DEFAULT_MIN_FILE_SIZE;
     // console.log("File : " + fileName, "  Key : " + secretKey);
 
     var fileBuffer = $fs.readFileSync(fileName);
 
+    if (minFileSize && fileBuffer.length <= minFileSize) {
+        console.log("File Too Small, skip.");
+        return true;
+    }
+
     if (checkEncoded(fileBuffer)) {
-        console.log("Encoded, skip.")
+        console.log("File Encoded, skip.");
         return true;
     }
 
@@ -197,8 +205,9 @@ if (typeof module !== "undefined" && module) {
             if (fileName) {
                 var outputFileName = argv[argsStart++];
                 var secretKey = argv[argsStart++] || DEFAULT_SECRET_KEY;
+                var minFileSize = DEFAULT_MIN_FILE_SIZE;
                 var projectPath = argv[argsStart++] || PROJECT_PATH;
-                encrypt(fileName, outputFileName, secretKey, projectPath);
+                encrypt(fileName, outputFileName, secretKey, minFileSize, projectPath);
             } else if (hasExports) {
                 console.log(" *** No fileName *** ");
             }

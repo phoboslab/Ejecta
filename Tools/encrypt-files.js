@@ -14,7 +14,11 @@ var encrypt = require(root + 'Tools/Encryptor.js');
 var arg = process.argv[2];
 var encryptJS = !arg || arg === "js" || arg === "all";
 var encryptImg = arg === "img" || arg === "all";
-var encryptAudio = arg === "audio" ; //|| arg === "all";
+var encryptAudio = arg === "audio" || arg === "all";
+
+var secretKey = process.argv[3] || null;
+
+var minAudioSize = 512 * 1024 + 64;
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -28,13 +32,15 @@ var distPath = root + "App/";
 var distResPath = root + "App/res";
 
 
-function encryptFiles(files) {
+function encryptFiles(files, secretKey, minFileSize) {
+
+    console.log(" Secret Key : ", secretKey);
     var ok = true;
     files.forEach(function(file) {
-        if (file.indexOf("index.js")!=-1){
+        if (file.indexOf("index.js") != -1) {
             return;
         }
-        var rs = encrypt.encrypt(file, file, null, root);
+        var rs = encrypt.encrypt(file, file, secretKey, minFileSize, root);
         ok = ok && rs;
         if (!rs) {
             console.log("Check failed: " + file + " , error byte .");
@@ -46,22 +52,22 @@ function encryptFiles(files) {
 if (!fs.existsSync(distPath)) {
     fs.mkdirSync(distPath);
 }
-if (encryptJS) {
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+if (encryptJS) {
+    // encrypt JS
     var files = glob.sync(devPath + "/**/*.js", {});
-    var ok = encryptFiles(files);
+    var ok = encryptFiles(files, secretKey);
     console.log("encrypt JS : " + ok);
 }
-
-
-///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
 
 if (encryptImg) {
     // encrypt Image
     var files = glob.sync(Path.normalize(distResPath + "/**/*.png"), {});
     files = files.concat(glob.sync(Path.normalize(distResPath + "/**/*.jpg"), {}));
-    var ok = encryptFiles(files);
+    var ok = encryptFiles(files, secretKey);
     console.log("encrypt Image : " + ok);
 }
 
@@ -69,7 +75,7 @@ if (encryptAudio) {
     // encrypt Audio
     var files = glob.sync(Path.normalize(distResPath + "/**/*.mp3"), {});
     files = files.concat(glob.sync(Path.normalize(distResPath + "/**/*.ogg"), {}));
-    var ok = encryptFiles(files);
+    var ok = encryptFiles(files, secretKey, minAudioSize);
     console.log("encrypt Audio : " + ok);
 }
 
