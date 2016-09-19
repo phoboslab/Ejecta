@@ -18,7 +18,8 @@ var encryptAudio = arg === "audio" || arg === "all";
 
 var secretKey = process.argv[3] || null;
 
-var minAudioSize = 512 * 1024 + 64;
+// var minAudioSize = 512 * 1024 + 256;
+var minAudioSize = 0;
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

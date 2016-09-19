@@ -168,7 +168,14 @@ NSString * const kEJBindingAudio_elementObject = @"object";
 	
 	if( size <= EJ_AUDIO_OPENAL_MAX_SIZE ) {
 		NSLog(@"Loading Sound(OpenAL): %@", path);
-		source = [[EJAudioSourceOpenAL alloc] initWithPath:fullPath];
+
+        NSMutableData *data = [EJJavaScriptView loadMutableDataFromURL:fullPath];        
+        NSCharacterSet *notAllowed = [[NSCharacterSet characterSetWithCharactersInString:@".\\/"] invertedSet];
+        NSString *escapedPath = [path stringByAddingPercentEncodingWithAllowedCharacters:notAllowed];
+        NSString *tmpPath = [ NSTemporaryDirectory() stringByAppendingString:escapedPath];
+        [data writeToFile:tmpPath atomically:YES];
+
+		source = [[EJAudioSourceOpenAL alloc] initWithPath:tmpPath];
 	}
 	else {
 		NSLog(@"Loading Sound(AVAudio): %@", path);
