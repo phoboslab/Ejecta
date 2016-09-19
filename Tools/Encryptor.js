@@ -30,13 +30,15 @@ function encrypt(fileName, outputFileName, secretKey, minFileSize, projectPath) 
 
     var fileBuffer = $fs.readFileSync(fileName);
 
+    var _name = $path.basename(fileName);
+
     if (minFileSize && fileBuffer.length <= minFileSize) {
-        console.log("File Too Small, skip.");
+        console.log(" --- " + _name + " --- Too Small, skip.");
         return true;
     }
 
     if (checkEncoded(fileBuffer)) {
-        console.log("File Encoded, skip.");
+        console.log(" --- " + _name + " --- Encoded, skip.");
         return true;
     }
 
