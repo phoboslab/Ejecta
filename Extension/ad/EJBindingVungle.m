@@ -43,15 +43,14 @@
 }
 
 - (void)vungleSDKwillCloseAdWithViewInfo:(NSDictionary *)viewInfo willPresentProductSheet:(BOOL)willPresentProductSheet {
-    NSLog(@"vungleSDKwillCloseAdWithViewInfo %d", willPresentProductSheet);
 
-//    "playTime":15,"didDownload":false,"videoLength":15,"completedView":true
-	
 	BOOL completed = [[viewInfo objectForKey:@"completedView"] boolValue];
-	
+
+    NSLog(@"vungleSDKwillCloseAdWithViewInfo %d %d", willPresentProductSheet, completed);
+
+    // "playTime":15,"didDownload":false,"videoLength":15,"completedView":true
 	JSValueRef jsViewInfo = NSObjectToJSValue(scriptView.jsGlobalContext,@{
 								   @"playTime": [viewInfo objectForKey:@"playTime"],
-								   @"videoLength": [viewInfo objectForKey:@"videoLength"],
 								   @"completedView": [viewInfo objectForKey:@"completedView"],
 								   @"didDownload": [viewInfo objectForKey:@"didDownload"],
 								   @"willPresentProductSheet": @(willPresentProductSheet)
