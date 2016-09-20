@@ -99,9 +99,9 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
     
     // Retain the caches here, so even if they're currently unused in JavaScript,
     // they will persist until the last scriptView is released
-    textureCache = [[EJSharedTextureCache instance] retain];
-    openALManager = [[EJSharedOpenALManager instance] retain];
-    openGLContext = [[EJSharedOpenGLContext instance] retain];
+    textureCache = [EJSharedTextureCache.instance retain];
+    openALManager = [EJSharedOpenALManager.instance retain];
+    openGLContext = [EJSharedOpenGLContext.instance retain];
     
     // Create the OpenGL context for Canvas2D
     glCurrentContext = openGLContext.glContext2D;
@@ -256,7 +256,7 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 	JSStringRef scriptJS = JSStringCreateWithCFString((CFStringRef)script);
 	JSStringRef sourceURLJS = NULL;
     
-	if( [sourceURL length] > 0 ) {
+	if( sourceURL.length > 0 ) {
 		sourceURLJS = JSStringCreateWithCFString((CFStringRef)sourceURL);
 	}
     
@@ -350,6 +350,17 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 		if( !obj ) { break; }
 	}
 	return obj;
+}
+
+- (JSObjectRef)createFunctionWithBlock:(JSValueRef (^)(JSContextRef ctx, size_t argc, const JSValueRef argv[]))block {
+	if( !jsBlockFunctionClass ) {
+		JSClassDefinition blockFunctionClassDef = kJSClassDefinitionEmpty;
+		blockFunctionClassDef.callAsFunction = EJBlockFunctionCallAsFunction;
+		blockFunctionClassDef.finalize = EJBlockFunctionFinalize;
+		jsBlockFunctionClass = JSClassCreate(&blockFunctionClassDef);
+	}
+	
+	return JSObjectMake( jsGlobalContext, jsBlockFunctionClass, (void *)Block_copy(block) );
 }
 
 
@@ -468,8 +479,7 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 }
 
 
-//TODO: Does this belong in this class?
-#pragma mark
+#pragma mark -
 #pragma mark Timers
 
 - (JSValueRef)createTimer:(JSContextRef)ctxp argc:(size_t)argc argv:(const JSValueRef [])argv repeat:(BOOL)repeat {
@@ -500,15 +510,5 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 	return NULL;
 }
 
-- (JSObjectRef)createFunctionWithBlock:(JSValueRef (^)(JSContextRef ctx, size_t argc, const JSValueRef argv[]))block {
-	if( !jsBlockFunctionClass ) {
-		JSClassDefinition blockFunctionClassDef = kJSClassDefinitionEmpty;
-		blockFunctionClassDef.callAsFunction = EJBlockFunctionCallAsFunction;
-		blockFunctionClassDef.finalize = EJBlockFunctionFinalize;
-		jsBlockFunctionClass = JSClassCreate(&blockFunctionClassDef);
-	}
-	
-	return JSObjectMake( jsGlobalContext, jsBlockFunctionClass, (void *)Block_copy(block) );
-}
 
 @end

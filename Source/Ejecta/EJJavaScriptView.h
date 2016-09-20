@@ -1,3 +1,14 @@
+// The EJJavaScriptView is the main hub for everything that happens in Ejecta.
+// Its a subclass of UIView, receives all input (touch, motion) and other events
+// and distributes them to other classes.
+
+// The JavaScriptView hosts the JSContext that is shared by Canvases and other
+// objects running in that view. It provides the main functionality to execute
+// JavaScript source code and handles updating the "run loop".
+
+// In theory, it should be possible to run several of these views in parallel,
+// should your app require it - similar to having separate tabs in a browser. 
+
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
 #import <JavaScriptCore/JavaScriptCore.h>

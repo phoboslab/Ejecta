@@ -1,3 +1,6 @@
+// Some conversion functions from JavaScript objects to native that didn't fit
+// anywhere else.
+
 #import <Foundation/Foundation.h>
 #import <JavaScriptCore/JavaScriptCore.h>
 #import <OpenGLES/ES2/gl.h>

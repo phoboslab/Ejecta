@@ -1,3 +1,6 @@
+// The binding class for an EJTextMetrics struct as created by an EJFontLayout
+// instance.
+
 #import "EJBindingBase.h"
 #import "EJFont.h"
 

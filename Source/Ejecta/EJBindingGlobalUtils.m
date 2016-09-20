@@ -1,4 +1,4 @@
-#import "EJBindingEjectaCore.h"
+#import "EJBindingGlobalUtils.h"
 
 #import <netinet/in.h>
 #import <sys/utsname.h>
@@ -9,7 +9,7 @@
 
 #import "EJJavaScriptView.h"
 
-@implementation EJBindingEjectaCore
+@implementation EJBindingGlobalUtils
 
 - (NSString*)deviceName {
 	struct utsname systemInfo;

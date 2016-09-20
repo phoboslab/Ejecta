@@ -123,6 +123,7 @@
 }
 @end
 
+
 @implementation EJBindingWebGLFramebuffer
 - (void)invalidate {
 	[webglContext deleteFramebuffer:index];
@@ -130,12 +131,14 @@
 }
 @end
 
+
 @implementation EJBindingWebGLVertexArrayObjectOES
 - (void)invalidate {
 	[webglContext deleteVertexArray:index];
 	[super invalidate];
 }
 @end
+
 
 @implementation EJBindingWebGLActiveInfo
 
@@ -198,7 +201,6 @@ EJ_BIND_GET(precision, ctx) { return JSValueMakeNumber(ctx, precision); }
 }
 
 @end
-
 
 
 @implementation EJBindingWebGLContextAttributes : EJBindingBase

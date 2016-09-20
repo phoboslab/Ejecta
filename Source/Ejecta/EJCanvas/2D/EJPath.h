@@ -1,3 +1,17 @@
+// This class handles path creation and rendering. Calling any of the Path's
+// drawing methods will append transformed vertices to the Path's internal
+// vertex buffer.
+
+// The rendering is done in two steps:
+// 1) the EJPath instance itself will directly push its internal vertex buffer
+//    to OpenGL but only renders to an OpenGL Stencil buffer.
+// 2) EJPath will call the CanvasContext2D's pushRect method to fill the OpenGL
+//    color buffer according to this stencil.
+
+// Creation of the individual vertices and also rendering polygons is relatively
+// straight forward. Rendering of strokes however is extremely convoluted
+// to handle various miter and cap rules and open and closed paths. I'm sorry :/
+
 #import <UIKit/UIKit.h>
 #import "EJCanvas2DTypes.h"
 

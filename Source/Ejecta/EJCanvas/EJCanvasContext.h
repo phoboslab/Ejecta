@@ -1,3 +1,6 @@
+// The base class each Canvas Context (2D or WebGL) is derived from, so it can
+// be hosted by a Canvas.
+
 #import <Foundation/Foundation.h>
 
 @class EAGLContext;

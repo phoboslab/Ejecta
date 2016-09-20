@@ -1,3 +1,7 @@
+// The binding for the CanvasPattern. It's just a wrapper around the actual
+// EJCanvasPattern implementation, so a pattern can be passed around in
+// JavaScript.
+
 #import "EJBindingBase.h"
 #import "EJCanvasPattern.h"
 

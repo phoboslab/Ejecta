@@ -1,3 +1,10 @@
+// EJBindingKeyInput allows you to bring up and control the on-screen keyboard
+// and prompt the user for text.
+
+// The implementation somewhat mimics an invisible <input/> field in the browser
+// - you can .focus() and .blur() it and read the .value. The Ejecta.js also
+// sets this up so that you can instantiate this class via
+// document.createElement('input');
 
 #import "EJBindingEventedBase.h"
 

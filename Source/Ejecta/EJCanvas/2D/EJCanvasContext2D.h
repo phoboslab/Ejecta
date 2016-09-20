@@ -1,3 +1,16 @@
+// This class handles the gist of all the Canvas2D state, stack and drawing.
+
+// All drawing operations go through one of the pushQuad, pushRect etc. methods
+// which transform and write vertex and texture coords into a buffer. This
+// buffer is automatically flushed (i.e. rendered to the screen) whenever some
+// OpenGL state changes (texture or shader bindings, blend modes, etc.), when
+// the frame needs presenting or simply when the buffer is full.
+
+// This ensures that even when drawing thousands of sprites, only one draw call
+// to OpenGL is issued, provided that no texture changes happen in between.
+
+// Path and Font rendering are handled by the EJPath and EJFont classes.
+
 #import <Foundation/Foundation.h>
 #import "EJTexture.h"
 #import "EJImageData.h"

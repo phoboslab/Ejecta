@@ -1,3 +1,24 @@
+// The Texture class is used for everything that provides pixel data in some way
+// and should be drawable to a Context. The most obvious use case is as the
+// pixel data of an Image element. However, Canvas elements themselfs may need
+// to be drawn to other Canvases and thus create a Texture of their contents on
+// the fly.
+
+// EJTexture is also extensively used in 2D Contexts for Fonts, Gradients,
+// Patterns and ImageData.
+
+// A lot of work goes into making sure that Textures can be shared between
+// different 2D and WebGL contexts and keeping track of mutability. The actual
+// Texture Data is held in a separate EJTextureStorage class, so that 2D and
+// WebGL textures can share the same data, but have different binding
+// attributes. This also allows us to release and reload the texture's pixel
+// data on demand while keeping the Texture itself around.
+
+// All textures are represented with premultiplied alpha in memory. However,
+// ImageData objects for 2D Canvases expect the raw pixel data to be
+// unpremultiplied, so this class provides some static methods to premultiply
+// and unpremultiply raw pixel data.
+
 #import <UIKit/UIKit.h>
 #import <OpenGLES/EAGL.h>
 #import <OpenGLES/ES2/gl.h>

@@ -1,3 +1,9 @@
+// OpenGL Vertex and Fragment Shader sources for all Canvas2D rendering
+// operations. The Vertex Shader is the same for all ops.
+
+// The compilation of these Shaders happens lazily in the global
+// EJShardeOpenGLContext to ensure that they only have to be compiled once.
+
 #define EJ_SHADER_SOURCE(NAME, ...) const char * const NAME = #__VA_ARGS__;
 
 EJ_SHADER_SOURCE(EJShaderVertex,

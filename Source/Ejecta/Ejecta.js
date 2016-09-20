@@ -12,7 +12,7 @@ window.top = window.parent = window;
 (function(window) {
 
 // The 'ej' object provides some basic info and utility functions
-var ej = window.ejecta = new Ejecta.EjectaCore();
+var ej = window.ejecta = new Ejecta.GlobalUtils();
 
 // Set up the screen properties and useragent
 window.devicePixelRatio = ej.devicePixelRatio;
@@ -228,7 +228,7 @@ HTMLElement.prototype.appendChild = function( element ) {
 
 HTMLElement.prototype.insertBefore = function( newElement, existingElement ) {
 	// Just append; we don't care about order here
-	this.children.push( newElement );
+	this.appendChild( newElement );
 };
 
 HTMLElement.prototype.removeChild = function( node ) {

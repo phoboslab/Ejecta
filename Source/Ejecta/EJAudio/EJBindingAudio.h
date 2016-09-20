@@ -1,3 +1,6 @@
+// This provides an <audio> element to JavaScript. Each instance has its own
+// AudioSource - either backed by AVAudio or OpenAL.
+
 #import <Foundation/Foundation.h>
 #import "EJBindingEventedBase.h"
 

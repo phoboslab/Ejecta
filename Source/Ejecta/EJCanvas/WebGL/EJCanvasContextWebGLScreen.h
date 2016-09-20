@@ -1,3 +1,5 @@
+// Subclass of EJCanvasContextWebGL that renders to the screne (a UIView)
+
 #import "EJCanvasContextWebGL.h"
 #import "EAGLView.h"
 #import "EJPresentable.h"

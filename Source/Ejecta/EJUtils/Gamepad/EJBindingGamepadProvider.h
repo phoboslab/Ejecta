@@ -1,3 +1,8 @@
+// The GamepadProvides implements the `gamepadconnected` and
+// `gamepaddisconnected` events as well as the windows's getGamepads() method.
+// The whole API, including Gamepad and Button instances, is closely modeled
+// after the w3c spec.
+
 #import <GameController/GameController.h>
 #import "EJBindingEventedBase.h"
 

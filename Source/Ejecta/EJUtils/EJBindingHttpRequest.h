@@ -1,3 +1,7 @@
+// This class implements the XMLHttpRequest API quite closely to the w3c spec.
+// Notably absent is the ability to load binary data as Blob. Luckily, Blobs
+// are stupid anyway and ArrayBuffers nicely fill the gap.
+
 #import "EJBindingEventedBase.h"
 
 typedef enum {

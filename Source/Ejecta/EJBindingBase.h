@@ -1,28 +1,45 @@
+// This is where the magic happens. EJBindingBase is the Base class for all
+// native Obj-C classes that expose functions and properties to JavaScript.
+
+// A subclass of EJBindingBase whose name begins with "EJBinding" is
+// automatically exposed to JavaScript at the global "Ejecta" object. E.g. the
+// class "EJBindingFoo" can be instantiated in JavaScript with:
+// var foo = new Ejecta.Foo();
+
+// This header provides some nasty C-macros that let you easily expose functions
+// and properties of your class.
+
+// The class itself just provide a reference to the JavaScript "jsObject" of the
+// instance, a reference to the EJJavaScriptView where this instance was created
+// and constructor and destructor functions.
+
 #import <Foundation/Foundation.h>
 #import "EJAppViewController.h"
 #import "EJJavaScriptView.h"
 
 #include <objc/message.h>
 
+
 // (Not sure if clever hack or really stupid...)
 
-// All classes derived from this EJBindingBase will return a JSClassRef through the 
-// 'getJSClass' class method. The properties and functions that are exposed to 
-// JavaScript are defined through the 'staticFunctions' and 'staticValues' in this 
-// JSClassRef.
+// All classes derived from this EJBindingBase will return a JSClassRef through
+// the 'getJSClass' class method. The properties and functions that are exposed
+// to JavaScript are defined through the 'staticFunctions' and 'staticValues' in
+// this JSClassRef.
 
-// Since these functions don't have extra data (e.g. a void*), we have to define a 
-// C callback function for each js function, for each js getter and for each js setter.
+// Since these functions don't have extra data (e.g. a void*), we have to define
+// a C callback function for each js function, for each js getter and for each
+// js setter.
 
-// Furthermore, a class method is added to the objc class to return the function pointer
-// to the particular C callback function - this way we can later inflect the objc class
-// and gather all function pointers.
+// Furthermore, a class method is added to the objc class to return the function
+// pointer to the particular C callback function - this way we can later inflect
+// the objc class and gather all function pointers.
 
 
 #define EJ_BINDING_CLASS_PREFIX "EJBinding"
 
-// We need to cast objc_msgSend into the proper function types for bound functions
-// to ensure 64bit compatability
+// We need to cast objc_msgSend into the proper function types for bound
+// functions to ensure 64bit compatability
 
 #define _EJ_CALL_BOUND_OBJC_FUNC(INSTANCE, NAME, CTX, ARGC, ARGV) \
 	((JSValueRef(*)(id, SEL, JSContextRef, size_t, const JSValueRef [])) \
@@ -44,7 +61,8 @@
 	}
 
 
-// ------------------------------------------------------------------------------------
+
+
 // Function - use with EJ_BIND_FUNCTION( functionName, ctx, argc, argv ) { ... }
 
 #define EJ_BIND_FUNCTION(NAME, CTX_NAME, ARGC_NAME, ARGV_NAME) \
@@ -68,7 +86,8 @@
 	- (JSValueRef)_func_##NAME:(JSContextRef)CTX_NAME argc:(size_t)ARGC_NAME argv:(const JSValueRef [])ARGV_NAME
 
 
-// ------------------------------------------------------------------------------------
+
+
 // Getter - use with EJ_BIND_GET( propertyName, ctx ) { ... }
 
 #define EJ_BIND_GET(NAME, CTX_NAME) \
@@ -89,7 +108,8 @@
 	- (JSValueRef)_get_##NAME:(JSContextRef)CTX_NAME
 
 
-// ------------------------------------------------------------------------------------
+
+
 // Setter - use with EJ_BIND_SET( propertyName, ctx, value ) { ... }
 
 #define EJ_BIND_SET(NAME, CTX_NAME, VALUE_NAME) \
@@ -113,7 +133,7 @@
 		
 
 
-// ------------------------------------------------------------------------------------
+
 // Shorthand to define a function that logs a "not implemented" warning
 
 #define EJ_BIND_FUNCTION_NOT_IMPLEMENTED(NAME) \
@@ -136,7 +156,8 @@
 	__EJ_GET_POINTER_TO(_func_##NAME)
 
 
-// ------------------------------------------------------------------------------------
+
+
 // Shorthand to bind enums with name tables - use with
 // EJ_BIND_ENUM( name, target, "name1", "name2", ...) );
 
@@ -174,7 +195,8 @@ static inline bool JSStrIsEqualToStr( const JSChar *s1, const char *s2, size_t l
 }
 
 
-// ------------------------------------------------------------------------------------
+
+
 // Shorthand to bind const numbers and strings
 
 #define EJ_BIND_CONST(NAME, VALUE) \
@@ -182,18 +204,20 @@ static inline bool JSStrIsEqualToStr( const JSChar *s1, const char *s2, size_t l
 		return @(VALUE); \
 	}
 
+
 // Commas can't be used directly in macro arguments
 #define _EJ_COMMA() ,
 #define _EJ_EMPTY()
 #define _EJ_LITERAL(X) X _EJ_EMPTY
 
 
-// ------------------------------------------------------------------------------------
-// Expand a F(INDEX,ARG) macro for each argument, max 16 arguments - use with
+
+
+// Expand a F(INDEX, ARG) macro for each argument, max 16 arguments - use with
 // EJ_MAP( F, arg1, arg2, ... );
 
-// An offset for the index as well as a joiner (a macro that is expanded between each
-// F() expansion) can be specified with
+// An offset for the index as well as a joiner (a macro that is expanded between
+// each F() expansion) can be specified with:
 // EJ_MAP_EXT( OFFSET, JOINER, F, arg1, arg2 );
 
 // Adopted from https://github.com/swansontec/map-macro
@@ -217,14 +241,16 @@ static inline bool JSStrIsEqualToStr( const JSChar *s1, const char *s2, size_t l
 #define _EJ_MAP1(IDX, JOINER, F, NAME, PEEK, ...) F(IDX, NAME) _EJ_MAP_NEXT(JOINER, PEEK, _EJ_MAP0) (IDX+1, JOINER, F, PEEK, __VA_ARGS__)
 
 
-// ------------------------------------------------------------------------------------
+
+
 // EJ_ARGC(...) - get the argument count in a macro with __VA_ARGS__; max 16 args
 
 #define EJ_ARGC(...) _EJ_ARGC_SEQ(__VA_ARGS__,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1)
 #define _EJ_ARGC_SEQ(x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11,x12,x13,x14,x15,x16,n,...) n
 
 
-// ------------------------------------------------------------------------------------
+
+
 // Unpack JavaScript values to numbers - use with
 // EJ_UNPACK_ARGV(float value1, int value2, ...);
 // or with an offset into argv
@@ -238,6 +264,8 @@ static inline bool JSStrIsEqualToStr( const JSChar *s1, const char *s2, size_t l
 	EJ_MAP_EXT(OFFSET, _EJ_LITERAL(;), _EJ_UNPACK_NUMBER, __VA_ARGS__)
 	
 #define _EJ_UNPACK_NUMBER(INDEX, NAME) NAME = JSValueToNumberFast(ctx, argv[INDEX])
+
+
 
 
 @class EJJavaScriptView;
