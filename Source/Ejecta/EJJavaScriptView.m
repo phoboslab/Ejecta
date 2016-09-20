@@ -3,6 +3,7 @@
 #import "EJBindingBase.h"
 #import "EJClassLoader.h"
 #import <objc/runtime.h>
+#import <AVFoundation/AVFoundation.h>
 
 
 // Block function callbacks
@@ -382,6 +383,10 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 	[windowEventsDelegate pause];
 	[displayLink removeFromRunLoop:NSRunLoop.currentRunLoop forMode:NSDefaultRunLoopMode];
 	[screenRenderingContext finish];
+
+	[AVAudioSession.sharedInstance setActive:NO error:NULL];
+	[openALManager beginInterruption];
+	
 	isPaused = true;
 }
 
@@ -391,6 +396,10 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 	[windowEventsDelegate resume];
 	[EAGLContext setCurrentContext:glCurrentContext];
 	[displayLink addToRunLoop:NSRunLoop.currentRunLoop forMode:NSDefaultRunLoopMode];
+
+	[AVAudioSession.sharedInstance setActive:YES error:NULL];
+	[openALManager endInterruption];
+	
 	isPaused = false;
 }
 

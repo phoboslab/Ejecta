@@ -10,6 +10,9 @@
 }
 
 + (EJSharedOpenALManager *)instance;
+- (void)beginInterruption;
+- (void)endInterruption;
+
 @property (readonly, nonatomic) NSMutableDictionary *buffers;
 
 @end

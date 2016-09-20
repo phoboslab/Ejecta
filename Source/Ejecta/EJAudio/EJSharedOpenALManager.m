@@ -11,6 +11,17 @@ static EJSharedOpenALManager *sharedOpenALManager;
     return sharedOpenALManager;
 }
 
+- (void)beginInterruption {
+	alcMakeContextCurrent(NULL);
+}
+
+- (void)endInterruption {
+	if (context) {
+		alcMakeContextCurrent(context);
+		alcProcessContext(context);
+	}
+}
+
 - (NSMutableDictionary*)buffers {
 	if( !buffers ) {
 		// Create a non-retaining Dictionary to hold the cached buffers
