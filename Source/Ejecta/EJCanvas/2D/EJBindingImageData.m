@@ -46,12 +46,12 @@ EJ_BIND_GET(data, ctx ) {
 		int byteLength = imageData.width * imageData.height * 4;
 		
 		dataArray = JSObjectMakeTypedArray(ctx, kJSTypedArrayTypeUint8ClampedArray, byteLength);
-		JSValueProtect(ctx, dataArray);
-		
 		[EJTexture
 			unPremultiplyPixels:imageData.pixels.bytes
 			to:JSObjectGetTypedArrayDataPtr(ctx, dataArray, NULL)
 			byteLength:byteLength format:GL_RGBA];
+		
+		JSValueProtect(ctx, dataArray);
 	}
 	return dataArray;
 }

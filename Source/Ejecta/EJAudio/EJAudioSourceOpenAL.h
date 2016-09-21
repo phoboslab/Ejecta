@@ -1,3 +1,9 @@
+// An Audio Source backed by OpenAL. Several instances of AudioSourceOpenAL
+// may share the same underlying OpenALBuffer instance.
+
+// OpenAL sources are loaded fully into memory but provide lower latency
+// and "rapid fire" playback in contrast to AVAudio sources. 
+
 #import <Foundation/Foundation.h>
 
 #import <OpenAL/al.h>

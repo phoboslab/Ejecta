@@ -391,17 +391,17 @@ EJ_BIND_FUNCTION(createPattern, ctx, argc, argv) {
 	return [EJBindingCanvasPattern createJSObjectWithContext:ctx scriptView:scriptView pattern:pattern];
 }
 
-EJ_BIND_FUNCTION( beginPath, ctx, argc, argv ) {
+EJ_BIND_FUNCTION(beginPath, ctx, argc, argv) {
 	[renderingContext beginPath];
 	return NULL;
 }
 
-EJ_BIND_FUNCTION( closePath, ctx, argc, argv ) {
+EJ_BIND_FUNCTION(closePath, ctx, argc, argv) {
 	[renderingContext closePath];
 	return NULL;
 }
 
-EJ_BIND_FUNCTION( fill, ctx, argc, argv ) {
+EJ_BIND_FUNCTION(fill, ctx, argc, argv) {
 	EJPathFillRule fillRule = (argc > 0 && [JSValueToNSString(ctx, argv[0]) isEqualToString:@"evenodd"])
 		? kEJPathFillRuleEvenOdd
 		: kEJPathFillRuleNonZero;
@@ -411,50 +411,50 @@ EJ_BIND_FUNCTION( fill, ctx, argc, argv ) {
 	return NULL;
 }
 
-EJ_BIND_FUNCTION( stroke, ctx, argc, argv ) {
+EJ_BIND_FUNCTION(stroke, ctx, argc, argv) {
 	scriptView.currentRenderingContext = renderingContext;
 	[renderingContext stroke];
 	return NULL;
 }
 
-EJ_BIND_FUNCTION( moveTo, ctx, argc, argv ) {
+EJ_BIND_FUNCTION(moveTo, ctx, argc, argv) {
 	EJ_UNPACK_ARGV(float x, float y);
 	[renderingContext moveToX:x y:y];
 	
 	return NULL;
 }
 
-EJ_BIND_FUNCTION( lineTo, ctx, argc, argv ) {
+EJ_BIND_FUNCTION(lineTo, ctx, argc, argv) {
 	EJ_UNPACK_ARGV(float x, float y);
 	[renderingContext lineToX:x y:y];
 	return NULL;
 }
 
-EJ_BIND_FUNCTION( rect, ctx, argc, argv ) {
+EJ_BIND_FUNCTION(rect, ctx, argc, argv) {
 	EJ_UNPACK_ARGV(float x, float y, float w, float h);
 	[renderingContext rectX:x y:y w:w h:h];
 	return NULL;
 }
 
-EJ_BIND_FUNCTION( bezierCurveTo, ctx, argc, argv ) {
+EJ_BIND_FUNCTION(bezierCurveTo, ctx, argc, argv) {
 	EJ_UNPACK_ARGV(float cpx1, float cpy1, float cpx2, float cpy2, float x, float y);
 	[renderingContext bezierCurveToCpx1:cpx1 cpy1:cpy1 cpx2:cpx2 cpy2:cpy2 x:x y:y];
 	return NULL;
 }
 
-EJ_BIND_FUNCTION( quadraticCurveTo, ctx, argc, argv ) {
+EJ_BIND_FUNCTION(quadraticCurveTo, ctx, argc, argv) {
 	EJ_UNPACK_ARGV(float cpx, float cpy, float x, float y);
 	[renderingContext quadraticCurveToCpx:cpx cpy:cpy x:x y:y];
 	return NULL;
 }
 
-EJ_BIND_FUNCTION( arcTo, ctx, argc, argv ) {
+EJ_BIND_FUNCTION(arcTo, ctx, argc, argv) {
 	EJ_UNPACK_ARGV(float x1, float y1, float x2, float y2, float radius);
 	[renderingContext arcToX1:x1 y1:y1 x2:x2 y2:y2 radius:radius];
 	return NULL;
 }
 
-EJ_BIND_FUNCTION( arc, ctx, argc, argv ) {
+EJ_BIND_FUNCTION(arc, ctx, argc, argv) {
 	EJ_UNPACK_ARGV(float x, float y, float radius, float startAngle, float endAngle);
 	BOOL antiClockwise = (argc > 5 ? JSValueToNumberFast(ctx, argv[5]) : NO);
 	
@@ -462,7 +462,7 @@ EJ_BIND_FUNCTION( arc, ctx, argc, argv ) {
 	return NULL;
 }
 
-EJ_BIND_FUNCTION( measureText, ctx, argc, argv ) {
+EJ_BIND_FUNCTION(measureText, ctx, argc, argv) {
 	if( argc < 1 ) { return NULL; }
 	
 	NSString *string = JSValueToNSString(ctx, argv[0]);
@@ -471,7 +471,7 @@ EJ_BIND_FUNCTION( measureText, ctx, argc, argv ) {
 	return [EJBindingTextMetrics createJSObjectWithContext:ctx scriptView:scriptView metrics:metrics];
 }
 
-EJ_BIND_FUNCTION( fillText, ctx, argc, argv ) {
+EJ_BIND_FUNCTION(fillText, ctx, argc, argv) {
 	EJ_UNPACK_ARGV_OFFSET(1, float x, float y);
 	NSString *string = JSValueToNSString(ctx, argv[0]);
 	
@@ -480,7 +480,7 @@ EJ_BIND_FUNCTION( fillText, ctx, argc, argv ) {
 	return NULL;
 }
 
-EJ_BIND_FUNCTION( strokeText, ctx, argc, argv ) {
+EJ_BIND_FUNCTION(strokeText, ctx, argc, argv) {
 	EJ_UNPACK_ARGV_OFFSET(1, float x, float y);
 	NSString *string = JSValueToNSString(ctx, argv[0]);
 	
@@ -489,7 +489,7 @@ EJ_BIND_FUNCTION( strokeText, ctx, argc, argv ) {
 	return NULL;
 }
 
-EJ_BIND_FUNCTION( clip, ctx, argc, argv ) {
+EJ_BIND_FUNCTION(clip, ctx, argc, argv) {
 	EJPathFillRule fillRule = (argc > 0 && [JSValueToNSString(ctx, argv[0]) isEqualToString:@"evenodd"])
 		? kEJPathFillRuleEvenOdd
 		: kEJPathFillRuleNonZero;
@@ -499,7 +499,7 @@ EJ_BIND_FUNCTION( clip, ctx, argc, argv ) {
 	return NULL;
 }
 
-EJ_BIND_FUNCTION( resetClip, ctx, argc, argv ) {
+EJ_BIND_FUNCTION(resetClip, ctx, argc, argv) {
 	scriptView.currentRenderingContext = renderingContext;
 	[renderingContext resetClip];
 	return NULL;

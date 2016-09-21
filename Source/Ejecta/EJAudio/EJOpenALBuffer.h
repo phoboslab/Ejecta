@@ -1,3 +1,7 @@
+// An OpenAL audio buffer that may be used by several OpenAL Audio sources.
+// This class takes care of loading an audio file from disk and decoding it
+// into a memory buffer.
+
 #import <Foundation/Foundation.h>
 
 #import <OpenAL/al.h>

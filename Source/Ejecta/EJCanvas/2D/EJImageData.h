@@ -1,3 +1,6 @@
+// EJImageData contains the actual pixel data bytes in an NSMutableData.
+// Accessing the .texture property will create a texture with those bytes.
+
 #import <Foundation/Foundation.h>
 #import "EJTexture.h"
 

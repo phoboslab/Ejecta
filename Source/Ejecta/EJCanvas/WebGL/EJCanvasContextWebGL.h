@@ -1,3 +1,7 @@
+// The CanvasContextWebGL mainly deals with the default render- and framebuffer
+// for WebGL. Most of the WebGL implementation can be found in the
+// EJBindingCanvasContextWebGL class.
+
 #import "EJCanvasContext.h"
 
 #define EJ_WEBGL_DEFAULT_FRAMEBUFFER -1

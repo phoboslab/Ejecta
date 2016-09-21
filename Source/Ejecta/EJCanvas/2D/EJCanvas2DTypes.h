@@ -1,3 +1,7 @@
+// This file hosts the EJColorRGBA and EJVector2 and EJVertex structs that are
+// used all throughout Canvas2D. Some inline functions for manipulating
+// EJVectors also ended up here for no good reason.
+
 #import <Foundation/Foundation.h>
 #import <math.h>
 

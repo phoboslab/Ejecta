@@ -1,3 +1,5 @@
+// The EJCanvas2D subclass that handles rendering to the screen (i.e. a UIView)
+
 #import "EJCanvasContext2D.h"
 #import "EAGLView.h"
 #import "EJPresentable.h"

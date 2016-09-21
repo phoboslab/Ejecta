@@ -3,6 +3,7 @@
 #import "EJBindingBase.h"
 #import "EJClassLoader.h"
 #import <objc/runtime.h>
+#import <AVFoundation/AVFoundation.h>
 
 
 // Block function callbacks
@@ -92,7 +93,13 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 	startTime = NSDate.timeIntervalSinceReferenceDate;
     
     displayLink = [[CADisplayLink displayLinkWithTarget:proxy selector:@selector(run:)] retain];
-    [displayLink setFrameInterval:1];
+
+    if (EJECTA_SYSTEM_VERSION_LESS_THAN(@"10")){
+        [displayLink setFrameInterval:1];
+    }else{
+        displayLink.preferredFramesPerSecond = 60;
+    }
+
     [displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
     
     // Create the global JS context in its own group, so it can be released properly
@@ -113,9 +120,9 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
     
     // Retain the caches here, so even if they're currently unused in JavaScript,
     // they will persist until the last scriptView is released
-    textureCache = [[EJSharedTextureCache instance] retain];
-    openALManager = [[EJSharedOpenALManager instance] retain];
-    openGLContext = [[EJSharedOpenGLContext instance] retain];
+    textureCache = [EJSharedTextureCache.instance retain];
+    openALManager = [EJSharedOpenALManager.instance retain];
+    openGLContext = [EJSharedOpenGLContext.instance retain];
     
     // Create the OpenGL context for Canvas2D
     glCurrentContext = openGLContext.glContext2D;
@@ -254,7 +261,7 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 	JSStringRef scriptJS = JSStringCreateWithCFString((CFStringRef)script);
 	JSStringRef sourceURLJS = NULL;
     
-	if( [sourceURL length] > 0 ) {
+	if( sourceURL.length > 0 ) {
 		sourceURLJS = JSStringCreateWithCFString((CFStringRef)sourceURL);
 	}
     
@@ -354,6 +361,17 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 	return obj;
 }
 
+- (JSObjectRef)createFunctionWithBlock:(JSValueRef (^)(JSContextRef ctx, size_t argc, const JSValueRef argv[]))block {
+	if( !jsBlockFunctionClass ) {
+		JSClassDefinition blockFunctionClassDef = kJSClassDefinitionEmpty;
+		blockFunctionClassDef.callAsFunction = EJBlockFunctionCallAsFunction;
+		blockFunctionClassDef.finalize = EJBlockFunctionFinalize;
+		jsBlockFunctionClass = JSClassCreate(&blockFunctionClassDef);
+	}
+	
+	return JSObjectMake( jsGlobalContext, jsBlockFunctionClass, (void *)Block_copy(block) );
+}
+
 
 #pragma mark -
 #pragma mark Run loop
@@ -385,6 +403,10 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 	[windowEventsDelegate pause];
 	[displayLink removeFromRunLoop:NSRunLoop.currentRunLoop forMode:NSDefaultRunLoopMode];
 	[screenRenderingContext finish];
+
+	[AVAudioSession.sharedInstance setActive:NO error:NULL];
+	[openALManager beginInterruption];
+	
 	isPaused = true;
 }
 
@@ -394,6 +416,10 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 	[windowEventsDelegate resume];
 	[EAGLContext setCurrentContext:glCurrentContext];
 	[displayLink addToRunLoop:NSRunLoop.currentRunLoop forMode:NSDefaultRunLoopMode];
+
+	[AVAudioSession.sharedInstance setActive:YES error:NULL];
+	[openALManager endInterruption];
+	
 	isPaused = false;
 }
 
@@ -469,8 +495,7 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 #endif
 
 
-//TODO: Does this belong in this class?
-#pragma mark
+#pragma mark -
 #pragma mark Timers
 
 - (JSValueRef)createTimer:(JSContextRef)ctxp argc:(size_t)argc argv:(const JSValueRef [])argv repeat:(BOOL)repeat {
@@ -501,16 +526,6 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 	return NULL;
 }
 
-- (JSObjectRef)createFunctionWithBlock:(JSValueRef (^)(JSContextRef ctx, size_t argc, const JSValueRef argv[]))block {
-	if( !jsBlockFunctionClass ) {
-		JSClassDefinition blockFunctionClassDef = kJSClassDefinitionEmpty;
-		blockFunctionClassDef.callAsFunction = EJBlockFunctionCallAsFunction;
-		blockFunctionClassDef.finalize = EJBlockFunctionFinalize;
-		jsBlockFunctionClass = JSClassCreate(&blockFunctionClassDef);
-	}
-	
-	return JSObjectMake( jsGlobalContext, jsBlockFunctionClass, (void *)Block_copy(block) );
-}
 
 
 

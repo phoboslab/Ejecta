@@ -1,3 +1,6 @@
+// The CanvasPattern is a simple wrapper around EJTexture. Actual rendering of a
+// pattern is handled in EJCanvasContext2D by the pushPatternedRect method.
+
 #import <Foundation/Foundation.h>
 #import "EJTexture.h"
 #import "EJCanvasContext2D.h"

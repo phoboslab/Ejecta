@@ -1,3 +1,10 @@
+// The Canvas object exposed to JavaScript. The Ejecta.js sets it up to be
+// instantiated through `document.createElement('canvas')`.
+
+// A Canvas object starts as an empty shell that just has a `width`, `height`
+// and `style`, until getContext() is called. A Canvas can either host a 2D
+// or WebGL Context.
+
 #import "EJBindingBase.h"
 #import "EJTexture.h"
 #import "EJDrawable.h"

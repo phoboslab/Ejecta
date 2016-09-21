@@ -1,3 +1,6 @@
+// EJBindingGamepad provides an implementation for a single Gamepad.
+// Eeach instance hosts an array of buttons and axis.
+
 #import <GameController/GameController.h>
 #import "EJBindingEventedBase.h"
 

@@ -388,6 +388,7 @@ EJ_BIND_FUNCTION(bufferSubData, ctx, argc, argv) {
 	if( buffer ) {
 		glBufferSubData(target, offset, size, buffer);
 	}
+	
 	return NULL;
 }
 

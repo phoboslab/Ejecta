@@ -86,7 +86,7 @@
 		5CAE533E1C2C240C00FA70DD /* EJOpenALBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE61B166682700087CF94 /* EJOpenALBuffer.m */; };
 		5CAE533F1C2C240C00FA70DD /* EJSharedOpenALManager.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE61D166682700087CF94 /* EJSharedOpenALManager.m */; };
 		5CAE53401C2C240C00FA70DD /* EJBindingBase.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE61F166682700087CF94 /* EJBindingBase.m */; };
-		5CAE53411C2C240C00FA70DD /* EJBindingEjectaCore.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE621166682700087CF94 /* EJBindingEjectaCore.m */; };
+		5CAE53411C2C240C00FA70DD /* EJBindingGlobalUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE621166682700087CF94 /* EJBindingGlobalUtils.m */; };
 		5CAE53421C2C240C00FA70DD /* EJBindingEventedBase.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE623166682700087CF94 /* EJBindingEventedBase.m */; };
 		5CAE53431C2C240C00FA70DD /* EAGLView.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE626166682700087CF94 /* EAGLView.m */; };
 		5CAE53441C2C240C00FA70DD /* EJBindingImage.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE62A166682700087CF94 /* EJBindingImage.m */; };
@@ -197,7 +197,7 @@
 		5CF6ABDF1C402FCD009C3CF4 /* EJOpenALBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE61B166682700087CF94 /* EJOpenALBuffer.m */; };
 		5CF6ABE11C402FCD009C3CF4 /* EJSharedOpenALManager.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE61D166682700087CF94 /* EJSharedOpenALManager.m */; };
 		5CF6ABE21C402FCD009C3CF4 /* EJBindingBase.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE61F166682700087CF94 /* EJBindingBase.m */; };
-		5CF6ABE31C402FCD009C3CF4 /* EJBindingEjectaCore.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE621166682700087CF94 /* EJBindingEjectaCore.m */; };
+		5CF6ABE31C402FCD009C3CF4 /* EJBindingGlobalUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE621166682700087CF94 /* EJBindingGlobalUtils.m */; };
 		5CF6ABE41C402FCD009C3CF4 /* EJBindingEventedBase.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE623166682700087CF94 /* EJBindingEventedBase.m */; };
 		5CF6ABE51C402FCD009C3CF4 /* EAGLView.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE626166682700087CF94 /* EAGLView.m */; };
 		5CF6ABE61C402FCD009C3CF4 /* EJBindingImage.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE62A166682700087CF94 /* EJBindingImage.m */; };
@@ -335,7 +335,7 @@
 		B64CE666166682700087CF94 /* EJOpenALBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE61B166682700087CF94 /* EJOpenALBuffer.m */; };
 		B64CE667166682700087CF94 /* EJSharedOpenALManager.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE61D166682700087CF94 /* EJSharedOpenALManager.m */; };
 		B64CE668166682700087CF94 /* EJBindingBase.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE61F166682700087CF94 /* EJBindingBase.m */; };
-		B64CE669166682700087CF94 /* EJBindingEjectaCore.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE621166682700087CF94 /* EJBindingEjectaCore.m */; };
+		B64CE669166682700087CF94 /* EJBindingGlobalUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE621166682700087CF94 /* EJBindingGlobalUtils.m */; };
 		B64CE66A166682700087CF94 /* EJBindingEventedBase.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE623166682700087CF94 /* EJBindingEventedBase.m */; };
 		B64CE66B166682700087CF94 /* EAGLView.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE626166682700087CF94 /* EAGLView.m */; };
 		B64CE66D166682700087CF94 /* EJBindingImage.m in Sources */ = {isa = PBXBuildFile; fileRef = B64CE62A166682700087CF94 /* EJBindingImage.m */; };
@@ -536,8 +536,8 @@
 		B64CE61D166682700087CF94 /* EJSharedOpenALManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJSharedOpenALManager.m; sourceTree = "<group>"; };
 		B64CE61E166682700087CF94 /* EJBindingBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingBase.h; sourceTree = "<group>"; };
 		B64CE61F166682700087CF94 /* EJBindingBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingBase.m; sourceTree = "<group>"; };
-		B64CE620166682700087CF94 /* EJBindingEjectaCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingEjectaCore.h; sourceTree = "<group>"; };
-		B64CE621166682700087CF94 /* EJBindingEjectaCore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingEjectaCore.m; sourceTree = "<group>"; };
+		B64CE620166682700087CF94 /* EJBindingGlobalUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingGlobalUtils.h; sourceTree = "<group>"; };
+		B64CE621166682700087CF94 /* EJBindingGlobalUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingGlobalUtils.m; sourceTree = "<group>"; };
 		B64CE622166682700087CF94 /* EJBindingEventedBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EJBindingEventedBase.h; sourceTree = "<group>"; };
 		B64CE623166682700087CF94 /* EJBindingEventedBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EJBindingEventedBase.m; sourceTree = "<group>"; };
 		B64CE625166682700087CF94 /* EAGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EAGLView.h; sourceTree = "<group>"; };
@@ -1046,8 +1046,8 @@
 				B64CE61F166682700087CF94 /* EJBindingBase.m */,
 				B64CE622166682700087CF94 /* EJBindingEventedBase.h */,
 				B64CE623166682700087CF94 /* EJBindingEventedBase.m */,
-				B64CE620166682700087CF94 /* EJBindingEjectaCore.h */,
-				B64CE621166682700087CF94 /* EJBindingEjectaCore.m */,
+				B64CE620166682700087CF94 /* EJBindingGlobalUtils.h */,
+				B64CE621166682700087CF94 /* EJBindingGlobalUtils.m */,
 				B64CE63D166682700087CF94 /* EJConvert.h */,
 				B64CE63E166682700087CF94 /* EJConvert.m */,
 				B64CE640166682700087CF94 /* EJTimer.h */,
@@ -1399,7 +1399,7 @@
 				5CF6ABC51C3FED37009C3CF4 /* EJBindingUnityAds.m in Sources */,
 				B64CE667166682700087CF94 /* EJSharedOpenALManager.m in Sources */,
 				B64CE668166682700087CF94 /* EJBindingBase.m in Sources */,
-				B64CE669166682700087CF94 /* EJBindingEjectaCore.m in Sources */,
+				B64CE669166682700087CF94 /* EJBindingGlobalUtils.m in Sources */,
 				B64CE66A166682700087CF94 /* EJBindingEventedBase.m in Sources */,
 				B64CE66B166682700087CF94 /* EAGLView.m in Sources */,
 				B64CE66D166682700087CF94 /* EJBindingImage.m in Sources */,
@@ -1491,7 +1491,7 @@
 				5CAE533E1C2C240C00FA70DD /* EJOpenALBuffer.m in Sources */,
 				5CAE533F1C2C240C00FA70DD /* EJSharedOpenALManager.m in Sources */,
 				5CAE53401C2C240C00FA70DD /* EJBindingBase.m in Sources */,
-				5CAE53411C2C240C00FA70DD /* EJBindingEjectaCore.m in Sources */,
+				5CAE53411C2C240C00FA70DD /* EJBindingGlobalUtils.m in Sources */,
 				5CAE53421C2C240C00FA70DD /* EJBindingEventedBase.m in Sources */,
 				5CAE53431C2C240C00FA70DD /* EAGLView.m in Sources */,
 				5CAE53441C2C240C00FA70DD /* EJBindingImage.m in Sources */,
@@ -1569,7 +1569,7 @@
 				5CF6ABDF1C402FCD009C3CF4 /* EJOpenALBuffer.m in Sources */,
 				5CF6ABE11C402FCD009C3CF4 /* EJSharedOpenALManager.m in Sources */,
 				5CF6ABE21C402FCD009C3CF4 /* EJBindingBase.m in Sources */,
-				5CF6ABE31C402FCD009C3CF4 /* EJBindingEjectaCore.m in Sources */,
+				5CF6ABE31C402FCD009C3CF4 /* EJBindingGlobalUtils.m in Sources */,
 				5CF6ABE41C402FCD009C3CF4 /* EJBindingEventedBase.m in Sources */,
 				5CF6ABE51C402FCD009C3CF4 /* EAGLView.m in Sources */,
 				5CF6ABE61C402FCD009C3CF4 /* EJBindingImage.m in Sources */,

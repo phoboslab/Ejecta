@@ -393,7 +393,7 @@ const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
 			t12 = {a21.x + a12.x, a21.y + a12.y},
 			t22 = {a21.x + a22.x, a21.y + a22.y};
 		
-		[self setProgram:sharedGLContext.glProgram2DTexture];
+		[self setProgram:sharedGLContext.programTexture];
 		[self setTexture:gradient.texture];
 		if( vertexBufferIndex >= vertexBufferSize - 6 ) {
 			[self flushBuffers];
@@ -427,7 +427,7 @@ const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
 	else if( gradient.type == kEJCanvasGradientTypeRadial ) {
 		[self flushBuffers];
 				
-		EJGLProgram2DRadialGradient *gradientProgram = sharedGLContext.glProgram2DRadialGradient;
+		EJGLProgram2DRadialGradient *gradientProgram = sharedGLContext.programRadialGradient;
 		[self setProgram:gradientProgram];
 		
 		glUniform3f(gradientProgram.inner, gradient.p1.x, gradient.p1.y, gradient.r1);
@@ -460,7 +460,7 @@ const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
 	}
 
 	if( pw > 0 && ph > 0 ) { // We may have to skip entirely
-		[self setProgram:sharedGLContext.glProgram2DPattern];
+		[self setProgram:sharedGLContext.programPattern];
 		[self setTexture:texture];
 		
 		[self pushTexturedRectX:x y:y w:pw h:ph tx:x/tw ty:y/th tw:pw/tw th:ph/th
@@ -470,7 +470,7 @@ const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
 	if( pw < w || ph < h ) {
 		// Draw clearing rect for the stencil buffer if we didn't fill everything with
 		// the pattern image - happens when not repeating in both directions
-		[self setProgram:sharedGLContext.glProgram2DFlat];
+		[self setProgram:sharedGLContext.programFlat];
 		EJColorRGBA transparentBlack = {.hex = 0x00000000};
 		[self pushRectX:x y:y w:w h:h color:transparentBlack withTransform:transform];
 	}
@@ -616,7 +616,7 @@ const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
 	
 	// Render clip path, if present and different
 	if( state->clipPath && state->clipPath != oldClipPath ) {
-		[self setProgram:sharedGLContext.glProgram2DFlat];
+		[self setProgram:sharedGLContext.programFlat];
 		[state->clipPath drawPolygonsToContext:self fillRule:state->clipPath.fillRule target:kEJPathPolygonTargetDepth];
 	}
 }
@@ -652,7 +652,7 @@ const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
 	float tw = texture.width;
 	float th = texture.height;
 	
-	[self setProgram:sharedGLContext.glProgram2DTexture];
+	[self setProgram:sharedGLContext.programTexture];
 	[self setTexture:texture];
 	[self pushTexturedRectX:dx y:dy w:dw h:dh tx:sx/tw ty:sy/th tw:sw/tw th:sh/th
 		color:EJCanvasBlendWhiteColor(state) withTransform:state->transform];
@@ -664,7 +664,7 @@ const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
 			color:EJCanvasBlendWhiteColor(state) withTransform:state->transform];
 	}
 	else {
-		[self setProgram:sharedGLContext.glProgram2DFlat];
+		[self setProgram:sharedGLContext.programFlat];
 		
 		EJColorRGBA cc = EJCanvasBlendFillColor(state);
 		[self pushRectX:x y:y w:w h:h
@@ -684,13 +684,13 @@ const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
 	[tempPath lineToX:x y:y+h];
 	[tempPath close];
 	
-	[self setProgram:sharedGLContext.glProgram2DFlat];
+	[self setProgram:sharedGLContext.programFlat];
 	[tempPath drawLinesToContext:self];
 	[tempPath release];
 }
 
 - (void)clearRectX:(float)x y:(float)y w:(float)w h:(float)h {
-	[self setProgram:sharedGLContext.glProgram2DFlat];
+	[self setProgram:sharedGLContext.programFlat];
 	
 	EJCompositeOperation oldOp = state->globalCompositeOperation;
 	self.globalCompositeOperation = kEJCompositeOperationDestinationOut;
@@ -721,7 +721,7 @@ const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
 
 - (void)putImageData:(EJImageData*)imageData dx:(float)dx dy:(float)dy {
 	EJTexture *texture = imageData.texture;
-	[self setProgram:sharedGLContext.glProgram2DTexture];
+	[self setProgram:sharedGLContext.programTexture];
 	[self setTexture:texture];
 	
 	short tw = texture.width;
@@ -747,12 +747,12 @@ const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
 }
 
 - (void)fill:(EJPathFillRule)fillRule {
-	[self setProgram:sharedGLContext.glProgram2DFlat];
+	[self setProgram:sharedGLContext.programFlat];
 	[path drawPolygonsToContext:self fillRule:fillRule target:kEJPathPolygonTargetColor];
 }
 
 - (void)stroke {
-	[self setProgram:sharedGLContext.glProgram2DFlat];
+	[self setProgram:sharedGLContext.programFlat];
 	[path drawLinesToContext:self];
 }
 
@@ -797,7 +797,7 @@ const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
 	float scale = CGAffineTransformGetScale( state->transform );
 	EJFont *font = [fontCache fontWithDescriptor:state->font contentScale:scale];
 	
-	[self setProgram:sharedGLContext.glProgram2DAlphaTexture];
+	[self setProgram:sharedGLContext.programAlphaTexture];
 	[font drawString:text toContext:self x:x y:y];
 }
 
@@ -805,7 +805,7 @@ const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
 	float scale = CGAffineTransformGetScale( state->transform );
 	EJFont *font = [fontCache outlineFontWithDescriptor:state->font lineWidth:state->lineWidth contentScale:scale];
 	
-	[self setProgram:sharedGLContext.glProgram2DAlphaTexture];
+	[self setProgram:sharedGLContext.programAlphaTexture];
 	[font drawString:text toContext:self x:x y:y];
 }
 
@@ -821,7 +821,7 @@ const EJCompositeOperationFunc EJCompositeOperationFuncs[] = {
 	state->clipPath = nil;
 	
 	state->clipPath = path.copy;
-	[self setProgram:sharedGLContext.glProgram2DFlat];
+	[self setProgram:sharedGLContext.programFlat];
 	[state->clipPath drawPolygonsToContext:self fillRule:fillRule target:kEJPathPolygonTargetDepth];
 }
 

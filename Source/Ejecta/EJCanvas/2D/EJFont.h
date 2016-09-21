@@ -1,3 +1,20 @@
+// This file contains the EJFontDescriptor, EJFontLayout and EJFont classes.
+
+// EJFontDescriptor describes a font face and size and is used as a cache key
+// into the EJFontCache. The Canvas2D implementation only holds an instance
+// to a descriptor and leaves actual Font creation to the EJFontCache.
+
+// EJFontLayout describes the layout of a string - i.e. the relative positon of
+// each of a fonts glyph. This layout may get cached by EJFont internally, so it
+// doesn't need to be recalculated when drawing the same string multiple times.
+
+// EJFontLayout also hosts a EJTextMetrics struct that describes the text
+// string's full widht, ascent and descent.
+
+// EJFont finally is responsible for creating one or more glyph atlases,
+// computing the layout for a string and pushing glyphs to CanvasContext2D.
+// Glyphs are lazily rendered into an atlas. 
+
 #import "EJTexture.h"
 #import <CoreText/CoreText.h>
 #import <QuartzCore/QuartzCore.h>

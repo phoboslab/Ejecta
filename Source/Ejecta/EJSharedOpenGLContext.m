@@ -3,11 +3,11 @@
 
 @implementation EJSharedOpenGLContext
 
-@synthesize glProgram2DFlat;
-@synthesize glProgram2DTexture;
-@synthesize glProgram2DAlphaTexture;
-@synthesize glProgram2DPattern;
-@synthesize glProgram2DRadialGradient;
+@synthesize programFlat;
+@synthesize programTexture;
+@synthesize programAlphaTexture;
+@synthesize programPattern;
+@synthesize programRadialGradient;
 @synthesize glContext2D;
 @synthesize glSharegroup;
 
@@ -30,11 +30,11 @@ static EJSharedOpenGLContext *sharedOpenGLContext;
 - (void)dealloc {
 	sharedOpenGLContext = nil;
 	
-	[glProgram2DFlat release];
-	[glProgram2DTexture release];
-	[glProgram2DAlphaTexture release];
-	[glProgram2DPattern release];
-	[glProgram2DRadialGradient release];
+	[programFlat release];
+	[programTexture release];
+	[programAlphaTexture release];
+	[programPattern release];
+	[programRadialGradient release];
 	[glContext2D release];
 	[vertexBuffer release];
 	
@@ -50,11 +50,11 @@ static EJSharedOpenGLContext *sharedOpenGLContext;
 }
 
 #define EJ_GL_PROGRAM_GETTER(TYPE, NAME) \
-	- (TYPE *)glProgram2D##NAME { \
-		if( !glProgram2D##NAME ) { \
-			glProgram2D##NAME = [[TYPE alloc] initWithVertexShader:EJShaderVertex fragmentShader:EJShader##NAME]; \
+	- (TYPE *)program##NAME { \
+		if( !program##NAME ) { \
+			program##NAME = [[TYPE alloc] initWithVertexShader:EJShaderVertex fragmentShader:EJShader##NAME]; \
 		} \
-	return glProgram2D##NAME; \
+	return program##NAME; \
 	}
 
 EJ_GL_PROGRAM_GETTER(EJGLProgram2D, Flat);

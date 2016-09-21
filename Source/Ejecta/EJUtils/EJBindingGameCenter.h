@@ -1,3 +1,6 @@
+// This class implements some of the iOS GameCenter functionality, such as
+// highscores, achievements and loading player info.
+
 #import "EJBindingBase.h"
 #import <GameKit/GameKit.h>
 

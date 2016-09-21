@@ -1,3 +1,8 @@
+// This class exposes WebSockets to JavaScript. It's a wrapper around the
+// excellent SocketRocket library, whose API is closely modeled after the w3c JS
+// API. So this wrapper is pretty thin.
+
+
 #import "EJBindingEventedBase.h"
 #import "SRWebSocket.h"
 

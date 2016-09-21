@@ -1,3 +1,6 @@
+// The protocol that all Audio Source types have to conform with in order to
+// be used as the source for an EJBindingAudio element.
+
 #import <UIKit/UIKit.h>
 
 @protocol EJAudioSourceDelegate;

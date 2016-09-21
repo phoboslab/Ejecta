@@ -1,3 +1,7 @@
+// An instance of EJBindingGamepadButton represents a single button on a
+// Gamepad. It provides just two getters: a normalized `value` and the boolean
+// `pressed`.
+
 #import <GameController/GameController.h>
 #import "EJBindingEventedBase.h"
 

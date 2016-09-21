@@ -10,6 +10,7 @@
 		controller = [controllerp retain];
 		index = indexp;
 		connected = YES;
+		
 		allowsRotation = YES;
 		reportsAbsoluteDpadValues = YES;
 		controller.playerIndex = index;

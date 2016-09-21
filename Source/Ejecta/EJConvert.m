@@ -24,6 +24,8 @@ JSValueRef NSStringToJSValue( JSContextRef ctx, NSString *string ) {
 // This functions comes in a 64bit and 32bit flavor, since the NaN-Boxing
 // in JSC works a bit differently on each platforms. For an explanation
 // of the taggging refer to JSC/runtime/JSCJSValue.h
+// The 32bit version just calls the normal JSValueToNumber() function
+// and is thus a lot slower.
 
 #if __LP64__ // arm64 version
 	double JSValueToNumberFast(JSContextRef ctx, JSValueRef v) {
