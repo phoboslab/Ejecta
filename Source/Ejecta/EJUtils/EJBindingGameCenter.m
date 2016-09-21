@@ -279,21 +279,39 @@ EJ_BIND_FUNCTION( loadFriends, ctx, argc, argv ) {
 	JSValueProtect(ctx, callback);
 
 	GKLocalPlayer *player = [GKLocalPlayer localPlayer];
-	[player loadFriendPlayersWithCompletionHandler:^(NSArray *friendIds, NSError *error) {
-		ExitWithCallbackOnError(callback, error);
-		
-		[GKPlayer loadPlayersForIdentifiers:friendIds withCompletionHandler:^(NSArray *players, NSError *error) {
-			ExitWithCallbackOnError(callback, error);
-			
-			// Transform GKPlayers Array to Array of NSDictionary so InvokeAndUnprotectCallback
-			// is happy to convert it to JSON
-			NSMutableArray *playersArray = [NSMutableArray arrayWithCapacity:players.count];
-			for( GKPlayer *player in players ) {
-				[playersArray addObject: GKPlayerToNSDict(player)];
-			}
-			InvokeAndUnprotectCallback(callback, error, playersArray);
-		}];
-	}];
+    
+    if (EJECTA_SYSTEM_VERSION_LESS_THAN(@"10")){
+#if !TARGET_OS_TV
+        [player loadFriendPlayersWithCompletionHandler:^(NSArray *friendIds, NSError *error) {
+            ExitWithCallbackOnError(callback, error);
+            
+            [GKPlayer loadPlayersForIdentifiers:friendIds withCompletionHandler:^(NSArray *players, NSError *error) {
+                ExitWithCallbackOnError(callback, error);
+                
+                // Transform GKPlayers Array to Array of NSDictionary so InvokeAndUnprotectCallback
+                // is happy to convert it to JSON
+                NSMutableArray *playersArray = [NSMutableArray arrayWithCapacity:players.count];
+                for( GKPlayer *player in players ) {
+                    [playersArray addObject: GKPlayerToNSDict(player)];
+                }
+                InvokeAndUnprotectCallback(callback, error, playersArray);
+            }];
+        }];
+#endif
+    }else{
+        [player loadRecentPlayersWithCompletionHandler:^(NSArray<GKPlayer *> *recentPlayers, NSError *error) {
+            ExitWithCallbackOnError(callback, error);
+            
+            // Transform GKPlayers Array to Array of NSDictionary so InvokeAndUnprotectCallback
+            // is happy to convert it to JSON
+            NSMutableArray *playersArray = [NSMutableArray arrayWithCapacity:recentPlayers.count];
+            for( GKPlayer *player in recentPlayers ) {
+                [playersArray addObject: GKPlayerToNSDict(player)];
+            }
+            InvokeAndUnprotectCallback(callback, error, playersArray);
+        }];
+    }
+
 
 	return NULL;
 }
@@ -420,9 +438,21 @@ EJ_BIND_FUNCTION(retrieveFriends, ctx, argc, argv)
 
 	if (authed) {
 		GKLocalPlayer *player = [GKLocalPlayer localPlayer];
-		[player loadFriendPlayersWithCompletionHandler: ^(NSArray *friends, NSError *error) {
-		    [self loadPlayers:friends callback:callback];
-		}];
+        if (EJECTA_SYSTEM_VERSION_LESS_THAN(@"10")){
+#if !TARGET_OS_TV
+            [player loadFriendPlayersWithCompletionHandler: ^(NSArray *friends, NSError *error) {
+                [self loadPlayers:friends callback:callback];
+            }];
+#endif
+        }else{
+            [player loadRecentPlayersWithCompletionHandler:^(NSArray<GKPlayer *> *recentPlayers, NSError *error) {
+                NSMutableArray *friends = [NSMutableArray arrayWithCapacity:recentPlayers.count];
+                for( GKPlayer *player in recentPlayers ) {
+                    [friends addObject: player.playerID];
+                }
+                [self loadPlayers:friends callback:callback];
+            }];
+        }
 	}
 	else {
 		JSValueRef params[] = { NULL, NULL };
