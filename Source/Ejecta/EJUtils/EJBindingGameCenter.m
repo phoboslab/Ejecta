@@ -261,20 +261,16 @@ EJ_BIND_FUNCTION( loadFriends, ctx, argc, argv ) {
 	JSValueProtect(ctx, callback);
 
 	GKLocalPlayer *player = [GKLocalPlayer localPlayer];
-	[player loadFriendPlayersWithCompletionHandler:^(NSArray *friendIds, NSError *error) {
+	[player loadRecentPlayersWithCompletionHandler:^(NSArray<GKPlayer *> *recentPlayers, NSError *error) {
 		ExitWithCallbackOnError(callback, error);
 		
-		[GKPlayer loadPlayersForIdentifiers:friendIds withCompletionHandler:^(NSArray *players, NSError *error) {
-			ExitWithCallbackOnError(callback, error);
-			
-			// Transform GKPlayers Array to Array of NSDictionary so InvokeAndUnprotectCallback
-			// is happy to convert it to JSON
-			NSMutableArray *playersArray = [NSMutableArray arrayWithCapacity:players.count];
-			for( GKPlayer *player in players ) {
-				[playersArray addObject: GKPlayerToNSDict(player)];
-			}
-			InvokeAndUnprotectCallback(callback, error, playersArray);
-		}];
+		// Transform GKPlayers Array to Array of NSDictionary so InvokeAndUnprotectCallback
+		// is happy to convert it to JSON
+		NSMutableArray *playersArray = [NSMutableArray arrayWithCapacity:recentPlayers.count];
+		for( GKPlayer *player in recentPlayers ) {
+			[playersArray addObject: GKPlayerToNSDict(player)];
+		}
+		InvokeAndUnprotectCallback(callback, error, playersArray);
 	}];
 
 	return NULL;
