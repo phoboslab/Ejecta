@@ -85,7 +85,6 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
     timers = [[EJTimerCollection alloc] initWithScriptView:self];
     
     displayLink = [[CADisplayLink displayLinkWithTarget:proxy selector:@selector(run:)] retain];
-	displayLink.preferredFramesPerSecond = 60;
     [displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
     
     // Create the global JS context in its own group, so it can be released properly
