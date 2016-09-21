@@ -1,7 +1,7 @@
 /*
  * Chartboost.h
  * Chartboost
- * 6.4.7
+ * 6.5.1
  *
  * Copyright 2011 Chartboost. All rights reserved.
  */
@@ -101,7 +101,9 @@ typedef NS_ENUM(NSUInteger, CBLoadError) {
     /*! Error downloading asset. */
     CBLoadErrorAssetDownloadFailure = 16,
     /*! Video Prefetching is not finished */
-    CBLoadErrorPrefetchingIncomplete = 21
+    CBLoadErrorPrefetchingIncomplete = 21,
+    /*! Error Originating from the JS side of a Web View */
+    CBLoadErrorWebViewScriptError = 22
 };
 
 /*!
@@ -431,7 +433,19 @@ extern CBLocation const CBLocationDefault;
  @discussion This is an internal method used via Chartboost's Unity and Corona SDKs
  to track their usage.
  */
-+ (void)setFrameworkVersion:(NSString*)frameworkVersion;
++ (void)setFrameworkVersion:(NSString*)frameworkVersion __attribute__((deprecated("This method is deprecated, please use  + (void)setChartboostWrapperVersion:(NSString*)chartboostWrapperVersion instead")));
+
+/*!
+ @abstract
+ Set a custom version to append to the POST body of every request. This is useful for analytics and provides chartboost with important information.
+ example: [Chartboost setChartboostWrapperVersion:@"6.4.6"];
+
+ @param chartboostWrapperVersion The version sent as a string.
+
+ @discussion This is an internal method used via Chartboost's Unity and Corona SDKs
+ to track their usage.
+ */
++ (void)setChartboostWrapperVersion:(NSString*)chartboostWrapperVersion;
     
 /*!
  @abstract
@@ -442,7 +456,7 @@ extern CBLocation const CBLocationDefault;
  @discussion This is an internal method used via Chartboost's Unity and Corona SDKs
  to track their usage.
  */
-+ (void)setFramework:(CBFramework)framework;
++ (void)setFramework:(CBFramework)framework __attribute__((deprecated("This method is deprecated, please use  + (void)setFramework:(CBFramework)framework withVersion:(NSString *)version; instead")));
 
 /*!
  @abstract
@@ -590,14 +604,6 @@ example setFramework:Unity withVersion:4.6, setFrameworkVersion:5.2.1
  developer to manage the caching behavior of Chartboost impressions.
  */
 + (BOOL)getAutoCacheAds;
-
-/*!
- @abstract
- Close any visible chartboost impressions (interstitials, more apps, rewarded video, etc..) and the loading view (if visible)
- 
- @discussion There are some use cases when this functionality is useful.
- */
-+ (void)closeImpression;
 
 /*!
  @abstract
@@ -860,20 +866,6 @@ example setFramework:Unity withVersion:4.6, setFrameworkVersion:5.2.1
 - (void)didFailToLoadMoreApps:(CBLocation)location
                     withError:(CBLoadError)error;
 
-#pragma mark - Video Delegate
-
-/*!
- @abstract
- Called after videos have been successfully prefetched.
- 
- @discussion Implement to be notified of when the prefetching process has finished successfully.
-
- @deprecated This method has been deprecated and will be removed in a future version. Use didInitialize instead
- 
- */
-
-- (void)didPrefetchVideos;
-
 #pragma mark - Rewarded Video Delegate
 
 /*!
@@ -1036,108 +1028,6 @@ example setFramework:Unity withVersion:4.6, setFrameworkVersion:5.2.1
  Once confirmed call didPassAgeGate:(BOOL)pass to continue execution.
  */
 - (void)didPauseClickForConfirmation;
-
-#pragma mark - Deprecated Delegate
-
-/*!
- @abstract
- Called before an "more applications" will be displayed on the screen.
- 
- @return YES if execution should proceed, NO if not.
- 
- @discussion Implement to control if the Charboost SDK should display an "more applications". 
- This is evaluated if the showMoreApps:(CBLocation) is called.  If YES is returned the operation will proceed, if NO, then the
- operation is treated as a no-op and nothing is displayed.
- 
- Default return is YES.
- 
- @deprecated This method has been deprecated and will be removed in a future version.
- */
-- (BOOL)shouldDisplayMoreApps __attribute__((deprecated("As of version 4.5, use shouldDisplayMoreApps:(CBLocation)location")));;
-
-/*!
- @abstract
- Called after an "more applications" has been displayed on the screen.
- 
- @discussion Implement to be notified of when an "more applications" has
- been displayed on the screen.
- 
- @deprecated This method has been deprecated and will be removed in a future version.
- */
-- (void)didDisplayMoreApps __attribute__((deprecated("As of version 4.5, use didDisplayMoreApps:(CBLocation)location")));
-
-/*!
- @abstract
- Called after an "more applications" has been loaded from the Chartboost API
- servers and cached locally.
- 
- @discussion Implement to be notified of when an "more applications" has been loaded from the Chartboost API
- servers and cached locally.
- 
- @deprecated This method has been deprecated and will be removed in a future version.
- */
-- (void)didCacheMoreApps __attribute__((deprecated("As of version 4.5, use didCacheMoreApps:(CBLocation)location")));
-
-/*!
- @abstract
- Called after an "more applications" has been dismissed.
- 
- @discussion Implement to be notified of when an "more applications" has been dismissed.
- "Dismissal" is defined as any action that removed the "more applications" UI such as a click or close.
- 
- @deprecated This method has been deprecated and will be removed in a future version.
- */
-- (void)didDismissMoreApps __attribute__((deprecated("As of version 4.5, use didDismissMoreApps:(CBLocation)location")));
-
-/*!
- @abstract
- Called after an "more applications" has been closed.
- 
- @discussion Implement to be notified of when an "more applications" has been closed.
- "Closed" is defined as clicking the close interface for the "more applications".
- 
- @deprecated This method has been deprecated and will be removed in a future version.
- */
-- (void)didCloseMoreApps __attribute__((deprecated("As of version 4.5, use didCloseMoreApps:(CBLocation)location")));
-
-/*!
- @abstract
- Called after an "more applications" has been clicked.
- 
- @discussion Implement to be notified of when an "more applications" has been clicked.
- "Clicked" is defined as clicking the creative interface for the "more applications".
- 
- @deprecated This method has been deprecated and will be removed in a future version.
- */
-- (void)didClickMoreApps __attribute__((deprecated("As of version 4.5, use didClickMoreApps:(CBLocation)location")));
-
-/*!
- @abstract
- Called after an "more applications" has attempted to load from the Chartboost API
- servers but failed.
- 
- @param error The reason for the error defined via a CBLoadError.
- 
- @discussion Implement to be notified of when an "more applications" has attempted to load from the Chartboost API
- servers but failed.
- 
- @deprecated This method has been deprecated and will be removed in a future version.
- */
-- (void)didFailToLoadMoreApps:(CBLoadError)error __attribute__((deprecated("As of version 4.5, use didFailToLoadMoreApps:(CBLoadError)error forLocation:(CBLocation)location")));
-
-/*!
- @abstract
- Called after an InPlay object has been loaded from the Chartboost API
- servers and cached locally.
- 
- @discussion Implement to be notified of when an InPlay object has been loaded from the Chartboost API
- servers and cached locally.
- 
- @deprecated This method has been deprecated and will be removed in a future version.
- */
-- (void)didLoadInPlay __attribute__((deprecated("As of version 4.5, use didCacheInPlay:(CBLocation)location")));
-
-
 
 @end
 
