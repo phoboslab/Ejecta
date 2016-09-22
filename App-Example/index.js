@@ -18,6 +18,8 @@ ejecta.include("example/e-appUtils.js");
 
 ejecta.include("example/e-test.js");
 
+ejecta.include("example/e-gamecenter.js");
+
 // ejecta.include("example/e-ajax.js");
 // ejecta.include("example/e-websocket.js");
 
