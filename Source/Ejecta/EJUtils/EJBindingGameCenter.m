@@ -282,33 +282,17 @@ EJ_BIND_FUNCTION( loadFriends, ctx, argc, argv ) {
     
     if (EJECTA_SYSTEM_VERSION_LESS_THAN(@"10")){
 #if !TARGET_OS_TV
-        [player loadFriendPlayersWithCompletionHandler:^(NSArray *friendIds, NSError *error) {
+        [player loadFriendPlayersWithCompletionHandler:^(NSArray *identifiers, NSError *error) {
             ExitWithCallbackOnError(callback, error);
             
-            [GKPlayer loadPlayersForIdentifiers:friendIds withCompletionHandler:^(NSArray *players, NSError *error) {
-                ExitWithCallbackOnError(callback, error);
-                
-                // Transform GKPlayers Array to Array of NSDictionary so InvokeAndUnprotectCallback
-                // is happy to convert it to JSON
-                NSMutableArray *playersArray = [NSMutableArray arrayWithCapacity:players.count];
-                for( GKPlayer *player in players ) {
-                    [playersArray addObject: GKPlayerToNSDict(player)];
-                }
-                InvokeAndUnprotectCallback(callback, error, playersArray);
+            [GKPlayer loadPlayersForIdentifiers:identifiers withCompletionHandler:^(NSArray<GKPlayer *> *recentPlayers, NSError *error) {
+                [self playersToJSON:recentPlayers callback:callback error:error];
             }];
         }];
 #endif
     }else{
         [player loadRecentPlayersWithCompletionHandler:^(NSArray<GKPlayer *> *recentPlayers, NSError *error) {
-            ExitWithCallbackOnError(callback, error);
-            
-            // Transform GKPlayers Array to Array of NSDictionary so InvokeAndUnprotectCallback
-            // is happy to convert it to JSON
-            NSMutableArray *playersArray = [NSMutableArray arrayWithCapacity:recentPlayers.count];
-            for( GKPlayer *player in recentPlayers ) {
-                [playersArray addObject: GKPlayerToNSDict(player)];
-            }
-            InvokeAndUnprotectCallback(callback, error, playersArray);
+            [self playersToJSON:recentPlayers callback:callback error:error];
         }];
     }
 
@@ -322,24 +306,16 @@ EJ_BIND_FUNCTION( loadPlayers, ctx, argc, argv ) {
 	if( argc < 2 || !JSValueIsObject(ctx, argv[1]) ) { return NULL; }
 	if( !authed ) { NSLog(@"GameKit Error: Not authed. Can't load Players."); return NULL; }
 
-	NSArray *players = (NSArray *)JSValueToNSObject(ctx, argv[0]);
-	if( !players || ![players isKindOfClass:NSArray.class] ) {
+	NSArray *identifiers = (NSArray *)JSValueToNSObject(ctx, argv[0]);
+	if( !identifiers || ![identifiers isKindOfClass:NSArray.class] ) {
 		return NULL;
 	}
 	
 	JSObjectRef callback = (JSObjectRef)argv[0];
 	JSValueProtect(ctx, callback);
 
-	[GKPlayer loadPlayersForIdentifiers:players withCompletionHandler:^(NSArray *players, NSError *error) {
-		ExitWithCallbackOnError(callback, error);
-		
-		// Transform GKPlayers Array to Array of NSDictionary so InvokeAndUnprotectCallback
-		// is happy to convert it to JSON
-		NSMutableArray *playersArray = [NSMutableArray arrayWithCapacity:players.count];
-		for( GKPlayer *player in players ) {
-			[playersArray addObject: GKPlayerToNSDict(player)];
-		}
-		InvokeAndUnprotectCallback(callback, error, playersArray);
+	[GKPlayer loadPlayersForIdentifiers:identifiers withCompletionHandler:^(NSArray<GKPlayer *> *recentPlayers, NSError *error) {
+		[self playersToJSON:recentPlayers callback:callback error:error];
 	}];
 	return NULL;
 }
@@ -365,8 +341,8 @@ EJ_BIND_FUNCTION( loadScores, ctx, argc, argv ) {
 	[request loadScoresWithCompletionHandler: ^(NSArray *scores, NSError *error) {
 		ExitWithCallbackOnError(callback, error);
 		
-	    NSArray *playerIds = [scores valueForKey:@"playerID"];
-	    [GKPlayer loadPlayersForIdentifiers:playerIds withCompletionHandler: ^(NSArray *players, NSError *error) {
+	    NSArray *identifiers = [scores valueForKey:@"playerID"];
+	    [GKPlayer loadPlayersForIdentifiers:identifiers withCompletionHandler: ^(NSArray *players, NSError *error) {
 	            ExitWithCallbackOnError(callback, error);
 
 	            // Create a Dict to map playerID -> player
@@ -440,17 +416,17 @@ EJ_BIND_FUNCTION(retrieveFriends, ctx, argc, argv)
 		GKLocalPlayer *player = [GKLocalPlayer localPlayer];
         if (EJECTA_SYSTEM_VERSION_LESS_THAN(@"10")){
 #if !TARGET_OS_TV
-            [player loadFriendPlayersWithCompletionHandler: ^(NSArray *friends, NSError *error) {
-                [self loadPlayers:friends callback:callback];
+            [player loadFriendPlayersWithCompletionHandler: ^(NSArray *identifiers, NSError *error) {
+                ExitWithCallbackOnError(callback, error);
+                
+                [GKPlayer loadPlayersForIdentifiers:identifiers withCompletionHandler:^(NSArray<GKPlayer *> *recentPlayers, NSError *error) {
+                    [self playersToJSON:recentPlayers callback:callback error:error];
+                }];
             }];
 #endif
         }else{
             [player loadRecentPlayersWithCompletionHandler:^(NSArray<GKPlayer *> *recentPlayers, NSError *error) {
-                NSMutableArray *friends = [NSMutableArray arrayWithCapacity:recentPlayers.count];
-                for( GKPlayer *player in recentPlayers ) {
-                    [friends addObject: player.playerID];
-                }
-                [self loadPlayers:friends callback:callback];
+                [self playersToJSON:recentPlayers callback:callback error:error];
             }];
         }
 	}
@@ -468,6 +444,7 @@ EJ_BIND_FUNCTION(retrievePlayers, ctx, argc, argv)
 {
 	JSObjectRef jsIdentifiers = JSValueToObject(ctx, argv[0], NULL);
 	int length = JSValueToNumber(ctx, JSObjectGetProperty(ctx, jsIdentifiers, JSStringCreateWithUTF8CString("length"), NULL), NULL);
+
 	NSMutableArray *identifiers = [[NSMutableArray alloc] init];
 	for (int i = 0; i < length; i++) {
 		[identifiers addObject:JSValueToNSString(ctx, JSObjectGetPropertyAtIndex(ctx, jsIdentifiers, i, NULL))];
@@ -478,7 +455,9 @@ EJ_BIND_FUNCTION(retrievePlayers, ctx, argc, argv)
 		JSValueProtect(ctx, callback);
 	}
 
-	[self loadPlayers:identifiers callback:callback];
+    [GKPlayer loadPlayersForIdentifiers:identifiers withCompletionHandler:^(NSArray<GKPlayer *> *recentPlayers, NSError *error) {
+        [self playersToJSON:recentPlayers callback:callback error:error];
+    }];
 
 	return NULL;
 }
@@ -571,54 +550,48 @@ EJ_BIND_FUNCTION(retrieveScores, ctx, argc, argv)
 - (void)loadPlayersAndScores:(NSArray *)identifiers scores:(NSArray *)scores callback:(JSObjectRef)callback {
 	[GKPlayer loadPlayersForIdentifiers:identifiers withCompletionHandler: ^(NSArray *players, NSError *error)
 	{
-	    JSObjectRef jsScores = NULL;
-	    JSContextRef gctx = scriptView.jsGlobalContext;
+        ExitWithCallbackOnError(callback, error);
+        
+        NSMutableArray *scoresArray = nil;
 	    if (players != nil) {
-	        NSUInteger size = players.count;
-	        JSValueRef *jsArrayItems = malloc(sizeof(JSValueRef) * size);
-	        int count = 0;
-	        for (GKPlayer * player in players) {
-	            GKScore *score = [scores objectAtIndex:count];
-	            jsArrayItems[count++] = NSObjectToJSValue(gctx,
-	                                                      @{
-	                                                          @"alias": player.alias,
-	                                                          @"displayName": player.displayName,
-	                                                          @"playerID": player.playerID,
-//	                                                          @"category": score.category,
-															  @"leaderboardIdentifier": score.leaderboardIdentifier,
-	                                                          @"date": score.date,
-	                                                          @"formattedValue": score.formattedValue,
-	                                                          @"value": @(score.value),
-	                                                          @"rank": @(score.rank)
-														  });
-			}
-	        jsScores = JSObjectMakeArray(gctx, count, jsArrayItems, NULL);
-		}
-	    JSValueRef params[] = { jsScores, JSValueMakeBoolean(gctx, error) };
-	    [scriptView invokeCallback:callback thisObject:NULL argc:2 argv:params];
-	    JSValueUnprotectSafe(gctx, callback);
-	}];
+            scoresArray = [NSMutableArray arrayWithCapacity:players.count];
+            int count = 0;
+            for (GKPlayer *player in players) {
+                GKScore *score = [scores objectAtIndex:count];
+                [scoresArray addObject:@{
+                                         @"alias": player.alias,
+                                         @"displayName": player.displayName,
+                                         @"playerID": player.playerID,
+//	                                     @"category": score.category,
+                                         @"leaderboardIdentifier": score.leaderboardIdentifier,
+                                         @"date": score.date,
+                                         @"formattedValue": score.formattedValue,
+                                         @"value": @(score.value),
+                                         @"rank": @(score.rank)
+                                         }];
+            }
+        }
+        
+        InvokeAndUnprotectCallback(callback, error, scoresArray);
+    }];
+
 }
 
-- (void)loadPlayers:(NSArray *)identifiers callback:(JSObjectRef)callback {
-	[GKPlayer loadPlayersForIdentifiers:identifiers withCompletionHandler: ^(NSArray *players, NSError *error)
-	{
-	    JSObjectRef jsPlayers = NULL;
-	    JSContextRef gctx = scriptView.jsGlobalContext;
-	    if (players != nil) {
-	        NSUInteger size = players.count;
-	        JSValueRef *jsArrayItems = malloc(sizeof(JSValueRef) * size);
-	        int count = 0;
-	        for (GKPlayer * player in players) {
-	            jsArrayItems[count++] = NSObjectToJSValue(gctx, GKPlayerToNSDict(player));
-			}
-	        jsPlayers = JSObjectMakeArray(gctx, count, jsArrayItems, NULL);
-		}
-	    JSValueRef params[] = { jsPlayers, JSValueMakeBoolean(gctx, error) };
-	    [scriptView invokeCallback:callback thisObject:NULL argc:2 argv:params];
-	    JSValueUnprotectSafe(gctx, callback);
-	}];
+
+- (void)playersToJSON:(NSArray<GKPlayer *> *)recentPlayers callback:(JSObjectRef)callback error:(NSError *)error{
+    
+    ExitWithCallbackOnError(callback, error);
+    
+    // Transform GKPlayers Array to Array of NSDictionary so InvokeAndUnprotectCallback
+    // is happy to convert it to JSON
+    NSMutableArray *playersArray = [NSMutableArray arrayWithCapacity:recentPlayers.count];
+    for( GKPlayer *player in recentPlayers ) {
+        [playersArray addObject: GKPlayerToNSDict(player)];
+    }
+    InvokeAndUnprotectCallback(callback, error, playersArray);
+
 }
+
 
 #undef InvokeAndUnprotectCallback
 #undef ExitWithCallbackOnError
