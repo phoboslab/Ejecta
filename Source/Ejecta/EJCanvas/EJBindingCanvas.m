@@ -18,6 +18,10 @@
 - (void)createWithJSObject:(JSObjectRef)obj scriptView:(EJJavaScriptView *)view {
 	[super createWithJSObject:obj scriptView:view];
 	
+    JSStringRef protoName = JSStringCreateWithUTF8CString("__proto__");
+    JSObjectSetProperty(scriptView.jsGlobalContext, jsObject, protoName,
+                        scriptView->jsHTMLCanvasElementProto, kJSPropertyAttributeReadOnly, NULL);
+
 	// If we don't have a screen canvas yet, make it this one
 	if( !scriptView.hasScreenCanvas ) {
 		isScreenCanvas = YES;

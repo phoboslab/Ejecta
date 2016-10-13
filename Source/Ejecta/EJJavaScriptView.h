@@ -92,6 +92,11 @@
     @public JSValueRef jsNull;
 	@public JSValueRef jsTrue;
 	@public JSValueRef jsFalse;
+    
+	@public JSValueRef jsHTMLImageElementProto;
+	@public JSValueRef jsHTMLCanvasElementProto;
+	@public JSValueRef jsHTMLVideoElementProto;
+	@public JSValueRef jsHTMLAudioElementProto;
 }
 
 @property (nonatomic, copy) NSString *appFolder;

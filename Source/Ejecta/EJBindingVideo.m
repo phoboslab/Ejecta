@@ -12,6 +12,14 @@
 	return self;
 }
 
+- (void)createWithJSObject:(JSObjectRef)obj scriptView:(EJJavaScriptView *)view {
+    [super createWithJSObject:obj scriptView:view];
+    
+    JSStringRef protoName = JSStringCreateWithUTF8CString("__proto__");
+    JSObjectSetProperty(scriptView.jsGlobalContext, jsObject, protoName,
+                        scriptView->jsHTMLVideoElementProto, kJSPropertyAttributeReadOnly, NULL);
+}
+
 - (void)prepareGarbageCollection {
 	[NSNotificationCenter.defaultCenter removeObserver:self];
 }

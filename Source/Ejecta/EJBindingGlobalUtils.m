@@ -289,4 +289,17 @@ EJ_BIND_ENUM(audioSession, self.audioSession,
 	}
 }
 
+EJ_BIND_GET(__image__proto__, ctx ) {
+    return scriptView->jsHTMLImageElementProto;
+}
+EJ_BIND_GET(__canvas__proto__, ctx ) {
+    return scriptView->jsHTMLCanvasElementProto;
+}
+EJ_BIND_GET(__video__proto__, ctx ) {
+    return scriptView->jsHTMLVideoElementProto;
+}
+EJ_BIND_GET(__audio__proto__, ctx ) {
+    return scriptView->jsHTMLAudioElementProto;
+}
+
 @end

@@ -267,6 +267,19 @@ HTMLElement.prototype.removeEventListener = function(event, method){
 	}
 };
 
+HTMLImageElement = function(){};
+HTMLImageElement.prototype = ejecta.__image__proto__;
+
+HTMLCanvasElement = function(){};
+HTMLCanvasElement.prototype = ejecta.__canvas__proto__;
+
+HTMLVideoElement = function(){};
+HTMLVideoElement.prototype = ejecta.__video__proto__;
+
+HTMLAudioElement = function(){};
+HTMLAudioElement.prototype = ejecta.__audio__proto__;
+
+
 // The document object
 window.document = {
 	readyState: 'complete',

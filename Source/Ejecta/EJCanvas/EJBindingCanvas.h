@@ -5,7 +5,7 @@
 // and `style`, until getContext() is called. A Canvas can either host a 2D
 // or WebGL Context.
 
-#import "EJBindingBase.h"
+#import "EJBindingEventedBase.h"
 #import "EJTexture.h"
 #import "EJDrawable.h"
 #import "EJCanvasContext.h"
@@ -29,7 +29,7 @@ typedef enum {
 	kEJCanvasImageRenderingPixelated
 } EJCanvasImageRendering;
 
-@interface EJBindingCanvas : EJBindingBase <EJDrawable> {
+@interface EJBindingCanvas : EJBindingEventedBase <EJDrawable> {
 	JSObjectRef jsCanvasContext;
 	EJCanvasContext *renderingContext;
 	EJCanvasContextMode contextMode;

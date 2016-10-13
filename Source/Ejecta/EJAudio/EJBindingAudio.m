@@ -25,6 +25,14 @@ NSString * const kEJBindingAudio_elementObject = @"object";
 	return self;
 }
 
+- (void)createWithJSObject:(JSObjectRef)obj scriptView:(EJJavaScriptView *)view {
+    [super createWithJSObject:obj scriptView:view];
+    
+    JSStringRef protoName = JSStringCreateWithUTF8CString("__proto__");
+    JSObjectSetProperty(scriptView.jsGlobalContext, jsObject, protoName,
+                        scriptView->jsHTMLAudioElementProto, kJSPropertyAttributeReadOnly, NULL);
+}
+
 - (void)dealloc {
 	[loadCallback cancel];
 	[loadCallback release];
