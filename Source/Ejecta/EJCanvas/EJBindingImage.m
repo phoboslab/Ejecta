@@ -6,14 +6,6 @@
 @implementation EJBindingImage
 @synthesize texture;
 
-- (void)createWithJSObject:(JSObjectRef)obj scriptView:(EJJavaScriptView *)view {
-    [super createWithJSObject:obj scriptView:view];
-    
-    JSStringRef protoName = JSStringCreateWithUTF8CString("__proto__");
-    JSObjectSetProperty(scriptView.jsGlobalContext, jsObject, protoName,
-                        scriptView->jsHTMLImageElementProto, kJSPropertyAttributeReadOnly, NULL);
-}
-
 - (void)beginLoad {
 	// This will begin loading the texture in a background thread and will call the
 	// JavaScript onload callback when done

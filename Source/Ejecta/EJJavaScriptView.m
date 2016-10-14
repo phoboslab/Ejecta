@@ -113,16 +113,6 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
     JSValueProtect(jsGlobalContext, jsTrue);
     jsFalse = JSValueMakeBoolean(jsGlobalContext, false);
     JSValueProtect(jsGlobalContext, jsFalse);
-    
-    
-    jsHTMLImageElementProto  = NSObjectToJSValue(jsGlobalContext, @{ @"_type" : @"HTMLImageElement" });
-    JSValueProtect(jsGlobalContext, jsHTMLImageElementProto);
-    jsHTMLCanvasElementProto  = NSObjectToJSValue(jsGlobalContext, @{ @"_type" : @"HTMLCanvasElement" });
-    JSValueProtect(jsGlobalContext, jsHTMLCanvasElementProto);
-    jsHTMLVideoElementProto  = NSObjectToJSValue(jsGlobalContext, @{ @"_type" : @"HTMLVideoElement" });
-    JSValueProtect(jsGlobalContext, jsHTMLVideoElementProto);
-    jsHTMLAudioElementProto  = NSObjectToJSValue(jsGlobalContext, @{ @"_type" : @"HTMLAudioElement" });
-    JSValueProtect(jsGlobalContext, jsHTMLAudioElementProto);
 
     // Attach all native class constructors to 'Ejecta'
     classLoader = [[EJClassLoader alloc] initWithScriptView:self name:@"Ejecta"];
