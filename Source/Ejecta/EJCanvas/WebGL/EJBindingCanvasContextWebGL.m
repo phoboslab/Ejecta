@@ -1233,8 +1233,10 @@ EJ_BIND_FUNCTION_DIRECT(hint, glHint, target, mode);
 
 #undef EJ_BIND_IS_OBJECT
 
-
-EJ_BIND_FUNCTION_DIRECT(isEnabled, glIsEnabled, cap);
+EJ_BIND_FUNCTION(isEnabled, ctx, argc, argv) {
+	EJ_UNPACK_ARGV(GLenum cap);
+	return JSValueMakeBoolean(ctx, glIsEnabled(cap));
+}
 
 EJ_BIND_FUNCTION(isTexture, ctx, argc, argv) {
 	if( argc < 1 ) { return NULL; }
