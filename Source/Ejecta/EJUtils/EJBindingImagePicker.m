@@ -1,5 +1,8 @@
-#import <MobileCoreServices/UTCoreTypes.h> // for media filtering
 #import "EJBindingImagePicker.h"
+
+#if EJ_PICKER_ENABLED
+
+#import <MobileCoreServices/UTCoreTypes.h> // for media filtering
 #import "EJJavaScriptView.h"
 #import "EJTexture.h"
 #import "EJBindingImage.h"
@@ -218,3 +221,5 @@ EJ_BIND_FUNCTION(isSourceTypeAvailable, ctx, argc, argv) {
 }
 
 @end
+
+#endif

@@ -100,7 +100,7 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
         displayLink.preferredFramesPerSecond = 60;
     }
 
-    [displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+    [displayLink addToRunLoop:NSRunLoop.currentRunLoop forMode:NSDefaultRunLoopMode];
     
     // Create the global JS context in its own group, so it can be released properly
     jsGlobalContext = JSGlobalContextCreateInGroup(NULL, NULL);
@@ -401,7 +401,7 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 	if( isPaused ) { return; }
 	
 	[windowEventsDelegate pause];
-	[displayLink removeFromRunLoop:NSRunLoop.currentRunLoop forMode:NSDefaultRunLoopMode];
+	displayLink.paused = YES;
 	[screenRenderingContext finish];
 
 	[AVAudioSession.sharedInstance setActive:NO error:NULL];
@@ -415,7 +415,7 @@ void EJBlockFunctionFinalize(JSObjectRef object) {
 	
 	[windowEventsDelegate resume];
 	[EAGLContext setCurrentContext:glCurrentContext];
-	[displayLink addToRunLoop:NSRunLoop.currentRunLoop forMode:NSDefaultRunLoopMode];
+	displayLink.paused = NO;
 
 	[AVAudioSession.sharedInstance setActive:YES error:NULL];
 	[openALManager endInterruption];
