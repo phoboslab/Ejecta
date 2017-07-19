@@ -4,19 +4,20 @@
 
 // ejecta.include("index-origin.js");
 
-ejecta.include("example/e-init.js");
+// ejecta.include("example/e-init.js");
 // ejecta.include("example/e-init-gl.js");
-ejecta.include("example/e-init-event.js");
+// ejecta.include("example/e-init-event.js");
 
 
+ejecta.include("example/bunnymark/e-bunnymark.js");
 
 //==================================================
 // Examples
 //==================================================
 
-ejecta.include("example/e-appUtils.js");
+// ejecta.include("example/e-appUtils.js");
 
-ejecta.include("example/e-test.js");
+// ejecta.include("example/e-test.js");
 
 // ejecta.include("example/e-gamecenter.js");
 
