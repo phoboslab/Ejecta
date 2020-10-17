@@ -28,15 +28,16 @@ JSValueRef NSStringToJSValue( JSContextRef ctx, NSString *string ) {
 // and is thus a lot slower.
 
 double JSValueToNumberFast(JSContextRef ctx, JSValueRef v) {
-	#if __LP64__ // arm64 version
+	#if __LP64__ && EJ_JSC_USE_FAST_PRIVATE_API // arm64 version, private API
 		union {
 			int64_t asInt64;
 			double asDouble;
 			struct { int32_t asInt; int32_t tag; } asBits;
 		} taggedValue = { .asInt64 = (int64_t)v };
 		
-		#define DoubleEncodeOffset 0x1000000000000ll
-		#define TagTypeNumber 0xffff0000
+		#define DoubleEncodeOffsetBits 49
+		#define DoubleEncodeOffset (1ll << DoubleEncodeOffsetBits)
+		#define TagTypeNumber 0xfffe0000
 		#define ValueTrue 0x7
 		
 		if( (taggedValue.asBits.tag & TagTypeNumber) == TagTypeNumber ) {
@@ -52,7 +53,7 @@ double JSValueToNumberFast(JSContextRef ctx, JSValueRef v) {
 		else {
 			return 0; // false, undefined, null, object
 		}
-	#else // armv7 version
+	#else // armv7 version, public API
 		return JSValueToNumber(ctx, v, NULL);
 	#endif
 }
@@ -197,4 +198,3 @@ void *JSValueGetTypedArrayPtr( JSContextRef ctx, JSValueRef value, size_t *lengt
 	
 	return NULL;
 }
-

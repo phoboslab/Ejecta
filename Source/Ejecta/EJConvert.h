@@ -20,6 +20,14 @@
 #import <Foundation/Foundation.h>
 #import "JavaScriptCore/JavaScriptCore.h"
 
+// JSValueToNumberFast can skip locking the whole JSContext if we know the
+// layout of JSValues in memory. Sadly, the JSC public API does not expose
+// such a function itself and the memory layout _has_ changed with iOS14
+// See here for the details:
+// https://github.com/WebKit/webkit/commit/e522feb5a8bfe5ba78fd1749df342f56dc98fcb5
+// So now we default to not use the fast, private API anymore and instead
+// do the number conversion by the book :/
+#define EJ_JSC_USE_FAST_PRIVATE_API false
 
 NSString *JSValueToNSString( JSContextRef ctx, JSValueRef v );
 JSValueRef NSStringToJSValue( JSContextRef ctx, NSString *string );
@@ -35,7 +43,7 @@ static inline void *JSValueGetPrivate(JSValueRef v) {
 	// undefined) will crash the app. So we check for these first.
 
 	#if __LP64__
-		return !((int64_t)v & 0xffff000000000002ll)
+		return !((int64_t)v & 0xfffe000000000002ll)
 			? JSObjectGetPrivate((JSObjectRef)v)
 			: NULL;
 	#else
