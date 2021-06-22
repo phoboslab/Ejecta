@@ -41,6 +41,10 @@
 	// Clear
 	glViewport(0, 0, width, height);
 	[self clear];
+
+	if ([self alphaShouldLock]) {
+		[self lockAlpha];
+	}
 	
 	// Reset to the previously bound frame and renderbuffers
 	[self bindFramebuffer:previousFrameBuffer toTarget:GL_FRAMEBUFFER];

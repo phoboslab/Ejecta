@@ -59,6 +59,16 @@
 	needsPresenting = YES;
 }
 
+- (void) lockAlpha {
+    GLfloat c[4];
+    glGetFloatv(GL_COLOR_CLEAR_VALUE, c);
+    // use current values for RGB，use GL_ONE for alpha
+    glClearColor(c[0], c[1], c[2], GL_ONE);
+    glClear(GL_COLOR_BUFFER_BIT);
+    // disable alpha channel
+    glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_FALSE);
+}
+
 - (void)create {
 	if( msaaEnabled ) {
 		glGenFramebuffers(1, &msaaFrameBuffer);

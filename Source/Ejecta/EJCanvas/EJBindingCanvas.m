@@ -215,6 +215,10 @@ EJ_BIND_FUNCTION(getContext, ctx, argc, argv) {
 				renderingContext.msaaEnabled = maxSamples > 1;
 				renderingContext.msaaSamples = MAX(2, MIN(maxSamples, msaaSamples));
 			}
+           
+			if ( !([options[@"alpha"] boolValue]) ) {
+					renderingContext.alphaShouldLock = YES;
+			}
 		}
 	}
 	
