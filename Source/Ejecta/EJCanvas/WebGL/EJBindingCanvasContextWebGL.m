@@ -408,7 +408,17 @@ EJ_BIND_FUNCTION(clear, ctx, argc, argv) {
 EJ_BIND_FUNCTION_DIRECT(clearColor, glClearColor, red, green, blue, alpha);
 EJ_BIND_FUNCTION_DIRECT(clearDepth, glClearDepthf, depth);
 EJ_BIND_FUNCTION_DIRECT(clearStencil, glClearStencil, s);
-EJ_BIND_FUNCTION_DIRECT(colorMask, glColorMask, red, green, blue, alpha);
+EJ_BIND_FUNCTION(colorMask, ctx, argc, argv) {
+    if (argc != 4) { return NULL; }
+    
+    EJ_UNPACK_ARGV(GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha);
+    
+    if ([renderingContext alphaShouldLock]) {
+        alpha = GL_FALSE;
+    }
+    
+    glColorMask(red, green, blue, alpha);
+}
 
 EJ_BIND_FUNCTION(compileShader, ctx, argc, argv) {
 	if( argc < 1 ) { return NULL; }

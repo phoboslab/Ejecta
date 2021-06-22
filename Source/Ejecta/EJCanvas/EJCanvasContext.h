@@ -9,6 +9,7 @@
 	
 	BOOL preserveDrawingBuffer;
 	BOOL msaaEnabled;
+	BOOL alphaShouldLock;
 	BOOL needsPresenting;
 	int msaaSamples;
 	EAGLContext *glContext;
@@ -20,6 +21,7 @@
 
 @property (nonatomic) BOOL preserveDrawingBuffer;
 @property (nonatomic) BOOL msaaEnabled;
+@property (nonatomic) BOOL alphaShouldLock;
 @property (nonatomic) int msaaSamples;
 @property (nonatomic) short width;
 @property (nonatomic) short height;
