@@ -100,7 +100,7 @@
 	JSContextRef ctx = scriptView.jsGlobalContext;
 	[self triggerEvent:@"close" properties:(JSEventProperty[]){
 		{"code", JSValueMakeNumber(ctx, code)},
-		{"reason", NSStringToJSValue(ctx, reason)},
+		{"reason", reason ? NSStringToJSValue(ctx, reason) : scriptView->jsUndefined },
 		{"wasClean", JSValueMakeBoolean(ctx, wasClean)},
 		{NULL, NULL},
 	}];
