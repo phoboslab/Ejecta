@@ -328,3 +328,10 @@ JSValueRef ColorRGBAToJSValue( JSContextRef ctx, EJColorRGBA c ) {
 	return ret;
 }
 
+UIColor* JSValueToUIColor(JSContextRef ctx, JSValueRef value) {
+    EJColorRGBA color = JSValueToColorRGBA(ctx, value);
+    return [UIColor colorWithRed:(CGFloat)color.rgba.r/255
+                           green:(CGFloat)color.rgba.g/255
+                            blue:(CGFloat)color.rgba.b/255
+                           alpha:(CGFloat)color.rgba.a/255];
+}
