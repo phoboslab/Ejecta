@@ -170,7 +170,10 @@ window.Video = Ejecta.Video;
 window.XMLHttpRequest = Ejecta.HttpRequest;
 window.localStorage = new Ejecta.LocalStorage();
 window.WebSocket = Ejecta.WebSocket;
-
+window.WebSocket.CONNECTING = 0;
+window.WebSocket.OPEN = 1;
+window.WebSocket.CLOSING = 2;
+window.WebSocket.CLOSED = 3;
 
 window.Event = function (type) {
 	this.type = type;
